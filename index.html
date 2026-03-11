@@ -28,6 +28,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 .nav-btn:active{background:#141d2e}
 .nav-btn.c-amber{border-left-color:#f59e0b}
 .nav-btn.c-red{border-left-color:#ef4444}
+.nav-btn.c-blue{border-left-color:#60a5fa}
 .nb-icon{font-size:24px;flex-shrink:0;width:42px;height:42px;display:flex;align-items:center;justify-content:center;background:#0a0d14;border:1px solid #1a2540;border-radius:4px}
 .nb-label{font-weight:700;font-size:20px;letter-spacing:1px;text-transform:uppercase;color:#e5e7eb;line-height:1}
 .nb-sub{font-size:10px;color:#6b7280;margin-top:4px}
@@ -68,11 +69,16 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 .toggle-btn{border:none;padding:10px 20px;border-radius:4px;cursor:pointer;font-weight:700;font-size:13px;font-family:'Courier New',Courier,monospace;letter-spacing:1px}
 .toggle-aan{background:rgba(52,211,153,.15);color:#34d399;border:1px solid #34d399}
 .toggle-uit{background:#0f1520;color:#6b7280;border:1px solid #1a2540}
-.result-box{background:#070a10;border:1px solid #f59e0b;border-radius:6px;padding:12px 16px;display:flex;justify-content:space-around;margin-bottom:12px}
-.result-item{display:flex;flex-direction:column;align-items:center;gap:2px}
-.result-icon{font-size:18px}
-.result-val{font-size:22px;font-weight:700;color:#fcd34d}
-.result-lbl{font-size:9px;color:#6b7280;letter-spacing:1px}
+.result-box{background:#070a10;border:1px solid #f59e0b;border-radius:6px;padding:12px 8px;display:flex;justify-content:space-around;margin-bottom:12px;flex-wrap:wrap;gap:8px}
+.result-item{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:60px}
+.result-icon{font-size:16px}
+.result-val{font-size:20px;font-weight:700;color:#fcd34d}
+.result-lbl{font-size:9px;color:#6b7280;letter-spacing:1px;text-align:center}
+.calc-box{background:#070a10;border:1px solid #60a5fa;border-radius:6px;padding:14px 16px;margin-bottom:12px}
+.calc-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #1a2540}
+.calc-row:last-child{border-bottom:none}
+.calc-lbl{font-size:11px;color:#6b7280;letter-spacing:1px}
+.calc-val{font-size:20px;font-weight:700;color:#60a5fa}
 .info-block{background:#0f1520;border:1px solid #1a2540;border-radius:4px;overflow:hidden;margin-bottom:8px}
 .info-row{display:flex;align-items:center;padding:11px 14px;border-bottom:1px solid #1a2540;gap:10px}
 .info-row:last-child{border-bottom:none}
@@ -91,8 +97,8 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 .ts-cause{color:#facc15}
 .ts-solution{color:#34d399}
 .ts-list{list-style:none;display:flex;flex-direction:column;gap:5px}
-.ts-list li{display:flex;gap:10px;align-items:flex-start;font-size:13px;line-height:1.45;padding:8px 12px;background:#0a0d14;border:1px solid #1a2540;border-radius:3px}
-.ts-list li::before{content:'▸';flex-shrink:0;margin-top:1px}
+.ts-list li{display:flex;gap:10px;align-items:flex-start;font-size:14px;line-height:1.45;padding:8px 12px;background:#0a0d14;border:1px solid #1a2540;border-radius:3px}
+.ts-list li::before{content:'>';flex-shrink:0;margin-top:1px}
 .ts-cause li::before{color:#facc15}
 .ts-solution li::before{color:#34d399}
 .snel-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
@@ -116,8 +122,8 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#0f1520;border-top:1px solid #1a2540;display:flex;z-index:100}
 .bnav-btn{flex:1;padding:10px 0;background:transparent;border:none;color:#6b7280;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;font-family:'Courier New',Courier,monospace}
 .bnav-btn.active{color:#f59e0b}
-.bnav-icon{font-size:22px}
-.bnav-label{font-size:9px;letter-spacing:1px;text-transform:uppercase}
+.bnav-icon{font-size:20px}
+.bnav-label{font-size:8px;letter-spacing:1px;text-transform:uppercase}
 .pulse{width:7px;height:7px;border-radius:50%;background:#34d399;animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 8px #34d39988}50%{opacity:.2;box-shadow:none}}
 .home-status{display:inline-flex;align-items:center;gap:8px;font-size:10px;color:#34d399;margin-top:14px;letter-spacing:2px;background:rgba(52,211,153,.06);border:1px solid rgba(52,211,153,.2);padding:5px 12px;border-radius:4px}
@@ -140,7 +146,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
     <div style="font-size:10px;color:#374151;letter-spacing:2px;margin-bottom:36px;">MACHINE DATABASE</div>
     <div style="width:100%;max-width:300px;">
       <div style="font-size:9px;color:#6b7280;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;">Wachtwoord</div>
-      <input id="login-pw" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"
+      <input id="login-pw" type="password" placeholder="........" onkeydown="if(event.key==='Enter')doLogin()"
         style="width:100%;background:#0f1520;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;margin-bottom:10px;text-align:center;letter-spacing:6px;">
       <div id="login-err" style="display:none;color:#ef4444;font-size:10px;text-align:center;margin-bottom:10px;letter-spacing:2px;">ONGELDIG WACHTWOORD</div>
       <button onclick="doLogin()" style="width:100%;background:#f59e0b;color:#000;border:none;border-radius:4px;font-family:'Courier New',Courier,monospace;font-weight:700;font-size:18px;letter-spacing:3px;text-transform:uppercase;padding:15px;cursor:pointer;">INLOGGEN</button>
@@ -161,20 +167,26 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
     </div>
     <div class="nav-grid">
       <button class="nav-btn c-amber" onclick="go('s-recepten')">
-        <span class="nb-icon">📋</span>
+        <span class="nb-icon">&#128203;</span>
         <div><div class="nb-label">Recepten</div><div class="nb-sub">Machine-instellingen database</div></div>
-        <span class="nb-arr">›</span>
+        <span class="nb-arr">&#8250;</span>
       </button>
       <button class="nav-btn c-red" onclick="go('s-problemen')">
-        <span class="nb-icon">🔧</span>
+        <span class="nb-icon">&#128295;</span>
         <div><div class="nb-label">Problemen</div><div class="nb-sub">Storingen &amp; oplossingen</div></div>
-        <span class="nb-arr">›</span>
+        <span class="nb-arr">&#8250;</span>
+      </button>
+      <button class="nav-btn c-blue" onclick="go('s-calculator')">
+        <span class="nb-icon">&#9881;</span>
+        <div><div class="nb-label">Calculator</div><div class="nb-sub">Offset, rolwissel, roldiameter</div></div>
+        <span class="nb-arr">&#8250;</span>
       </button>
     </div>
   </div>
   <nav class="bottom-nav">
-    <button class="bnav-btn active" onclick="go('s-recepten')"><span class="bnav-icon">📋</span><span class="bnav-label">Recepten</span></button>
-    <button class="bnav-btn" onclick="go('s-problemen')"><span class="bnav-icon">🔧</span><span class="bnav-label">Problemen</span></button>
+    <button class="bnav-btn" onclick="go('s-recepten')"><span class="bnav-icon">&#128203;</span><span class="bnav-label">Recepten</span></button>
+    <button class="bnav-btn" onclick="go('s-problemen')"><span class="bnav-icon">&#128295;</span><span class="bnav-label">Problemen</span></button>
+    <button class="bnav-btn" onclick="go('s-calculator')"><span class="bnav-icon">&#9881;</span><span class="bnav-label">Calculator</span></button>
   </nav>
 </div>
 
@@ -184,7 +196,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
   <div class="topbar">
     <button class="back-btn" onclick="go('s-home')">&#8249;</button>
     <div class="topbar-title">Recepten</div>
-    <button class="topbar-btn" onclick="go('s-nieuw')">&#65291; Nieuw</button>
+    <button class="topbar-btn" onclick="go('s-nieuw')">+ Nieuw</button>
   </div>
   <div style="padding:10px 14px 0;background:#070a10;position:sticky;top:56px;z-index:99;">
     <div style="position:relative;">
@@ -216,41 +228,6 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
   <div class="content">
 
 ```
-<!-- AI FOTO SCAN -->
-<div class="form-card" style="border-top-color:#60a5fa;">
-  <div class="form-card-title" style="color:#60a5fa;">AI Foto Scan — Touchscreen</div>
-  <div style="font-size:12px;color:#6b7280;margin-bottom:12px;line-height:1.6;">Maak foto's van het touchscreen. Claude leest de waarden en vult de velden automatisch in.</div>
-
-  <!-- API Key -->
-  <div class="field" style="margin-bottom:12px;">
-    <label style="color:#60a5fa;">Anthropic API Key</label>
-    <input id="api-key-input" type="password" placeholder="sk-ant-..." 
-      style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:14px;padding:10px 14px;outline:none;"
-      oninput="API_KEY=this.value;sessionStorage.setItem('anthropic_key',this.value);">
-    <div style="font-size:10px;color:#374151;margin-top:4px;">Eenmalig invullen — wordt onthouden tot je Safari sluit. Haal key op via console.anthropic.com</div>
-  </div>
-
-  <!-- Upload zone -->
-  <div id="foto-zone" onclick="document.getElementById('foto-input').click()"
-    style="border:2px dashed #1a2540;border-radius:6px;padding:20px;text-align:center;cursor:pointer;margin-bottom:10px;transition:border-color .2s;">
-    <div style="font-size:32px;margin-bottom:6px;">📷</div>
-    <div style="font-size:13px;color:#60a5fa;font-weight:700;">Tik om foto's te kiezen</div>
-    <div style="font-size:11px;color:#6b7280;margin-top:4px;">Max 3 foto's per keer</div>
-  </div>
-  <input id="foto-input" type="file" accept="image/*" multiple style="display:none;" onchange="fotoGekozen(event)">
-
-  <!-- Preview foto's -->
-  <div id="foto-previews" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;"></div>
-
-  <!-- Scan knop -->
-  <button id="scan-btn" onclick="scanFotos()" style="display:none;width:100%;background:#60a5fa;color:#000;border:none;border-radius:4px;font-family:'Courier New',Courier,monospace;font-weight:700;font-size:15px;letter-spacing:1px;padding:13px;cursor:pointer;">
-    &#9889; Analyseer met AI
-  </button>
-
-  <!-- Status -->
-  <div id="scan-status" style="display:none;margin-top:10px;padding:10px 14px;background:#070a10;border:1px solid #1a2540;border-radius:4px;font-size:12px;color:#6b7280;line-height:1.6;"></div>
-</div>
-
 <div class="form-card">
   <div class="form-card-title">Klant & Product</div>
   <div class="grid2">
@@ -263,7 +240,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
     </div>
     <div class="field"><label>Omschrijving</label><input id="f-prodoms" type="text" placeholder="bv. draagtas"></div>
   </div>
-  <div class="field"><label>Naam operator</label><input id="f-versie" type="text" placeholder="v1.0"></div>
+  <div class="field"><label>Naam operator</label><input id="f-versie" type="text" placeholder="naam operator"></div>
 </div>
 
 <div class="form-card">
@@ -271,17 +248,17 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
   <div class="field">
     <label>Materiaalsoort</label>
     <div class="grid3" style="margin-bottom:8px;">
-      <button class="mat-btn active" id="mat-peld" onclick="selectMat('peld')">PE-LD</button>
+      <button class="mat-btn active" id="mat-peld"  onclick="selectMat('peld')">PE-LD</button>
       <button class="mat-btn" id="mat-lldpe" onclick="selectMat('lldpe')">LLDPE</button>
-      <button class="mat-btn" id="mat-ldpe" onclick="selectMat('ldpe')">LDPE</button>
+      <button class="mat-btn" id="mat-ldpe"  onclick="selectMat('ldpe')">LDPE</button>
     </div>
     <div class="grid3" style="margin-bottom:8px;">
-      <button class="mat-btn" id="mat-pehd" onclick="selectMat('pehd')">PE-HD</button>
-      <button class="mat-btn" id="mat-pp" onclick="selectMat('pp')">PP</button>
+      <button class="mat-btn" id="mat-pehd"  onclick="selectMat('pehd')">PE-HD</button>
+      <button class="mat-btn" id="mat-pp"    onclick="selectMat('pp')">PP</button>
       <button class="mat-btn" id="mat-andere" onclick="selectMat('andere')">Andere</button>
     </div>
     <div class="grid3">
-      <button class="mat-btn" id="mat-recycle-mix" onclick="selectMat('recycle-mix')">&#9851; Mix</button>
+      <button class="mat-btn" id="mat-recycle-mix"  onclick="selectMat('recycle-mix')">&#9851; Mix</button>
       <button class="mat-btn" id="mat-recycle-peld" onclick="selectMat('recycle-peld')">&#9851; PE-LD</button>
       <button class="mat-btn" id="mat-recycle-pehd" onclick="selectMat('recycle-pehd')">&#9851; PE-HD</button>
     </div>
@@ -329,7 +306,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
   </div>
   <div class="field"><label>Material to be charged (mm)</label><input id="f-static-mat" type="number" placeholder="bv. 400"></div>
   <div class="field"><label>Cycle met drukker</label>
-    <button id="drukker-btn" class="toggle-btn toggle-uit" onclick="toggleDrukker()">&#9675; UIT</button>
+    <button id="drukker-btn" class="toggle-btn toggle-uit" onclick="toggleDrukker()">UIT</button>
   </div>
   <div id="drukker-extra" style="display:none;">
     <div class="field"><label>Drukker instelling</label><input id="f-drukker" type="text" placeholder="bv. 2 cycli"></div>
@@ -344,7 +321,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
       <input class="temp-input" id="f-temp-boven" type="number" placeholder="157">
       <div class="temp-unit">C</div>
     </div>
-    <div style="font-size:20px;color:#374151;">|</div>
+    <div style="font-size:20px;color:#374151;align-self:center;">|</div>
     <div class="temp-card">
       <div class="temp-lbl">ONDER</div>
       <input class="temp-input" id="f-temp-onder" type="number" placeholder="154">
@@ -377,6 +354,57 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
   <div class="content" id="problemen-content"></div>
 </div>
 
+<!-- CALCULATOR -->
+
+<div class="screen" id="s-calculator">
+  <div class="topbar">
+    <button class="back-btn" onclick="go('s-home')">&#8249;</button>
+    <div class="topbar-title">Calculator</div>
+  </div>
+  <div class="content">
+    <div class="form-card" style="border-top-color:#60a5fa;">
+      <div class="form-card-title" style="color:#60a5fa;">Invoer</div>
+      <div class="grid2">
+        <div class="field"><label>Zaklengte (mm)</label><input id="c-lengte" type="number" placeholder="600" oninput="calcUpdate()"></div>
+        <div class="field"><label>Zakken/rol</label><input id="c-zakrol" type="number" placeholder="5000" oninput="calcUpdate()"></div>
+      </div>
+      <div class="grid2">
+        <div class="field"><label>Foliedikte (um)</label><input id="c-dikte" type="number" placeholder="30" oninput="calcUpdate()"></div>
+        <div class="field"><label>Kerndiameter (mm)</label><input id="c-kern" type="number" placeholder="76" oninput="calcUpdate()"></div>
+      </div>
+    </div>
+
+```
+<div class="slabel">Offset Berekening</div>
+<div class="calc-box">
+  <div class="calc-row">
+    <span class="calc-lbl">&#9881; OFFSET 1</span>
+    <span class="calc-val" id="c-offset1">-</span>
+  </div>
+  <div class="calc-row">
+    <span class="calc-lbl">&#9881; OFFSET 2 (Turret arm 2)</span>
+    <span class="calc-val" id="c-offset2">-</span>
+  </div>
+</div>
+
+<div class="slabel">Rolwissel Berekening</div>
+<div class="calc-box">
+  <div class="calc-row">
+    <span class="calc-lbl">&#128260; ROL LENGTE</span>
+    <span class="calc-val" id="c-rollengte">- m</span>
+  </div>
+  <div class="calc-row">
+    <span class="calc-lbl">&#128260; ROL DIAMETER</span>
+    <span class="calc-val" id="c-roldiameter">- mm</span>
+  </div>
+</div>
+
+<div id="calc-dataset-info" style="display:none;margin-top:8px;background:#070a10;border:1px solid rgba(245,158,11,.3);border-radius:4px;padding:10px 14px;font-size:11px;color:#f59e0b;line-height:1.6;"></div>
+```
+
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -384,7 +412,6 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 
 var FB_URL = 'https://amutec-tsa-ra-1640-default-rtdb.europe-west1.firebasedatabase.app';
 var APP_PW = 'tsa1600';
-var API_KEY = sessionStorage.getItem('anthropic_key') || '';
 
 var MATERIALEN = {
   'peld':         {label:'PE-LD virgin',  temp_b:157,temp_o:154,sv:1.00,st:1.00,recycle:false},
@@ -398,51 +425,146 @@ var MATERIALEN = {
   'recycle-pehd': {label:'Recycle PE-HD', temp_b:178,temp_o:175,sv:0.75,st:1.25,recycle:true}
 };
 
-var PROBLEMEN = [
-  {id:'wissel',cat:'ROLWISSEL',kleur:'#ef4444',icon:'!',titel:'Wissel breekt / laat los',
-    oorzaken:['Folie heeft slappe kant','Drukker laat los aan einde wissel','Roldiameter wissel te klein','Snelheid te hoog tijdens wissel'],
-    oplossingen:['Static naar End of roll','Roldiameter wissel verhogen','Snelheid verlagen bij wissel','Hekje controleren en bijstellen']},
-  {id:'scheef',cat:'FOLIEGELEIDING',kleur:'#fb923c',icon:'-',titel:'Folie loopt scheef',
-    oorzaken:['Slappe kant folie','Hekje staat scheef','Niprollen niet parallel','Rol scheef op afroller'],
-    oplossingen:['Hekje centreren op folierand','Afroller loodrecht instellen','Niprollen parallelstand controleren','Static charger aanzetten']},
-  {id:'slappe-kant',cat:'FOLIEGELEIDING',kleur:'#fb923c',icon:'~',titel:'Slappe kant in folie',
-    oorzaken:['Ongelijke dikte over breedte','Ongelijke winding op rol','Recycle: minder uniformiteit'],
-    oplossingen:['Static naar Always on','Hekje strakker aan slappe zijde','Snelheid verlagen']},
-  {id:'slap-strak',cat:'FOLIEGELEIDING',kleur:'#fb923c',icon:'|',titel:'Te slap / te strak neutrale zone',
-    oorzaken:['Niprollen verkeerd ingesteld','Hekje te los of te strak','Na materiaalwissel niet herinsteld'],
-    oplossingen:['Te slap: niproldruk verhogen + hekje bijstellen','Te strak: niproldruk verlagen','Na wissel: niprollen opnieuw instellen']},
-  {id:'perf-snel',cat:'PERFORATIE',kleur:'#a78bfa',icon:'x',titel:'Perforatie scheurt te snel',
-    oorzaken:['Perforatie te diep','Foliespanning te hoog','Perforatiemessen bot'],
-    oplossingen:['Perforatiedruk verlagen','Dancer spanning verlagen','Mes vervangen']},
-  {id:'perf-niet',cat:'PERFORATIE',kleur:'#a78bfa',icon:'x',titel:'Zak scheurt niet goed af',
-    oorzaken:['Perforatie te licht','Mes bot','Folie te elastisch'],
-    oplossingen:['Perforatie dieper zetten','Mes vervangen']},
-  {id:'seal-breekt',cat:'SEAL',kleur:'#f59e0b',icon:'o',titel:'Seal breekt open',
-    oorzaken:['Temperatuur te laag','Sealtijd te kort','Sealdruk te laag'],
-    oplossingen:['Temperatuur verhogen','Sealtijd verhogen','Druk controleren']},
-  {id:'seal-brand',cat:'SEAL',kleur:'#f59e0b',icon:'!',titel:'Seal verbrandt / PTFE tape',
-    oorzaken:['Temperatuur te hoog','Sealtijd te lang','PTFE tape beschadigd'],
-    oplossingen:['Temperatuur verlagen','Sealtijd verkorten','PTFE tape vervangen']},
-  {id:'seal-rek',cat:'SEAL',kleur:'#f59e0b',icon:'|',titel:'Uitgerekte seal',
-    oorzaken:['Folie te strak in neutrale zone','Koeltijd te kort','Niprollen trekken te vroeg'],
-    oplossingen:['Niproldruk verlagen','Koeltijd verhogen','Temperatuur iets verlagen']},
-  {id:'static',cat:'STATIC',kleur:'#60a5fa',icon:'*',titel:'Static charger instelling',
-    oorzaken:['PE/PP slecht geleidend','Droge omgeving','Recycle: onregelmatig oppervlak'],
-    oplossingen:['Einde rol: End of roll','Slappe folie: Always on','Static charger reinigen']},
-  {id:'winder-slap',cat:'WINDER',kleur:'#34d399',icon:'o',titel:'Rol bouwt niet strak op',
-    oorzaken:['Winder torque te laag','Roldruk te laag'],
-    oplossingen:['Torque verhogen','Drukrol controleren']},
-  {id:'winder-scheef',cat:'WINDER',kleur:'#34d399',icon:'^',titel:'Rol wordt scheef',
-    oorzaken:['Folie niet gecentreerd','Winder spanning ongelijk'],
-    oplossingen:['Folie centreren','Winder torque aanpassen']}
+// ── OFFSET DATA ───────────────────────────────────────────────────────────
+var OFFSET_DATA = [
+  {lengte:80,   offset:10850},
+  {lengte:110,  offset:10950},
+  {lengte:115,  offset:10850},
+  {lengte:200,  offset:10850},
+  {lengte:400,  offset:10850},
+  {lengte:1000, offset:10950},
+  {lengte:1200, offset:10750},
+  {lengte:1500, offset:10950},
+  {lengte:1530, offset:10650},
+  {lengte:1600, offset:10750},
+  {lengte:1800, offset:10975},
+  {lengte:1900, offset:10550},
+  {lengte:2800, offset:10759},
+  {lengte:3000, offset:10975},
+  {lengte:3500, offset:11000}
 ];
 
-var CATS = ['ROLWISSEL','FOLIEGELEIDING','PERFORATIE','SEAL','STATIC','WINDER'];
+function berekenOffset(lengte) {
+  if(!lengte) return 0;
+  var sorted = OFFSET_DATA.slice().sort(function(a,b){return a.lengte-b.lengte;});
+  var lower = sorted[0];
+  var upper = sorted[sorted.length-1];
+  for(var i=0;i<sorted.length;i++){
+    if(sorted[i].lengte <= lengte) lower = sorted[i];
+    if(sorted[i].lengte >= lengte) { upper = sorted[i]; break; }
+  }
+  if(lower.lengte === upper.lengte) return lower.offset;
+  var ratio = (lengte - lower.lengte) / (upper.lengte - lower.lengte);
+  return Math.round(lower.offset + ratio * (upper.offset - lower.offset));
+}
+
+function berekenOffset2(offset1) {
+  if(!offset1) return 0;
+  return Math.round(offset1 / 2);
+}
+
+function berekenRolData(lengte, zakkenPerRol, folieDikte, kernDiameter) {
+  if(!lengte || !zakkenPerRol) return null;
+  var rolLengte = lengte * zakkenPerRol;
+  var dikte = folieDikte / 1000;
+  var radiusCore = kernDiameter / 2;
+  var rolRadius = Math.sqrt(radiusCore * radiusCore + (rolLengte * dikte) / Math.PI);
+  var rolDiameter = Math.round(rolRadius * 2);
+  return {
+    rolLengte: Math.round(rolLengte),
+    rolDiameter: rolDiameter
+  };
+}
+
+function calcUpdate() {
+  var lengte  = parseFloat(document.getElementById('c-lengte').value) || 0;
+  var zakrol  = parseFloat(document.getElementById('c-zakrol').value) || 0;
+  var dikte   = parseFloat(document.getElementById('c-dikte').value) || 30;
+  var kern    = parseFloat(document.getElementById('c-kern').value) || 76;
+
+  // Offset
+  var o1 = lengte ? berekenOffset(lengte) : 0;
+  var o2 = berekenOffset2(o1);
+  document.getElementById('c-offset1').textContent = o1 ? o1 : '-';
+  document.getElementById('c-offset2').textContent = o2 ? o2 : '-';
+
+  // Rol data
+  var rolData = berekenRolData(lengte, zakrol, dikte, kern);
+  if(rolData) {
+    document.getElementById('c-rollengte').textContent = Math.round(rolData.rolLengte/1000) + ' m';
+    document.getElementById('c-roldiameter').textContent = rolData.rolDiameter + ' mm';
+  } else {
+    document.getElementById('c-rollengte').textContent = '- m';
+    document.getElementById('c-roldiameter').textContent = '- mm';
+  }
+
+  // Info interpolatie
+  if(lengte) {
+    var sorted = OFFSET_DATA.slice().sort(function(a,b){return a.lengte-b.lengte;});
+    var lower = sorted[0], upper = sorted[sorted.length-1];
+    for(var i=0;i<sorted.length;i++){
+      if(sorted[i].lengte<=lengte) lower=sorted[i];
+      if(sorted[i].lengte>=lengte){upper=sorted[i];break;}
+    }
+    var info = document.getElementById('calc-dataset-info');
+    info.style.display = 'block';
+    if(lower.lengte === lengte) {
+      info.textContent = 'Exacte match in dataset: lengte ' + lengte + ' mm -> offset ' + lower.offset;
+    } else {
+      info.textContent = 'Interpolatie: ' + lower.lengte + 'mm (' + lower.offset + ') tot ' + upper.lengte + 'mm (' + upper.offset + ')';
+    }
+  }
+}
+
+// ── PROBLEMEN ─────────────────────────────────────────────────────────────
+var PROBLEMEN = [
+  {cat:'ROLWISSEL',kleur:'#ef4444',titel:'Halve zak op nieuwe rol',
+    oorzaken:['Offset verkeerd ingesteld','Rolwissel timing fout','Perforatie positie verkeerd'],
+    oplossingen:['Offset opnieuw berekenen via Calculator','Rolwissel cyclus controleren','Perforatie positie controleren']},
+  {cat:'ROLWISSEL',kleur:'#ef4444',titel:'Wissel breekt / laat los',
+    oorzaken:['Folie heeft slappe kant','Drukker laat los aan einde wissel','Roldiameter wissel te klein','Snelheid te hoog tijdens wissel'],
+    oplossingen:['Static naar End of roll','Roldiameter wissel verhogen','Snelheid verlagen bij wissel','Hekje controleren en bijstellen']},
+  {cat:'ROLWISSEL',kleur:'#ef4444',titel:'Rol bouwt niet strak op',
+    oorzaken:['Winder torque te laag','Drukrol te laag','Folie spanning te laag'],
+    oplossingen:['Winder torque verhogen','Drukrol afstellen','Dancer spanning verhogen']},
+  {cat:'ROLWISSEL',kleur:'#ef4444',titel:'Rol loopt scheef',
+    oorzaken:['Folie niet gecentreerd','Winder spanning ongelijk','Invoerrollen scheef'],
+    oplossingen:['Folie centreren','Winder spanning controleren','Invoerrollen uitlijnen']},
+  {cat:'FOLIEGELEIDING',kleur:'#fb923c',titel:'Folie loopt scheef',
+    oorzaken:['Slappe kant folie','Hekje staat scheef','Niprollen niet parallel','Rol scheef op afroller'],
+    oplossingen:['Hekje centreren op folierand','Afroller loodrecht instellen','Niprollen parallelstand controleren','Static charger aanzetten']},
+  {cat:'FOLIEGELEIDING',kleur:'#fb923c',titel:'Slappe kant in folie',
+    oorzaken:['Ongelijke dikte over breedte','Ongelijke winding op rol','Recycle: minder uniformiteit'],
+    oplossingen:['Static naar Always on','Hekje strakker aan slappe zijde','Snelheid verlagen']},
+  {cat:'FOLIEGELEIDING',kleur:'#fb923c',titel:'Folie plakt aan rollen',
+    oorzaken:['Te veel statische lading','Luchtvochtigheid te laag'],
+    oplossingen:['Antistatic inschakelen','Ionisatie controleren']},
+  {cat:'PERFORATIE',kleur:'#a78bfa',titel:'Zak scheurt te vroeg',
+    oorzaken:['Perforatie te diep','Foliespanning te hoog','Perforatiemessen bot'],
+    oplossingen:['Perforatiedruk verlagen','Dancer spanning verlagen','Mes vervangen']},
+  {cat:'PERFORATIE',kleur:'#a78bfa',titel:'Zak scheurt niet goed af',
+    oorzaken:['Perforatie te licht','Mes bot','Folie te elastisch'],
+    oplossingen:['Perforatie dieper zetten','Mes vervangen','Perforatie pitch aanpassen']},
+  {cat:'SEAL',kleur:'#f59e0b',titel:'Seal breekt open',
+    oorzaken:['Temperatuur te laag','Sealtijd te kort','Sealdruk te laag'],
+    oplossingen:['Temperatuur verhogen','Sealtijd verhogen','Druk controleren']},
+  {cat:'SEAL',kleur:'#f59e0b',titel:'Seal verbrandt / PTFE tape',
+    oorzaken:['Temperatuur te hoog','Sealtijd te lang','PTFE tape beschadigd'],
+    oplossingen:['Temperatuur verlagen','Sealtijd verkorten','PTFE tape vervangen']},
+  {cat:'SEAL',kleur:'#f59e0b',titel:'Uitgerekte seal',
+    oorzaken:['Folie te strak in neutrale zone','Koeltijd te kort','Niprollen trekken te vroeg'],
+    oplossingen:['Niproldruk verlagen','Koeltijd verhogen','Temperatuur iets verlagen']},
+  {cat:'STATIC',kleur:'#60a5fa',titel:'Static charger instelling',
+    oorzaken:['PE/PP slecht geleidend','Droge omgeving','Recycle: onregelmatig oppervlak'],
+    oplossingen:['Einde rol: End of roll','Slappe folie: Always on','Static charger reinigen']}
+];
+
+var CATS = ['ROLWISSEL','FOLIEGELEIDING','PERFORATIE','SEAL','STATIC'];
 var SNELKNOPPEN = [
-  {label:'Seal probleem',cat:'SEAL'},
-  {label:'Folie scheef',cat:'FOLIEGELEIDING'},
-  {label:'Rol niet strak',cat:'WINDER'},
-  {label:'Static',cat:'STATIC'}
+  {label:'Halve zak op rol', zoek:'Halve zak'},
+  {label:'Seal breekt',      zoek:'Seal breekt'},
+  {label:'Zak scheurt niet', zoek:'scheurt niet'},
+  {label:'Folie scheef',     zoek:'loopt scheef'}
 ];
 
 var selectedMat = 'peld';
@@ -451,222 +573,6 @@ var drukkerAan = false;
 var editKey = null;
 var actieveCat = null;
 var _recepten = [];
-var gekozenFotos = [];
-
-function fotoGekozen(event) {
-  var files = Array.from(event.target.files);
-  if(!files.length) return;
-  // Max 3 foto's
-  if(files.length > 3) {
-    files = files.slice(0, 3);
-    toast('Max 3 foto\'s tegelijk — eerste 3 gekozen', true);
-  }
-  gekozenFotos = files;
-  var prev = document.getElementById('foto-previews');
-  prev.innerHTML = '';
-  files.forEach(function(file, i) {
-    var url = URL.createObjectURL(file);
-    var div = document.createElement('div');
-    div.style.cssText = 'position:relative;display:inline-block;';
-    div.innerHTML = '<img src="'+url+'" style="width:72px;height:72px;object-fit:cover;border-radius:4px;border:2px solid #1a2540;">' +
-      '<div style="position:absolute;top:-5px;right:-5px;background:#ef4444;border-radius:50%;color:#fff;width:18px;height:18px;font-size:11px;cursor:pointer;line-height:18px;text-align:center;" onclick="verwijderFoto('+i+')">x</div>';
-    prev.appendChild(div);
-  });
-  document.getElementById('scan-btn').style.display = 'block';
-  document.getElementById('foto-zone').style.borderColor = '#60a5fa';
-  document.getElementById('scan-status').style.display = 'none';
-}
-
-function verwijderFoto(i) {
-  gekozenFotos.splice(i, 1);
-  var prev = document.getElementById('foto-previews');
-  prev.innerHTML = '';
-  if(gekozenFotos.length === 0) {
-    document.getElementById('scan-btn').style.display = 'none';
-    document.getElementById('foto-zone').style.borderColor = '#1a2540';
-    document.getElementById('foto-input').value = '';
-    return;
-  }
-  gekozenFotos.forEach(function(file, j) {
-    var url = URL.createObjectURL(file);
-    var div = document.createElement('div');
-    div.style.cssText = 'position:relative;display:inline-block;';
-    div.innerHTML = '<img src="'+url+'" style="width:72px;height:72px;object-fit:cover;border-radius:4px;border:2px solid #1a2540;">' +
-      '<div style="position:absolute;top:-5px;right:-5px;background:#ef4444;border-radius:50%;color:#fff;width:18px;height:18px;font-size:11px;cursor:pointer;line-height:18px;text-align:center;" onclick="verwijderFoto('+j+')">x</div>';
-    prev.appendChild(div);
-  });
-}
-
-function fileToBase64(file) {
-  return new Promise(function(resolve, reject) {
-    var img = new Image();
-    var url = URL.createObjectURL(file);
-    img.onload = function() {
-      // Verklein naar max 800px breed
-      var maxW = 800;
-      var w = img.width, h = img.height;
-      if(w > maxW) { h = Math.round(h * maxW / w); w = maxW; }
-      var canvas = document.createElement('canvas');
-      canvas.width = w; canvas.height = h;
-      var ctx = canvas.getContext('2d');
-      ctx.drawImage(img, 0, 0, w, h);
-      // Kwaliteit 0.7 = goed genoeg voor tekst lezen
-      var b64 = canvas.toDataURL('image/jpeg', 0.7).split(',')[1];
-      URL.revokeObjectURL(url);
-      resolve(b64);
-    };
-    img.onerror = reject;
-    img.src = url;
-  });
-}
-
-async function scanFotos() {
-  if(!gekozenFotos.length) return;
-  if(!API_KEY) {
-    alert('Vul eerst je Anthropic API key in.');
-    document.getElementById('api-key-input').focus();
-    return;
-  }
-  var btn = document.getElementById('scan-btn');
-  var status = document.getElementById('scan-status');
-  btn.textContent = 'Bezig...';
-  btn.disabled = true;
-  status.style.display = 'block';
-  status.style.color = '#60a5fa';
-  status.textContent = 'Foto\'s uploaden en analyseren... even geduld';
-
-  try {
-    // Bouw messages array met alle foto's
-    var content = [];
-    for(var i=0; i<gekozenFotos.length; i++) {
-      var b64 = await fileToBase64(gekozenFotos[i]);
-      var mime = gekozenFotos[i].type || 'image/jpeg';
-      content.push({ type: 'image', source: { type: 'base64', media_type: mime, data: b64 }});
-      content.push({ type: 'text', text: 'Foto ' + (i+1) + ' van het machine touchscreen.' });
-    }
-    content.push({ type: 'text', text: `Je bent een expert in zakkenmaak machines (AMUTEC TSA D-Roller 1600). 
-Analyseer de foto('s) van het touchscreen en extraheer alle zichtbare machine-instellingen en receptgegevens.
-
-Geef je antwoord ALLEEN als geldig JSON object, zonder uitleg, zonder markdown:
-{
-  "klantnr": "",
-  "klantnaam": "",
-  "prodtype": "",
-  "prodoms": "",
-  "versie": "",
-  "materiaal": "",
-  "breedte": "",
-  "lengte": "",
-  "dikte": "",
-  "koker": "",
-  "roldia": "",
-  "seal": "",
-  "snelheid": "",
-  "zakmin": "",
-  "zakrol": "",
-  "static_ch": "",
-  "temp_boven": "",
-  "temp_onder": "",
-  "notities": ""
-}
-
-Regels:
-- Vul alleen in wat zichtbaar is op het scherm
-- Laat leeg ("") wat niet zichtbaar is
-- materiaal: gebruik een van: peld, lldpe, ldpe, pehd, pp, andere, recycle-mix, recycle-peld, recycle-pehd
-- static_ch: gebruik Off, Always-on, of End-of-roll
-- Alleen getallen bij numerieke velden (geen eenheden)
-- notities: beschrijf wat je ziet maar niet in andere velden past`
-    });
-
-    var response = await fetch('https://corsproxy.io/?url=https%3A%2F%2Fapi.anthropic.com%2Fv1%2Fmessages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': API_KEY, 'anthropic-version': '2023-06-01' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
-        messages: [{ role: 'user', content: content }]
-      })
-    });
-
-    var rawText = await response.text();
-
-    // Toon raw response voor debug
-    status.textContent = 'Response ontvangen, verwerken...';
-
-    var data;
-    try { data = JSON.parse(rawText); }
-    catch(pe) {
-      throw new Error('Server gaf geen geldig antwoord: ' + rawText.substring(0,200));
-    }
-
-    if(data.error) {
-      throw new Error('API fout: ' + (data.error.message || JSON.stringify(data.error)));
-    }
-
-    var text = data.content && data.content[0] ? data.content[0].text : '';
-    if(!text) throw new Error('Leeg antwoord van API. Response: ' + JSON.stringify(data).substring(0,200));
-
-    // Strip eventuele markdown
-    text = text.replace(/```json/g,'').replace(/```/g,'').trim();
-
-    // Haal JSON uit tekst als het niet puur JSON is
-    var jsonMatch = text.match(/\{[\s\S]*\}/);
-    if(jsonMatch) text = jsonMatch[0];
-
-    var gevonden;
-    try { gevonden = JSON.parse(text); }
-    catch(je) { throw new Error('Kan JSON niet lezen: ' + text.substring(0,200)); }
-
-    // Vul velden in
-    var mapping = {
-      'klantnr':'f-klantnr','klantnaam':'f-klantnaam','prodoms':'f-prodoms',
-      'versie':'f-versie','breedte':'f-breedte','lengte':'f-lengte','dikte':'f-dikte',
-      'koker':'f-koker','roldia':'f-roldia','seal':'f-seal','snelheid':'f-snelheid',
-      'zakmin':'f-zakmin','zakrol':'f-zakrol','temp_boven':'f-temp-boven',
-      'temp_onder':'f-temp-onder','notities':'f-notities'
-    };
-    var ingevuld = [];
-    for(var key in mapping) {
-      if(gevonden[key] && gevonden[key] !== '') {
-        var el = document.getElementById(mapping[key]);
-        if(el) { el.value = gevonden[key]; ingevuld.push(key); }
-      }
-    }
-
-    // Producttype
-    if(gevonden.prodtype) {
-      var sel = document.getElementById('f-prodtype');
-      for(var o=0; o<sel.options.length; o++) {
-        if(sel.options[o].value.toLowerCase() === gevonden.prodtype.toLowerCase()) {
-          sel.selectedIndex = o; break;
-        }
-      }
-    }
-
-    // Materiaal
-    if(gevonden.materiaal && MATERIALEN[gevonden.materiaal]) {
-      selectMat(gevonden.materiaal);
-    }
-
-    // Static charger
-    if(gevonden.static_ch) selectStatic(gevonden.static_ch);
-
-    // Herbereken
-    herbereken();
-
-    status.style.color = '#34d399';
-    status.textContent = '✓ ' + ingevuld.length + ' velden ingevuld. Controleer en pas aan waar nodig.';
-    btn.textContent = '✓ Klaar — opnieuw scannen';
-    btn.disabled = false;
-
-  } catch(e) {
-    status.style.color = '#ef4444';
-    status.textContent = 'Fout bij analyseren. Probeer opnieuw. (' + e.message + ')';
-    btn.textContent = 'Opnieuw proberen';
-    btn.disabled = false;
-  }
-}
 
 function go(id) {
   var screens = document.querySelectorAll('.screen');
@@ -676,8 +582,9 @@ function go(id) {
   if(c) c.scrollTop = 0;
   var btns = document.querySelectorAll('.bnav-btn');
   for(var j=0;j<btns.length;j++) btns[j].classList.remove('active');
-  if(id==='s-recepten'||id==='s-detail'||id==='s-nieuw') { if(btns[0]) btns[0].classList.add('active'); }
-  if(id==='s-problemen') { if(btns[1]) btns[1].classList.add('active'); }
+  if(id==='s-recepten'||id==='s-detail'||id==='s-nieuw') btns[0] && btns[0].classList.add('active');
+  if(id==='s-problemen') btns[1] && btns[1].classList.add('active');
+  if(id==='s-calculator') btns[2] && btns[2].classList.add('active');
   if(id==='s-recepten') laadRecepten();
   if(id==='s-problemen') renderProblemen();
 }
@@ -713,7 +620,7 @@ function fbLoad(pad, cb) {
       if(!data){cb([]);return;}
       var arr = [];
       var keys = Object.keys(data);
-      for(var i=0;i<keys.length;i++) {
+      for(var i=0;i<keys.length;i++){
         var obj = Object.assign({}, data[keys[i]]);
         obj._key = keys[i];
         arr.push(obj);
@@ -724,24 +631,23 @@ function fbLoad(pad, cb) {
 }
 
 function fbPost(pad, obj, cb) {
-  fetch(FB_URL + pad + '.json', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(obj)})
+  fetch(FB_URL+pad+'.json',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(obj)})
     .then(function(r){return r.json();}).then(function(d){if(cb)cb(d);}).catch(function(){});
 }
 
 function fbDelete(pad, key, cb) {
-  fetch(FB_URL + pad + '/' + key + '.json', {method:'DELETE'})
+  fetch(FB_URL+pad+'/'+key+'.json',{method:'DELETE'})
     .then(function(){if(cb)cb();}).catch(function(){});
 }
 
 function fbPatch(pad, key, obj, cb) {
-  fetch(FB_URL + pad + '/' + key + '.json', {method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(obj)})
+  fetch(FB_URL+pad+'/'+key+'.json',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(obj)})
     .then(function(){if(cb)cb();}).catch(function(){});
 }
 
 function selectMat(m) {
   selectedMat = m;
-  var btns = document.querySelectorAll('.mat-btn');
-  for(var i=0;i<btns.length;i++) btns[i].classList.remove('active');
+  document.querySelectorAll('.mat-btn').forEach(function(b){b.classList.remove('active');});
   var el = document.getElementById('mat-'+m);
   if(el) el.classList.add('active');
   herbereken();
@@ -749,8 +655,7 @@ function selectMat(m) {
 
 function selectStatic(s) {
   selectedStatic = s;
-  var btns = document.querySelectorAll('.static-btn');
-  for(var i=0;i<btns.length;i++) btns[i].classList.remove('active');
+  document.querySelectorAll('.static-btn').forEach(function(b){b.classList.remove('active');});
   var el = document.getElementById('static-'+s);
   if(el) el.classList.add('active');
 }
@@ -796,10 +701,10 @@ function slaOp() {
   var klantnaam = document.getElementById('f-klantnaam').value.trim();
   if(!klantnr && !klantnaam){toast('Vul klantnummer of naam in',true);return;}
   var recept = {
-    klantnr:klantnr, klantnaam:klantnaam,
+    klantnr:klantnr,klantnaam:klantnaam,
     prodtype:document.getElementById('f-prodtype').value,
     prodoms:document.getElementById('f-prodoms').value.trim(),
-    versie:document.getElementById('f-versie').value||'v1.0',
+    versie:document.getElementById('f-versie').value||'',
     materiaal:selectedMat,
     breedte:document.getElementById('f-breedte').value,
     lengte:document.getElementById('f-lengte').value,
@@ -820,15 +725,15 @@ function slaOp() {
     datum:new Date().toISOString().split('T')[0]
   };
   toast('Opslaan...');
-  if(editKey) {
-    fbPatch('/recepten', editKey, recept, function(){toast('Recept bijgewerkt!');resetForm();go('s-recepten');});
+  if(editKey){
+    fbPatch('/recepten',editKey,recept,function(){toast('Recept bijgewerkt!');resetForm();go('s-recepten');});
   } else {
-    fbPost('/recepten', recept, function(){toast('Recept opgeslagen!');resetForm();go('s-recepten');});
+    fbPost('/recepten',recept,function(){toast('Recept opgeslagen!');resetForm();go('s-recepten');});
   }
 }
 
 function resetForm() {
-  var ids = ['f-klantnr','f-klantnaam','f-prodoms','f-versie','f-breedte','f-lengte','f-dikte','f-koker','f-roldia','f-seal','f-snelheid','f-zakmin','f-zakrol','f-static-mat','f-drukker','f-temp-boven','f-temp-onder','f-notities'];
+  var ids=['f-klantnr','f-klantnaam','f-prodoms','f-versie','f-breedte','f-lengte','f-dikte','f-koker','f-roldia','f-seal','f-snelheid','f-zakmin','f-zakrol','f-static-mat','f-drukker','f-temp-boven','f-temp-onder','f-notities'];
   for(var i=0;i<ids.length;i++){var el=document.getElementById(ids[i]);if(el)el.value='';}
   document.getElementById('f-prodtype').value='Zak';
   selectMat('peld'); selectStatic('Off');
@@ -845,15 +750,11 @@ function resetForm() {
 function laadRecepten() {
   var el = document.getElementById('recepten-lijst');
   el.innerHTML = '<div class="empty-state">Laden...</div>';
-  fbLoad('/recepten', function(data){
-    _recepten = data;
-    renderReceptenTree(data, '');
-  });
+  fbLoad('/recepten',function(data){_recepten=data;renderReceptenTree(data,'');});
 }
 
 function filterRecepten() {
-  var q = document.getElementById('zoek-input').value;
-  renderReceptenTree(_recepten, q);
+  renderReceptenTree(_recepten, document.getElementById('zoek-input').value);
 }
 
 function renderReceptenTree(lijst, query) {
@@ -867,21 +768,21 @@ function renderReceptenTree(lijst, query) {
            (r.prodtype||'').toLowerCase().indexOf(q)>=0;
   }) : lijst;
   if(!gefilterd.length){el.innerHTML='<div class="empty-state">Geen resultaten voor "'+query+'"</div>';return;}
-  var groepen = {};
+  var groepen={};
   for(var i=0;i<gefilterd.length;i++){
     var r=gefilterd[i];
     var k=(r.klantnr||'-')+(r.klantnaam?' - '+r.klantnaam:'');
     if(!groepen[k]) groepen[k]=[];
     groepen[k].push(r);
   }
-  var keys = Object.keys(groepen).sort();
-  var html = '';
+  var keys=Object.keys(groepen).sort();
+  var html='';
   for(var ki=0;ki<keys.length;ki++){
-    var klant=keys[ki], items='';
+    var klant=keys[ki],items='';
     for(var ri=0;ri<groepen[klant].length;ri++){
       var rec=groepen[klant][ri];
       var mat=MATERIALEN[rec.materiaal];
-      items += '<div class="tree-item" onclick="openDetail(\''+rec._key+'\')">' +
+      items+='<div class="tree-item" onclick="openDetail(\''+rec._key+'\')">' +
         '<div class="tree-item-inner">' +
           '<div class="tree-connector"></div>' +
           '<div class="tree-content">' +
@@ -897,58 +798,54 @@ function renderReceptenTree(lijst, query) {
         '</div>' +
       '</div>';
     }
-    html += '<div class="tree-group">' +
-      '<div class="tree-header">' +
-        '<span>&#128193;</span>' +
-        '<span class="tree-klant">'+klant+'</span>' +
-        '<span class="tree-count">'+groepen[klant].length+' rec.</span>' +
-      '</div>'+items+'</div>';
+    html+='<div class="tree-group">' +
+      '<div class="tree-header"><span>&#128193;</span><span class="tree-klant">'+klant+'</span><span class="tree-count">'+groepen[klant].length+' rec.</span></div>'+items+'</div>';
   }
-  el.innerHTML = html;
+  el.innerHTML=html;
 }
 
 function verwijderRecept(key) {
   if(!confirm('Recept verwijderen?')) return;
-  fbDelete('/recepten', key, function(){toast('Verwijderd');laadRecepten();});
+  fbDelete('/recepten',key,function(){toast('Verwijderd');laadRecepten();});
 }
 
 function openDetail(key) {
-  fbLoad('/recepten', function(lijst){
-    var r = null;
-    for(var i=0;i<lijst.length;i++){if(lijst[i]._key===key){r=lijst[i];break;}}
+  fbLoad('/recepten',function(lijst){
+    var r=null;for(var i=0;i<lijst.length;i++){if(lijst[i]._key===key){r=lijst[i];break;}}
     if(!r) return;
-    var mat = MATERIALEN[r.materiaal]||{};
-    document.getElementById('detail-title').textContent = (r.klantnr||'') + ' - ' + (r.prodtype||'');
+    var mat=MATERIALEN[r.materiaal]||{};
+    document.getElementById('detail-title').textContent=(r.klantnr||'')+' - '+(r.prodtype||'');
     function row(lbl,val){if(!val&&val!==0)return '';return '<div class="info-row"><div class="ir-lbl">'+lbl+'</div><div class="ir-val">'+val+'</div></div>';}
-    document.getElementById('detail-content').innerHTML =
+    document.getElementById('detail-content').innerHTML=
       '<div class="slabel">Klant & Product</div>' +
-      '<div class="info-block">'+row('Klantnummer',r.klantnr)+row('Klantnaam',r.klantnaam)+row('Producttype',r.prodtype)+row('Omschrijving',r.prodoms)+row('Versie',r.versie)+row('Datum',r.datum)+'</div>' +
+      '<div class="info-block">'+row('Klantnummer',r.klantnr)+row('Klantnaam',r.klantnaam)+row('Producttype',r.prodtype)+row('Omschrijving',r.prodoms)+row('Operator',r.versie)+row('Datum',r.datum)+'</div>'+
       '<div class="slabel">Materiaal & Afmetingen</div>' +
-      '<div class="info-block">'+row('Materiaal',mat.label||r.materiaal)+row('Breedte',r.breedte+' mm')+row('Lengte',r.lengte+' mm')+row('Dikte',r.dikte+' um')+'</div>' +
+      '<div class="info-block">'+row('Materiaal',mat.label||r.materiaal)+row('Breedte',r.breedte+' mm')+row('Lengte',r.lengte+' mm')+row('Dikte',r.dikte+' um')+'</div>'+
       '<div class="slabel">Productie Parameters</div>' +
-      '<div class="info-block">'+row('Sealtijd',r.seal+' s')+row('Snelheid',r.snelheid+' m/min')+row('Zakken/min',r.zakmin)+row('Zakken/rol',r.zakrol)+row('Koker dia',r.koker+' mm')+row('Roldia wissel',r.roldia+' mm')+'</div>' +
+      '<div class="info-block">'+row('Sealtijd',r.seal+' s')+row('Snelheid',r.snelheid+' m/min')+row('Zakken/min',r.zakmin)+row('Zakken/rol',r.zakrol)+row('Koker dia',r.koker+' mm')+row('Roldia wissel',r.roldia+' mm')+'</div>'+
       '<div class="slabel">Machine Instellingen</div>' +
-      '<div class="info-block">'+row('Static charger',r.static_ch)+row('Static materiaal',r.static_mat)+row('Cycle drukker',r.drukker?'AAN - '+(r.drukker_inst||''):'UIT')+'</div>' +
+      '<div class="info-block">'+row('Static charger',r.static_ch)+row('Static mat (mm)',r.static_mat)+row('Cycle drukker',r.drukker?'AAN - '+(r.drukker_inst||''):'UIT')+'</div>'+
       '<div class="slabel">Seal Temperaturen</div>' +
       '<div style="display:flex;gap:16px;margin-bottom:8px;">' +
         '<div class="temp-card"><div class="temp-lbl">BOVEN</div><div style="font-size:34px;font-weight:700;color:#fcd34d;text-align:center;">'+(r.temp_boven||'-')+'</div><div class="temp-unit">C</div></div>' +
         '<div style="font-size:20px;color:#374151;align-self:center;">|</div>' +
         '<div class="temp-card"><div class="temp-lbl">ONDER</div><div style="font-size:34px;font-weight:700;color:#fcd34d;text-align:center;">'+(r.temp_onder||'-')+'</div><div class="temp-unit">C</div></div>' +
-      '</div>' +
-      (r.notities?'<div class="slabel">Notities</div><div class="info-block"><div style="padding:12px 14px;font-size:13px;color:#9ca3af;line-height:1.6;">'+r.notities+'</div></div>':'') +
+      '</div>'+
+      (r.notities?'<div class="slabel">Notities</div><div class="info-block"><div style="padding:12px 14px;font-size:13px;color:#9ca3af;line-height:1.6;">'+r.notities+'</div></div>':'')+
       '<button class="btn btn-amber" style="margin-top:8px;" onclick="bewerkRecept(\''+key+'\')">Bewerken</button>';
     go('s-detail');
   });
 }
 
 function bewerkRecept(key) {
-  fbLoad('/recepten', function(lijst){
+  fbLoad('/recepten',function(lijst){
     var r=null;for(var i=0;i<lijst.length;i++){if(lijst[i]._key===key){r=lijst[i];break;}}
     if(!r) return;
-    var fields = ['klantnr','klantnaam','prodoms','versie','breedte','lengte','dikte','koker','roldia','seal','snelheid','zakmin','zakrol','static_mat','drukker_inst','temp_boven','temp_onder','notities'];
-    var fnames = ['f-klantnr','f-klantnaam','f-prodoms','f-versie','f-breedte','f-lengte','f-dikte','f-koker','f-roldia','f-seal','f-snelheid','f-zakmin','f-zakrol','f-static-mat','f-drukker','f-temp-boven','f-temp-onder','f-notities'];
+    var fields=['klantnr','klantnaam','prodoms','versie','breedte','lengte','dikte','koker','roldia','seal','snelheid','zakmin','zakrol','drukker_inst','temp_boven','temp_onder','notities'];
+    var fnames=['f-klantnr','f-klantnaam','f-prodoms','f-versie','f-breedte','f-lengte','f-dikte','f-koker','f-roldia','f-seal','f-snelheid','f-zakmin','f-zakrol','f-drukker','f-temp-boven','f-temp-onder','f-notities'];
     for(var i=0;i<fields.length;i++){var el=document.getElementById(fnames[i]);if(el)el.value=r[fields[i]]||'';}
     document.getElementById('f-prodtype').value=r.prodtype||'Zak';
+    document.getElementById('f-static-mat').value=r.static_mat||'';
     selectMat(r.materiaal||'peld');
     selectStatic(r.static_ch||'Off');
     if(r.drukker){drukkerAan=true;document.getElementById('drukker-btn').textContent='AAN';document.getElementById('drukker-btn').className='toggle-btn toggle-aan';document.getElementById('drukker-extra').style.display='block';}
@@ -963,51 +860,62 @@ function renderProblemen() {
   var snelHTML = '<div class="snel-grid">';
   for(var i=0;i<SNELKNOPPEN.length;i++){
     var s=SNELKNOPPEN[i];
-    snelHTML += '<button class="snel-btn'+(actieveCat===s.cat?' active':'')+'" onclick="setCat(\''+s.cat+'\')">'+s.label+'</button>';
+    snelHTML+='<button class="snel-btn" onclick="openSnelProbleem(\''+s.zoek+'\')">'+s.label+'</button>';
   }
-  snelHTML += '</div>';
-  var catHTML = '<div class="cat-row"><button class="cat-btn'+(!actieveCat?' active':'')+'" onclick="setCat(null)">Alle</button>';
+  snelHTML+='</div>';
+  var catHTML='<div class="cat-row"><button class="cat-btn'+((!actieveCat)?' active':'')+'" onclick="setCat(null)">Alle</button>';
   for(var c=0;c<CATS.length;c++){
-    catHTML += '<button class="cat-btn'+(actieveCat===CATS[c]?' active':'')+'" onclick="setCat(\''+CATS[c]+'\')">'+CATS[c]+'</button>';
+    catHTML+='<button class="cat-btn'+(actieveCat===CATS[c]?' active':'')+'" onclick="setCat(\''+CATS[c]+'\')">'+CATS[c]+'</button>';
   }
-  catHTML += '</div>';
-  var gefilterd = actieveCat ? PROBLEMEN.filter(function(p){return p.cat===actieveCat;}) : PROBLEMEN;
-  var kaartenHTML = '';
+  catHTML+='</div>';
+  var gefilterd=actieveCat?PROBLEMEN.filter(function(p){return p.cat===actieveCat;}):PROBLEMEN;
+  var kaartenHTML='';
   for(var pi=0;pi<gefilterd.length;pi++){
     var p=gefilterd[pi];
-    var oorzaken='',oplossingen='';
-    for(var oi=0;oi<p.oorzaken.length;oi++) oorzaken+='<li>'+p.oorzaken[oi]+'</li>';
-    for(var si=0;si<p.oplossingen.length;si++) oplossingen+='<li>'+p.oplossingen[si]+'</li>';
-    kaartenHTML += '<div class="trouble-card">' +
-      '<div class="tc-hdr" id="th-'+pi+'" onclick="toggleProbleem('+pi+')" style="border-left-color:'+p.kleur+'">' +
-        '<span class="tc-icon">'+p.icon+'</span>' +
+    var oo='',op='';
+    for(var oi=0;oi<p.oorzaken.length;oi++) oo+='<li>'+p.oorzaken[oi]+'</li>';
+    for(var si=0;si<p.oplossingen.length;si++) op+='<li>'+p.oplossingen[si]+'</li>';
+    kaartenHTML+='<div class="trouble-card" id="pc-'+pi+'">' +
+      '<div class="tc-hdr" onclick="toggleProbleem('+pi+')" style="border-left-color:'+p.kleur+'">' +
         '<div style="flex:1;"><div class="tc-cat" style="color:'+p.kleur+'">'+p.cat+'</div><div class="tc-prob">'+p.titel+'</div></div>' +
-        '<span class="tc-chev" id="tc-'+pi+'">&#8250;</span>' +
+        '<span class="tc-chev">&#8250;</span>' +
       '</div>' +
       '<div class="tc-body" id="tb-'+pi+'">' +
-        '<div class="ts-glbl ts-cause">Oorzaken</div><ul class="ts-list ts-cause">'+oorzaken+'</ul>' +
-        '<div class="ts-glbl ts-solution">Oplossingen</div><ul class="ts-list ts-solution">'+oplossingen+'</ul>' +
+        '<div class="ts-glbl ts-cause">Oorzaken</div><ul class="ts-list ts-cause">'+oo+'</ul>' +
+        '<div class="ts-glbl ts-solution">Oplossingen</div><ul class="ts-list ts-solution">'+op+'</ul>' +
       '</div>' +
     '</div>';
   }
-  el.innerHTML = snelHTML + catHTML + kaartenHTML;
+  el.innerHTML=snelHTML+catHTML+kaartenHTML;
 }
 
 function setCat(cat) {
-  actieveCat = (actieveCat===cat) ? null : cat;
+  actieveCat=(actieveCat===cat)?null:cat;
   renderProblemen();
 }
 
 function toggleProbleem(i) {
-  var body = document.getElementById('tb-'+i);
-  body.classList.toggle('open');
+  document.getElementById('tb-'+i).classList.toggle('open');
+}
+
+function openSnelProbleem(zoek) {
+  actieveCat = null;
+  renderProblemen();
+  var zoekl = zoek.toLowerCase();
+  for(var i=0;i<PROBLEMEN.length;i++){
+    if(PROBLEMEN[i].titel.toLowerCase().indexOf(zoekl)>=0){
+      document.getElementById('tb-'+i).classList.add('open');
+      setTimeout(function(idx){
+        var el=document.getElementById('pc-'+idx);
+        if(el) el.scrollIntoView({behavior:'smooth',block:'start'});
+      }, 100, i);
+      break;
+    }
+  }
 }
 
 checkLogin();
 renderProblemen();
-// Herstel API key in veld
-var savedKey = sessionStorage.getItem('anthropic_key');
-if(savedKey) { var kf = document.getElementById('api-key-input'); if(kf) kf.value = savedKey; }
 </script>
 
 </body>
