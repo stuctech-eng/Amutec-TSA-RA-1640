@@ -3,7 +3,7 @@
 <html lang="nl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="TSA 1600">
@@ -12,7 +12,7 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html{height:100%}
-body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospace;min-height:100%;overscroll-behavior:none}
+body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospace;min-height:100%;overscroll-behavior:none;font-size:17px}
 .screen{display:none;flex-direction:column;min-height:100dvh;position:relative;z-index:1}
 .screen.active{display:flex}
 .topbar{background:#0f1520;border-bottom:2px solid #f59e0b;height:56px;display:flex;align-items:center;padding:0 16px;gap:12px;position:sticky;top:0;z-index:100;flex-shrink:0}
@@ -42,7 +42,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 .tree-item-inner{display:flex;align-items:center;gap:10px;padding:10px 12px}
 .tree-connector{width:16px;height:24px;border-left:1px solid #1a2540;border-bottom:1px solid #1a2540;flex-shrink:0;margin-left:8px;border-radius:0 0 0 4px}
 .tree-content{flex:1;min-width:0}
-.tree-name{font-weight:700;font-size:16px;letter-spacing:1px;color:#e5e7eb}
+.tree-name{font-weight:700;font-size:18px;letter-spacing:1px;color:#e5e7eb}
 .tree-meta{display:flex;flex-wrap:wrap;gap:5px;margin-top:5px}
 .tag{font-size:9px;padding:2px 7px;border-radius:3px;background:#0a0d14;border:1px solid #1a2540;color:#6b7280}
 .tag-mat{border-color:rgba(96,165,250,.4);color:#60a5fa}
@@ -55,7 +55,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 .field{margin-bottom:12px}
 .field:last-child{margin-bottom:0}
 .field label{display:block;font-size:9px;color:#6b7280;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px}
-.field input,.field select,.field textarea{width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:16px;padding:12px 14px;outline:none;-webkit-appearance:none;transition:border-color .15s}
+.field input,.field select,.field textarea{width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:17px;padding:12px 14px;outline:none;-webkit-appearance:none;transition:border-color .15s}
 .field input:focus,.field select:focus,.field textarea:focus{border-color:#f59e0b}
 .field textarea{resize:vertical;font-size:14px}
 .field select{color:#e5e7eb}
@@ -77,13 +77,13 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 .info-row{display:flex;align-items:center;padding:11px 14px;border-bottom:1px solid #1a2540;gap:10px}
 .info-row:last-child{border-bottom:none}
 .ir-lbl{font-size:10px;color:#6b7280;letter-spacing:1px;text-transform:uppercase;min-width:130px;flex-shrink:0}
-.ir-val{font-size:16px;font-weight:600;color:#e5e7eb}
+.ir-val{font-size:18px;font-weight:600;color:#e5e7eb}
 .trouble-card{background:#0f1520;border:1px solid #1a2540;border-radius:4px;margin-bottom:10px;overflow:hidden}
 .tc-hdr{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;border-left:4px solid #ef4444}
 .tc-hdr:active{background:#141d2e}
 .tc-icon{font-size:20px;flex-shrink:0}
 .tc-cat{font-size:9px;color:#6b7280;letter-spacing:2px;text-transform:uppercase}
-.tc-prob{font-weight:700;font-size:16px;letter-spacing:1px;color:#e5e7eb}
+.tc-prob{font-weight:700;font-size:18px;letter-spacing:1px;color:#e5e7eb}
 .tc-chev{font-size:18px;color:#6b7280;margin-left:auto;flex-shrink:0}
 .tc-body{display:none;padding:0 16px 14px;border-top:1px solid #1a2540}
 .tc-body.open{display:block}
@@ -222,11 +222,11 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
       </div>
       <div class="grid2">
         <div class="field"><label>Producttype</label>
-          <select id="f-prodtype"><option>Zak</option><option>Hoes</option><option>Vel</option><option>Krimpfolie</option><option>Andere</option></select>
+          <select id="f-prodtype"><option>Zak</option><option>Hoes</option><option>Vel</option><option>Krimpfolie</option><option>Uitsparing</option><option>Andere</option></select>
         </div>
         <div class="field"><label>Omschrijving</label><input id="f-prodoms" type="text" placeholder="bv. draagtas"></div>
       </div>
-      <div class="field"><label>Versie</label><input id="f-versie" type="text" placeholder="v1.0"></div>
+      <div class="field"><label>Naam operator</label><input id="f-versie" type="text" placeholder="v1.0"></div>
     </div>
 
 ```
@@ -235,18 +235,19 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
   <div class="field">
     <label>Materiaalsoort</label>
     <div class="grid3" style="margin-bottom:8px;">
-      <button class="mat-btn active" id="mat-recycle-mix" onclick="selectMat('recycle-mix')">&#9851; Mix</button>
-      <button class="mat-btn" id="mat-recycle-peld" onclick="selectMat('recycle-peld')">&#9851; PE-LD</button>
-      <button class="mat-btn" id="mat-recycle-pehd" onclick="selectMat('recycle-pehd')">&#9851; PE-HD</button>
+      <button class="mat-btn active" id="mat-peld" onclick="selectMat('peld')">PE-LD</button>
+      <button class="mat-btn" id="mat-lldpe" onclick="selectMat('lldpe')">LLDPE</button>
+      <button class="mat-btn" id="mat-ldpe" onclick="selectMat('ldpe')">LDPE</button>
     </div>
-    <div class="grid3">
-      <button class="mat-btn" id="mat-peld" onclick="selectMat('peld')">PE-LD</button>
+    <div class="grid3" style="margin-bottom:8px;">
       <button class="mat-btn" id="mat-pehd" onclick="selectMat('pehd')">PE-HD</button>
       <button class="mat-btn" id="mat-pp" onclick="selectMat('pp')">PP</button>
-    </div>
-    <div class="grid2" style="margin-top:8px;">
-      <button class="mat-btn" id="mat-lldpe" onclick="selectMat('lldpe')">LLDPE</button>
       <button class="mat-btn" id="mat-andere" onclick="selectMat('andere')">Andere</button>
+    </div>
+    <div class="grid3">
+      <button class="mat-btn" id="mat-recycle-mix" onclick="selectMat('recycle-mix')">&#9851; Mix</button>
+      <button class="mat-btn" id="mat-recycle-peld" onclick="selectMat('recycle-peld')">&#9851; PE-LD</button>
+      <button class="mat-btn" id="mat-recycle-pehd" onclick="selectMat('recycle-pehd')">&#9851; PE-HD</button>
     </div>
   </div>
 </div>
@@ -290,7 +291,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
       <button class="static-btn" id="static-End-of-roll" onclick="selectStatic('End-of-roll')">End of roll</button>
     </div>
   </div>
-  <div class="field"><label>Material to be charged</label><input id="f-static-mat" type="text" placeholder="bv. PE-LD folie"></div>
+  <div class="field"><label>Material to be charged (mm)</label><input id="f-static-mat" type="number" placeholder="bv. 400"></div>
   <div class="field"><label>Cycle met drukker</label>
     <button id="drukker-btn" class="toggle-btn toggle-uit" onclick="toggleDrukker()">&#9675; UIT</button>
   </div>
@@ -349,14 +350,15 @@ var FB_URL = 'https://amutec-tsa-ra-1640-default-rtdb.europe-west1.firebasedatab
 var APP_PW = 'tsa1600';
 
 var MATERIALEN = {
-  'recycle-mix':  {label:'Recycle Mix',   temp_b:170,temp_o:168,sv:0.70,st:1.30,recycle:true},
-  'recycle-peld': {label:'Recycle PE-LD', temp_b:163,temp_o:160,sv:0.80,st:1.20,recycle:true},
-  'recycle-pehd': {label:'Recycle PE-HD', temp_b:178,temp_o:175,sv:0.75,st:1.25,recycle:true},
   'peld':         {label:'PE-LD virgin',  temp_b:157,temp_o:154,sv:1.00,st:1.00,recycle:false},
+  'lldpe':        {label:'LDPE/LLDPE',    temp_b:152,temp_o:149,sv:1.05,st:0.95,recycle:false},
+  'ldpe':         {label:'LDPE',          temp_b:155,temp_o:152,sv:1.00,st:1.00,recycle:false},
   'pehd':         {label:'PE-HD virgin',  temp_b:172,temp_o:169,sv:0.90,st:1.10,recycle:false},
   'pp':           {label:'PP virgin',     temp_b:177,temp_o:174,sv:0.85,st:1.15,recycle:false},
-  'lldpe':        {label:'LDPE/LLDPE',    temp_b:152,temp_o:149,sv:1.05,st:0.95,recycle:false},
-  'andere':       {label:'Andere',        temp_b:160,temp_o:157,sv:1.00,st:1.00,recycle:false}
+  'andere':       {label:'Andere',        temp_b:160,temp_o:157,sv:1.00,st:1.00,recycle:false},
+  'recycle-mix':  {label:'Recycle Mix',   temp_b:170,temp_o:168,sv:0.70,st:1.30,recycle:true},
+  'recycle-peld': {label:'Recycle PE-LD', temp_b:163,temp_o:160,sv:0.80,st:1.20,recycle:true},
+  'recycle-pehd': {label:'Recycle PE-HD', temp_b:178,temp_o:175,sv:0.75,st:1.25,recycle:true}
 };
 
 var PROBLEMEN = [
@@ -406,7 +408,7 @@ var SNELKNOPPEN = [
   {label:'Static',cat:'STATIC'}
 ];
 
-var selectedMat = 'recycle-mix';
+var selectedMat = 'peld';
 var selectedStatic = 'Off';
 var drukkerAan = false;
 var editKey = null;
@@ -576,7 +578,7 @@ function resetForm() {
   var ids = ['f-klantnr','f-klantnaam','f-prodoms','f-versie','f-breedte','f-lengte','f-dikte','f-koker','f-roldia','f-seal','f-snelheid','f-zakmin','f-zakrol','f-static-mat','f-drukker','f-temp-boven','f-temp-onder','f-notities'];
   for(var i=0;i<ids.length;i++){var el=document.getElementById(ids[i]);if(el)el.value='';}
   document.getElementById('f-prodtype').value='Zak';
-  selectMat('recycle-mix'); selectStatic('Off');
+  selectMat('peld'); selectStatic('Off');
   drukkerAan=false;
   document.getElementById('drukker-btn').textContent='UIT';
   document.getElementById('drukker-btn').className='toggle-btn toggle-uit';
@@ -694,7 +696,7 @@ function bewerkRecept(key) {
     var fnames = ['f-klantnr','f-klantnaam','f-prodoms','f-versie','f-breedte','f-lengte','f-dikte','f-koker','f-roldia','f-seal','f-snelheid','f-zakmin','f-zakrol','f-static-mat','f-drukker','f-temp-boven','f-temp-onder','f-notities'];
     for(var i=0;i<fields.length;i++){var el=document.getElementById(fnames[i]);if(el)el.value=r[fields[i]]||'';}
     document.getElementById('f-prodtype').value=r.prodtype||'Zak';
-    selectMat(r.materiaal||'recycle-mix');
+    selectMat(r.materiaal||'peld');
     selectStatic(r.static_ch||'Off');
     if(r.drukker){drukkerAan=true;document.getElementById('drukker-btn').textContent='AAN';document.getElementById('drukker-btn').className='toggle-btn toggle-aan';document.getElementById('drukker-extra').style.display='block';}
     editKey=key;
