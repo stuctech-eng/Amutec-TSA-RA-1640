@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="TSA 1600" />
+  <meta name="theme-color" content="#070a10" />
+  <title>TSA D-Roller 1600</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body, #root { height: 100%; background: #070a10; }
+    body { overscroll-behavior: none; }
+    input, select, textarea, button { font-family: inherit; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="module">
+    import { createElement as h, useState, useEffect, useCallback } from "https://esm.sh/react@18";
+    import { createRoot } from "https://esm.sh/react-dom@18/client";
+
+    // ─── FIREBASE ────────────────────────────────────────────────────────────
+    const FIREBASE_CONFIG = {
+      apiKey: "AIzaSyCnSfhZOrgdsZdZCyadTWqQ6l6FDUrSYZk",
+      authDomain: "tsa-d-roller-1600.firebaseapp.com",
+      projectId: "tsa-d-roller-1600",
+      storageBucket: "tsa-d-roller-1600.firebasestorage.app",
+      messagingSenderId: "666565359033",
+      appId: "1:666565359033:web:9de121dd12a7dff4bcb268"
+    };
+
+    let db = null;
+    let FB = {};
+
+    async function initFirebase() {
+      try {
+        const { initializeApp, getApps } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js");
+        const fs = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+        const app = getApps().length ? getApps()[0] : initializeApp(FIREBASE_CONFIG);
+        db = fs.getFirestore(app);
+        FB = fs;
+        return true;
+      } catch(e) { console.error("Firebase fout:", e); return false; }
+    }
+
+    // ─── DATA ─────────────────────────────────────────────────────────────────
+    const MATERIALEN = [
+      { id:"recycle-mix",  label:"♻ Recycle Mix",   temp_b:170, temp_o:168, sv:0.70, st:1.30, recycle:true },
+      { id:"recycle-peld", label:"♻ Recycle PE-LD", temp_b:163, temp_o:160, sv:0.80, st:1.20, recycle:true },
+      { id:"recycle-pehd", label:"♻ Recycle PE-HD", temp_b:178, temp_o:175, sv:0.75, st:1.25, recycle:true },
+      { id:"peld",         label:"PE-LD virgin",     temp_b:157, temp_o:154, sv:1.00, st:1.00, recycle:false },
+      { id:"pehd",         label:"PE-HD virgin",     temp_b:172, temp_o:169, sv:0.90, st:1.10, recycle:false },
+      { id:"pp",           label:"PP virgin",        temp_b:177, temp_o:174, sv:0.85, st:1.15, recycle:false },
+      { id:"lldpe",        label:"LDPE/LLDPE mix",   temp_b:152, temp_o:149, sv:1.05, st:0.95, recycle:false },
+      { id:"andere",       label:"Andere",           temp_b:160, temp_o:157, sv:1.00, st:1.00, recycle:false },
+    ];
+
+    const PRODUCT_TYPES = ["Zak","Hoes","Vel","Krimpfolie","Andere"];
+    const STATIC_OPTIES = ["Off","Always on","At end of roll"];
+
+    const PROBLEMEN = [
+      { id:"wissel",      cat:"ROLWISSEL",    kleur:"#ef4444", icon:"⚡", titel:"Wissel breekt / laat los",
+        oorzaken:["Folie heeft slappe kant","Drukker laat los aan einde wissel","Roldiameter wissel te klein","Snelheid te hoog","Splicetape onvoldoende"],
+        oplossingen:[{p:"hoog",t:"Static → 'At end of roll'"},{p:"hoog",t:"Roldiameter wissel verhogen"},{p:"hoog",t:"Snelheid verlagen bij wissel"},{p:"middel",t:"Hekje controleren en bijstellen"},{p:"middel",t:"Splicetape positie aanpassen"}] },
+      { id:"scheef",      cat:"FOLIEGELEIDING", kleur:"#fb923c", icon:"↔", titel:"Folie loopt scheef",
+        oorzaken:["Slappe kant folie","Hekje staat scheef","Niprollen niet parallel","Rol scheef op afroller"],
+        oplossingen:[{p:"hoog",t:"Hekje centreren op folierand"},{p:"hoog",t:"Afroller loodrecht instellen"},{p:"middel",t:"Niprollen parallelstand controleren"},{p:"middel",t:"Static charger aanzetten"}] },
+      { id:"slappe-kant", cat:"FOLIEGELEIDING", kleur:"#fb923c", icon:"〰", titel:"Slappe kant in folie",
+        oorzaken:["Ongelijke dikte over breedte","Ongelijke winding op rol","Recycle: minder uniformiteit"],
+        oplossingen:[{p:"hoog",t:"Static → 'Always on'"},{p:"hoog",t:"Hekje strakker aan slappe zijde"},{p:"middel",t:"Snelheid verlagen"}] },
+      { id:"slap-strak",  cat:"FOLIEGELEIDING", kleur:"#fb923c", icon:"↕", titel:"Te slap / te strak neutrale zone",
+        oorzaken:["Niprollen verkeerd ingesteld","Hekje te los of te strak","Na materiaalwissel niet herinsteld"],
+        oplossingen:[{p:"hoog",t:"Te slap: niproldruk verhogen + hekje bijstellen"},{p:"hoog",t:"Te strak: niproldruk verlagen"},{p:"hoog",t:"Na materiaalwissel: niprollen opnieuw instellen"}] },
+      { id:"perf-snel",   cat:"PERFORATIE", kleur:"#a78bfa", icon:"✂", titel:"Perforatie scheurt te snel",
+        oorzaken:["Perforatie te diep","Foliespanning te hoog","Perforatiemessen bot"],
+        oplossingen:[{p:"hoog",t:"Perforatiedruk verlagen"},{p:"hoog",t:"Dancer spanning verlagen"},{p:"hoog",t:"Mes vervangen"}] },
+      { id:"perf-niet",   cat:"PERFORATIE", kleur:"#a78bfa", icon:"✂", titel:"Zak scheurt niet goed af",
+        oorzaken:["Perforatie te licht","Mes bot","Folie te elastisch"],
+        oplossingen:[{p:"hoog",t:"Perforatie dieper zetten"},{p:"hoog",t:"Mes vervangen"}] },
+      { id:"seal-breekt", cat:"SEAL", kleur:"#f59e0b", icon:"◈", titel:"Seal breekt open",
+        oorzaken:["Temperatuur te laag","Sealtijd te kort","Sealdruk te laag"],
+        oplossingen:[{p:"hoog",t:"Temperatuur verhogen"},{p:"hoog",t:"Sealtijd verhogen"},{p:"hoog",t:"Druk controleren"}] },
+      { id:"seal-brand",  cat:"SEAL", kleur:"#f59e0b", icon:"🔥", titel:"Seal verbrandt",
+        oorzaken:["Temperatuur te hoog","Sealtijd te lang","PTFE tape beschadigd"],
+        oplossingen:[{p:"hoog",t:"Temperatuur verlagen"},{p:"hoog",t:"Sealtijd verkorten"},{p:"hoog",t:"PTFE tape vervangen"}] },
+      { id:"seal-rek",    cat:"SEAL", kleur:"#f59e0b", icon:"↕", titel:"Uitgerekte seal",
+        oorzaken:["Folie te strak in neutrale zone","Koeltijd te kort","Niprollen trekken te vroeg"],
+        oplossingen:[{p:"hoog",t:"Niproldruk verlagen"},{p:"hoog",t:"Koeltijd verhogen"},{p:"middel",t:"Temperatuur iets verlagen"}] },
+      { id:"static",      cat:"STATIC", kleur:"#60a5fa", icon:"⚡", titel:"Static charger instelling",
+        oorzaken:["PE/PP slecht geleidend","Droge omgeving","Recycle: onregelmatig oppervlak"],
+        oplossingen:[{p:"hoog",t:"Einde rol: 'At end of roll'"},{p:"hoog",t:"Slappe folie: 'Always on'"},{p:"middel",t:"Static charger reinigen"}] },
+      { id:"winder-slap", cat:"WINDER", kleur:"#34d399", icon:"🔄", titel:"Rol bouwt niet strak op",
+        oorzaken:["Winder torque te laag","Roldruk te laag"],
+        oplossingen:[{p:"hoog",t:"Torque verhogen"},{p:"hoog",t:"Drukrol controleren"}] },
+      { id:"winder-scheef",cat:"WINDER", kleur:"#34d399", icon:"↗", titel:"Rol wordt scheef",
+        oorzaken:["Folie niet gecentreerd","Winder spanning ongelijk"],
+        oplossingen:[{p:"hoog",t:"Folie centreren"},{p:"hoog",t:"Winder torque aanpassen"}] },
+    ];
+
+    const CATS = ["ROLWISSEL","FOLIEGELEIDING","PERFORATIE","SEAL","STATIC","WINDER"];
+    const CAT_KLEUR = { ROLWISSEL:"#ef4444", FOLIEGELEIDING:"#fb923c", PERFORATIE:"#a78bfa", SEAL:"#f59e0b", STATIC:"#60a5fa", WINDER:"#34d399" };
+    const SNELKNOPPEN = [
+      {label:"⚡ Seal probleem", cat:"SEAL"},
+      {label:"↔ Folie scheef",  cat:"FOLIEGELEIDING"},
+      {label:"🔄 Rol niet strak",cat:"WINDER"},
+      {label:"⚡ Static",        cat:"STATIC"},
+    ];
+
+    // ─── BEREKENING ──────────────────────────────────────────────────────────
+    function berekenParams({lengte_mm, dikte_mu, materiaal_id, koker_dia=76, rol_dia=300}) {
+      const mat = MATERIALEN.find(m => m.id === materiaal_id) || MATERIALEN[3];
+      const l = parseFloat(lengte_mm)||0, d = parseFloat(dikte_mu)||0;
+      const koker = parseFloat(koker_dia)||76, rol = parseFloat(rol_dia)||300;
+      const sealtijd = +(d * 0.025 * mat.st).toFixed(2);
+      const snelheid = +(200 * mat.sv).toFixed(0);
+      const zakken_min = l > 0 ? +(snelheid * 1000 / l).toFixed(0) : 0;
+      const zakken_rol = (l>0&&d>0) ? Math.floor((Math.PI*(rol**2-koker**2))/(4*(d/1000)*l)) : 0;
+      return { seal_temp_boven:mat.temp_b, seal_temp_onder:mat.temp_o, seal_tijd:sealtijd, snelheid_mat:snelheid, zakken_min, zakken_rol };
+    }
+
+    function leegRecept() {
+      return { versie:"v1.0", datum:new Date().toISOString().split("T")[0],
+        materiaal_id:"recycle-mix", breedte_mm:"", lengte_mm:"", dikte_mu:"",
+        seal_tijd:"", snelheid_mat:"", zakken_min:"", zakken_rol:"",
+        static_charger:"Off", static_mat:"", koker_dia:76, rol_dia:300,
+        cycle_drukker:false, cycle_inst:"", seal_temp_boven:"", seal_temp_onder:"", notities:"" };
+    }
+
+    // ─── STIJLEN ─────────────────────────────────────────────────────────────
+    const C = {
+      bg:"#070a10", panel:"#0f1520", border:"#1a2540",
+      amber:"#f59e0b", amberDim:"#451a03", amberBright:"#fcd34d",
+      text:"#e5e7eb", textDim:"#6b7280", textMuted:"#374151",
+      red:"#ef4444", redDim:"#450a0a", green:"#34d399", greenDim:"#052e16",
+      blue:"#60a5fa", blueDim:"#0f2744",
+    };
+
+    const css = (obj) => Object.entries(obj).map(([k,v]) => `${k.replace(/([A-Z])/g,'-$1').toLowerCase()}:${v}`).join(';');
+
+    // ─── APP ─────────────────────────────────────────────────────────────────
+    function App() {
+      const [ingelogd, setIngelogd] = useState(false);
+      const [pw, setPw] = useState("");
+      const [pwFout, setPwFout] = useState(false);
+      const [scherm, setScherm] = useState("recepten");
+      const [fbOk, setFbOk] = useState(false);
+      const [fbLaden, setFbLaden] = useState(true);
+      const [klanten, setKlanten] = useState([]);
+      const [klantId, setKlantId] = useState(null);
+      const [productId, setProductId] = useState(null);
+      const [receptId, setReceptId] = useState(null);
+      const [receptTab, setReceptTab] = useState(0);
+      const [toonNieuwKlant, setToonNieuwKlant] = useState(false);
+      const [toonNieuwProduct, setToonNieuwProduct] = useState(false);
+      const [nieuwKlantNr, setNieuwKlantNr] = useState("");
+      const [nieuwKlantNaam, setNieuwKlantNaam] = useState("");
+      const [nieuwProdType, setNieuwProdType] = useState("Zak");
+      const [nieuwProdOms, setNieuwProdOms] = useState("");
+
+      useEffect(() => {
+        initFirebase().then(ok => { setFbOk(ok); setFbLaden(false); });
+      }, []);
+
+      useEffect(() => {
+        if (!fbOk || !db) return;
+        const unsub = FB.onSnapshot(FB.collection(db, "klanten"), snap => {
+          const data = snap.docs.map(d => ({id:d.id, ...d.data(), producten:d.data().producten||[]}));
+          data.sort((a,b) => (a.naam||"").localeCompare(b.naam||""));
+          setKlanten(data);
+        });
+        return unsub;
+      }, [fbOk]);
+
+      function login() {
+        if (pw === "tsa1600") setIngelogd(true);
+        else setPwFout(true);
+      }
+
+      async function voegKlantToe() {
+        if (!nieuwKlantNr||!nieuwKlantNaam||!fbOk) return;
+        await FB.addDoc(FB.collection(db,"klanten"), {nr:nieuwKlantNr, naam:nieuwKlantNaam, producten:[]});
+        setNieuwKlantNr(""); setNieuwKlantNaam(""); setToonNieuwKlant(false);
+      }
+
+      async function verwijderKlant(id) {
+        if (!confirm("Klant verwijderen?")||!fbOk) return;
+        await FB.deleteDoc(FB.doc(db,"klanten",id));
+        if (klantId===id) { setKlantId(null); setProductId(null); setReceptId(null); }
+      }
+
+      async function updateKlantDoc(klant, nieuweProducten) {
+        if (!fbOk) return;
+        await FB.updateDoc(FB.doc(db,"klanten",klant.id), {producten:nieuweProducten});
+      }
+
+      async function voegProductToe() {
+        const klant = klanten.find(k=>k.id===klantId);
+        if (!klant||!fbOk) return;
+        const prod = {id:Date.now().toString(), type:nieuwProdType, omschrijving:nieuwProdOms, recepten:[]};
+        await updateKlantDoc(klant, [...klant.producten, prod]);
+        setNieuwProdType("Zak"); setNieuwProdOms(""); setToonNieuwProduct(false);
+      }
+
+      async function verwijderProduct(prodId) {
+        const klant = klanten.find(k=>k.id===klantId);
+        if (!klant||!fbOk||!confirm("Product verwijderen?")) return;
+        await updateKlantDoc(klant, klant.producten.filter(p=>p.id!==prodId));
+        if (productId===prodId) { setProductId(null); setReceptId(null); }
+      }
+
+      async function nieuwRecept() {
+        const klant = klanten.find(k=>k.id===klantId);
+        const prod = klant?.producten?.find(p=>p.id===productId);
+        if (!prod||!fbOk) return;
+        const rec = {id:Date.now().toString(), ...leegRecept()};
+        const nieuweProds = klant.producten.map(p=>p.id===productId?{...p,recepten:[...p.recepten,rec]}:p);
+        await updateKlantDoc(klant, nieuweProds);
+        setReceptId(rec.id); setReceptTab(0);
+      }
+
+      async function slaReceptOp(recept) {
+        const klant = klanten.find(k=>k.id===klantId);
+        if (!klant||!fbOk) return;
+        const nieuweProds = klant.producten.map(p=>
+          p.id===productId?{...p,recepten:p.recepten.map(r=>r.id===recept.id?recept:r)}:p);
+        await updateKlantDoc(klant, nieuweProds);
+      }
+
+      async function verwijderRecept(recId) {
+        const klant = klanten.find(k=>k.id===klantId);
+        if (!klant||!fbOk||!confirm("Recept verwijderen?")) return;
+        const nieuweProds = klant.producten.map(p=>
+          p.id===productId?{...p,recepten:p.recepten.filter(r=>r.id!==recId)}:p);
+        await updateKlantDoc(klant, nieuweProds);
+        if (receptId===recId) setReceptId(null);
+      }
+
+      const klant = klanten.find(k=>k.id===klantId);
+      const product = klant?.producten?.find(p=>p.id===productId);
+      const recept = product?.recepten?.find(r=>r.id===receptId);
+
+      const S = {
+        app: {minHeight:"100dvh",background:C.bg,color:C.text,display:"flex",flexDirection:"column",fontFamily:"'DM Mono','Courier New',monospace",maxWidth:"480px",margin:"0 auto"},
+        header: {background:C.panel,borderBottom:`2px solid ${C.amber}`,padding:"env(safe-area-inset-top, 10px) 16px 10px",display:"flex",justifyContent:"space-between",alignItems:"center",flexShrink:0},
+        logo: {fontSize:"20px",fontWeight:900,color:C.amber,letterSpacing:"4px"},
+        model: {fontSize:"11px",color:C.textDim,letterSpacing:"2px"},
+        navBtn: {background:"transparent",border:`1px solid ${C.border}`,color:C.textDim,padding:"8px 12px",borderRadius:"6px",cursor:"pointer",fontSize:"16px"},
+        navActief: {borderColor:C.amber,color:C.amber,background:C.amberDim},
+        bc: {background:C.panel,borderBottom:`1px solid ${C.border}`,padding:"8px 16px",display:"flex",alignItems:"center",gap:"4px",flexShrink:0,overflowX:"auto"},
+        bcLink: {fontSize:"12px",color:C.blue,cursor:"pointer",whiteSpace:"nowrap",textDecoration:"underline"},
+        bcActief: {fontSize:"12px",color:C.textDim,whiteSpace:"nowrap"},
+        bcSep: {fontSize:"12px",color:C.textMuted},
+        content: {flex:1,overflow:"auto",paddingBottom:"70px"},
+        bottomNav: {position:"fixed",bottom:0,left:"50%",transform:"translateX(-50%)",width:"100%",maxWidth:"480px",background:C.panel,borderTop:`1px solid ${C.border}`,display:"flex",paddingBottom:"env(safe-area-inset-bottom, 0px)",zIndex:100},
+        bottomBtn: {flex:1,padding:"10px 0",background:"transparent",border:"none",color:C.textDim,cursor:"pointer",display:"flex",flexDirection:"column",alignItems:"center",gap:"2px"},
+        bottomActief: {color:C.amber},
+        bottomIcon: {fontSize:"22px"},
+        bottomLabel: {fontSize:"10px",letterSpacing:"1px"},
+      };
+
+      if (!ingelogd) return h("div", {style:{...S.app,alignItems:"center",justifyContent:"center"}},
+        h("div", {style:{background:C.panel,border:`1px solid ${C.amber}33`,borderRadius:"12px",padding:"48px 32px",textAlign:"center",width:"85%",maxWidth:"360px"}},
+          h("div", {style:{fontSize:"44px",fontWeight:900,color:C.amber,letterSpacing:"8px",marginBottom:"4px"}}, "TSA"),
+          h("div", {style:{fontSize:"13px",color:C.textDim,letterSpacing:"3px",marginBottom:"4px"}}, "D-Roller 1600"),
+          h("div", {style:{fontSize:"10px",color:C.textMuted,letterSpacing:"2px",marginBottom:"28px"}}, "MACHINE DATABASE"),
+          fbLaden && h("div", {style:{fontSize:"11px",color:C.textDim,marginBottom:"12px"}}, "🔄 Firebase verbinden..."),
+          !fbLaden && fbOk && h("div", {style:{fontSize:"11px",color:C.green,marginBottom:"12px"}}, "✓ Firebase verbonden"),
+          !fbLaden && !fbOk && h("div", {style:{fontSize:"11px",color:C.red,marginBottom:"12px"}}, "⚠ Firebase fout"),
+          h("input", {style:{background:"#0a0d14",border:`1px solid ${C.border}`,color:C.text,padding:"12px 16px",borderRadius:"8px",fontSize:"16px",width:"100%",textAlign:"center",letterSpacing:"6px",marginBottom:"10px",boxSizing:"border-box"},
+            type:"password", placeholder:"Wachtwoord", value:pw,
+            onChange:e=>{setPw(e.target.value);setPwFout(false);},
+            onKeyDown:e=>e.key==="Enter"&&login()}),
+          pwFout && h("div", {style:{color:C.red,fontSize:"12px",marginBottom:"8px"}}, "Ongeldig wachtwoord"),
+          h("button", {style:{background:C.amber,color:"#0a0d14",border:"none",padding:"13px 0",borderRadius:"8px",cursor:"pointer",fontWeight:900,fontSize:"15px",width:"100%",letterSpacing:"3px",marginBottom:"14px",fontFamily:"inherit"},
+            onClick:login}, "INLOGGEN"),
+          h("div", {style:{fontSize:"10px",color:C.textMuted}}, "Wachtwoord: ", h("span",{style:{color:C.amber}},"tsa1600"))
+        )
+      );
+
+      return h("div", {style:S.app},
+        h("header", {style:S.header},
+          h("div", {style:{display:"flex",alignItems:"baseline",gap:"8px"}},
+            h("span",{style:S.logo},"TSA"),
+            h("span",{style:S.model},"D-Roller 1600")
+          ),
+          h("div", {style:{display:"flex",gap:"6px",alignItems:"center"}},
+            h("button",{style:{...S.navBtn,...(scherm==="recepten"?S.navActief:{})},onClick:()=>setScherm("recepten")},"📋"),
+            h("button",{style:{...S.navBtn,...(scherm==="problemen"?S.navActief:{})},onClick:()=>setScherm("problemen")},"🔧"),
+            h("button",{style:{...S.navBtn},onClick:()=>setIngelogd(false)},"↩")
+          )
+        ),
+
+        scherm==="recepten" && h("div",{style:S.bc},
+          h("span",{style:klantId?S.bcLink:S.bcActief,onClick:()=>{setKlantId(null);setProductId(null);setReceptId(null);}},"Klanten"),
+          klantId && h("span",{style:S.bcSep},"›"),
+          klantId && h("span",{style:productId?S.bcLink:S.bcActief,onClick:()=>{setProductId(null);setReceptId(null);}},klant?.naam||klant?.nr||""),
+          productId && h("span",{style:S.bcSep},"›"),
+          productId && h("span",{style:receptId?S.bcLink:S.bcActief,onClick:()=>setReceptId(null)},product?.type||""),
+          receptId && h("span",{style:S.bcSep},"›"),
+          receptId && h("span",{style:S.bcActief},recept?.versie||"")
+        ),
+
+        h("div",{style:S.content},
+          scherm==="problemen" && h(ProbleemScherm,null),
+          scherm==="recepten" && !klantId && h(KlantenLijst,{klanten,onKies:setKlantId,onVerwijder:verwijderKlant,toonNieuw:toonNieuwKlant,setToonNieuw:setToonNieuwKlant,nr:nieuwKlantNr,setNr:setNieuwKlantNr,naam:nieuwKlantNaam,setNaam:setNieuwKlantNaam,onToevoegen:voegKlantToe}),
+          scherm==="recepten" && klantId && !productId && h(ProductenLijst,{klant,onKies:setProductId,onVerwijder:verwijderProduct,toonNieuw:toonNieuwProduct,setToonNieuw:setToonNieuwProduct,type:nieuwProdType,setType:setNieuwProdType,oms:nieuwProdOms,setOms:setNieuwProdOms,onToevoegen:voegProductToe}),
+          scherm==="recepten" && klantId && productId && !receptId && h(ReceptenLijst,{product,onKies:setReceptId,onVerwijder:verwijderRecept,onNieuw:nieuwRecept}),
+          scherm==="recepten" && klantId && productId && receptId && recept && h(ReceptDetail,{recept,tab:receptTab,setTab:setReceptTab,onSave:slaReceptOp})
+        ),
+
+        h("nav",{style:S.bottomNav},
+          h("button",{style:{...S.bottomBtn,...(scherm==="recepten"?S.bottomActief:{})},onClick:()=>setScherm("recepten")},
+            h("span",{style:S.bottomIcon},"📋"),
+            h("span",{style:S.bottomLabel},"Recepten")
+          ),
+          h("button",{style:{...S.bottomBtn,...(scherm==="problemen"?S.bottomActief:{})},onClick:()=>setScherm("problemen")},
+            h("span",{style:S.bottomIcon},"🔧"),
+            h("span",{style:S.bottomLabel},"Problemen")
+          )
+        )
+      );
+    }
+
+    // ─── LIJSTEN ─────────────────────────────────────────────────────────────
+    const C2 = {
+      bg:"#070a10",panel:"#0f1520",border:"#1a2540",
+      amber:"#f59e0b",amberDim:"#451a03",text:"#e5e7eb",textDim:"#6b7280",textMuted:"#374151",
+      green:"#34d399",greenDim:"#052e16",blue:"#60a5fa",blueDim:"#0f2744",red:"#ef4444",
+    };
+
+    const LS = {
+      wrap:{padding:"0 0 16px 0"},
+      topBar:{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"16px 16px 8px"},
+      titel:{fontSize:"16px",fontWeight:700,color:C2.text,letterSpacing:"1px"},
+      addBtn:{background:C2.amber,color:"#0a0d14",border:"none",padding:"10px 16px",borderRadius:"6px",cursor:"pointer",fontWeight:700,fontSize:"14px",fontFamily:"inherit"},
+      form:{margin:"0 16px 12px",background:C2.panel,border:`1px solid ${C2.border}`,borderRadius:"8px",padding:"14px",display:"flex",flexDirection:"column",gap:"8px"},
+      input:{background:C2.bg,border:`1px solid ${C2.border}`,color:C2.text,padding:"10px 12px",borderRadius:"6px",fontSize:"14px",fontFamily:"inherit",width:"100%",boxSizing:"border-box"},
+      saveBtn:{background:C2.amber,color:"#0a0d14",border:"none",padding:"10px 16px",borderRadius:"6px",cursor:"pointer",fontWeight:700,fontSize:"13px",fontFamily:"inherit"},
+      cancelBtn:{background:"transparent",border:`1px solid ${C2.border}`,color:C2.textDim,padding:"10px 16px",borderRadius:"6px",cursor:"pointer",fontSize:"13px",fontFamily:"inherit"},
+      item:{margin:"0 16px 8px",background:C2.panel,border:`1px solid ${C2.border}`,borderRadius:"8px",padding:"16px",display:"flex",justifyContent:"space-between",alignItems:"center",cursor:"pointer",minHeight:"64px"},
+      itemNr:{fontSize:"10px",color:C2.amber,letterSpacing:"1px",marginBottom:"3px"},
+      itemNaam:{fontSize:"14px",color:C2.text},
+      itemCount:{fontSize:"11px",color:C2.textDim},
+      badge:{display:"inline-block",background:C2.blueDim,color:C2.blue,fontSize:"10px",padding:"2px 7px",borderRadius:"3px",letterSpacing:"1px",marginBottom:"4px"},
+      delBtn:{background:"transparent",border:"none",fontSize:"18px",cursor:"pointer",padding:"4px 6px"},
+      leeg:{margin:"16px",fontSize:"13px",color:C2.textDim,fontStyle:"italic"},
+    };
+
+    function KlantenLijst({klanten,onKies,onVerwijder,toonNieuw,setToonNieuw,nr,setNr,naam,setNaam,onToevoegen}) {
+      return h("div",{style:LS.wrap},
+        h("div",{style:LS.topBar},
+          h("span",{style:LS.titel},"Klanten"),
+          h("button",{style:LS.addBtn,onClick:()=>setToonNieuw(!toonNieuw)},"＋ Nieuw")
+        ),
+        toonNieuw && h("div",{style:LS.form},
+          h("input",{style:LS.input,placeholder:"Klantnummer",value:nr,onChange:e=>setNr(e.target.value)}),
+          h("input",{style:LS.input,placeholder:"Naam",value:naam,onChange:e=>setNaam(e.target.value)}),
+          h("div",{style:{display:"flex",gap:"8px"}},
+            h("button",{style:LS.saveBtn,onClick:onToevoegen},"Opslaan"),
+            h("button",{style:LS.cancelBtn,onClick:()=>setToonNieuw(false)},"Annuleer")
+          )
+        ),
+        klanten.length===0 && h("div",{style:LS.leeg},"Nog geen klanten. Voeg er een toe."),
+        klanten.map(k=>h("div",{key:k.id,style:LS.item,onClick:()=>onKies(k.id)},
+          h("div",null,h("div",{style:LS.itemNr},k.nr),h("div",{style:LS.itemNaam},k.naam)),
+          h("div",{style:{display:"flex",alignItems:"center",gap:"12px"}},
+            h("span",{style:LS.itemCount},(k.producten?.length||0)," prod."),
+            h("button",{style:LS.delBtn,onClick:e=>{e.stopPropagation();onVerwijder(k.id);}},"🗑")
+          )
+        ))
+      );
+    }
+
+    function ProductenLijst({klant,onKies,onVerwijder,toonNieuw,setToonNieuw,type,setType,oms,setOms,onToevoegen}) {
+      return h("div",{style:LS.wrap},
+        h("div",{style:LS.topBar},
+          h("span",{style:LS.titel},klant?.naam||""),
+          h("button",{style:LS.addBtn,onClick:()=>setToonNieuw(!toonNieuw)},"＋ Nieuw")
+        ),
+        toonNieuw && h("div",{style:LS.form},
+          h("select",{style:LS.input,value:type,onChange:e=>setType(e.target.value)},
+            PRODUCT_TYPES.map(t=>h("option",{key:t},t))),
+          h("input",{style:LS.input,placeholder:"Omschrijving",value:oms,onChange:e=>setOms(e.target.value)}),
+          h("div",{style:{display:"flex",gap:"8px"}},
+            h("button",{style:LS.saveBtn,onClick:onToevoegen},"Opslaan"),
+            h("button",{style:LS.cancelBtn,onClick:()=>setToonNieuw(false)},"Annuleer")
+          )
+        ),
+        (!klant?.producten||klant.producten.length===0) && h("div",{style:LS.leeg},"Nog geen producten."),
+        klant?.producten?.map(p=>h("div",{key:p.id,style:LS.item,onClick:()=>onKies(p.id)},
+          h("div",null,h("div",{style:LS.badge},p.type),h("div",{style:LS.itemNaam},p.omschrijving||"—")),
+          h("div",{style:{display:"flex",alignItems:"center",gap:"12px"}},
+            h("span",{style:LS.itemCount},(p.recepten?.length||0)," rec."),
+            h("button",{style:LS.delBtn,onClick:e=>{e.stopPropagation();onVerwijder(p.id);}},"🗑")
+          )
+        ))
+      );
+    }
+
+    function ReceptenLijst({product,onKies,onVerwijder,onNieuw}) {
+      return h("div",{style:LS.wrap},
+        h("div",{style:LS.topBar},
+          h("span",{style:LS.titel},(product?.type||"")," — Recepten"),
+          h("button",{style:LS.addBtn,onClick:onNieuw},"＋ Nieuw")
+        ),
+        (!product?.recepten||product.recepten.length===0) && h("div",{style:LS.leeg},"Nog geen recepten."),
+        product?.recepten?.map(r=>h("div",{key:r.id,style:LS.item,onClick:()=>onKies(r.id)},
+          h("div",null,h("div",{style:LS.itemNr},r.versie),h("div",{style:LS.itemNaam},r.datum," · ",r.materiaal_id)),
+          h("button",{style:LS.delBtn,onClick:e=>{e.stopPropagation();onVerwijder(r.id);}},"🗑")
+        ))
+      );
+    }
+
+    // ─── RECEPT DETAIL ───────────────────────────────────────────────────────
+    function ReceptDetail({recept,tab,setTab,onSave}) {
+      const [form,setForm] = useState({...recept});
+      const [berekend,setBerekend] = useState(false);
+      const [opgeslagen,setOpgeslagen] = useState(false);
+
+      useEffect(()=>{setForm({...recept});setBerekend(false);},[recept.id]);
+
+      function set(f,v){setForm(prev=>({...prev,[f]:v}));}
+      function herbereken(updates){
+        const data={...form,...updates};
+        if(data.lengte_mm&&data.dikte_mu){const calc=berekenParams(data);setForm(prev=>({...prev,...updates,...calc}));setBerekend(true);}
+        else setForm(prev=>({...prev,...updates}));
+      }
+      async function opslaan(){await onSave(form);setOpgeslagen(true);setTimeout(()=>setOpgeslagen(false),2000);}
+
+      const mat=MATERIALEN.find(m=>m.id===form.materiaal_id);
+      const TABS=["Productie","Machine","Temperaturen"];
+
+      const RS={
+        wrap:{padding:"0 0 16px 0"},
+        header:{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"16px 16px 8px"},
+        versieInput:{background:"transparent",border:"none",borderBottom:`2px solid ${C2.amber}`,color:C2.amber,fontSize:"18px",fontWeight:700,fontFamily:"inherit",letterSpacing:"2px",width:"80px"},
+        datumInput:{background:C2.panel,border:`1px solid ${C2.border}`,color:C2.textDim,padding:"5px 8px",borderRadius:"4px",fontSize:"12px",fontFamily:"inherit"},
+        saveBtn:{background:opgeslagen?C2.green:C2.amber,color:"#0a0d14",border:"none",padding:"10px 18px",borderRadius:"6px",cursor:"pointer",fontWeight:700,fontSize:"13px",fontFamily:"inherit"},
+        tabs:{display:"flex",borderBottom:`1px solid ${C2.border}`,margin:"0 16px 16px"},
+        tab:{flex:1,background:"transparent",border:"none",borderBottom:"2px solid transparent",color:C2.textDim,padding:"10px 0",cursor:"pointer",fontSize:"12px",letterSpacing:"1px",fontFamily:"inherit"},
+        tabActief:{color:C2.amber,borderBottom:`2px solid ${C2.amber}`},
+        blad:{display:"flex",flexDirection:"column",gap:"12px",padding:"0 16px"},
+        blok:{background:C2.panel,border:`1px solid ${C2.border}`,borderRadius:"8px",padding:"14px"},
+        blokTitel:{fontSize:"10px",color:C2.amber,letterSpacing:"2px",textTransform:"uppercase",marginBottom:"12px"},
+        rij:{display:"flex",flexWrap:"wrap",gap:"10px"},
+        veld:{display:"flex",flexDirection:"column",gap:"4px",minWidth:"110px",flex:1},
+        veldLabel:{fontSize:"9px",color:C2.textDim,letterSpacing:"1px",textTransform:"uppercase"},
+        input:{background:C2.bg,border:`1px solid ${C2.border}`,color:C2.text,padding:"10px",borderRadius:"6px",fontSize:"14px",fontFamily:"inherit",width:"100%",boxSizing:"border-box"},
+        inputCalc:{borderColor:`${C2.amber}66`,color:C2.amberBright||"#fcd34d"},
+        resultBox:{background:C2.bg,border:`1px solid ${C2.amber}`,borderRadius:"6px",padding:"12px 16px",display:"flex",justifyContent:"space-around",marginBottom:"12px"},
+        resultItem:{display:"flex",flexDirection:"column",alignItems:"center",gap:"2px"},
+        resultIcon:{fontSize:"18px"},
+        resultVal:{fontSize:"20px",fontWeight:700,color:"#fcd34d"},
+        resultLabel:{fontSize:"9px",color:C2.textDim,letterSpacing:"1px"},
+        staticRij:{display:"flex",gap:"8px",flexWrap:"wrap"},
+        staticBtn:{background:C2.bg,border:`1px solid ${C2.border}`,color:C2.textDim,padding:"10px 14px",borderRadius:"6px",cursor:"pointer",fontFamily:"inherit",fontSize:"13px",flex:1},
+        staticActief:{background:C2.greenDim,border:`1px solid ${C2.green}`,color:C2.green},
+        toggleBtn:{border:"none",padding:"10px 20px",borderRadius:"6px",cursor:"pointer",fontWeight:700,fontSize:"13px",fontFamily:"inherit",letterSpacing:"1px"},
+        toggleAan:{background:C2.greenDim,color:C2.green},
+        toggleUit:{background:C2.panel,color:C2.textMuted,border:`1px solid ${C2.border}`},
+        tempGrid:{display:"flex",alignItems:"center",justifyContent:"center",gap:"20px",padding:"12px 0"},
+        tempCard:{background:C2.bg,border:`1px solid ${C2.border}`,borderRadius:"8px",padding:"16px 20px",textAlign:"center",flex:1},
+        tempLabel:{fontSize:"10px",color:C2.textDim,letterSpacing:"1px",marginBottom:"8px"},
+        tempInput:{background:"transparent",border:"none",borderBottom:`2px solid ${C2.border}`,color:C2.text,fontSize:"36px",fontWeight:700,fontFamily:"inherit",textAlign:"center",width:"100%"},
+        tempCalc:{borderBottomColor:C2.amber,color:"#fcd34d"},
+        tempUnit:{fontSize:"13px",color:C2.textDim,marginTop:"4px"},
+        tempPijl:{fontSize:"20px",color:C2.textMuted},
+        matInfo:{marginTop:"12px",background:C2.bg,border:`1px solid ${C2.blueDim}`,borderRadius:"4px",padding:"8px 12px",fontSize:"11px",color:C2.blue},
+        textarea:{background:C2.bg,border:`1px solid ${C2.border}`,color:C2.textDim,padding:"10px",borderRadius:"6px",fontSize:"13px",fontFamily:"inherit",width:"100%",resize:"vertical",boxSizing:"border-box"},
+      };
+
+      return h("div",{style:RS.wrap},
+        h("div",{style:RS.header},
+          h("div",{style:{display:"flex",gap:"10px",alignItems:"center"}},
+            h("input",{style:RS.versieInput,value:form.versie,onChange:e=>set("versie",e.target.value)}),
+            h("input",{style:RS.datumInput,type:"date",value:form.datum,onChange:e=>set("datum",e.target.value)})
+          ),
+          h("button",{style:RS.saveBtn,onClick:opslaan},opgeslagen?"✓ Opgeslagen":"💾 Opslaan")
+        ),
+        h("div",{style:RS.tabs},
+          TABS.map((t,i)=>h("button",{key:i,style:{...RS.tab,...(tab===i?RS.tabActief:{})},onClick:()=>setTab(i)},t))
+        ),
+
+        tab===0 && h("div",{style:RS.blad},
+          h("div",{style:RS.blok},
+            h("div",{style:RS.blokTitel},"Materiaal keuze"),
+            h("select",{style:{...RS.input,maxWidth:"280px"},value:form.materiaal_id,onChange:e=>herbereken({materiaal_id:e.target.value})},
+              h("optgroup",{label:"── Recycle ──"},MATERIALEN.filter(m=>m.recycle).map(m=>h("option",{key:m.id,value:m.id},m.label))),
+              h("optgroup",{label:"── Virgin ──"},MATERIALEN.filter(m=>!m.recycle).map(m=>h("option",{key:m.id,value:m.id},m.label)))
+            ),
+            mat?.recycle && h("div",{style:{marginTop:"8px",background:C2.greenDim,color:C2.green,fontSize:"11px",padding:"6px 10px",borderRadius:"4px"}},"♻ Recycle — hogere temp, lagere snelheid")
+          ),
+          h("div",{style:RS.blok},
+            h("div",{style:RS.blokTitel},"Zakmaat"),
+            h("div",{style:RS.rij},
+              h("div",{style:RS.veld},h("div",{style:RS.veldLabel},"Breedte (mm)"),h("input",{style:RS.input,type:"number",value:form.breedte_mm,onChange:e=>set("breedte_mm",e.target.value)})),
+              h("div",{style:RS.veld},h("div",{style:RS.veldLabel},"Lengte (mm)"),h("input",{style:RS.input,type:"number",value:form.lengte_mm,onChange:e=>herbereken({lengte_mm:e.target.value})})),
+              h("div",{style:RS.veld},h("div",{style:RS.veldLabel},"Dikte (µm)"),h("input",{style:RS.input,type:"number",value:form.dikte_mu,onChange:e=>herbereken({dikte_mu:e.target.value})}))
+            )
+          ),
+          h("div",{style:RS.blok},
+            h("div",{style:RS.blokTitel},berekend?"Resultaten ⚡":"Resultaten"),
+            berekend && h("div",{style:RS.resultBox},
+              h("div",{style:RS.resultItem},h("span",{style:RS.resultIcon},"⚡"),h("span",{style:RS.resultVal},form.zakken_min),h("span",{style:RS.resultLabel},"zak/min")),
+              h("div",{style:RS.resultItem},h("span",{style:RS.resultIcon},"⏱"),h("span",{style:RS.resultVal},form.seal_tijd,"s"),h("span",{style:RS.resultLabel},"sealtijd")),
+              h("div",{style:RS.resultItem},h("span",{style:RS.resultIcon},"⚙"),h("span",{style:RS.resultVal},form.snelheid_mat),h("span",{style:RS.resultLabel},"m/min"))
+            ),
+            h("div",{style:RS.rij},
+              h("div",{style:RS.veld},h("div",{style:RS.veldLabel},"Sealtijd (s)"),h("input",{style:{...RS.input,...(berekend?RS.inputCalc:{})},type:"number",step:"0.01",value:form.seal_tijd,onChange:e=>set("seal_tijd",e.target.value)})),
+              h("div",{style:RS.veld},h("div",{style:RS.veldLabel},"Snelheid (m/min)"),h("input",{style:{...RS.input,...(berekend?RS.inputCalc:{})},type:"number",value:form.snelheid_mat,onChange:e=>set("snelheid_mat",e.target.value)})),
+              h("div",{style:RS.veld},h("div",{style:RS.veldLabel},"Zakken/min"),h("input",{style:{...RS.input,...(berekend?RS.inputCalc:{})},type:"number",value:form.zakken_min,onChange:e=>set("zakken_min",e.target.value)})),
+              h("div",{style:RS.veld},h("div",{style:RS.veldLabel},"Zakken/rol"),h("input",{style:{...RS.input,...(berekend?RS.inputCalc:{})},type:"number",value:form.zakken_rol,onChange:e=>set("zakken_rol",e.target.value)}))
+            )
+          )
+        ),
+
+        tab===1 && h("div",{style:RS.blad},
+          h("div",{style:RS.blok},
+            h("div",{style:RS.blokTitel},"Static Charger"),
+            h("div",{style:RS.staticRij},
+              STATIC_OPTIES.map(opt=>h("button",{key:opt,style:{...RS.staticBtn,...(form.static_charger===opt?RS.staticActief:{})},onClick:()=>set("static_charger",opt)},opt))
+            ),
+            h("div",{style:{marginTop:"12px"}},
+              h("div",{style:RS.veldLabel},"Material to be charged"),
+              h("input",{style:{...RS.input,marginTop:"4px"},value:form.static_mat,onChange:e=>set("static_mat",e.target.value),placeholder:"bijv. PE-LD folie"})
+            )
+          ),
+          h("div",{style:RS.blok},
+            h("div",{style:RS.blokTitel},"Koker & Rolwissel"),
+            h("div",{style:RS.rij},
+              h("div",{style:RS.veld},h("div",{style:RS.veldLabel},"Koker diameter (mm)"),h("input",{style:RS.input,type:"number",value:form.koker_dia,onChange:e=>herbereken({koker_dia:e.target.value})})),
+              h("div",{style:RS.veld},h("div",{style:RS.veldLabel},"Roldiameter wissel (mm)"),h("input",{style:RS.input,type:"number",value:form.rol_dia,onChange:e=>herbereken({rol_dia:e.target.value})}))
+            )
+          ),
+          h("div",{style:RS.blok},
+            h("div",{style:RS.blokTitel},"Cycle met drukker"),
+            h("div",{style:RS.rij},
+              h("div",{style:RS.veld},
+                h("div",{style:RS.veldLabel},"Drukker"),
+                h("button",{style:{...RS.toggleBtn,...(form.cycle_drukker?RS.toggleAan:RS.toggleUit)},onClick:()=>set("cycle_drukker",!form.cycle_drukker)},form.cycle_drukker?"● AAN":"○ UIT")
+              ),
+              form.cycle_drukker && h("div",{style:RS.veld},h("div",{style:RS.veldLabel},"Instelling"),h("input",{style:RS.input,value:form.cycle_inst,onChange:e=>set("cycle_inst",e.target.value),placeholder:"bijv. 2 cycli"}))
+            )
+          )
+        ),
+
+        tab===2 && h("div",{style:RS.blad},
+          h("div",{style:RS.blok},
+            h("div",{style:RS.blokTitel},berekend?"Seal Temperaturen ⚡":"Seal Temperaturen"),
+            h("div",{style:RS.tempGrid},
+              h("div",{style:RS.tempCard},
+                h("div",{style:RS.tempLabel},"▲ Boven"),
+                h("input",{style:{...RS.tempInput,...(berekend?RS.tempCalc:{})},type:"number",value:form.seal_temp_boven,onChange:e=>set("seal_temp_boven",e.target.value)}),
+                h("div",{style:RS.tempUnit},"°C")
+              ),
+              h("div",{style:RS.tempPijl},"↕"),
+              h("div",{style:RS.tempCard},
+                h("div",{style:RS.tempLabel},"▼ Onder"),
+                h("input",{style:{...RS.tempInput,...(berekend?RS.tempCalc:{})},type:"number",value:form.seal_temp_onder,onChange:e=>set("seal_temp_onder",e.target.value)}),
+                h("div",{style:RS.tempUnit},"°C")
+              )
+            ),
+            mat && h("div",{style:RS.matInfo},mat.label," — aanbevolen: ",mat.temp_b-8,"°C – ",mat.temp_b+8,"°C",mat.recycle?" · ♻ hogere temp":"")
+          ),
+          h("div",{style:RS.blok},
+            h("div",{style:RS.blokTitel},"Notities"),
+            h("textarea",{style:RS.textarea,rows:4,value:form.notities,onChange:e=>set("notities",e.target.value),placeholder:"Opmerkingen..."})
+          )
+        )
+      );
+    }
+
+    // ─── PROBLEEM SCHERM ─────────────────────────────────────────────────────
+    function ProbleemScherm() {
+      const [actief,setActief] = useState(null);
+      const [cat,setCat] = useState(null);
+      const gefilterd = PROBLEMEN.filter(p=>!cat||p.cat===cat);
+
+      const PS={
+        wrap:{padding:"12px 16px 16px"},
+        snelRij:{display:"flex",flexWrap:"wrap",gap:"8px",marginBottom:"14px"},
+        snelBtn:{background:"#0f1520",border:"1px solid #1a2540",color:"#6b7280",padding:"10px 14px",borderRadius:"6px",cursor:"pointer",fontFamily:"inherit",fontSize:"12px",flex:"1 1 40%"},
+        snelActief:{background:"#451a03",borderColor:"#f59e0b",color:"#f59e0b"},
+        catRij:{display:"flex",gap:"6px",marginBottom:"14px",overflowX:"auto",paddingBottom:"4px"},
+        catBtn:{background:"#0f1520",border:"1px solid #1a2540",color:"#6b7280",padding:"8px 12px",borderRadius:"6px",cursor:"pointer",fontFamily:"inherit",fontSize:"11px",letterSpacing:"1px",whiteSpace:"nowrap"},
+        catActief:{background:"#451a03",borderColor:"#f59e0b",color:"#f59e0b"},
+        kaart:{background:"#0f1520",border:"1px solid #1a2540",borderRadius:"8px",marginBottom:"10px",overflow:"hidden",cursor:"pointer"},
+        kaartHeader:{padding:"14px 16px",display:"flex",alignItems:"flex-start",gap:"12px"},
+        kaartIcon:{fontSize:"22px",flexShrink:0,lineHeight:1,marginTop:"2px"},
+        kaartMidden:{flex:1},
+        kaartCat:{fontSize:"9px",letterSpacing:"2px",textTransform:"uppercase",marginBottom:"3px"},
+        kaartTitel:{fontSize:"14px",color:"#e5e7eb",fontWeight:600},
+        chevron:{fontSize:"11px",color:"#6b7280",flexShrink:0},
+        detail:{borderTop:"1px solid #1a2540",padding:"14px 16px"},
+        sectieLabel:{fontSize:"9px",color:"#6b7280",letterSpacing:"2px",textTransform:"uppercase",marginBottom:"8px"},
+        oorzaak:{fontSize:"12px",color:"#6b7280",lineHeight:1.6,marginBottom:"3px"},
+        oplossing:{display:"flex",alignItems:"flex-start",gap:"10px",background:"#070a10",padding:"10px 12px",borderRadius:"4px",marginBottom:"6px"},
+        prioBadge:{fontSize:"9px",padding:"2px 6px",borderRadius:"2px",letterSpacing:"1px",flexShrink:0,marginTop:"2px"},
+        oplossingTekst:{fontSize:"13px",color:"#e5e7eb",lineHeight:1.5},
+      };
+
+      return h("div",{style:PS.wrap},
+        h("div",{style:PS.snelRij},
+          SNELKNOPPEN.map(s=>h("button",{key:s.cat,style:{...PS.snelBtn,...(cat===s.cat?PS.snelActief:{})},
+            onClick:()=>{setCat(cat===s.cat?null:s.cat);setActief(null);}},s.label))
+        ),
+        h("div",{style:PS.catRij},
+          h("button",{style:{...PS.catBtn,...(cat===null?PS.catActief:{})},onClick:()=>{setCat(null);setActief(null);}},"Alle"),
+          CATS.map(c=>h("button",{key:c,style:{...PS.catBtn,...(cat===c?{...PS.catActief,borderColor:CAT_KLEUR[c],color:CAT_KLEUR[c]}:{})},
+            onClick:()=>{setCat(cat===c?null:c);setActief(null);}},c))
+        ),
+        gefilterd.map(prob=>h("div",{key:prob.id,style:{...PS.kaart,borderLeft:`4px solid ${prob.kleur}`},onClick:()=>setActief(actief===prob.id?null:prob.id)},
+          h("div",{style:PS.kaartHeader},
+            h("span",{style:{...PS.kaartIcon,color:prob.kleur}},prob.icon),
+            h("div",{style:PS.kaartMidden},
+              h("div",{style:{...PS.kaartCat,color:prob.kleur}},prob.cat),
+              h("div",{style:PS.kaartTitel},prob.titel)
+            ),
+            h("span",{style:PS.chevron},actief===prob.id?"▲":"▼")
+          ),
+          actief===prob.id && h("div",{style:PS.detail,onClick:e=>e.stopPropagation()},
+            h("div",{style:PS.sectieLabel},"OORZAKEN"),
+            prob.oorzaken.map((o,i)=>h("div",{key:i,style:PS.oorzaak},"● ",o)),
+            h("div",{style:{...PS.sectieLabel,marginTop:"14px"}},"OPLOSSINGEN"),
+            prob.oplossingen.map((o,i)=>h("div",{key:i,style:{...PS.oplossing,borderLeft:`3px solid ${o.p==="hoog"?"#ef4444":o.p==="middel"?"#f59e0b":"#374151"}`}},
+              h("span",{style:{...PS.prioBadge,background:o.p==="hoog"?"#450a0a":o.p==="middel"?"#451a03":"#1e293b",color:o.p==="hoog"?"#fca5a5":o.p==="middel"?"#fcd34d":"#6b7280"}},o.p.toUpperCase()),
+              h("span",{style:PS.oplossingTekst},o.t)
+            ))
+          )
+        ))
+      );
+    }
+
+    // ─── START ───────────────────────────────────────────────────────────────
+    createRoot(document.getElementById("root")).render(h(App, null));
+  </script>
+
+</body>
+</html>
