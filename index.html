@@ -127,6 +127,26 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 .pulse{width:7px;height:7px;border-radius:50%;background:#34d399;animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 8px #34d39988}50%{opacity:.2;box-shadow:none}}
 .home-status{display:inline-flex;align-items:center;gap:8px;font-size:10px;color:#34d399;margin-top:14px;letter-spacing:2px;background:rgba(52,211,153,.06);border:1px solid rgba(52,211,153,.2);padding:5px 12px;border-radius:4px}
+.flow-step{background:#0f1520;border:1px solid #1a2540;border-radius:6px;margin-bottom:6px;overflow:hidden;cursor:pointer}
+.flow-step-hdr{display:flex;align-items:center;gap:14px;padding:16px}
+.flow-step-hdr:active{background:#141d2e}
+.flow-step-num{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0;color:#000}
+.flow-step-info{flex:1}
+.flow-step-naam{font-weight:700;font-size:18px;letter-spacing:1px;color:#e5e7eb}
+.flow-step-desc{font-size:11px;color:#6b7280;margin-top:2px;line-height:1.4}
+.flow-step-chev{font-size:18px;color:#374151;flex-shrink:0}
+.flow-arrow{text-align:center;color:#374151;font-size:18px;margin:2px 0;line-height:1}
+.flow-body{display:none;padding:0 16px 14px;border-top:1px solid #1a2540}
+.flow-body.open{display:block}
+.flow-prob{background:#0a0d14;border:1px solid #1a2540;border-radius:4px;margin-top:10px;overflow:hidden}
+.flow-prob-titel{font-weight:700;font-size:15px;color:#e5e7eb;padding:10px 14px;border-bottom:1px solid #1a2540;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+.flow-prob-titel:active{background:#0f1520}
+.flow-prob-body{display:none;padding:10px 14px}
+.flow-prob-body.open{display:block}
+.flow-check-lbl{font-size:9px;letter-spacing:2px;text-transform:uppercase;margin:8px 0 6px}
+.flow-items{list-style:none;display:flex;flex-direction:column;gap:4px}
+.flow-items li{font-size:13px;padding:7px 10px;background:#070a10;border:1px solid #1a2540;border-radius:3px;display:flex;gap:8px;align-items:flex-start;line-height:1.4}
+.flow-items li::before{flex-shrink:0;margin-top:1px}
 @media(max-width:380px){.grid2{grid-template-columns:1fr}}
 </style>
 </head>
@@ -171,22 +191,26 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
         <div><div class="nb-label">Recepten</div><div class="nb-sub">Machine-instellingen database</div></div>
         <span class="nb-arr">&#8250;</span>
       </button>
-      <button class="nav-btn c-red" onclick="go('s-problemen')">
-        <span class="nb-icon">&#128295;</span>
-        <div><div class="nb-label">Problemen</div><div class="nb-sub">Storingen &amp; oplossingen</div></div>
-        <span class="nb-arr">&#8250;</span>
-      </button>
-      <button class="nav-btn c-blue" onclick="go('s-calculator')">
-        <span class="nb-icon">&#9881;</span>
-        <div><div class="nb-label">Calculator</div><div class="nb-sub">Offset, rolwissel, roldiameter</div></div>
-        <span class="nb-arr">&#8250;</span>
-      </button>
-    </div>
+
+```
+  <button class="nav-btn c-blue" onclick="go('s-calculator')">
+    <span class="nb-icon">&#9881;</span>
+    <div><div class="nb-label">Calculator</div><div class="nb-sub">Offset, rolwissel, roldiameter</div></div>
+    <span class="nb-arr">&#8250;</span>
+  </button>
+  <button class="nav-btn" style="border-left-color:#34d399;" onclick="go('s-flow')">
+    <span class="nb-icon">&#128295;</span>
+    <div><div class="nb-label">Problemen</div><div class="nb-sub">Oorzaak & oplossing per probleem</div></div>
+    <span class="nb-arr">&#8250;</span>
+  </button>
+</div>
+```
+
   </div>
   <nav class="bottom-nav">
     <button class="bnav-btn" onclick="go('s-recepten')"><span class="bnav-icon">&#128203;</span><span class="bnav-label">Recepten</span></button>
-    <button class="bnav-btn" onclick="go('s-problemen')"><span class="bnav-icon">&#128295;</span><span class="bnav-label">Problemen</span></button>
-    <button class="bnav-btn" onclick="go('s-calculator')"><span class="bnav-icon">&#9881;</span><span class="bnav-label">Calculator</span></button>
+    <button class="bnav-btn" onclick="go('s-flow')"><span class="bnav-icon">&#9654;</span><span class="bnav-label">Problemen</span></button>
+    <button class="bnav-btn" onclick="go('s-calculator')"><span class="bnav-icon">&#9881;</span><span class="bnav-label">Calc</span></button>
   </nav>
 </div>
 
@@ -240,9 +264,22 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
     </div>
     <div class="field"><label>Omschrijving</label><input id="f-prodoms" type="text" placeholder="bv. draagtas"></div>
   </div>
-  <div class="field"><label>Naam operator</label><input id="f-versie" type="text" placeholder="naam operator"></div>
-</div>
+  <div class="field">
+```
 
+<label>Naam operator <span style="color:#ef4444;">*</span></label>
+
+  <div style="position:relative;">
+    <input id="f-versie" type="text" placeholder="Kies of typ naam" autocomplete="off"
+      onfocus="toonNaamDropdown()" oninput="toonNaamDropdown()"
+      onblur="setTimeout(sluitNaamDropdown,150)"
+      style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:17px;padding:12px 14px;outline:none;">
+    <div id="naam-dropdown" style="display:none;position:absolute;top:100%;left:0;right:0;background:#0f1520;border:1px solid #f59e0b;border-top:none;border-radius:0 0 4px 4px;z-index:200;"></div>
+  </div>
+</div>
+    </div>
+
+```
 <div class="form-card">
   <div class="form-card-title">Materiaal</div>
   <div class="field">
@@ -344,16 +381,6 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
   </div>
 </div>
 
-<!-- PROBLEMEN -->
-
-<div class="screen" id="s-problemen">
-  <div class="topbar">
-    <button class="back-btn" onclick="go('s-home')">&#8249;</button>
-    <div class="topbar-title">Probleemoplossing</div>
-  </div>
-  <div class="content" id="problemen-content"></div>
-</div>
-
 <!-- CALCULATOR -->
 
 <div class="screen" id="s-calculator">
@@ -403,6 +430,16 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 ```
 
   </div>
+</div>
+
+<!-- MACHINE FLOW NAVIGATOR -->
+
+<div class="screen" id="s-flow">
+  <div class="topbar">
+    <button class="back-btn" onclick="go('s-home')">&#8249;</button>
+    <div class="topbar-title">Probleemoplossing</div>
+  </div>
+  <div class="content" id="flow-content"></div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -583,10 +620,10 @@ function go(id) {
   var btns = document.querySelectorAll('.bnav-btn');
   for(var j=0;j<btns.length;j++) btns[j].classList.remove('active');
   if(id==='s-recepten'||id==='s-detail'||id==='s-nieuw') btns[0] && btns[0].classList.add('active');
-  if(id==='s-problemen') btns[1] && btns[1].classList.add('active');
+  if(id==='s-flow') btns[1] && btns[1].classList.add('active');
   if(id==='s-calculator') btns[2] && btns[2].classList.add('active');
   if(id==='s-recepten') laadRecepten();
-  if(id==='s-problemen') renderProblemen();
+  if(id==='s-flow') renderFlow();
 }
 
 function toast(msg, err) {
@@ -699,7 +736,9 @@ function herbereken() {
 function slaOp() {
   var klantnr = document.getElementById('f-klantnr').value.trim();
   var klantnaam = document.getElementById('f-klantnaam').value.trim();
+  var operator = document.getElementById('f-versie').value.trim();
   if(!klantnr && !klantnaam){toast('Vul klantnummer of naam in',true);return;}
+  if(!operator){toast('Vul naam operator in',true);document.getElementById('f-versie').focus();return;}
   var recept = {
     klantnr:klantnr,klantnaam:klantnaam,
     prodtype:document.getElementById('f-prodtype').value,
@@ -805,8 +844,35 @@ function renderReceptenTree(lijst, query) {
 }
 
 function verwijderRecept(key) {
-  if(!confirm('Recept verwijderen?')) return;
-  fbDelete('/recepten',key,function(){toast('Verwijderd');laadRecepten();});
+  toonPinModal(function(){
+    fbDelete('/recepten',key,function(){toast('Verwijderd');laadRecepten();});
+  });
+}
+
+function toonPinModal(onSuccess) {
+  var overlay = document.getElementById('pin-overlay');
+  overlay.style.display = 'flex';
+  document.getElementById('pin-input').value = '';
+  document.getElementById('pin-err').style.display = 'none';
+  document.getElementById('pin-input').focus();
+  window._pinCallback = onSuccess;
+}
+
+function sluitPinModal() {
+  document.getElementById('pin-overlay').style.display = 'none';
+  window._pinCallback = null;
+}
+
+function bevestigPin() {
+  var pin = document.getElementById('pin-input').value.trim();
+  if(pin === '007') {
+    sluitPinModal();
+    if(window._pinCallback) window._pinCallback();
+  } else {
+    document.getElementById('pin-err').style.display = 'block';
+    document.getElementById('pin-input').value = '';
+    document.getElementById('pin-input').focus();
+  }
 }
 
 function openDetail(key) {
@@ -855,68 +921,364 @@ function bewerkRecept(key) {
   });
 }
 
-function renderProblemen() {
-  var el = document.getElementById('problemen-content');
-  var snelHTML = '<div class="snel-grid">';
-  for(var i=0;i<SNELKNOPPEN.length;i++){
-    var s=SNELKNOPPEN[i];
-    snelHTML+='<button class="snel-btn" onclick="openSnelProbleem(\''+s.zoek+'\')">'+s.label+'</button>';
+
+// ── PROBLEEMSTELLINGEN ────────────────────────────────────────────────────
+
+var OPERATORS = ['Dirk', 'Casper'];
+
+function toonNaamDropdown() {
+  var input = document.getElementById('f-versie');
+  var dd = document.getElementById('naam-dropdown');
+  var val = input.value.toLowerCase();
+  var gefilterd = OPERATORS.filter(function(n){ return n.toLowerCase().indexOf(val) >= 0; });
+  if(!gefilterd.length){ dd.style.display='none'; return; }
+  dd.innerHTML = gefilterd.map(function(n){
+    return '<div onclick="kiesOperator(\'' + n + '\')" style="padding:13px 14px;cursor:pointer;font-size:17px;border-bottom:1px solid #1a2540;color:#e5e7eb;" onmousedown="event.preventDefault()">' + n + '</div>';
+  }).join('');
+  dd.style.display = 'block';
+}
+
+function sluitNaamDropdown() {
+  document.getElementById('naam-dropdown').style.display = 'none';
+}
+
+function kiesOperator(naam) {
+  document.getElementById('f-versie').value = naam;
+  sluitNaamDropdown();
+}
+
+var PROBLEEMGROEPEN = [
+  {
+    id:'wissel', icon:'&#128260;', kleur:'#60a5fa',
+    vraag:'Waarom wisselt hij niet goed?',
+    omschrijving:'De machine wisselt niet correct naar een nieuwe rol',
+    problemen:[
+      {titel:'Halve zak op de nieuwe rol',
+        oorzaken:[
+          'Offset 1 staat verkeerd ingesteld',
+          'Rolwissel timing klopt niet',
+          'Perforatie positie staat niet goed'
+        ],
+        oplossingen:[
+          'Offset opnieuw berekenen via de Calculator',
+          'Rolwissel cyclus controleren en bijstellen',
+          'Perforatie positie controleren en corrigeren'
+        ]},
+      {titel:'Wissel breekt of laat los',
+        oorzaken:[
+          'Folie heeft een slappe kant',
+          'Drukker laat te vroeg los aan het einde van de wissel',
+          'Roldiameter bij de wissel is te klein',
+          'Machinesnelheid is te hoog tijdens de wissel'
+        ],
+        oplossingen:[
+          'Static charger instellen op Einde van de rol',
+          'Roldiameter bij de wissel verhogen',
+          'Machinesnelheid verlagen tijdens de wissel',
+          'Hekje controleren en bijstellen'
+        ]},
+      {titel:'Rol bouwt niet strak op',
+        oorzaken:[
+          'Winder koppel staat te laag',
+          'Drukrol staat te laag afgesteld',
+          'Foliespanning is te laag'
+        ],
+        oplossingen:[
+          'Winder koppel verhogen',
+          'Drukrol opnieuw afstellen',
+          'Dancer spanning verhogen'
+        ]},
+      {titel:'Rol loopt scheef op de winder',
+        oorzaken:[
+          'Folie loopt niet gecentreerd',
+          'Winder spanning staat ongelijk'
+        ],
+        oplossingen:[
+          'Folie centreren voor de winder',
+          'Winder koppel controleren en aanpassen'
+        ]}
+    ]
+  },
+  {
+    id:'seal', icon:'&#9632;', kleur:'#f59e0b',
+    vraag:'Waarom sealt hij niet goed?',
+    omschrijving:'De sealnaad is niet in orde',
+    problemen:[
+      {titel:'Seal breekt open na het sealen',
+        oorzaken:[
+          'Sealtemperatuur staat te laag',
+          'Sealtijd is te kort',
+          'Sealdruk staat te laag'
+        ],
+        oplossingen:[
+          'Temperatuur verhogen (controleer recept)',
+          'Sealtijd verlengen',
+          'Sealdruk controleren en verhogen'
+        ]},
+      {titel:'Seal verbrandt of PTFE tape is beschadigd',
+        oorzaken:[
+          'Sealtemperatuur staat te hoog',
+          'Sealtijd is te lang',
+          'PTFE tape is beschadigd of versleten'
+        ],
+        oplossingen:[
+          'Temperatuur verlagen',
+          'Sealtijd verkorten',
+          'PTFE tape vervangen'
+        ]},
+      {titel:'Seal is uitgerekt of vervormd',
+        oorzaken:[
+          'Folie staat te strak in de neutrale zone',
+          'Koeltijd is te kort',
+          'Niprollen trekken te vroeg aan'
+        ],
+        oplossingen:[
+          'Niproldruk verlagen',
+          'Koeltijd verhogen',
+          'Temperatuur iets verlagen'
+        ]}
+    ]
+  },
+  {
+    id:'niprollen', icon:'&#8651;', kleur:'#a78bfa',
+    vraag:'Waarom kan de folie om de niprollen draaien?',
+    omschrijving:'Folie wikkelt zich om de niprollen of voeringsrollen',
+    problemen:[
+      {titel:'Folie wikkelt zich om de niprollen',
+        oorzaken:[
+          'Sealtemperatuur staat te hoog waardoor de folie te zacht is',
+          'Sealtijd is te lang',
+          'Folie wordt te warm bij de niprollen',
+          'Koeling werkt niet goed'
+        ],
+        oplossingen:[
+          'Sealtemperatuur verlagen',
+          'Sealtijd verkorten',
+          'Koeling controleren op werking',
+          'Folie afkoelen voor de niprollen'
+        ]},
+      {titel:'Folie slip op de niprollen',
+        oorzaken:[
+          'Niprollen zijn vuil of vettig',
+          'Nip druk staat te laag'
+        ],
+        oplossingen:[
+          'Niprollen reinigen',
+          'Nip druk verhogen'
+        ]},
+      {titel:'Zaklengte varieert',
+        oorzaken:[
+          'Encoder slip op de niprollen',
+          'Niprollen zijn vuil',
+          'Foliespanning wisselt'
+        ],
+        oplossingen:[
+          'Niprollen reinigen',
+          'Encoder controleren',
+          'Foliespanning controleren en stabiliseren'
+        ]}
+    ]
+  },
+  {
+    id:'plooien', icon:'&#9699;', kleur:'#fb923c',
+    vraag:'Verwijderen van plooien',
+    omschrijving:'Folie vertoont plooien of kreukels',
+    problemen:[
+      {titel:'Folie loopt scheef en geeft plooien',
+        oorzaken:[
+          'Moederrol staat niet gecentreerd op de afroller',
+          'Invoerrollen staan niet loodrecht',
+          'Foliespanning is ongelijk over de breedte',
+          'Dancer staat verkeerd afgesteld'
+        ],
+        oplossingen:[
+          'Moederrol centreren op de afroller',
+          'Invoerrollen uitlijnen',
+          'Folie centreren via het hekje',
+          'Dancer opnieuw afstellen'
+        ]},
+      {titel:'Slappe kant in de folie geeft plooien',
+        oorzaken:[
+          'Foliedikte is ongelijk over de breedte',
+          'Winding op de moederrol is ongelijk',
+          'Bij recyclefolie: minder uniformiteit'
+        ],
+        oplossingen:[
+          'Static charger instellen op Altijd aan',
+          'Hekje strakker afstellen aan de slappe zijde',
+          'Machinesnelheid verlagen',
+          'Andere moederrol proberen'
+        ]},
+      {titel:'Plooien in de sealzone',
+        oorzaken:[
+          'Folie staat te strak voor de seal',
+          'Folie loopt scheef naar de seal'
+        ],
+        oplossingen:[
+          'Foliespanning voor de seal controleren',
+          'Geleidingsrollen voor de seal uitlijnen',
+          'Sealdruk controleren'
+        ]}
+    ]
+  },
+  {
+    id:'uitsparing', icon:'&#9633;', kleur:'#34d399',
+    vraag:'Het maken van een uitsparing',
+    omschrijving:'Instellen en produceren van zakken met uitsparing',
+    problemen:[
+      {titel:'Uitsparing staat niet op de juiste positie',
+        oorzaken:[
+          'Offset staat niet correct ingesteld',
+          'Perforatie positie klopt niet ten opzichte van de uitsparing',
+          'Folie loopt tijdens productie iets scheef'
+        ],
+        oplossingen:[
+          'Offset opnieuw instellen en controleren',
+          'Perforatie positie corrigeren',
+          'Folie centreren en hekje bijstellen'
+        ]},
+      {titel:'Uitsparing is niet gelijkmatig',
+        oorzaken:[
+          'Uitsparing mes staat scheef',
+          'Foliespanning wisselt',
+          'Machinesnelheid is te hoog'
+        ],
+        oplossingen:[
+          'Uitsparing mes controleren en uitlijnen',
+          'Foliespanning stabiliseren',
+          'Machinesnelheid iets verlagen'
+        ]},
+      {titel:'Folie scheurt bij de uitsparing',
+        oorzaken:[
+          'Uitsparing te diep gesneden',
+          'Folie kwaliteit is wisselend',
+          'Mes is bot of beschadigd'
+        ],
+        oplossingen:[
+          'Snijdiepte verminderen',
+          'Moederrol controleren op kwaliteit',
+          'Mes vervangen'
+        ]}
+    ]
+  },
+  {
+    id:'static', icon:'&#9889;', kleur:'#facc15',
+    vraag:'Static charger instelling',
+    omschrijving:'Instelling van de static charger voor goede rolvorming',
+    problemen:[
+      {titel:'Folie plakt aan de rollen',
+        oorzaken:[
+          'Te veel statische lading op de folie',
+          'Luchtvochtigheid in de ruimte is te laag',
+          'Static charger staat te hoog ingesteld'
+        ],
+        oplossingen:[
+          'Static charger uitschakelen of verlagen',
+          'Ionisatie balk controleren op werking',
+          'Luchtvochtigheid in de ruimte controleren'
+        ]},
+      {titel:'Rol vormt niet goed door statische lading',
+        oorzaken:[
+          'PE of PP is slecht geleidend materiaal',
+          'Droge omgeving vergroot statische lading',
+          'Recyclefolie heeft onregelmatig oppervlak'
+        ],
+        oplossingen:[
+          'Einde van de rol: static instellen op Einde van de rol',
+          'Slappe folie: static instellen op Altijd aan',
+          'Static charger reinigen en controleren'
+        ]},
+      {titel:'Wissel mislukt door statische aantrekking',
+        oorzaken:[
+          'Folie trekt statisch aan de nieuwe rolkern',
+          'Static charger staat op verkeerde stand'
+        ],
+        oplossingen:[
+          'Static instellen op Einde van de rol',
+          'Timing van de static charger controleren'
+        ]}
+    ]
   }
-  snelHTML+='</div>';
-  var catHTML='<div class="cat-row"><button class="cat-btn'+((!actieveCat)?' active':'')+'" onclick="setCat(null)">Alle</button>';
-  for(var c=0;c<CATS.length;c++){
-    catHTML+='<button class="cat-btn'+(actieveCat===CATS[c]?' active':'')+'" onclick="setCat(\''+CATS[c]+'\')">'+CATS[c]+'</button>';
-  }
-  catHTML+='</div>';
-  var gefilterd=actieveCat?PROBLEMEN.filter(function(p){return p.cat===actieveCat;}):PROBLEMEN;
-  var kaartenHTML='';
-  for(var pi=0;pi<gefilterd.length;pi++){
-    var p=gefilterd[pi];
-    var oo='',op='';
-    for(var oi=0;oi<p.oorzaken.length;oi++) oo+='<li>'+p.oorzaken[oi]+'</li>';
-    for(var si=0;si<p.oplossingen.length;si++) op+='<li>'+p.oplossingen[si]+'</li>';
-    kaartenHTML+='<div class="trouble-card" id="pc-'+pi+'">' +
-      '<div class="tc-hdr" onclick="toggleProbleem('+pi+')" style="border-left-color:'+p.kleur+'">' +
-        '<div style="flex:1;"><div class="tc-cat" style="color:'+p.kleur+'">'+p.cat+'</div><div class="tc-prob">'+p.titel+'</div></div>' +
-        '<span class="tc-chev">&#8250;</span>' +
+];
+
+function renderFlow() {
+  var el = document.getElementById('flow-content');
+  var html = '<div style="font-size:11px;color:#6b7280;margin-bottom:16px;line-height:1.7;">Kies een probleemstelling. Tik daarna op het probleem voor de oorzaak en oplossing.</div>';
+
+  for(var i=0;i<PROBLEEMGROEPEN.length;i++){
+    var g = PROBLEEMGROEPEN[i];
+    html += '<div class="flow-step" id="fs-'+i+'">' +
+      '<div class="flow-step-hdr" onclick="toggleFlowStep('+i+')">' +
+        '<div class="flow-step-num" style="background:'+g.kleur+';font-size:20px;">'+g.icon+'</div>' +
+        '<div class="flow-step-info">' +
+          '<div class="flow-step-naam">'+g.vraag+'</div>' +
+          '<div class="flow-step-desc">'+g.omschrijving+'</div>' +
+        '</div>' +
+        '<span class="flow-step-chev" id="fsc-'+i+'">&#8250;</span>' +
       '</div>' +
-      '<div class="tc-body" id="tb-'+pi+'">' +
-        '<div class="ts-glbl ts-cause">Oorzaken</div><ul class="ts-list ts-cause">'+oo+'</ul>' +
-        '<div class="ts-glbl ts-solution">Oplossingen</div><ul class="ts-list ts-solution">'+op+'</ul>' +
-      '</div>' +
-    '</div>';
-  }
-  el.innerHTML=snelHTML+catHTML+kaartenHTML;
-}
+      '<div class="flow-body" id="fb-'+i+'">';
 
-function setCat(cat) {
-  actieveCat=(actieveCat===cat)?null:cat;
-  renderProblemen();
-}
+    for(var p=0;p<g.problemen.length;p++){
+      var pr = g.problemen[p];
+      var pid = 'fp-'+i+'-'+p;
+      html += '<div class="flow-prob">' +
+        '<div class="flow-prob-titel" onclick="toggleFlowProb(\''+pid+'\')">' +
+          '<span>'+pr.titel+'</span><span style="color:#374151;font-size:16px;">&#8250;</span>' +
+        '</div>' +
+        '<div class="flow-prob-body" id="'+pid+'">';
 
-function toggleProbleem(i) {
-  document.getElementById('tb-'+i).classList.toggle('open');
-}
+      html += '<div class="flow-check-lbl" style="color:#facc15;">Oorzaak</div><ul class="flow-items">';
+      for(var oi=0;oi<pr.oorzaken.length;oi++)
+        html += '<li style="border-color:rgba(250,204,21,.2);"><span style="color:#facc15;">&#9656;</span>'+pr.oorzaken[oi]+'</li>';
+      html += '</ul>';
 
-function openSnelProbleem(zoek) {
-  actieveCat = null;
-  renderProblemen();
-  var zoekl = zoek.toLowerCase();
-  for(var i=0;i<PROBLEMEN.length;i++){
-    if(PROBLEMEN[i].titel.toLowerCase().indexOf(zoekl)>=0){
-      document.getElementById('tb-'+i).classList.add('open');
-      setTimeout(function(idx){
-        var el=document.getElementById('pc-'+idx);
-        if(el) el.scrollIntoView({behavior:'smooth',block:'start'});
-      }, 100, i);
-      break;
+      html += '<div class="flow-check-lbl" style="color:#34d399;margin-top:12px;">Oplossing</div><ul class="flow-items">';
+      for(var ci=0;ci<pr.oplossingen.length;ci++)
+        html += '<li style="border-color:rgba(52,211,153,.2);"><span style="color:#34d399;">&#10003;</span>'+pr.oplossingen[ci]+'</li>';
+      html += '</ul>';
+
+      html += '</div></div>';
     }
+
+    html += '</div></div>';
+    if(i < PROBLEEMGROEPEN.length-1)
+      html += '<div style="text-align:center;color:#1a2540;font-size:16px;margin:4px 0;">&#9135;</div>';
   }
+
+  el.innerHTML = html;
+}
+
+function toggleFlowStep(i) {
+  var body = document.getElementById('fb-'+i);
+  var chev = document.getElementById('fsc-'+i);
+  var open = body.classList.contains('open');
+  body.classList.toggle('open', !open);
+  chev.style.transform = open ? '' : 'rotate(90deg)';
+  chev.style.color = open ? '#374151' : '#f59e0b';
+}
+
+function toggleFlowProb(id) {
+  document.getElementById(id).classList.toggle('open');
 }
 
 checkLogin();
-renderProblemen();
 </script>
 
+<!-- PIN MODAL -->
+
+<div id="pin-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:9000;align-items:center;justify-content:center;padding:24px;">
+  <div style="background:#0f1520;border:1px solid #1a2540;border-top:2px solid #ef4444;border-radius:6px;padding:28px 24px;width:100%;max-width:300px;">
+    <div style="font-size:9px;color:#ef4444;letter-spacing:3px;text-transform:uppercase;margin-bottom:6px;">Beveiligd</div>
+    <div style="font-weight:700;font-size:18px;letter-spacing:1px;color:#e5e7eb;margin-bottom:4px;">Pincode vereist</div>
+    <div style="font-size:12px;color:#6b7280;margin-bottom:20px;">Voer de pincode in om te verwijderen</div>
+    <input id="pin-input" type="password" inputmode="numeric" maxlength="6"
+      placeholder="· · · · · ·"
+      onkeydown="if(event.key==='Enter')bevestigPin()"
+      style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:28px;padding:14px;outline:none;text-align:center;letter-spacing:8px;margin-bottom:8px;">
+    <div id="pin-err" style="display:none;color:#ef4444;font-size:11px;letter-spacing:1px;text-align:center;margin-bottom:10px;">VERKEERDE PINCODE</div>
+    <button onclick="bevestigPin()" style="width:100%;background:#ef4444;color:#fff;border:none;border-radius:4px;font-family:'Courier New',Courier,monospace;font-weight:700;font-size:15px;letter-spacing:2px;padding:14px;cursor:pointer;margin-bottom:10px;">VERWIJDEREN</button>
+    <button onclick="sluitPinModal()" style="width:100%;background:transparent;color:#6b7280;border:1px solid #1a2540;border-radius:4px;font-family:'Courier New',Courier,monospace;font-size:13px;padding:12px;cursor:pointer;">Annuleer</button>
+  </div>
+</div>
 </body>
 </html>
