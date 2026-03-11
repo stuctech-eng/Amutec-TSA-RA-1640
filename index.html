@@ -214,22 +214,58 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
     <div class="topbar-title" id="nieuw-title">Nieuw Recept</div>
   </div>
   <div class="content">
-    <div class="form-card">
-      <div class="form-card-title">Klant & Product</div>
-      <div class="grid2">
-        <div class="field"><label>Klantnummer</label><input id="f-klantnr" type="text" placeholder="bv. 1001"></div>
-        <div class="field"><label>Klantnaam</label><input id="f-klantnaam" type="text" placeholder="bv. ACME BV"></div>
-      </div>
-      <div class="grid2">
-        <div class="field"><label>Producttype</label>
-          <select id="f-prodtype"><option>Zak</option><option>Hoes</option><option>Vel</option><option>Krimpfolie</option><option>Uitsparing</option><option>Andere</option></select>
-        </div>
-        <div class="field"><label>Omschrijving</label><input id="f-prodoms" type="text" placeholder="bv. draagtas"></div>
-      </div>
-      <div class="field"><label>Naam operator</label><input id="f-versie" type="text" placeholder="v1.0"></div>
-    </div>
 
 ```
+<!-- AI FOTO SCAN -->
+<div class="form-card" style="border-top-color:#60a5fa;">
+  <div class="form-card-title" style="color:#60a5fa;">AI Foto Scan — Touchscreen</div>
+  <div style="font-size:12px;color:#6b7280;margin-bottom:12px;line-height:1.6;">Maak foto's van het touchscreen. Claude leest de waarden en vult de velden automatisch in.</div>
+
+  <!-- API Key -->
+  <div class="field" style="margin-bottom:12px;">
+    <label style="color:#60a5fa;">Anthropic API Key</label>
+    <input id="api-key-input" type="password" placeholder="sk-ant-..." 
+      style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:14px;padding:10px 14px;outline:none;"
+      oninput="API_KEY=this.value;sessionStorage.setItem('anthropic_key',this.value);">
+    <div style="font-size:10px;color:#374151;margin-top:4px;">Eenmalig invullen — wordt onthouden tot je Safari sluit. Haal key op via console.anthropic.com</div>
+  </div>
+
+  <!-- Upload zone -->
+  <div id="foto-zone" onclick="document.getElementById('foto-input').click()"
+    style="border:2px dashed #1a2540;border-radius:6px;padding:20px;text-align:center;cursor:pointer;margin-bottom:10px;transition:border-color .2s;">
+    <div style="font-size:32px;margin-bottom:6px;">📷</div>
+    <div style="font-size:13px;color:#60a5fa;font-weight:700;">Tik om foto's te kiezen</div>
+    <div style="font-size:11px;color:#6b7280;margin-top:4px;">Meerdere foto's mogelijk</div>
+  </div>
+  <input id="foto-input" type="file" accept="image/*" multiple style="display:none;" onchange="fotoGekozen(event)">
+
+  <!-- Preview foto's -->
+  <div id="foto-previews" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;"></div>
+
+  <!-- Scan knop -->
+  <button id="scan-btn" onclick="scanFotos()" style="display:none;width:100%;background:#60a5fa;color:#000;border:none;border-radius:4px;font-family:'Courier New',Courier,monospace;font-weight:700;font-size:15px;letter-spacing:1px;padding:13px;cursor:pointer;">
+    &#9889; Analyseer met AI
+  </button>
+
+  <!-- Status -->
+  <div id="scan-status" style="display:none;margin-top:10px;padding:10px 14px;background:#070a10;border:1px solid #1a2540;border-radius:4px;font-size:12px;color:#6b7280;line-height:1.6;"></div>
+</div>
+
+<div class="form-card">
+  <div class="form-card-title">Klant & Product</div>
+  <div class="grid2">
+    <div class="field"><label>Klantnummer</label><input id="f-klantnr" type="text" placeholder="bv. 1001"></div>
+    <div class="field"><label>Klantnaam</label><input id="f-klantnaam" type="text" placeholder="bv. ACME BV"></div>
+  </div>
+  <div class="grid2">
+    <div class="field"><label>Producttype</label>
+      <select id="f-prodtype"><option>Zak</option><option>Hoes</option><option>Vel</option><option>Krimpfolie</option><option>Uitsparing</option><option>Andere</option></select>
+    </div>
+    <div class="field"><label>Omschrijving</label><input id="f-prodoms" type="text" placeholder="bv. draagtas"></div>
+  </div>
+  <div class="field"><label>Naam operator</label><input id="f-versie" type="text" placeholder="v1.0"></div>
+</div>
+
 <div class="form-card">
   <div class="form-card-title">Materiaal</div>
   <div class="field">
@@ -348,6 +384,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 
 var FB_URL = 'https://amutec-tsa-ra-1640-default-rtdb.europe-west1.firebasedatabase.app';
 var APP_PW = 'tsa1600';
+var API_KEY = sessionStorage.getItem('anthropic_key') || '';
 
 var MATERIALEN = {
   'peld':         {label:'PE-LD virgin',  temp_b:157,temp_o:154,sv:1.00,st:1.00,recycle:false},
@@ -414,6 +451,181 @@ var drukkerAan = false;
 var editKey = null;
 var actieveCat = null;
 var _recepten = [];
+var gekozenFotos = [];
+
+function fotoGekozen(event) {
+  var files = Array.from(event.target.files);
+  if(!files.length) return;
+  gekozenFotos = files;
+  var prev = document.getElementById('foto-previews');
+  prev.innerHTML = '';
+  files.forEach(function(file, i) {
+    var url = URL.createObjectURL(file);
+    var div = document.createElement('div');
+    div.style.cssText = 'position:relative;display:inline-block;';
+    div.innerHTML = '<img src="'+url+'" style="width:72px;height:72px;object-fit:cover;border-radius:4px;border:2px solid #1a2540;">' +
+      '<div style="position:absolute;top:-5px;right:-5px;background:#ef4444;border-radius:50%;color:#fff;width:18px;height:18px;font-size:11px;cursor:pointer;line-height:18px;text-align:center;" onclick="verwijderFoto('+i+')">x</div>';
+    prev.appendChild(div);
+  });
+  document.getElementById('scan-btn').style.display = 'block';
+  document.getElementById('foto-zone').style.borderColor = '#60a5fa';
+  document.getElementById('scan-status').style.display = 'none';
+}
+
+function verwijderFoto(i) {
+  gekozenFotos.splice(i, 1);
+  var prev = document.getElementById('foto-previews');
+  prev.innerHTML = '';
+  if(gekozenFotos.length === 0) {
+    document.getElementById('scan-btn').style.display = 'none';
+    document.getElementById('foto-zone').style.borderColor = '#1a2540';
+    document.getElementById('foto-input').value = '';
+    return;
+  }
+  gekozenFotos.forEach(function(file, j) {
+    var url = URL.createObjectURL(file);
+    var div = document.createElement('div');
+    div.style.cssText = 'position:relative;display:inline-block;';
+    div.innerHTML = '<img src="'+url+'" style="width:72px;height:72px;object-fit:cover;border-radius:4px;border:2px solid #1a2540;">' +
+      '<div style="position:absolute;top:-5px;right:-5px;background:#ef4444;border-radius:50%;color:#fff;width:18px;height:18px;font-size:11px;cursor:pointer;line-height:18px;text-align:center;" onclick="verwijderFoto('+j+')">x</div>';
+    prev.appendChild(div);
+  });
+}
+
+function fileToBase64(file) {
+  return new Promise(function(resolve, reject) {
+    var reader = new FileReader();
+    reader.onload = function(e) { resolve(e.target.result.split(',')[1]); };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+async function scanFotos() {
+  if(!gekozenFotos.length) return;
+  if(!API_KEY) {
+    alert('Vul eerst je Anthropic API key in.');
+    document.getElementById('api-key-input').focus();
+    return;
+  }
+  var btn = document.getElementById('scan-btn');
+  var status = document.getElementById('scan-status');
+  btn.textContent = 'Bezig...';
+  btn.disabled = true;
+  status.style.display = 'block';
+  status.style.color = '#60a5fa';
+  status.textContent = 'Foto\'s uploaden en analyseren... even geduld';
+
+  try {
+    // Bouw messages array met alle foto's
+    var content = [];
+    for(var i=0; i<gekozenFotos.length; i++) {
+      var b64 = await fileToBase64(gekozenFotos[i]);
+      var mime = gekozenFotos[i].type || 'image/jpeg';
+      content.push({ type: 'image', source: { type: 'base64', media_type: mime, data: b64 }});
+      content.push({ type: 'text', text: 'Foto ' + (i+1) + ' van het machine touchscreen.' });
+    }
+    content.push({ type: 'text', text: `Je bent een expert in zakkenmaak machines (AMUTEC TSA D-Roller 1600). 
+Analyseer de foto('s) van het touchscreen en extraheer alle zichtbare machine-instellingen en receptgegevens.
+
+Geef je antwoord ALLEEN als geldig JSON object, zonder uitleg, zonder markdown:
+{
+  "klantnr": "",
+  "klantnaam": "",
+  "prodtype": "",
+  "prodoms": "",
+  "versie": "",
+  "materiaal": "",
+  "breedte": "",
+  "lengte": "",
+  "dikte": "",
+  "koker": "",
+  "roldia": "",
+  "seal": "",
+  "snelheid": "",
+  "zakmin": "",
+  "zakrol": "",
+  "static_ch": "",
+  "temp_boven": "",
+  "temp_onder": "",
+  "notities": ""
+}
+
+Regels:
+- Vul alleen in wat zichtbaar is op het scherm
+- Laat leeg ("") wat niet zichtbaar is
+- materiaal: gebruik een van: peld, lldpe, ldpe, pehd, pp, andere, recycle-mix, recycle-peld, recycle-pehd
+- static_ch: gebruik Off, Always-on, of End-of-roll
+- Alleen getallen bij numerieke velden (geen eenheden)
+- notities: beschrijf wat je ziet maar niet in andere velden past`
+    });
+
+    var response = await fetch('https://corsproxy.io/?url=https%3A%2F%2Fapi.anthropic.com%2Fv1%2Fmessages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': API_KEY, 'anthropic-version': '2023-06-01' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: content }]
+      })
+    });
+
+    var data = await response.json();
+    var text = data.content && data.content[0] ? data.content[0].text : '';
+
+    // Strip eventuele markdown
+    text = text.replace(/```json/g,'').replace(/```/g,'').trim();
+    var gevonden = JSON.parse(text);
+
+    // Vul velden in
+    var mapping = {
+      'klantnr':'f-klantnr','klantnaam':'f-klantnaam','prodoms':'f-prodoms',
+      'versie':'f-versie','breedte':'f-breedte','lengte':'f-lengte','dikte':'f-dikte',
+      'koker':'f-koker','roldia':'f-roldia','seal':'f-seal','snelheid':'f-snelheid',
+      'zakmin':'f-zakmin','zakrol':'f-zakrol','temp_boven':'f-temp-boven',
+      'temp_onder':'f-temp-onder','notities':'f-notities'
+    };
+    var ingevuld = [];
+    for(var key in mapping) {
+      if(gevonden[key] && gevonden[key] !== '') {
+        var el = document.getElementById(mapping[key]);
+        if(el) { el.value = gevonden[key]; ingevuld.push(key); }
+      }
+    }
+
+    // Producttype
+    if(gevonden.prodtype) {
+      var sel = document.getElementById('f-prodtype');
+      for(var o=0; o<sel.options.length; o++) {
+        if(sel.options[o].value.toLowerCase() === gevonden.prodtype.toLowerCase()) {
+          sel.selectedIndex = o; break;
+        }
+      }
+    }
+
+    // Materiaal
+    if(gevonden.materiaal && MATERIALEN[gevonden.materiaal]) {
+      selectMat(gevonden.materiaal);
+    }
+
+    // Static charger
+    if(gevonden.static_ch) selectStatic(gevonden.static_ch);
+
+    // Herbereken
+    herbereken();
+
+    status.style.color = '#34d399';
+    status.textContent = '✓ ' + ingevuld.length + ' velden ingevuld. Controleer en pas aan waar nodig.';
+    btn.textContent = '✓ Klaar — opnieuw scannen';
+    btn.disabled = false;
+
+  } catch(e) {
+    status.style.color = '#ef4444';
+    status.textContent = 'Fout bij analyseren. Probeer opnieuw. (' + e.message + ')';
+    btn.textContent = 'Opnieuw proberen';
+    btn.disabled = false;
+  }
+}
 
 function go(id) {
   var screens = document.querySelectorAll('.screen');
@@ -752,6 +964,9 @@ function toggleProbleem(i) {
 
 checkLogin();
 renderProblemen();
+// Herstel API key in veld
+var savedKey = sessionStorage.getItem('anthropic_key');
+if(savedKey) { var kf = document.getElementById('api-key-input'); if(kf) kf.value = savedKey; }
 </script>
 
 </body>
