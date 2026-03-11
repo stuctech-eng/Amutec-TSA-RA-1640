@@ -235,7 +235,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
     style="border:2px dashed #1a2540;border-radius:6px;padding:20px;text-align:center;cursor:pointer;margin-bottom:10px;transition:border-color .2s;">
     <div style="font-size:32px;margin-bottom:6px;">📷</div>
     <div style="font-size:13px;color:#60a5fa;font-weight:700;">Tik om foto's te kiezen</div>
-    <div style="font-size:11px;color:#6b7280;margin-top:4px;">Meerdere foto's mogelijk</div>
+    <div style="font-size:11px;color:#6b7280;margin-top:4px;">Max 3 foto's per keer</div>
   </div>
   <input id="foto-input" type="file" accept="image/*" multiple style="display:none;" onchange="fotoGekozen(event)">
 
@@ -456,6 +456,11 @@ var gekozenFotos = [];
 function fotoGekozen(event) {
   var files = Array.from(event.target.files);
   if(!files.length) return;
+  // Max 3 foto's
+  if(files.length > 3) {
+    files = files.slice(0, 3);
+    toast('Max 3 foto\'s tegelijk — eerste 3 gekozen', true);
+  }
   gekozenFotos = files;
   var prev = document.getElementById('foto-previews');
   prev.innerHTML = '';
@@ -494,10 +499,24 @@ function verwijderFoto(i) {
 
 function fileToBase64(file) {
   return new Promise(function(resolve, reject) {
-    var reader = new FileReader();
-    reader.onload = function(e) { resolve(e.target.result.split(',')[1]); };
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
+    var img = new Image();
+    var url = URL.createObjectURL(file);
+    img.onload = function() {
+      // Verklein naar max 800px breed
+      var maxW = 800;
+      var w = img.width, h = img.height;
+      if(w > maxW) { h = Math.round(h * maxW / w); w = maxW; }
+      var canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      var ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, w, h);
+      // Kwaliteit 0.7 = goed genoeg voor tekst lezen
+      var b64 = canvas.toDataURL('image/jpeg', 0.7).split(',')[1];
+      URL.revokeObjectURL(url);
+      resolve(b64);
+    };
+    img.onerror = reject;
+    img.src = url;
   });
 }
 
