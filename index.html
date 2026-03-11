@@ -570,12 +570,34 @@ Regels:
       })
     });
 
-    var data = await response.json();
+    var rawText = await response.text();
+
+    // Toon raw response voor debug
+    status.textContent = 'Response ontvangen, verwerken...';
+
+    var data;
+    try { data = JSON.parse(rawText); }
+    catch(pe) {
+      throw new Error('Server gaf geen geldig antwoord: ' + rawText.substring(0,200));
+    }
+
+    if(data.error) {
+      throw new Error('API fout: ' + (data.error.message || JSON.stringify(data.error)));
+    }
+
     var text = data.content && data.content[0] ? data.content[0].text : '';
+    if(!text) throw new Error('Leeg antwoord van API. Response: ' + JSON.stringify(data).substring(0,200));
 
     // Strip eventuele markdown
     text = text.replace(/```json/g,'').replace(/```/g,'').trim();
-    var gevonden = JSON.parse(text);
+
+    // Haal JSON uit tekst als het niet puur JSON is
+    var jsonMatch = text.match(/\{[\s\S]*\}/);
+    if(jsonMatch) text = jsonMatch[0];
+
+    var gevonden;
+    try { gevonden = JSON.parse(text); }
+    catch(je) { throw new Error('Kan JSON niet lezen: ' + text.substring(0,200)); }
 
     // Vul velden in
     var mapping = {
