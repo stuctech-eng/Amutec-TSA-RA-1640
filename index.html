@@ -674,12 +674,18 @@ function fbPost(pad, obj, cb) {
 }
 
 function fbDelete(pad, key, cb) {
-  fetch(FB_URL+pad+'/'+key+'.json',{method:'DELETE'})
+  var url = FB_URL+pad+'/'+key+'.json';
+  toast('Verwijderen: '+key.substring(0,8)+'...');
+  fetch(url, {method:'DELETE'})
     .then(function(r){
-      if(r.ok){ if(cb)cb(); }
-      else{ toast('Fout bij verwijderen',true); }
+      if(r.ok){
+        toast('Verwijderd OK');
+        if(cb) cb();
+      } else {
+        r.text().then(function(t){ toast('Firebase fout: '+r.status+' '+t.substring(0,40), true); });
+      }
     })
-    .catch(function(e){ toast('Verbindingsfout',true); });
+    .catch(function(e){ toast('Fetch fout: '+e.message, true); });
 }
 
 function fbPatch(pad, key, obj, cb) {
