@@ -1273,6 +1273,22 @@ function toggleFlowProb(id) {
   document.getElementById(id).classList.toggle('open');
 }
 
+
+var APP_VERSION = '1.6';
+
+function checkVersie() {
+  fetch('version.json?t=' + Date.now())
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      if(data.version && data.version !== APP_VERSION) {
+        // Nieuwe versie beschikbaar - hard reload
+        window.location.href = window.location.pathname + '?v=' + data.version;
+      }
+    })
+    .catch(function(){});
+}
+
+checkVersie();
 checkLogin();
 </script>
 
