@@ -171,7 +171,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
       <div id="login-err" style="display:none;color:#ef4444;font-size:10px;text-align:center;margin-bottom:10px;letter-spacing:2px;">ONGELDIG WACHTWOORD</div>
       <button onclick="doLogin()" style="width:100%;background:#f59e0b;color:#000;border:none;border-radius:4px;font-family:'Courier New',Courier,monospace;font-weight:700;font-size:18px;letter-spacing:3px;text-transform:uppercase;padding:15px;cursor:pointer;">INLOGGEN</button>
       <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:12px;">Wachtwoord: <span style="color:#f59e0b;">tsa1600</span></div>
-      <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:8px;letter-spacing:2px;">v1.6 — 2026-03-12</div>
+      <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:8px;letter-spacing:2px;">v1.8 — 2026-03-12</div>
     </div>
   </div>
 </div>
@@ -179,38 +179,55 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 <!-- HOME -->
 
 <div class="screen" id="s-home">
-  <div class="content" style="padding-bottom:80px;">
-    <div style="padding:24px 4px 20px;border-bottom:1px solid #1a2540;margin-bottom:20px;">
-      <div style="display:inline-block;background:#f59e0b;color:#000;font-size:9px;letter-spacing:3px;padding:4px 14px;text-transform:uppercase;margin-bottom:12px;">AMUTEC</div>
-      <div style="font-weight:700;font-size:30px;letter-spacing:2px;text-transform:uppercase;color:#e5e7eb;line-height:1.1;">TSA D-Roller<br>1600</div>
-      <div style="font-size:10px;color:#6b7280;letter-spacing:2px;margin-top:6px;">Machine Database & Recepten</div>
-      <div class="home-status"><div class="pulse"></div>SYSTEEM GEREED</div>
-    </div>
-    <div class="nav-grid">
-      <button class="nav-btn c-amber" onclick="go('s-recepten')">
-        <span class="nb-icon">&#128203;</span>
-        <div><div class="nb-label">Recepten</div><div class="nb-sub">Machine-instellingen database</div></div>
-        <span class="nb-arr">&#8250;</span>
-      </button>
+  <div style="display:flex;flex-direction:column;min-height:100dvh;padding:0 0 70px;">
 
 ```
-  <button class="nav-btn c-blue" onclick="go('s-calculator')">
-    <span class="nb-icon">&#9881;</span>
-    <div><div class="nb-label">Calculator</div><div class="nb-sub">Offset, rolwissel, roldiameter</div></div>
-    <span class="nb-arr">&#8250;</span>
+<!-- HEADER -->
+<div style="padding:28px 20px 20px;border-bottom:1px solid #1a2540;">
+  <div style="display:inline-block;background:#f59e0b;color:#000;font-size:9px;letter-spacing:3px;padding:4px 14px;text-transform:uppercase;margin-bottom:12px;">AMUTEC</div>
+  <div style="font-weight:700;font-size:34px;letter-spacing:2px;text-transform:uppercase;color:#e5e7eb;line-height:1.1;">TSA D-Roller<br>1600</div>
+  <div style="font-size:11px;color:#9ca3af;letter-spacing:2px;margin-top:6px;">Machine Database &amp; Recepten</div>
+  <div class="home-status" style="margin-top:12px;"><div class="pulse"></div>SYSTEEM GEREED</div>
+</div>
+
+<!-- NAV KNOPPEN - vullen rest van scherm -->
+<div style="flex:1;display:flex;flex-direction:column;gap:0;padding:0;">
+
+  <button onclick="go('s-recepten')" style="flex:1;background:#0f1520;border:none;border-bottom:1px solid #1a2540;border-left:5px solid #f59e0b;display:flex;align-items:center;gap:16px;padding:0 20px;cursor:pointer;text-align:left;width:100%;">
+    <div style="width:52px;height:52px;background:#0a0d14;border:1px solid #1a2540;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;">&#128203;</div>
+    <div style="flex:1;">
+      <div style="font-weight:700;font-size:22px;letter-spacing:2px;text-transform:uppercase;color:#e5e7eb;">Recepten</div>
+      <div style="font-size:12px;color:#9ca3af;margin-top:3px;">Machine-instellingen database</div>
+    </div>
+    <div style="font-size:26px;color:#f59e0b;">&#8250;</div>
   </button>
-  <button class="nav-btn" style="border-left-color:#34d399;" onclick="go('s-flow')">
-    <span class="nb-icon">&#128295;</span>
-    <div><div class="nb-label">Problemen</div><div class="nb-sub">Oorzaak & oplossing per probleem</div></div>
-    <span class="nb-arr">&#8250;</span>
+
+  <button onclick="go('s-flow')" style="flex:1;background:#0f1520;border:none;border-bottom:1px solid #1a2540;border-left:5px solid #34d399;display:flex;align-items:center;gap:16px;padding:0 20px;cursor:pointer;text-align:left;width:100%;">
+    <div style="width:52px;height:52px;background:#0a0d14;border:1px solid #1a2540;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;">&#128295;</div>
+    <div style="flex:1;">
+      <div style="font-weight:700;font-size:22px;letter-spacing:2px;text-transform:uppercase;color:#e5e7eb;">Problemen</div>
+      <div style="font-size:12px;color:#9ca3af;margin-top:3px;">Oorzaak &amp; oplossing per probleem</div>
+    </div>
+    <div style="font-size:26px;color:#34d399;">&#8250;</div>
   </button>
+
+  <button onclick="go('s-calculator')" style="flex:1;background:#0f1520;border:none;border-bottom:1px solid #1a2540;border-left:5px solid #60a5fa;display:flex;align-items:center;gap:16px;padding:0 20px;cursor:pointer;text-align:left;width:100%;">
+    <div style="width:52px;height:52px;background:#0a0d14;border:1px solid #1a2540;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;">&#9881;</div>
+    <div style="flex:1;">
+      <div style="font-weight:700;font-size:22px;letter-spacing:2px;text-transform:uppercase;color:#e5e7eb;">Calculator</div>
+      <div style="font-size:12px;color:#9ca3af;margin-top:3px;">Offset, rolwissel, roldiameter</div>
+    </div>
+    <div style="font-size:26px;color:#60a5fa;">&#8250;</div>
+  </button>
+
 </div>
 ```
 
   </div>
+
   <nav class="bottom-nav">
     <button class="bnav-btn" onclick="go('s-recepten')"><span class="bnav-icon">&#128203;</span><span class="bnav-label">Recepten</span></button>
-    <button class="bnav-btn" onclick="go('s-flow')"><span class="bnav-icon">&#9654;</span><span class="bnav-label">Problemen</span></button>
+    <button class="bnav-btn" onclick="go('s-flow')"><span class="bnav-icon">&#128295;</span><span class="bnav-label">Problemen</span></button>
     <button class="bnav-btn" onclick="go('s-calculator')"><span class="bnav-icon">&#9881;</span><span class="bnav-label">Calc</span></button>
   </nav>
 </div>
@@ -369,6 +386,15 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
   <div id="mat-info-temp" style="display:none;margin-top:10px;background:#070a10;border:1px solid rgba(96,165,250,.3);border-radius:4px;padding:8px 12px;font-size:11px;color:#60a5fa;"></div>
 </div>
 
+<div class="form-card" style="border-top-color:#60a5fa;">
+  <div class="form-card-title" style="color:#60a5fa;">Werkelijke Offset (leerdata)</div>
+  <div style="font-size:11px;color:#9ca3af;margin-bottom:12px;line-height:1.6;">Vul de offset in die op de machine werkte. De calculator leert hiervan voor toekomstige berekeningen.</div>
+  <div class="grid2">
+    <div class="field"><label>Werkelijke Offset 1</label><input id="f-offset1" type="number" placeholder="bv. 10850"></div>
+    <div class="field"><label>Werkelijke Offset 2</label><input id="f-offset2" type="number" placeholder="bv. 5425"></div>
+  </div>
+</div>
+
 <div class="form-card">
   <div class="form-card-title">Notities</div>
   <div class="field"><textarea id="f-notities" rows="3" placeholder="Opmerkingen..."></textarea></div>
@@ -482,9 +508,8 @@ var OFFSET_DATA = [
   {lengte:3500, offset:11000}
 ];
 
-function berekenOffset(lengte) {
-  if(!lengte) return 0;
-  var sorted = OFFSET_DATA.slice().sort(function(a,b){return a.lengte-b.lengte;});
+function interpoleerOffset(dataset, lengte) {
+  var sorted = dataset.slice().sort(function(a,b){return a.lengte-b.lengte;});
   var lower = sorted[0];
   var upper = sorted[sorted.length-1];
   for(var i=0;i<sorted.length;i++){
@@ -494,6 +519,37 @@ function berekenOffset(lengte) {
   if(lower.lengte === upper.lengte) return lower.offset;
   var ratio = (lengte - lower.lengte) / (upper.lengte - lower.lengte);
   return Math.round(lower.offset + ratio * (upper.offset - lower.offset));
+}
+
+function berekenOffset(lengte) {
+  if(!lengte) return 0;
+  // Combineer vaste data + geleerde data uit Firebase
+  var gecombineerd = OFFSET_DATA.slice();
+  if(window._leerdataOffset && window._leerdataOffset.length > 0) {
+    gecombineerd = gecombineerd.concat(window._leerdataOffset);
+  }
+  return interpoleerOffset(gecombineerd, lengte);
+}
+
+function laadLeerdataOffset() {
+  // Haal alle recepten op en extraheer werkelijke offsets
+  fbLoad('/recepten', function(lijst){
+    var leerdata = [];
+    for(var i=0;i<lijst.length;i++){
+      var r = lijst[i];
+      if(r.lengte && r.offset1_werke && parseFloat(r.offset1_werke) > 0){
+        leerdata.push({
+          lengte: parseFloat(r.lengte),
+          offset: parseFloat(r.offset1_werke),
+          bron: 'leerdata'
+        });
+      }
+    }
+    window._leerdataOffset = leerdata;
+    // Update calculator als die open staat
+    var cinput = document.getElementById('c-lengte');
+    if(cinput && cinput.value) calcUpdate();
+  });
 }
 
 function berekenOffset2(offset1) {
@@ -625,6 +681,7 @@ function go(id) {
   if(id==='s-calculator') btns[2] && btns[2].classList.add('active');
   if(id==='s-recepten') laadRecepten();
   if(id==='s-flow') renderFlow();
+  if(id==='s-calculator') laadLeerdataOffset();
 }
 
 function toast(msg, err) {
@@ -766,6 +823,8 @@ function slaOp() {
     temp_boven:document.getElementById('f-temp-boven').value,
     temp_onder:document.getElementById('f-temp-onder').value,
     notities:document.getElementById('f-notities').value.trim(),
+    offset1_werke:document.getElementById('f-offset1').value||'',
+    offset2_werke:document.getElementById('f-offset2').value||'',
     datum:new Date().toISOString().split('T')[0]
   };
   toast('Opslaan...');
@@ -777,7 +836,7 @@ function slaOp() {
 }
 
 function resetForm() {
-  var ids=['f-klantnr','f-klantnaam','f-prodoms','f-versie','f-breedte','f-lengte','f-dikte','f-koker','f-roldia','f-seal','f-snelheid','f-zakmin','f-zakrol','f-static-mat','f-drukker','f-temp-boven','f-temp-onder','f-notities'];
+  var ids=['f-klantnr','f-klantnaam','f-prodoms','f-versie','f-breedte','f-lengte','f-dikte','f-koker','f-roldia','f-seal','f-snelheid','f-zakmin','f-zakrol','f-static-mat','f-drukker','f-temp-boven','f-temp-onder','f-notities','f-offset1','f-offset2'];
   for(var i=0;i<ids.length;i++){var el=document.getElementById(ids[i]);if(el)el.value='';}
   document.getElementById('f-prodtype').value='Zak';
   selectMat('peld'); selectStatic('Off');
@@ -919,8 +978,8 @@ function bewerkRecept(key) {
   fbLoad('/recepten',function(lijst){
     var r=null;for(var i=0;i<lijst.length;i++){if(lijst[i]._key===key){r=lijst[i];break;}}
     if(!r) return;
-    var fields=['klantnr','klantnaam','prodoms','versie','breedte','lengte','dikte','koker','roldia','seal','snelheid','zakmin','zakrol','drukker_inst','temp_boven','temp_onder','notities'];
-    var fnames=['f-klantnr','f-klantnaam','f-prodoms','f-versie','f-breedte','f-lengte','f-dikte','f-koker','f-roldia','f-seal','f-snelheid','f-zakmin','f-zakrol','f-drukker','f-temp-boven','f-temp-onder','f-notities'];
+    var fields=['klantnr','klantnaam','prodoms','versie','breedte','lengte','dikte','koker','roldia','seal','snelheid','zakmin','zakrol','drukker_inst','temp_boven','temp_onder','notities','offset1_werke','offset2_werke'];
+    var fnames=['f-klantnr','f-klantnaam','f-prodoms','f-versie','f-breedte','f-lengte','f-dikte','f-koker','f-roldia','f-seal','f-snelheid','f-zakmin','f-zakrol','f-drukker','f-temp-boven','f-temp-onder','f-notities','f-offset1','f-offset2'];
     for(var i=0;i<fields.length;i++){var el=document.getElementById(fnames[i]);if(el)el.value=r[fields[i]]||'';}
     document.getElementById('f-prodtype').value=r.prodtype||'Zak';
     document.getElementById('f-static-mat').value=r.static_mat||'';
@@ -1274,7 +1333,7 @@ function toggleFlowProb(id) {
 }
 
 
-var APP_VERSION = '1.6';
+var APP_VERSION = '1.8';
 
 function checkVersie() {
   fetch('version.json?t=' + Date.now())
