@@ -171,7 +171,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
       <div id="login-err" style="display:none;color:#ef4444;font-size:10px;text-align:center;margin-bottom:10px;letter-spacing:2px;">ONGELDIG WACHTWOORD</div>
       <button onclick="doLogin()" style="width:100%;background:#f59e0b;color:#000;border:none;border-radius:4px;font-family:'Courier New',Courier,monospace;font-weight:700;font-size:18px;letter-spacing:3px;text-transform:uppercase;padding:15px;cursor:pointer;">INLOGGEN</button>
       <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:12px;">Wachtwoord: <span style="color:#f59e0b;">tsa1600</span></div>
-      <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:8px;letter-spacing:2px;">v1.8 — 2026-03-12</div>
+      <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:8px;letter-spacing:2px;">v2.0 — 2026-03-13</div>
     </div>
   </div>
 </div>
@@ -388,11 +388,9 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 
 <div class="form-card" style="border-top-color:#60a5fa;">
   <div class="form-card-title" style="color:#60a5fa;">Werkelijke Offset (leerdata)</div>
-  <div style="font-size:11px;color:#9ca3af;margin-bottom:12px;line-height:1.6;">Vul de offset in die op de machine werkte. De calculator leert hiervan voor toekomstige berekeningen.</div>
-  <div class="grid2">
-    <div class="field"><label>Werkelijke Offset 1</label><input id="f-offset1" type="number" placeholder="bv. 10850"></div>
-    <div class="field"><label>Werkelijke Offset 2</label><input id="f-offset2" type="number" placeholder="bv. 5425"></div>
-  </div>
+  <div style="font-size:11px;color:#9ca3af;margin-bottom:12px;line-height:1.6;">Vul de offset in die op de machine werkte. Offset 2 is altijd automatisch de helft.</div>
+  <div class="field"><label>Werkelijke Offset 1</label><input id="f-offset1" type="number" placeholder="bv. 10850"></div>
+  <div id="f-offset2-toon" style="display:none;margin-top:8px;background:#070a10;border:1px solid rgba(96,165,250,.3);border-radius:4px;padding:10px 14px;font-size:13px;color:#60a5fa;"></div>
 </div>
 
 <div class="form-card">
@@ -508,6 +506,9 @@ var OFFSET_DATA = [
   {lengte:3500, offset:11000}
 ];
 
+// ── MECHANISCHE CONSTANTEN ───────────────────────────────────────────────
+var MECH_BASIS = 10290; // mm (seal→perforatie 10mm + perforatie→hart koker 10280mm)
+
 function interpoleerOffset(dataset, lengte) {
   var sorted = dataset.slice().sort(function(a,b){return a.lengte-b.lengte;});
   var lower = sorted[0];
@@ -521,14 +522,56 @@ function interpoleerOffset(dataset, lengte) {
   return Math.round(lower.offset + ratio * (upper.offset - lower.offset));
 }
 
+function berekenFormuleOffset(lengte) {
+  // Basis = mechanische afstand
+  // Correctie = zaklengte factor (kortere zakken = minder correctie, langere = meer)
+  // Gebaseerd op dataset: correctie loopt van ~200 (korte zak) tot ~710 (lange zak)
+  // Logaritmisch want verschil wordt kleiner bij langere zakken
+  var correctie;
+  if(lengte <= 100)       correctie = 200;
+  else if(lengte >= 3500) correctie = 710;
+  else {
+    // Logaritmische interpolatie tussen 200 en 710
+    var t = Math.log(lengte / 100) / Math.log(3500 / 100);
+    correctie = Math.round(200 + t * 510);
+  }
+  return MECH_BASIS + correctie;
+}
+
 function berekenOffset(lengte) {
   if(!lengte) return 0;
-  // Combineer vaste data + geleerde data uit Firebase
-  var gecombineerd = OFFSET_DATA.slice();
-  if(window._leerdataOffset && window._leerdataOffset.length > 0) {
-    gecombineerd = gecombineerd.concat(window._leerdataOffset);
+
+  // Stap 1: formule gebaseerd op mechanische afstand
+  var formuleOffset = berekenFormuleOffset(lengte);
+
+  // Stap 2: leerdata correctie — gemiddeld verschil tussen formule en werkelijkheid
+  if(window._leerdataOffset && window._leerdataOffset.length >= 3) {
+    // Bereken gemiddelde afwijking van de formule op basis van leerdata
+    var afwijkingen = [];
+    for(var i=0;i<window._leerdataOffset.length;i++){
+      var ld = window._leerdataOffset[i];
+      var formuleVoorLd = berekenFormuleOffset(ld.lengte);
+      afwijkingen.push(ld.offset - formuleVoorLd);
+    }
+    // Gewogen gemiddelde — dichtstbijzijnde leerdata punten wegen zwaarder
+    var gewogenSom = 0, gewichtTotaal = 0;
+    for(var j=0;j<window._leerdataOffset.length;j++){
+      var ld2 = window._leerdataOffset[j];
+      var afstand = Math.abs(ld2.lengte - lengte) + 1;
+      var gewicht = 1 / afstand;
+      gewogenSom += afwijkingen[j] * gewicht;
+      gewichtTotaal += gewicht;
+    }
+    var correctieLeer = Math.round(gewogenSom / gewichtTotaal);
+    return formuleOffset + correctieLeer;
   }
-  return interpoleerOffset(gecombineerd, lengte);
+
+  // Geen leerdata: alleen formule + vaste dataset interpolatie als fallback
+  var gecombineerd = OFFSET_DATA.slice();
+  var dataOffset = interpoleerOffset(gecombineerd, lengte);
+
+  // Gemiddelde van formule en vaste dataset
+  return Math.round((formuleOffset + dataOffset) / 2);
 }
 
 function laadLeerdataOffset() {
@@ -824,7 +867,6 @@ function slaOp() {
     temp_onder:document.getElementById('f-temp-onder').value,
     notities:document.getElementById('f-notities').value.trim(),
     offset1_werke:document.getElementById('f-offset1').value||'',
-    offset2_werke:document.getElementById('f-offset2').value||'',
     datum:new Date().toISOString().split('T')[0]
   };
   toast('Opslaan...');
@@ -836,7 +878,7 @@ function slaOp() {
 }
 
 function resetForm() {
-  var ids=['f-klantnr','f-klantnaam','f-prodoms','f-versie','f-breedte','f-lengte','f-dikte','f-koker','f-roldia','f-seal','f-snelheid','f-zakmin','f-zakrol','f-static-mat','f-drukker','f-temp-boven','f-temp-onder','f-notities','f-offset1','f-offset2'];
+  var ids=['f-klantnr','f-klantnaam','f-prodoms','f-versie','f-breedte','f-lengte','f-dikte','f-koker','f-roldia','f-seal','f-snelheid','f-zakmin','f-zakrol','f-static-mat','f-drukker','f-temp-boven','f-temp-onder','f-notities','f-offset1'];
   for(var i=0;i<ids.length;i++){var el=document.getElementById(ids[i]);if(el)el.value='';}
   document.getElementById('f-prodtype').value='Zak';
   selectMat('peld'); selectStatic('Off');
@@ -978,8 +1020,8 @@ function bewerkRecept(key) {
   fbLoad('/recepten',function(lijst){
     var r=null;for(var i=0;i<lijst.length;i++){if(lijst[i]._key===key){r=lijst[i];break;}}
     if(!r) return;
-    var fields=['klantnr','klantnaam','prodoms','versie','breedte','lengte','dikte','koker','roldia','seal','snelheid','zakmin','zakrol','drukker_inst','temp_boven','temp_onder','notities','offset1_werke','offset2_werke'];
-    var fnames=['f-klantnr','f-klantnaam','f-prodoms','f-versie','f-breedte','f-lengte','f-dikte','f-koker','f-roldia','f-seal','f-snelheid','f-zakmin','f-zakrol','f-drukker','f-temp-boven','f-temp-onder','f-notities','f-offset1','f-offset2'];
+    var fields=['klantnr','klantnaam','prodoms','versie','breedte','lengte','dikte','koker','roldia','seal','snelheid','zakmin','zakrol','drukker_inst','temp_boven','temp_onder','notities','offset1_werke'];
+    var fnames=['f-klantnr','f-klantnaam','f-prodoms','f-versie','f-breedte','f-lengte','f-dikte','f-koker','f-roldia','f-seal','f-snelheid','f-zakmin','f-zakrol','f-drukker','f-temp-boven','f-temp-onder','f-notities','f-offset1'];
     for(var i=0;i<fields.length;i++){var el=document.getElementById(fnames[i]);if(el)el.value=r[fields[i]]||'';}
     document.getElementById('f-prodtype').value=r.prodtype||'Zak';
     document.getElementById('f-static-mat').value=r.static_mat||'';
@@ -994,6 +1036,19 @@ function bewerkRecept(key) {
 
 
 // ── PROBLEEMSTELLINGEN ────────────────────────────────────────────────────
+
+document.addEventListener('input', function(e){
+  if(e.target && e.target.id === 'f-offset1'){
+    var v = parseFloat(e.target.value);
+    var toon = document.getElementById('f-offset2-toon');
+    if(v > 0){
+      toon.style.display = 'block';
+      toon.textContent = 'Offset 2 (automatisch): ' + Math.round(v/2);
+    } else {
+      toon.style.display = 'none';
+    }
+  }
+});
 
 var OPERATORS = ['Dirk', 'Casper'];
 
@@ -1333,7 +1388,7 @@ function toggleFlowProb(id) {
 }
 
 
-var APP_VERSION = '1.8';
+var APP_VERSION = '2.0';
 
 function checkVersie() {
   fetch('version.json?t=' + Date.now())
