@@ -183,7 +183,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
       <div id="login-err" style="display:none;color:#ef4444;font-size:10px;text-align:center;margin-bottom:10px;letter-spacing:2px;">ONGELDIG WACHTWOORD</div>
       <button onclick="doLogin()" style="width:100%;background:#f59e0b;color:#000;border:none;border-radius:4px;font-family:'Courier New',Courier,monospace;font-weight:700;font-size:18px;letter-spacing:3px;text-transform:uppercase;padding:15px;cursor:pointer;">INLOGGEN</button>
       <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:12px;">Wachtwoord: <span style="color:#f59e0b;">tsa1600</span></div>
-      <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:8px;letter-spacing:2px;">v3.8 — 2026-03-13</div>
+      <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:8px;letter-spacing:2px;">v4.2 — 2026-03-13</div>
     </div>
   </div>
 </div>
@@ -285,12 +285,12 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 <div class="form-card">
   <div class="form-card-title">Klant & Product</div>
   <div class="grid2">
-    <div class="field"><label>Klantnummer</label><input id="f-klantnr" type="text" placeholder="bv. 1001"></div>
-    <div class="field"><label>Klantnaam</label><input id="f-klantnaam" type="text" placeholder="bv. ACME BV"></div>
+    <div class="field"><label>Klantnummer</label><input id="f-klantnr" type="text" placeholder="bv. 1001" class="veld-leeg" oninput="veldIngevuld(this)"></div>
+    <div class="field"><label>Klantnaam</label><input id="f-klantnaam" type="text" placeholder="bv. ACME BV" class="veld-leeg" oninput="veldIngevuld(this)"></div>
   </div>
   <div class="grid2">
     <div class="field"><label>Producttype</label>
-      <select id="f-prodtype" onchange="prodtypeChange(this.value)"><option>Zak</option><option>Hoes</option><option>Vel</option><option>Krimpfolie</option><option>Uitsparing</option><option>Andere</option></select>
+      <select id="f-prodtype" class="veld-definitief" onchange="prodtypeChange(this.value);veldIngevuld(this);"><option>Zak</option><option>Hoes</option><option>Vel</option><option>Krimpfolie</option><option>Uitsparing</option><option>Andere</option></select>
     </div>
   </div>
   <div class="field">
@@ -299,7 +299,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 <label>Naam operator <span style="color:#ef4444;">*</span></label>
 
   <div style="position:relative;">
-    <input id="f-versie" type="text" placeholder="Kies of typ naam" autocomplete="off" readonly
+    <input id="f-versie" type="text" placeholder="Kies of typ naam" autocomplete="off" class="veld-leeg" readonly
       onclick="this.removeAttribute('readonly');toonNaamDropdown()" oninput="toonNaamDropdown()"
       onblur="setTimeout(sluitNaamDropdown,200)"
       style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:17px;padding:12px 14px;outline:none;">
@@ -342,20 +342,26 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 
   <div style="margin-top:12px;display:flex;flex-direction:column;gap:10px;">
     <div class="field"><label>Sealtijd (ms)</label><div style="display:flex;align-items:center;gap:8px;">
-      <button onclick="stapVeld('f-seal',-10)" class="stap-btn">−</button>
+      <button onclick="stapVeld('f-seal',-5)" class="stap-btn">−</button>
       <input id="f-seal" type="number" placeholder="750" onclick="veldTik(this)" readonly style="flex:1;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:12px 14px;outline:none;text-align:center;">
-      <button onclick="stapVeld('f-seal',10)" class="stap-btn">+</button>
+      <button onclick="stapVeld('f-seal',5)" class="stap-btn">+</button>
     </div></div>
     <div class="field"><label>Snelheid (m/min)</label><div style="display:flex;align-items:center;gap:8px;">
       <button onclick="stapVeld('f-snelheid',-5)" class="stap-btn">−</button>
       <input id="f-snelheid" type="number" placeholder="140" onclick="veldTik(this)" readonly style="flex:1;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:12px 14px;outline:none;text-align:center;">
       <button onclick="stapVeld('f-snelheid',5)" class="stap-btn">+</button>
     </div></div>
-    <div class="field"><label>Zakken/rol</label><div style="display:flex;align-items:center;gap:8px;">
-      <button onclick="stapVeld('f-zakrol',-100)" class="stap-btn">−</button>
-      <input id="f-zakrol" type="number" placeholder="250" value="250" onclick="veldTik(this)" oninput="herbereken()" style="flex:1;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:12px 14px;outline:none;text-align:center;">
-      <button onclick="stapVeld('f-zakrol',5)" class="stap-btn">+</button>
-    </div></div>
+    <div class="field"><label>Zakken/rol</label>
+      <div style="display:flex;gap:8px;margin-bottom:8px;">
+        <button onclick="kiesZakrol(250)" id="zakrol-250" style="flex:1;background:#141d2e;border:1px solid #1a2540;border-radius:4px;color:#9ca3af;font-family:'Courier New',Courier,monospace;font-size:15px;font-weight:700;padding:10px 0;cursor:pointer;">250</button>
+        <button onclick="kiesZakrol(500)" id="zakrol-500" style="flex:1;background:#141d2e;border:1px solid #1a2540;border-radius:4px;color:#9ca3af;font-family:'Courier New',Courier,monospace;font-size:15px;font-weight:700;padding:10px 0;cursor:pointer;">500</button>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <button onclick="stapVeld('f-zakrol',-5)" class="stap-btn">−</button>
+        <input id="f-zakrol" type="number" placeholder="250" value="250" class="veld-definitief" onclick="veldTik(this)" oninput="herbereken()" style="flex:1;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:12px 14px;outline:none;text-align:center;">
+        <button onclick="stapVeld('f-zakrol',5)" class="stap-btn">+</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -415,7 +421,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
     <label>Werkelijke Offset 1</label>
     <div style="display:flex;align-items:center;gap:8px;">
       <button onclick="stapVeld('f-offset1',-5)" class="stap-btn">&#8722;</button>
-      <input id="f-offset1" type="number" placeholder="bv. 10850" style="flex:1;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:20px;padding:12px 14px;outline:none;text-align:center;">
+      <input id="f-offset1" type="number" placeholder="bv. 10850" class="veld-leeg" style="flex:1;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:20px;padding:12px 14px;outline:none;text-align:center;">
       <button onclick="stapVeld('f-offset1',5)" class="stap-btn">+</button>
     </div>
   </div>
@@ -869,14 +875,18 @@ function stapVeld(id, stap) {
   if(!el) return;
   var huidig = parseFloat(el.value) || 0;
   var nieuw = Math.max(0, huidig + stap);
-  // Afronden op decimalen afhankelijk van stap
   if(Math.abs(stap) < 1) nieuw = Math.round(nieuw * 10) / 10;
   else nieuw = Math.round(nieuw);
   el.value = nieuw;
   el.classList.remove('veld-benadering','veld-leeg');
   el.classList.add('veld-definitief');
   el.readOnly = true;
-  if(id === 'f-zakrol') herbereken();
+  // Temp-input heeft eigen styling — forceer groen via inline style
+  if(id === 'f-temp-boven' || id === 'f-temp-onder') {
+    el.style.borderBottom = '2px solid #34d399';
+    el.style.color = '#6ee7b7';
+  }
+  // Offset2 tonen
   if(id === 'f-offset1') {
     var toon = document.getElementById('f-offset2-toon');
     if(toon && nieuw > 0) {
@@ -884,13 +894,30 @@ function stapVeld(id, stap) {
       toon.textContent = 'Offset 2 (automatisch): ' + Math.round(nieuw/2);
     }
   }
+  if(id === 'f-zakrol') herbereken();
+}
+
+function veldIngevuld(el) {
+  if(el.value && el.value.trim() !== '') {
+    el.classList.remove('veld-leeg','veld-benadering');
+    el.classList.add('veld-definitief');
+  } else {
+    el.classList.remove('veld-definitief','veld-benadering');
+    el.classList.add('veld-leeg');
+  }
+}
+
+function afrondenOp5(val) {
+  return Math.round(val / 5) * 5;
 }
 
 function setBerekend(id, val) {
   var el = document.getElementById(id);
   if(!el) return;
   if(el.classList.contains('veld-definitief')) return;
-  el.value = val;
+  // Afronden op 5 voor ronde getallen
+  var afgerond = afrondenOp5(val);
+  el.value = afgerond;
   el.readOnly = true;
   el.classList.remove('veld-leeg','veld-definitief');
   el.classList.add('veld-benadering');
@@ -903,6 +930,29 @@ function setLeeg(id) {
   if(el.classList.contains('veld-definitief')) return;
   el.classList.remove('veld-benadering');
   el.classList.add('veld-leeg');
+}
+
+function kiesZakrol(val) {
+  var el = document.getElementById('f-zakrol');
+  el.value = val;
+  el.classList.remove('veld-leeg','veld-benadering');
+  el.classList.add('veld-definitief');
+  // Highlight gekozen knop
+  ['zakrol-250','zakrol-500'].forEach(function(id){
+    var btn = document.getElementById(id);
+    if(btn) {
+      btn.style.background = '#141d2e';
+      btn.style.borderColor = '#1a2540';
+      btn.style.color = '#9ca3af';
+    }
+  });
+  var actief = document.getElementById('zakrol-'+val);
+  if(actief) {
+    actief.style.background = 'rgba(52,211,153,0.1)';
+    actief.style.borderColor = '#34d399';
+    actief.style.color = '#34d399';
+  }
+  herbereken();
 }
 
 function kiesKoker(val) {
@@ -978,11 +1028,34 @@ function herbereken() {
 }
 
 function slaOp() {
+  // Controleer alle verplichte velden
+  var ontbrekend = [];
+  var checks = [
+    {id:'f-klantnr',  label:'Klantnummer'},
+    {id:'f-klantnaam',label:'Klantnaam'},
+    {id:'f-versie',   label:'Naam operator'},
+    {id:'f-breedte',  label:'Breedte'},
+    {id:'f-lengte',   label:'Lengte'},
+    {id:'f-dikte',    label:'Dikte'},
+    {id:'f-seal',     label:'Sealtijd'},
+    {id:'f-snelheid', label:'Snelheid'},
+    {id:'f-temp-boven',label:'Temperatuur boven'},
+    {id:'f-temp-onder',label:'Temperatuur onder'}
+  ];
+  for(var ci=0;ci<checks.length;ci++){
+    var el = document.getElementById(checks[ci].id);
+    if(!el || !el.value || el.value.trim()==='') {
+      ontbrekend.push(checks[ci].label);
+      if(el) { el.classList.remove('veld-definitief','veld-benadering'); el.classList.add('veld-leeg'); }
+    }
+  }
+  if(ontbrekend.length > 0){
+    toast('Vergeten: ' + ontbrekend.join(', '), true);
+    return;
+  }
   var klantnr = document.getElementById('f-klantnr').value.trim();
   var klantnaam = document.getElementById('f-klantnaam').value.trim();
   var operator = document.getElementById('f-versie').value.trim();
-  if(!klantnr && !klantnaam){toast('Vul klantnummer of naam in',true);return;}
-  if(!operator){toast('Vul naam operator in',true);document.getElementById('f-versie').focus();return;}
   var recept = {
     klantnr:klantnr,klantnaam:klantnaam,
     prodtype:document.getElementById('f-prodtype').value,
@@ -1015,6 +1088,11 @@ function slaOp() {
 
 function resetForm() {
   var ids=['f-klantnr','f-klantnaam','f-versie','f-breedte','f-lengte','f-dikte','f-koker','f-seal','f-snelheid','f-zakmin','f-zakrol','f-static-mat','f-drukker','f-temp-boven','f-temp-onder','f-notities','f-offset1'];
+  // Alle tekstvelden geel
+  ['f-klantnr','f-klantnaam','f-versie'].forEach(function(id){
+    var el=document.getElementById(id);
+    if(el){el.classList.remove('veld-definitief','veld-benadering');el.classList.add('veld-leeg');}
+  });
   for(var i=0;i<ids.length;i++){var el=document.getElementById(ids[i]);if(el)el.value='';}
   document.getElementById('f-prodtype').value='Zak';
   selectMat('ldpe'); selectStatic('Off');
@@ -1024,10 +1102,14 @@ function resetForm() {
   document.getElementById('drukker-extra').style.display='none';
   document.getElementById('mat-info-temp').style.display='none';
   // Staten wissen
-  var berekend = ['f-seal','f-snelheid','f-zakrol','f-temp-boven','f-temp-onder','f-offset1'];
-  // Zakrol default 250
+  var berekend = ['f-seal','f-snelheid','f-temp-boven','f-temp-onder','f-offset1'];
+  // Zakrol default 250 en groen
   var zakrolEl = document.getElementById('f-zakrol');
-  if(zakrolEl) zakrolEl.value = 250;
+  if(zakrolEl) {
+    zakrolEl.value = 250;
+    zakrolEl.classList.remove('veld-leeg','veld-benadering');
+    zakrolEl.classList.add('veld-definitief');
+  }
   for(var bi=0;bi<berekend.length;bi++){
     var bel = document.getElementById(berekend[bi]);
     if(bel){
@@ -1239,7 +1321,10 @@ function sluitNaamDropdown() {
 }
 
 function kiesOperator(naam) {
-  document.getElementById('f-versie').value = naam;
+  var el = document.getElementById('f-versie');
+  el.value = naam;
+  el.classList.remove('veld-leeg','veld-benadering');
+  el.classList.add('veld-definitief');
   sluitNaamDropdown();
 }
 
@@ -1572,7 +1657,7 @@ function toggleFlowProb(id) {
 }
 
 
-var APP_VERSION = '3.8';
+var APP_VERSION = '4.2';
 
 function checkVersie() {
   fetch('version.json?t=' + Date.now())
