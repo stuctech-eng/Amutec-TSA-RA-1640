@@ -183,7 +183,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
       <div id="login-err" style="display:none;color:#ef4444;font-size:10px;text-align:center;margin-bottom:10px;letter-spacing:2px;">ONGELDIG WACHTWOORD</div>
       <button onclick="doLogin()" style="width:100%;background:#f59e0b;color:#000;border:none;border-radius:4px;font-family:'Courier New',Courier,monospace;font-weight:700;font-size:18px;letter-spacing:3px;text-transform:uppercase;padding:15px;cursor:pointer;">INLOGGEN</button>
       <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:12px;">Wachtwoord: <span style="color:#f59e0b;">tsa1600</span></div>
-      <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:8px;letter-spacing:2px;">v4.2 — 2026-03-13</div>
+      <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:8px;letter-spacing:2px;">v4.3 — 2026-03-13</div>
     </div>
   </div>
 </div>
@@ -397,17 +397,17 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
     <div>
       <div style="font-size:9px;color:#9ca3af;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">BOVEN &deg;C</div>
       <div style="display:flex;align-items:center;gap:8px;">
-        <button onclick="stapVeld('f-temp-boven',-1)" class="stap-btn">&#8722;</button>
+        <button onclick="stapVeld('f-temp-boven',-5)" class="stap-btn">&#8722;</button>
         <input class="temp-input veld-leeg" id="f-temp-boven" type="number" placeholder="160" onclick="veldTik(this)" readonly style="flex:1;text-align:center;">
-        <button onclick="stapVeld('f-temp-boven',1)" class="stap-btn">+</button>
+        <button onclick="stapVeld('f-temp-boven',5)" class="stap-btn">+</button>
       </div>
     </div>
     <div>
       <div style="font-size:9px;color:#9ca3af;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">ONDER &deg;C</div>
       <div style="display:flex;align-items:center;gap:8px;">
-        <button onclick="stapVeld('f-temp-onder',-1)" class="stap-btn">&#8722;</button>
+        <button onclick="stapVeld('f-temp-onder',-5)" class="stap-btn">&#8722;</button>
         <input class="temp-input veld-leeg" id="f-temp-onder" type="number" placeholder="160" onclick="veldTik(this)" readonly style="flex:1;text-align:center;">
-        <button onclick="stapVeld('f-temp-onder',1)" class="stap-btn">+</button>
+        <button onclick="stapVeld('f-temp-onder',5)" class="stap-btn">+</button>
       </div>
     </div>
   </div>
@@ -1274,11 +1274,40 @@ function bewerkRecept(key) {
     if(!r) return;
     var fields=['klantnr','klantnaam','versie','breedte','lengte','dikte','koker','seal','snelheid','zakmin','zakrol','drukker_inst','temp_boven','temp_onder','notities','offset1_werke'];
     var fnames=['f-klantnr','f-klantnaam','f-versie','f-breedte','f-lengte','f-dikte','f-koker','f-seal','f-snelheid','f-zakmin','f-zakrol','f-drukker','f-temp-boven','f-temp-onder','f-notities','f-offset1'];
-    for(var i=0;i<fields.length;i++){var el=document.getElementById(fnames[i]);if(el)el.value=r[fields[i]]||'';}
+    for(var i=0;i<fields.length;i++){
+      var el=document.getElementById(fnames[i]);
+      if(el && r[fields[i]]) {
+        el.value = r[fields[i]];
+        el.classList.remove('veld-leeg','veld-benadering');
+        el.classList.add('veld-definitief');
+        el.readOnly = true;
+        // Temp velden inline stijl
+        if(fnames[i]==='f-temp-boven'||fnames[i]==='f-temp-onder'){
+          el.style.borderBottom='2px solid #34d399';
+          el.style.color='#6ee7b7';
+        }
+      }
+    }
     document.getElementById('f-prodtype').value=r.prodtype||'Zak';
     document.getElementById('f-static-mat').value=r.static_mat||'';
+    // Static mat groen
+    var smEl=document.getElementById('f-static-mat');
+    if(smEl && r.static_mat){smEl.classList.remove('veld-leeg');smEl.classList.add('veld-definitief');}
     selectMat(r.materiaal||'ldpe');
     selectStatic(r.static_ch||'Off');
+    // Koker groen
+    var kokerEl=document.getElementById('f-koker');
+    if(kokerEl && r.koker){kokerEl.classList.remove('veld-leeg','veld-benadering');kokerEl.classList.add('veld-definitief');}
+    // Breedte/lengte/dikte groen
+    ['f-breedte','f-lengte','f-dikte','f-klantnr','f-klantnaam','f-versie'].forEach(function(id){
+      var e=document.getElementById(id);
+      if(e && e.value){e.classList.remove('veld-leeg','veld-benadering');e.classList.add('veld-definitief');e.readOnly=false;}
+    });
+    // Offset2 tonen
+    if(r.offset1_werke){
+      var toon=document.getElementById('f-offset2-toon');
+      if(toon){toon.style.display='block';toon.textContent='Offset 2 (automatisch): '+Math.round(r.offset1_werke/2);}
+    }
     if(r.drukker){drukkerAan=true;document.getElementById('drukker-btn').textContent='AAN';document.getElementById('drukker-btn').className='toggle-btn toggle-aan';document.getElementById('drukker-extra').style.display='block';}
     editKey=key;
     document.getElementById('nieuw-title').textContent='Recept Bewerken';
@@ -1657,7 +1686,7 @@ function toggleFlowProb(id) {
 }
 
 
-var APP_VERSION = '4.2';
+var APP_VERSION = '4.3';
 
 function checkVersie() {
   fetch('version.json?t=' + Date.now())
