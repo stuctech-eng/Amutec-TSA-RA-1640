@@ -148,6 +148,12 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 .flow-items li{font-size:13px;padding:7px 10px;background:#070a10;border:1px solid #1a2540;border-radius:3px;display:flex;gap:8px;align-items:flex-start;line-height:1.4}
 .flow-items li::before{flex-shrink:0;margin-top:1px}
 @media(max-width:380px){.grid2{grid-template-columns:1fr}}
+.stap-btn{width:52px;height:52px;background:#141d2e;border:1px solid #1a2540;border-radius:6px;color:#e5e7eb;font-size:28px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Courier New',Courier,monospace;line-height:1}
+.stap-btn:active{background:#f59e0b;color:#000;border-color:#f59e0b}
+.veld-leeg{background:rgba(245,158,11,0.08)!important;border-color:rgba(245,158,11,0.6)!important;color:#fcd34d!important}
+.veld-benadering{background:rgba(96,165,250,0.08)!important;border-color:rgba(96,165,250,0.5)!important;color:#93c5fd!important}
+.veld-definitief{background:rgba(52,211,153,0.08)!important;border-color:rgba(52,211,153,0.6)!important;color:#6ee7b7!important}
+
 </style>
 </head>
 <body>
@@ -171,7 +177,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
       <div id="login-err" style="display:none;color:#ef4444;font-size:10px;text-align:center;margin-bottom:10px;letter-spacing:2px;">ONGELDIG WACHTWOORD</div>
       <button onclick="doLogin()" style="width:100%;background:#f59e0b;color:#000;border:none;border-radius:4px;font-family:'Courier New',Courier,monospace;font-weight:700;font-size:18px;letter-spacing:3px;text-transform:uppercase;padding:15px;cursor:pointer;">INLOGGEN</button>
       <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:12px;">Wachtwoord: <span style="color:#f59e0b;">tsa1600</span></div>
-      <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:8px;letter-spacing:2px;">v2.1 — 2026-03-13</div>
+      <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:8px;letter-spacing:2px;">v3.7 — 2026-03-13</div>
     </div>
   </div>
 </div>
@@ -278,9 +284,8 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
   </div>
   <div class="grid2">
     <div class="field"><label>Producttype</label>
-      <select id="f-prodtype"><option>Zak</option><option>Hoes</option><option>Vel</option><option>Krimpfolie</option><option>Uitsparing</option><option>Andere</option></select>
+      <select id="f-prodtype" onchange="prodtypeChange(this.value)"><option>Zak</option><option>Hoes</option><option>Vel</option><option>Krimpfolie</option><option>Uitsparing</option><option>Andere</option></select>
     </div>
-    <div class="field"><label>Omschrijving</label><input id="f-prodoms" type="text" placeholder="bv. draagtas"></div>
   </div>
   <div class="field">
 ```
@@ -302,20 +307,10 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
   <div class="form-card-title">Materiaal</div>
   <div class="field">
     <label>Materiaalsoort</label>
-    <div class="grid3" style="margin-bottom:8px;">
-      <button class="mat-btn active" id="mat-peld"  onclick="selectMat('peld')">PE-LD</button>
-      <button class="mat-btn" id="mat-lldpe" onclick="selectMat('lldpe')">LLDPE</button>
-      <button class="mat-btn" id="mat-ldpe"  onclick="selectMat('ldpe')">LDPE</button>
-    </div>
-    <div class="grid3" style="margin-bottom:8px;">
-      <button class="mat-btn" id="mat-pehd"  onclick="selectMat('pehd')">PE-HD</button>
-      <button class="mat-btn" id="mat-pp"    onclick="selectMat('pp')">PP</button>
-      <button class="mat-btn" id="mat-andere" onclick="selectMat('andere')">Andere</button>
-    </div>
     <div class="grid3">
+      <button class="mat-btn active" id="mat-ldpe"  onclick="selectMat('ldpe')">LDPE</button>
       <button class="mat-btn" id="mat-recycle-mix"  onclick="selectMat('recycle-mix')">&#9851; Mix</button>
       <button class="mat-btn" id="mat-recycle-peld" onclick="selectMat('recycle-peld')">&#9851; PE-LD</button>
-      <button class="mat-btn" id="mat-recycle-pehd" onclick="selectMat('recycle-pehd')">&#9851; PE-HD</button>
     </div>
   </div>
 </div>
@@ -323,29 +318,38 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 <div class="form-card">
   <div class="form-card-title">Zakmaat & Berekening</div>
   <div class="grid3">
-    <div class="field"><label>Breedte (mm)</label><input id="f-breedte" type="number" placeholder="400" oninput="herbereken()"></div>
-    <div class="field"><label>Lengte (mm)</label><input id="f-lengte" type="number" placeholder="600" oninput="herbereken()"></div>
-    <div class="field"><label>Dikte (um)</label><input id="f-dikte" type="number" placeholder="30" oninput="herbereken()"></div>
+    <div class="field"><label>Breedte (mm)</label><input id="f-breedte" type="number" placeholder="400" oninput="herbereken()" class="veld-leeg"></div>
+    <div class="field"><label>Lengte (mm)</label><input id="f-lengte" type="number" placeholder="600" oninput="herbereken()" class="veld-leeg"></div>
+    <div class="field"><label>Dikte (mm)</label><input id="f-dikte" type="number" placeholder="0.03" step="0.001" oninput="herbereken()" class="veld-leeg"></div>
   </div>
   <div class="grid2">
-    <div class="field"><label>Koker dia (mm)</label><input id="f-koker" type="number" placeholder="76" oninput="herbereken()"></div>
-    <div class="field"><label>Roldia wissel (mm)</label><input id="f-roldia" type="number" placeholder="300" oninput="herbereken()"></div>
-  </div>
-  <div id="calc-results" style="display:none;">
-    <div class="result-box" style="margin-top:12px;">
-      <div class="result-item"><span class="result-icon">&#9889;</span><span class="result-val" id="r-zakmin">-</span><span class="result-lbl">zak/min</span></div>
-      <div class="result-item"><span class="result-icon">&#9201;</span><span class="result-val" id="r-seal">-</span><span class="result-lbl">seal (s)</span></div>
-      <div class="result-item"><span class="result-icon">&#9881;</span><span class="result-val" id="r-snelheid">-</span><span class="result-lbl">m/min</span></div>
-      <div class="result-item"><span class="result-icon">&#128260;</span><span class="result-val" id="r-zakrol">-</span><span class="result-lbl">zak/rol</span></div>
+    <div class="field">
+      <label>Koker dia (mm)</label>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <input id="f-koker" type="number" placeholder="90" class="veld-leeg" oninput="herbereken();this.classList.remove('veld-leeg','veld-benadering');this.classList.add('veld-definitief')" style="flex:1;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:17px;padding:12px 14px;outline:none;">
+        <button onclick="kiesKoker(90)" style="background:#0f1520;border:1px solid #1a2540;border-radius:4px;color:#9ca3af;font-family:'Courier New',Courier,monospace;font-size:13px;padding:10px 14px;cursor:pointer;white-space:nowrap;">90</button>
+        <button onclick="kiesKoker(100)" style="background:#0f1520;border:1px solid #1a2540;border-radius:4px;color:#9ca3af;font-family:'Courier New',Courier,monospace;font-size:13px;padding:10px 14px;cursor:pointer;white-space:nowrap;">100</button>
+      </div>
     </div>
   </div>
-  <div class="grid2" style="margin-top:10px;">
-    <div class="field"><label>Sealtijd (s)</label><input id="f-seal" type="number" step="0.01" placeholder="0.75"></div>
-    <div class="field"><label>Snelheid (m/min)</label><input id="f-snelheid" type="number" placeholder="140"></div>
-  </div>
-  <div class="grid2">
-    <div class="field"><label>Zakken/min</label><input id="f-zakmin" type="number" placeholder="233"></div>
-    <div class="field"><label>Zakken/rol</label><input id="f-zakrol" type="number" placeholder="5000"></div>
+
+
+  <div style="margin-top:12px;display:flex;flex-direction:column;gap:10px;">
+    <div class="field"><label>Sealtijd (ms)</label><div style="display:flex;align-items:center;gap:8px;">
+      <button onclick="stapVeld('f-seal',-10)" class="stap-btn">−</button>
+      <input id="f-seal" type="number" placeholder="750" onclick="veldTik(this)" readonly style="flex:1;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:12px 14px;outline:none;text-align:center;">
+      <button onclick="stapVeld('f-seal',10)" class="stap-btn">+</button>
+    </div></div>
+    <div class="field"><label>Snelheid (m/min)</label><div style="display:flex;align-items:center;gap:8px;">
+      <button onclick="stapVeld('f-snelheid',-5)" class="stap-btn">−</button>
+      <input id="f-snelheid" type="number" placeholder="140" onclick="veldTik(this)" readonly style="flex:1;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:12px 14px;outline:none;text-align:center;">
+      <button onclick="stapVeld('f-snelheid',5)" class="stap-btn">+</button>
+    </div></div>
+    <div class="field"><label>Zakken/rol</label><div style="display:flex;align-items:center;gap:8px;">
+      <button onclick="stapVeld('f-zakrol',-100)" class="stap-btn">−</button>
+      <input id="f-zakrol" type="number" placeholder="250" value="250" onclick="veldTik(this)" oninput="herbereken()" style="flex:1;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:12px 14px;outline:none;text-align:center;">
+      <button onclick="stapVeld('f-zakrol',5)" class="stap-btn">+</button>
+    </div></div>
   </div>
 </div>
 
@@ -359,7 +363,14 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
       <button class="static-btn" id="static-End-of-roll" onclick="selectStatic('End-of-roll')">End of roll</button>
     </div>
   </div>
-  <div class="field"><label>Material to be charged (mm)</label><input id="f-static-mat" type="number" placeholder="bv. 400"></div>
+  <div class="field">
+    <label>Material to be charged (mm)</label>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <button onclick="stapVeld('f-static-mat',-10000)" class="stap-btn">&#8722;</button>
+      <input id="f-static-mat" type="number" placeholder="0" style="flex:1;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:20px;padding:12px 14px;outline:none;text-align:center;">
+      <button onclick="stapVeld('f-static-mat',10000)" class="stap-btn">+</button>
+    </div>
+  </div>
   <div class="field"><label>Cycle met drukker</label>
     <button id="drukker-btn" class="toggle-btn toggle-uit" onclick="toggleDrukker()">UIT</button>
   </div>
@@ -370,17 +381,22 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 
 <div class="form-card">
   <div class="form-card-title">Seal Temperaturen</div>
-  <div class="temp-grid">
-    <div class="temp-card">
-      <div class="temp-lbl">BOVEN</div>
-      <input class="temp-input" id="f-temp-boven" type="number" placeholder="157">
-      <div class="temp-unit">C</div>
+  <div style="display:flex;flex-direction:column;gap:12px;">
+    <div>
+      <div style="font-size:9px;color:#9ca3af;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">BOVEN &deg;C</div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <button onclick="stapVeld('f-temp-boven',-1)" class="stap-btn">&#8722;</button>
+        <input class="temp-input veld-leeg" id="f-temp-boven" type="number" placeholder="160" onclick="veldTik(this)" readonly style="flex:1;text-align:center;">
+        <button onclick="stapVeld('f-temp-boven',1)" class="stap-btn">+</button>
+      </div>
     </div>
-    <div style="font-size:20px;color:#9ca3af;align-self:center;">|</div>
-    <div class="temp-card">
-      <div class="temp-lbl">ONDER</div>
-      <input class="temp-input" id="f-temp-onder" type="number" placeholder="154">
-      <div class="temp-unit">C</div>
+    <div>
+      <div style="font-size:9px;color:#9ca3af;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">ONDER &deg;C</div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <button onclick="stapVeld('f-temp-onder',-1)" class="stap-btn">&#8722;</button>
+        <input class="temp-input veld-leeg" id="f-temp-onder" type="number" placeholder="160" onclick="veldTik(this)" readonly style="flex:1;text-align:center;">
+        <button onclick="stapVeld('f-temp-onder',1)" class="stap-btn">+</button>
+      </div>
     </div>
   </div>
   <div id="mat-info-temp" style="display:none;margin-top:10px;background:#070a10;border:1px solid rgba(96,165,250,.3);border-radius:4px;padding:8px 12px;font-size:11px;color:#60a5fa;"></div>
@@ -389,7 +405,14 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 <div class="form-card" style="border-top-color:#60a5fa;">
   <div class="form-card-title" style="color:#60a5fa;">Werkelijke Offset (leerdata)</div>
   <div style="font-size:11px;color:#9ca3af;margin-bottom:12px;line-height:1.6;">Vul de offset in die op de machine werkte. Offset 2 is altijd automatisch de helft.</div>
-  <div class="field"><label>Werkelijke Offset 1</label><input id="f-offset1" type="number" placeholder="bv. 10850"></div>
+  <div class="field">
+    <label>Werkelijke Offset 1</label>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <button onclick="stapVeld('f-offset1',-5)" class="stap-btn">&#8722;</button>
+      <input id="f-offset1" type="number" placeholder="bv. 10850" style="flex:1;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:20px;padding:12px 14px;outline:none;text-align:center;">
+      <button onclick="stapVeld('f-offset1',5)" class="stap-btn">+</button>
+    </div>
+  </div>
   <div id="f-offset2-toon" style="display:none;margin-top:8px;background:#070a10;border:1px solid rgba(96,165,250,.3);border-radius:4px;padding:10px 14px;font-size:13px;color:#60a5fa;"></div>
 </div>
 
@@ -421,7 +444,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
         <div class="field"><label>Zakken/rol</label><input id="c-zakrol" type="number" placeholder="5000" oninput="calcUpdate()"></div>
       </div>
       <div class="grid2">
-        <div class="field"><label>Foliedikte (um)</label><input id="c-dikte" type="number" placeholder="30" oninput="calcUpdate()"></div>
+        <div class="field"><label>Foliedikte (mm)</label><input id="c-dikte" type="number" placeholder="0.03" step="0.001" oninput="calcUpdate()"></div>
         <div class="field"><label>Kerndiameter (mm)</label><input id="c-kern" type="number" placeholder="76" oninput="calcUpdate()"></div>
       </div>
     </div>
@@ -603,7 +626,7 @@ function berekenOffset2(offset1) {
 function berekenRolData(lengte, zakkenPerRol, folieDikte, kernDiameter) {
   if(!lengte || !zakkenPerRol) return null;
   var rolLengte = lengte * zakkenPerRol;
-  var dikte = folieDikte / 1000;
+  var dikte = folieDikte; // al in mm
   var radiusCore = kernDiameter / 2;
   var rolRadius = Math.sqrt(radiusCore * radiusCore + (rolLengte * dikte) / Math.PI);
   var rolDiameter = Math.round(rolRadius * 2);
@@ -811,31 +834,141 @@ function toggleDrukker() {
   extra.style.display = drukkerAan ? 'block' : 'none';
 }
 
+function prodtypeChange(val) {
+  if(val === 'Vel') {
+    document.getElementById('f-seal').value = '50';
+    document.getElementById('f-temp-boven').value = '0';
+    document.getElementById('f-temp-onder').value = '0';
+  }
+}
+
+// ── VELD STATEN ──────────────────────────────────────────────────────────
+// Geel  = leeg, moet ingevuld worden
+// Blauw = berekende schatting (readonly)
+// Groen = bevestigd (1x tikken)
+
+function veldTik(el) {
+  if(el.classList.contains('veld-benadering')) {
+    el.classList.remove('veld-benadering');
+    el.classList.add('veld-definitief');
+    el.readOnly = true;
+  } else if(el.classList.contains('veld-definitief')) {
+    el.classList.remove('veld-definitief');
+    el.classList.add('veld-benadering');
+  }
+}
+
+function stapVeld(id, stap) {
+  var el = document.getElementById(id);
+  if(!el) return;
+  var huidig = parseFloat(el.value) || 0;
+  var nieuw = Math.max(0, huidig + stap);
+  // Afronden op decimalen afhankelijk van stap
+  if(Math.abs(stap) < 1) nieuw = Math.round(nieuw * 10) / 10;
+  else nieuw = Math.round(nieuw);
+  el.value = nieuw;
+  el.classList.remove('veld-benadering','veld-leeg');
+  el.classList.add('veld-definitief');
+  el.readOnly = true;
+  if(id === 'f-zakrol') herbereken();
+  if(id === 'f-offset1') {
+    var toon = document.getElementById('f-offset2-toon');
+    if(toon && nieuw > 0) {
+      toon.style.display = 'block';
+      toon.textContent = 'Offset 2 (automatisch): ' + Math.round(nieuw/2);
+    }
+  }
+}
+
+function setBerekend(id, val) {
+  var el = document.getElementById(id);
+  if(!el) return;
+  if(el.classList.contains('veld-definitief')) return;
+  el.value = val;
+  el.readOnly = true;
+  el.classList.remove('veld-leeg','veld-definitief');
+  el.classList.add('veld-benadering');
+  el.style.textAlign = 'center';
+}
+
+function setLeeg(id) {
+  var el = document.getElementById(id);
+  if(!el) return;
+  if(el.classList.contains('veld-definitief')) return;
+  el.classList.remove('veld-benadering');
+  el.classList.add('veld-leeg');
+}
+
+function kiesKoker(val) {
+  var el = document.getElementById('f-koker');
+  el.value = val;
+  el.classList.remove('veld-leeg','veld-benadering');
+  el.classList.add('veld-definitief');
+  herbereken();
+}
+
 function herbereken() {
+  // Groen als ingevuld, geel als leeg
+  ['f-breedte','f-lengte','f-dikte'].forEach(function(id){
+    var el = document.getElementById(id);
+    if(!el) return;
+    if(el.value) {
+      el.classList.remove('veld-leeg','veld-benadering');
+      el.classList.add('veld-definitief');
+    } else {
+      el.classList.remove('veld-definitief','veld-benadering');
+      el.classList.add('veld-leeg');
+    }
+  });
   var mat = MATERIALEN[selectedMat];
   var l = parseFloat(document.getElementById('f-lengte').value);
   var d = parseFloat(document.getElementById('f-dikte').value);
-  var koker = parseFloat(document.getElementById('f-koker').value) || 76;
-  var rol = parseFloat(document.getElementById('f-roldia').value) || 300;
-  if(!mat||!l||!d){document.getElementById('calc-results').style.display='none';return;}
-  var sealtijd = Math.round(d*0.025*mat.st*100)/100;
-  var snelheid = Math.round(200*mat.sv);
-  var zakmin = Math.round(snelheid*1000/l);
-  var zakrol = Math.floor((Math.PI*(rol*rol-koker*koker))/(4*(d/1000)*l));
-  document.getElementById('r-zakmin').textContent = zakmin;
-  document.getElementById('r-seal').textContent = sealtijd;
-  document.getElementById('r-snelheid').textContent = snelheid;
-  document.getElementById('r-zakrol').textContent = zakrol;
-  document.getElementById('calc-results').style.display = 'block';
-  if(!document.getElementById('f-seal').value) document.getElementById('f-seal').value = sealtijd;
-  if(!document.getElementById('f-snelheid').value) document.getElementById('f-snelheid').value = snelheid;
-  if(!document.getElementById('f-zakmin').value) document.getElementById('f-zakmin').value = zakmin;
-  if(!document.getElementById('f-zakrol').value) document.getElementById('f-zakrol').value = zakrol;
-  if(!document.getElementById('f-temp-boven').value) document.getElementById('f-temp-boven').value = mat.temp_b;
-  if(!document.getElementById('f-temp-onder').value) document.getElementById('f-temp-onder').value = mat.temp_o;
+  var b = parseFloat(document.getElementById('f-breedte').value);
+
+  // Koker: default 90 als nog niet ingevuld
+  var kokerEl = document.getElementById('f-koker');
+  if(!kokerEl.value) { kokerEl.value = 90; }
+  var koker = parseFloat(kokerEl.value) || 90;
+  // Roldiameter: berekend uit zakrol + koker + dikte
+  var zakrolVal = parseFloat(document.getElementById('f-zakrol').value) || 0;
+  var rolRadius = zakrolVal > 0
+    ? Math.sqrt((koker/2)*(koker/2) + (zakrolVal * d * l) / Math.PI)
+    : 150;
+  var rol = rolRadius;
+
+  if(!mat||!l||!d) return;
+
+  // Bereken alles
+  var sealtijd  = Math.round(d * 5000 * mat.st); // d in mm ×5000 = ms
+  var snelheid  = Math.round(200 * mat.sv);
+  var zakmin    = Math.round(snelheid * 1000 / l);
+  // Zakrol: als al ingevuld door operator, gebruik dat; anders schatting
+  var zakrolIngevuld = parseFloat(document.getElementById('f-zakrol').value) || 0;
+  var zakrol = zakrolIngevuld > 0
+    ? zakrolIngevuld
+    : Math.floor((Math.PI*(150*150 - koker*koker)) / (4 * d * l));
+  var offset1   = berekenOffset(l);
+  var offset2   = berekenOffset2(offset1);
+
+  // Toon preview blok
+
+  // Vul alle velden automatisch in met blauwe markering
+  var prodtype = document.getElementById('f-prodtype').value;
+  if(prodtype !== 'Vel') {
+    setBerekend('f-seal',     sealtijd);
+    setBerekend('f-temp-boven', mat.temp_b);
+    setBerekend('f-temp-onder', mat.temp_o);
+  }
+  setBerekend('f-snelheid', snelheid);
+  setBerekend('f-zakrol',   zakrol);
+  if(!document.getElementById('f-offset1').value) {
+    setBerekend('f-offset1', offset1);
+  }
+
+  // Materiaal info
   var infoEl = document.getElementById('mat-info-temp');
   infoEl.style.display = 'block';
-  infoEl.textContent = mat.label + ' - aanbevolen: ' + (mat.temp_b-8) + 'C - ' + (mat.temp_b+8) + 'C' + (mat.recycle ? ' - Recycle: hogere temp' : '');
+  infoEl.textContent = mat.label + ' - aanbevolen: ' + (mat.temp_b-8) + '°C - ' + (mat.temp_b+8) + '°C' + (mat.recycle ? ' - Recycle: hogere temp' : '');
 }
 
 function slaOp() {
@@ -847,17 +980,14 @@ function slaOp() {
   var recept = {
     klantnr:klantnr,klantnaam:klantnaam,
     prodtype:document.getElementById('f-prodtype').value,
-    prodoms:document.getElementById('f-prodoms').value.trim(),
     versie:document.getElementById('f-versie').value||'',
     materiaal:selectedMat,
     breedte:document.getElementById('f-breedte').value,
     lengte:document.getElementById('f-lengte').value,
     dikte:document.getElementById('f-dikte').value,
     koker:document.getElementById('f-koker').value||76,
-    roldia:document.getElementById('f-roldia').value||300,
     seal:document.getElementById('f-seal').value,
     snelheid:document.getElementById('f-snelheid').value,
-    zakmin:document.getElementById('f-zakmin').value,
     zakrol:document.getElementById('f-zakrol').value,
     static_ch:selectedStatic,
     static_mat:document.getElementById('f-static-mat').value.trim(),
@@ -878,16 +1008,34 @@ function slaOp() {
 }
 
 function resetForm() {
-  var ids=['f-klantnr','f-klantnaam','f-prodoms','f-versie','f-breedte','f-lengte','f-dikte','f-koker','f-roldia','f-seal','f-snelheid','f-zakmin','f-zakrol','f-static-mat','f-drukker','f-temp-boven','f-temp-onder','f-notities','f-offset1'];
+  var ids=['f-klantnr','f-klantnaam','f-versie','f-breedte','f-lengte','f-dikte','f-koker','f-seal','f-snelheid','f-zakmin','f-zakrol','f-static-mat','f-drukker','f-temp-boven','f-temp-onder','f-notities','f-offset1'];
   for(var i=0;i<ids.length;i++){var el=document.getElementById(ids[i]);if(el)el.value='';}
   document.getElementById('f-prodtype').value='Zak';
-  selectMat('peld'); selectStatic('Off');
+  selectMat('ldpe'); selectStatic('Off');
   drukkerAan=false;
   document.getElementById('drukker-btn').textContent='UIT';
   document.getElementById('drukker-btn').className='toggle-btn toggle-uit';
   document.getElementById('drukker-extra').style.display='none';
-  document.getElementById('calc-results').style.display='none';
   document.getElementById('mat-info-temp').style.display='none';
+  // Staten wissen
+  var berekend = ['f-seal','f-snelheid','f-zakrol','f-temp-boven','f-temp-onder','f-offset1'];
+  // Zakrol default 250
+  var zakrolEl = document.getElementById('f-zakrol');
+  if(zakrolEl) zakrolEl.value = 250;
+  for(var bi=0;bi<berekend.length;bi++){
+    var bel = document.getElementById(berekend[bi]);
+    if(bel){
+      bel.classList.remove('veld-benadering','veld-definitief','veld-leeg');
+      bel.classList.add('veld-leeg');
+      bel.readOnly = true;
+      bel.value = '';
+    }
+  }
+  // Invoervelden ook geel
+  ['f-breedte','f-lengte','f-dikte'].forEach(function(id){
+    var el = document.getElementById(id);
+    if(el){ el.classList.add('veld-leeg'); el.value = ''; }
+  });
   document.getElementById('nieuw-title').textContent='Nieuw Recept';
   editKey=null;
 }
@@ -931,7 +1079,7 @@ function renderReceptenTree(lijst, query) {
         '<div class="tree-item-inner">' +
           '<div class="tree-connector"></div>' +
           '<div class="tree-content">' +
-            '<div class="tree-name">'+(rec.prodtype||'')+(rec.breedte?' '+rec.breedte+'mm':'')+(rec.lengte?' x '+rec.lengte+'mm':'')+(rec.dikte?' / '+rec.dikte+'\u03bcm':'')+'</div>' +
+            '<div class="tree-name">'+(rec.prodtype||'')+(rec.breedte?' '+rec.breedte+'mm':'')+(rec.lengte?' x '+rec.lengte+'mm':'')+(rec.dikte?' / '+rec.dikte+' mm':'')+'</div>' +
             '<div class="tree-meta">' +
               '<span class="tag">'+(rec.versie||'')+'</span>' +
               '<span class="tag">'+(rec.datum||'')+'</span>' +
@@ -999,9 +1147,9 @@ function openDetail(key) {
       '<div class="slabel">Klant & Product</div>' +
       '<div class="info-block">'+row('Klantnummer',r.klantnr)+row('Klantnaam',r.klantnaam)+row('Producttype',r.prodtype)+row('Omschrijving',r.prodoms)+row('Operator',r.versie)+row('Datum',r.datum)+'</div>'+
       '<div class="slabel">Materiaal & Afmetingen</div>' +
-      '<div class="info-block">'+row('Materiaal',mat.label||r.materiaal)+row('Breedte',r.breedte+' mm')+row('Lengte',r.lengte+' mm')+row('Dikte',r.dikte+' um')+'</div>'+
+      '<div class="info-block">'+row('Materiaal',mat.label||r.materiaal)+row('Breedte',r.breedte+' mm')+row('Lengte',r.lengte+' mm')+row('Dikte',r.dikte+' mm')+'</div>'+
       '<div class="slabel">Productie Parameters</div>' +
-      '<div class="info-block">'+row('Sealtijd',r.seal+' s')+row('Snelheid',r.snelheid+' m/min')+row('Zakken/min',r.zakmin)+row('Zakken/rol',r.zakrol)+row('Koker dia',r.koker+' mm')+row('Roldia wissel',r.roldia+' mm')+'</div>'+
+      '<div class="info-block">'+row('Sealtijd',r.seal+' ms')+row('Snelheid',r.snelheid+' m/min')+row('Zakken/min',r.zakmin)+row('Zakken/rol',r.zakrol)+row('Koker dia',r.koker+' mm')+'</div>'+
       '<div class="slabel">Machine Instellingen</div>' +
       '<div class="info-block">'+row('Static charger',r.static_ch)+row('Static mat (mm)',r.static_mat)+row('Cycle drukker',r.drukker?'AAN - '+(r.drukker_inst||''):'UIT')+'</div>'+
       '<div class="slabel">Seal Temperaturen</div>' +
@@ -1020,12 +1168,12 @@ function bewerkRecept(key) {
   fbLoad('/recepten',function(lijst){
     var r=null;for(var i=0;i<lijst.length;i++){if(lijst[i]._key===key){r=lijst[i];break;}}
     if(!r) return;
-    var fields=['klantnr','klantnaam','prodoms','versie','breedte','lengte','dikte','koker','roldia','seal','snelheid','zakmin','zakrol','drukker_inst','temp_boven','temp_onder','notities','offset1_werke'];
-    var fnames=['f-klantnr','f-klantnaam','f-prodoms','f-versie','f-breedte','f-lengte','f-dikte','f-koker','f-roldia','f-seal','f-snelheid','f-zakmin','f-zakrol','f-drukker','f-temp-boven','f-temp-onder','f-notities','f-offset1'];
+    var fields=['klantnr','klantnaam','versie','breedte','lengte','dikte','koker','seal','snelheid','zakmin','zakrol','drukker_inst','temp_boven','temp_onder','notities','offset1_werke'];
+    var fnames=['f-klantnr','f-klantnaam','f-versie','f-breedte','f-lengte','f-dikte','f-koker','f-seal','f-snelheid','f-zakmin','f-zakrol','f-drukker','f-temp-boven','f-temp-onder','f-notities','f-offset1'];
     for(var i=0;i<fields.length;i++){var el=document.getElementById(fnames[i]);if(el)el.value=r[fields[i]]||'';}
     document.getElementById('f-prodtype').value=r.prodtype||'Zak';
     document.getElementById('f-static-mat').value=r.static_mat||'';
-    selectMat(r.materiaal||'peld');
+    selectMat(r.materiaal||'ldpe');
     selectStatic(r.static_ch||'Off');
     if(r.drukker){drukkerAan=true;document.getElementById('drukker-btn').textContent='AAN';document.getElementById('drukker-btn').className='toggle-btn toggle-aan';document.getElementById('drukker-extra').style.display='block';}
     editKey=key;
@@ -1402,7 +1550,7 @@ function toggleFlowProb(id) {
 }
 
 
-var APP_VERSION = '2.1';
+var APP_VERSION = '3.7';
 
 function checkVersie() {
   fetch('version.json?t=' + Date.now())
