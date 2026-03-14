@@ -33,8 +33,14 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 .nb-label{font-weight:700;font-size:20px;letter-spacing:1px;text-transform:uppercase;color:#e5e7eb;line-height:1}
 .nb-sub{font-size:10px;color:#9ca3af;margin-top:4px}
 .nb-arr{margin-left:auto;font-size:20px;color:#1a2540}
-.tree-group{margin-bottom:12px}
-.tree-header{display:flex;align-items:center;gap:8px;padding:10px 14px;background:#141d2e;border:1px solid #1a2540;border-left:4px solid #f59e0b;border-radius:4px 4px 0 0}
+.tree-group{margin-bottom:8px}
+.tree-header{display:flex;align-items:center;gap:8px;padding:12px 14px;background:#141d2e;border:1px solid #1a2540;border-left:4px solid #f59e0b;border-radius:4px;cursor:pointer}
+.tree-header.open{border-radius:4px 4px 0 0}
+.tree-header:active{background:#1a2540}
+.tree-items{display:none}
+.tree-items.open{display:block}
+.tree-chevron{margin-left:auto;font-size:16px;color:#6b7280;transition:transform .2s;flex-shrink:0}
+.tree-header.open .tree-chevron{transform:rotate(90deg);color:#f59e0b}
 .tree-klant{font-weight:700;font-size:16px;letter-spacing:1px;text-transform:uppercase;color:#f59e0b;flex:1}
 .tree-count{font-size:10px;color:#9ca3af}
 .tree-item{background:#0f1520;border:1px solid #1a2540;border-top:none;cursor:pointer}
@@ -177,7 +183,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
       <div id="login-err" style="display:none;color:#ef4444;font-size:10px;text-align:center;margin-bottom:10px;letter-spacing:2px;">ONGELDIG WACHTWOORD</div>
       <button onclick="doLogin()" style="width:100%;background:#f59e0b;color:#000;border:none;border-radius:4px;font-family:'Courier New',Courier,monospace;font-weight:700;font-size:18px;letter-spacing:3px;text-transform:uppercase;padding:15px;cursor:pointer;">INLOGGEN</button>
       <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:12px;">Wachtwoord: <span style="color:#f59e0b;">tsa1600</span></div>
-      <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:8px;letter-spacing:2px;">v3.7 — 2026-03-13</div>
+      <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:8px;letter-spacing:2px;">v3.8 — 2026-03-13</div>
     </div>
   </div>
 </div>
@@ -1040,6 +1046,12 @@ function resetForm() {
   editKey=null;
 }
 
+function toggleGroep(hdr) {
+  hdr.classList.toggle('open');
+  var items = document.getElementById(hdr.id + '-items');
+  if(items) items.classList.toggle('open');
+}
+
 function laadRecepten() {
   var el = document.getElementById('recepten-lijst');
   el.innerHTML = '<div class="empty-state">Laden...</div>';
@@ -1047,10 +1059,11 @@ function laadRecepten() {
 }
 
 function filterRecepten() {
-  renderReceptenTree(_recepten, document.getElementById('zoek-input').value);
+  var q = document.getElementById('zoek-input').value;
+  renderReceptenTree(_recepten, q, q.length > 0);
 }
 
-function renderReceptenTree(lijst, query) {
+function renderReceptenTree(lijst, query, openAll) {
   var el = document.getElementById('recepten-lijst');
   if(!lijst.length){el.innerHTML='<div class="empty-state">Nog geen recepten.<br>Tik op + Nieuw om te beginnen.</div>';return;}
   var q = query.toLowerCase().trim();
@@ -1091,8 +1104,17 @@ function renderReceptenTree(lijst, query) {
         '</div>' +
       '</div>';
     }
+    var gid = 'tg-'+ki;
+    var openKlas = openAll ? ' open' : '';
     html+='<div class="tree-group">' +
-      '<div class="tree-header"><span>&#128193;</span><span class="tree-klant">'+klant+'</span><span class="tree-count">'+groepen[klant].length+' rec.</span></div>'+items+'</div>';
+      '<div class="tree-header'+openKlas+'" id="'+gid+'" onclick="toggleGroep(this)">' +
+        '<span>&#128193;</span>' +
+        '<span class="tree-klant">'+klant+'</span>' +
+        '<span class="tree-count">'+groepen[klant].length+' rec.</span>' +
+        '<span class="tree-chevron">&#8250;</span>' +
+      '</div>' +
+      '<div class="tree-items'+openKlas+'" id="'+gid+'-items">'+items+'</div>' +
+    '</div>';
   }
   el.innerHTML=html;
 }
@@ -1550,7 +1572,7 @@ function toggleFlowProb(id) {
 }
 
 
-var APP_VERSION = '3.7';
+var APP_VERSION = '3.8';
 
 function checkVersie() {
   fetch('version.json?t=' + Date.now())
