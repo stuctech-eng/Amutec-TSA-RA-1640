@@ -183,7 +183,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
       <div id="login-err" style="display:none;color:#ef4444;font-size:10px;text-align:center;margin-bottom:10px;letter-spacing:2px;">ONGELDIG WACHTWOORD</div>
       <button onclick="doLogin()" style="width:100%;background:#f59e0b;color:#000;border:none;border-radius:4px;font-family:'Courier New',Courier,monospace;font-weight:700;font-size:18px;letter-spacing:3px;text-transform:uppercase;padding:15px;cursor:pointer;">INLOGGEN</button>
       <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:12px;">Wachtwoord: <span style="color:#f59e0b;">tsa1600</span></div>
-      <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:8px;letter-spacing:2px;">v4.4 — 2026-03-13</div>
+      <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:8px;letter-spacing:2px;">v4.5 — 2026-03-13</div>
     </div>
   </div>
 </div>
@@ -1254,7 +1254,17 @@ function openDetail(key) {
       '<div class="slabel">Materiaal & Afmetingen</div>' +
       '<div class="info-block">'+row('Materiaal',mat.label||r.materiaal)+row('Breedte',r.breedte+' mm')+row('Lengte',r.lengte+' mm')+row('Dikte',r.dikte+' mm')+'</div>'+
       '<div class="slabel">Productie Parameters</div>' +
-      '<div class="info-block">'+row('Sealtijd',r.seal+' ms')+row('Snelheid',r.snelheid+' m/min')+row('Zakken/min',r.zakmin)+row('Zakken/rol',r.zakrol)+row('Koker dia',r.koker+' mm')+'</div>'+
+      '<div class="info-block">'+row('Sealtijd',r.seal+' ms')+row('Snelheid',r.snelheid+' m/min')+row('Zakken/rol',r.zakrol)+row('Koker dia',r.koker+' mm')+'</div>'+
+      '<div class="slabel">Offset Rolwissel</div>' +
+      (function(){
+        var o1 = r.offset1_werke ? parseFloat(r.offset1_werke) : berekenOffset(parseFloat(r.lengte)||0);
+        var o2 = Math.round(o1/2);
+        var bron = r.offset1_werke ? 'werkelijk' : 'berekend';
+        return '<div class="info-block">'+
+          '<div class="info-row"><div class="ir-lbl">OFFSET 1</div><div class="ir-val" style="color:#f59e0b;">'+o1+'</div><div style="font-size:10px;color:#6b7280;margin-left:8px;">'+bron+'</div></div>'+
+          '<div class="info-row"><div class="ir-lbl">OFFSET 2</div><div class="ir-val" style="color:#f59e0b;">'+o2+'</div></div>'+
+        '</div>';
+      })()+
       '<div class="slabel">Machine Instellingen</div>' +
       '<div class="info-block">'+row('Static charger',r.static_ch)+row('Static mat (mm)',r.static_mat)+row('Cycle drukker',r.drukker?'AAN - '+(r.drukker_inst||''):'UIT')+'</div>'+
       '<div class="slabel">Seal Temperaturen</div>' +
@@ -1687,7 +1697,7 @@ function toggleFlowProb(id) {
 }
 
 
-var APP_VERSION = '4.4';
+var APP_VERSION = '4.5';
 
 function checkVersie() {
   fetch('version.json?t=' + Date.now())
