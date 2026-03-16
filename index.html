@@ -174,17 +174,39 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
     <div style="position:absolute;bottom:20px;right:20px;width:24px;height:24px;border-bottom:2px solid #f59e0b;border-right:2px solid #f59e0b;"></div>
     <div style="background:#f59e0b;color:#000;font-size:9px;letter-spacing:3px;padding:5px 16px;text-transform:uppercase;margin-bottom:14px;">AMUTEC</div>
     <div style="font-weight:700;font-size:40px;letter-spacing:4px;text-transform:uppercase;color:#e5e7eb;text-align:center;line-height:1;">TSA</div>
-    <div style="font-weight:700;font-size:18px;letter-spacing:4px;text-transform:uppercase;color:#6b7280;margin-bottom:8px;">D-ROLLER 1600</div>
-    <div style="font-size:10px;color:#9ca3af;letter-spacing:2px;margin-bottom:36px;">MACHINE DATABASE</div>
+    <div style="font-weight:700;font-size:18px;letter-spacing:4px;text-transform:uppercase;color:#9ca3af;margin-bottom:8px;">D-ROLLER 1600</div>
+    <div style="font-size:10px;color:#9ca3af;letter-spacing:2px;margin-bottom:28px;">MACHINE DATABASE</div>
     <div style="width:100%;max-width:300px;">
-      <div style="font-size:9px;color:#6b7280;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;">Wachtwoord</div>
-      <input id="login-pw" type="password" placeholder="........" onkeydown="if(event.key==='Enter')doLogin()"
-        style="width:100%;background:#0f1520;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;margin-bottom:10px;text-align:center;letter-spacing:6px;">
-      <div id="login-err" style="display:none;color:#ef4444;font-size:10px;text-align:center;margin-bottom:10px;letter-spacing:2px;">ONGELDIG WACHTWOORD</div>
-      <button onclick="doLogin()" style="width:100%;background:#f59e0b;color:#000;border:none;border-radius:4px;font-family:'Courier New',Courier,monospace;font-weight:700;font-size:18px;letter-spacing:3px;text-transform:uppercase;padding:15px;cursor:pointer;">INLOGGEN</button>
-      <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:12px;">Wachtwoord: <span style="color:#f59e0b;">tsa1600</span></div>
-      <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:8px;letter-spacing:2px;">v4.6 — 2026-03-13</div>
+
+```
+  <!-- STAP 1: app wachtwoord -->
+  <div id="login-stap1">
+    <div style="font-size:9px;color:#9ca3af;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;">App Wachtwoord</div>
+    <input id="login-pw" type="password" placeholder="........" onkeydown="if(event.key===&apos;Enter&apos;)doLogin()"
+      style="width:100%;background:#0f1520;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:&apos;Courier New&apos;,Courier,monospace;font-size:22px;padding:14px;outline:none;margin-bottom:10px;text-align:center;letter-spacing:6px;">
+    <div id="login-err" style="display:none;color:#ef4444;font-size:10px;text-align:center;margin-bottom:10px;letter-spacing:2px;">ONGELDIG WACHTWOORD</div>
+    <button onclick="doLogin()" style="width:100%;background:#f59e0b;color:#000;border:none;border-radius:4px;font-family:'Courier New',Courier,monospace;font-weight:700;font-size:18px;letter-spacing:3px;text-transform:uppercase;padding:15px;cursor:pointer;">VERDER &#8250;</button>
+  </div>
+
+  <!-- STAP 2: operator kiezen + pincode -->
+  <div id="login-stap2" style="display:none;">
+    <div style="font-size:9px;color:#9ca3af;letter-spacing:2px;text-transform:uppercase;margin-bottom:14px;">Wie ben jij?</div>
+    <div id="operator-knoppen" style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px;"></div>
+    <div id="login-pin-sectie" style="display:none;">
+      <div style="font-size:9px;color:#9ca3af;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;" id="login-pin-label">Pincode</div>
+      <input id="login-pin" type="password" inputmode="numeric" maxlength="6" placeholder="&middot; &middot; &middot;"
+        onkeydown="if(event.key===&apos;Enter&apos;)doLoginPin()"
+        style="width:100%;background:#0f1520;border:2px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:28px;padding:14px;outline:none;margin-bottom:10px;text-align:center;letter-spacing:8px;">
+      <div id="login-pin-err" style="display:none;color:#ef4444;font-size:10px;text-align:center;margin-bottom:10px;letter-spacing:2px;">VERKEERDE PINCODE</div>
+      <button onclick="doLoginPin()" style="width:100%;background:#34d399;color:#000;border:none;border-radius:4px;font-family:'Courier New',Courier,monospace;font-weight:700;font-size:18px;letter-spacing:3px;text-transform:uppercase;padding:15px;cursor:pointer;">INLOGGEN</button>
     </div>
+    <button onclick="terugNaarStap1()" style="width:100%;background:transparent;border:1px solid #1a2540;border-radius:4px;color:#6b7280;font-family:'Courier New',Courier,monospace;font-size:13px;padding:10px;cursor:pointer;margin-top:10px;">&#8249; Terug</button>
+  </div>
+
+  <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v4.7 &#8212; 2026-03-13</div>
+</div>
+```
+
   </div>
 </div>
 
@@ -200,6 +222,9 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
   <div style="font-weight:700;font-size:34px;letter-spacing:2px;text-transform:uppercase;color:#e5e7eb;line-height:1.1;">TSA D-Roller<br>1600</div>
   <div style="font-size:11px;color:#9ca3af;letter-spacing:2px;margin-top:6px;">Machine Database &amp; Recepten</div>
   <div class="home-status" style="margin-top:12px;"><div class="pulse"></div>SYSTEEM GEREED</div>
+  <div style="margin-top:8px;font-size:11px;letter-spacing:1px;">
+    <span style="color:#9ca3af;">Ingelogd: </span><span id="home-operator" style="font-weight:700;color:#34d399;">-</span>
+  </div>
 </div>
 
 <!-- NAV KNOPPEN - vullen rest van scherm -->
@@ -510,6 +535,14 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 var FB_URL = 'https://amutec-tsa-ra-1640-default-rtdb.europe-west1.firebasedatabase.app';
 var APP_PW = 'tsa1600';
 
+// Operator configuratie
+var OPERATORS_CONFIG = {
+  'Dirk':   { pin: '007', admin: true  },
+  'Casper': { pin: '100', admin: false }
+};
+var _huidigeOperator = null; // naam van ingelogde operator
+var _geselecteerdeOperator = null; // tijdelijk bij login
+
 var MATERIALEN = {
   'peld':         {label:'PE-LD virgin',  temp_b:157,temp_o:154,sv:1.00,st:1.00,recycle:false},
   'lldpe':        {label:'LDPE/LLDPE',    temp_b:152,temp_o:149,sv:1.05,st:0.95,recycle:false},
@@ -760,6 +793,7 @@ function go(id) {
   if(id==='s-recepten') laadRecepten();
   if(id==='s-flow') renderFlow();
   if(id==='s-calculator') laadLeerdataOffset();
+  if(id==='s-nieuw' && !editKey) vulOperatorIn();
 }
 
 function toast(msg, err) {
@@ -773,17 +807,95 @@ function toast(msg, err) {
 function doLogin() {
   var pw = document.getElementById('login-pw').value;
   if(pw === APP_PW) {
-    sessionStorage.setItem('tsa_auth', pw);
     document.getElementById('login-err').style.display = 'none';
-    go('s-home');
+    toonStap2();
   } else {
     document.getElementById('login-err').style.display = 'block';
     document.getElementById('login-pw').value = '';
   }
 }
 
+function toonStap2() {
+  document.getElementById('login-stap1').style.display = 'none';
+  document.getElementById('login-stap2').style.display = 'block';
+  var html = '';
+  var namen = Object.keys(OPERATORS_CONFIG);
+  for(var i=0;i<namen.length;i++){
+    var naam = namen[i];
+    html += '<button onclick="kiesOperatorLogin(\'' + naam + '\')" id="opbtn-' + naam + '" ' +
+      'style="width:100%;background:#0f1520;border:2px solid #1a2540;border-radius:6px;' +
+      'color:#e5e7eb;font-family:monospace;font-weight:700;' +
+      'font-size:20px;letter-spacing:2px;padding:16px;cursor:pointer;text-align:left;' +
+      'display:flex;align-items:center;gap:12px;">' +
+      '<span style="font-size:24px;">&#128100;</span>' + naam + '</button>';
+  }
+  document.getElementById('operator-knoppen').innerHTML = html;
+}
+
+function kiesOperatorLogin(naam) {
+  _geselecteerdeOperator = naam;
+  var namen = Object.keys(OPERATORS_CONFIG);
+  for(var i=0;i<namen.length;i++){
+    var btn = document.getElementById('opbtn-'+namen[i]);
+    if(btn){
+      btn.style.borderColor = namen[i]===naam ? 'rgba(245,158,11,0.8)' : '#1a2540';
+      btn.style.background  = namen[i]===naam ? 'rgba(245,158,11,0.08)' : '#0f1520';
+      btn.style.color       = namen[i]===naam ? '#fcd34d' : '#e5e7eb';
+    }
+  }
+  document.getElementById('login-pin-sectie').style.display = 'block';
+  document.getElementById('login-pin-label').textContent = 'Pincode ' + naam;
+  document.getElementById('login-pin').value = '';
+  document.getElementById('login-pin-err').style.display = 'none';
+  document.getElementById('login-pin').focus();
+}
+
+function doLoginPin() {
+  var pin = document.getElementById('login-pin').value.trim();
+  var config = OPERATORS_CONFIG[_geselecteerdeOperator];
+  if(config && pin === config.pin) {
+    _huidigeOperator = _geselecteerdeOperator;
+    sessionStorage.setItem('tsa_auth', APP_PW);
+    sessionStorage.setItem('tsa_operator', _huidigeOperator);
+    var btn = document.getElementById('opbtn-'+_huidigeOperator);
+    if(btn){ btn.style.borderColor='#34d399'; btn.style.background='rgba(52,211,153,0.08)'; btn.style.color='#34d399'; }
+    setTimeout(function(){ updateHomeOperator(); go('s-home'); }, 400);
+  } else {
+    document.getElementById('login-pin-err').style.display = 'block';
+    document.getElementById('login-pin').value = '';
+  }
+}
+
+function terugNaarStap1() {
+  document.getElementById('login-stap2').style.display = 'none';
+  document.getElementById('login-stap1').style.display = 'block';
+  document.getElementById('login-pw').value = '';
+  _geselecteerdeOperator = null;
+}
+
 function checkLogin() {
-  if(sessionStorage.getItem('tsa_auth') === APP_PW) go('s-home');
+  if(sessionStorage.getItem('tsa_auth') === APP_PW) {
+    _huidigeOperator = sessionStorage.getItem('tsa_operator') || null;
+    if(_huidigeOperator) { updateHomeOperator(); go('s-home'); }
+    else { go('s-login'); setTimeout(toonStap2, 50); }
+  }
+}
+
+function updateHomeOperator() {
+  var el = document.getElementById('home-operator');
+  if(!el || !_huidigeOperator) return;
+  var isAdm = OPERATORS_CONFIG[_huidigeOperator] && OPERATORS_CONFIG[_huidigeOperator].admin;
+  el.textContent = _huidigeOperator + (isAdm ? ' — ADMIN' : '');
+  el.style.color = isAdm ? '#f59e0b' : '#34d399';
+}
+
+function isAdmin() {
+  return !!(OPERATORS_CONFIG[_huidigeOperator] && OPERATORS_CONFIG[_huidigeOperator].admin);
+}
+
+function magBewerken(receptOperator) {
+  if(isAdmin()) return true;
+  return receptOperator === _huidigeOperator;
 }
 
 function fbLoad(pad, cb) {
@@ -895,6 +1007,16 @@ function stapVeld(id, stap) {
     }
   }
   if(id === 'f-zakrol') herbereken();
+}
+
+function vulOperatorIn() {
+  if(!_huidigeOperator) return;
+  var el = document.getElementById('f-versie');
+  if(el && !el.value) {
+    el.value = _huidigeOperator;
+    el.classList.remove('veld-leeg','veld-benadering');
+    el.classList.add('veld-definitief');
+  }
 }
 
 function veldIngevuld(el) {
@@ -1203,13 +1325,23 @@ function renderReceptenTree(lijst, query, openAll) {
 }
 
 function verwijderRecept(btn, key) {
-  window._deleteKey = key;
-  toonPinModal(function(){
-    var k = window._deleteKey;
-    fbDelete('/recepten', k, function(){
-      toast('Verwijderd');
-      window._deleteKey = null;
-      laadRecepten();
+  // Check rechten
+  fbLoad('/recepten', function(lijst){
+    var r=null;
+    for(var i=0;i<lijst.length;i++){ if(lijst[i]._key===key){r=lijst[i];break;} }
+    if(!r) return;
+    if(!magBewerken(r.versie)){
+      toast('Alleen eigen recepten verwijderen', true);
+      return;
+    }
+    window._deleteKey = key;
+    toonPinModal(function(){
+      var k = window._deleteKey;
+      fbDelete('/recepten', k, function(){
+        toast('Verwijderd');
+        window._deleteKey = null;
+        laadRecepten();
+      });
     });
   });
 }
@@ -1287,6 +1419,10 @@ function bewerkRecept(key) {
   fbLoad('/recepten',function(lijst){
     var r=null;for(var i=0;i<lijst.length;i++){if(lijst[i]._key===key){r=lijst[i];break;}}
     if(!r) return;
+    if(!magBewerken(r.versie)){
+      toast('Alleen eigen recepten bewerken', true);
+      return;
+    }
     var fields=['klantnr','klantnaam','versie','breedte','lengte','dikte','koker','seal','snelheid','zakmin','zakrol','drukker_inst','temp_boven','temp_onder','notities','offset1_werke'];
     var fnames=['f-klantnr','f-klantnaam','f-versie','f-breedte','f-lengte','f-dikte','f-koker','f-seal','f-snelheid','f-zakmin','f-zakrol','f-drukker','f-temp-boven','f-temp-onder','f-notities','f-offset1'];
     for(var i=0;i<fields.length;i++){
@@ -1348,21 +1484,9 @@ document.addEventListener('input', function(e){
 
 var OPERATORS = ['Dirk', 'Casper'];
 
-function toonNaamDropdown() {
-  var input = document.getElementById('f-versie');
-  var dd = document.getElementById('naam-dropdown');
-  var val = input.value.toLowerCase();
-  var gefilterd = val ? OPERATORS.filter(function(n){ return n.toLowerCase().indexOf(val) >= 0; }) : OPERATORS;
-  if(!gefilterd.length){ dd.style.display='none'; return; }
-  dd.innerHTML = gefilterd.map(function(n){
-    return '<div onclick="kiesOperator(\'' + n + '\')" style="padding:13px 14px;cursor:pointer;font-size:17px;border-bottom:1px solid #1a2540;color:#e5e7eb;" onmousedown="event.preventDefault()">' + n + '</div>';
-  }).join('');
-  dd.style.display = 'block';
-}
+function toonNaamDropdown() {}
 
-function sluitNaamDropdown() {
-  document.getElementById('naam-dropdown').style.display = 'none';
-}
+function sluitNaamDropdown() {}
 
 function kiesOperator(naam) {
   var el = document.getElementById('f-versie');
@@ -1701,7 +1825,7 @@ function toggleFlowProb(id) {
 }
 
 
-var APP_VERSION = '4.6';
+var APP_VERSION = '4.7';
 
 function checkVersie() {
   fetch('version.json?t=' + Date.now())
