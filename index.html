@@ -203,7 +203,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
     <button onclick="terugNaarStap1()" style="width:100%;background:transparent;border:1px solid #1a2540;border-radius:4px;color:#6b7280;font-family:'Courier New',Courier,monospace;font-size:13px;padding:10px;cursor:pointer;margin-top:10px;">&#8249; Terug</button>
   </div>
 
-  <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v4.7 &#8212; 2026-03-13</div>
+  <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v5.0 &#8212; 2026-03-13</div>
 </div>
 ```
 
@@ -307,6 +307,59 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
   <div class="content">
 
 ```
+<!-- ORDER CALCULATOR -->
+<div class="form-card" style="border-top-color:#a78bfa;">
+  <div class="form-card-title" style="color:#a78bfa;">&#128230; Order</div>
+
+  <div class="field">
+    <label>Te leveren (x 1000 stuks)</label>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <button onclick="stapVeld('f-order-stuks',-1)" class="stap-btn">&#8722;</button>
+      <input id="f-order-stuks" type="number" placeholder="0" class="veld-leeg"
+        onclick="veldTik(this)" oninput="berekenOrder()"
+        style="flex:1;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:12px 14px;outline:none;text-align:center;">
+      <button onclick="stapVeld('f-order-stuks',1)" class="stap-btn">+</button>
+    </div>
+  </div>
+
+  <div class="field">
+    <label>Wat voor pallet</label>
+    <div style="display:flex;gap:8px;">
+      <button onclick="kiesPallet('euro')" id="pallet-euro"
+        style="flex:1;background:rgba(167,139,250,0.1);border:1px solid #a78bfa;border-radius:4px;color:#a78bfa;font-family:'Courier New',Courier,monospace;font-size:12px;font-weight:700;padding:10px 6px;cursor:pointer;">Euro<br>800x1200</button>
+      <button onclick="kiesPallet('euro-formaat')" id="pallet-euro-formaat"
+        style="flex:1;background:#141d2e;border:1px solid #1a2540;border-radius:4px;color:#9ca3af;font-family:'Courier New',Courier,monospace;font-size:12px;font-weight:700;padding:10px 6px;cursor:pointer;">Euro<br>formaat</button>
+      <button onclick="kiesPallet('blok')" id="pallet-blok"
+        style="flex:1;background:#141d2e;border:1px solid #1a2540;border-radius:4px;color:#9ca3af;font-family:'Courier New',Courier,monospace;font-size:12px;font-weight:700;padding:10px 6px;cursor:pointer;">Blok<br>1000x1200</button>
+      <button onclick="kiesPallet('pop-up')" id="pallet-pop-up"
+        style="flex:1;background:#141d2e;border:1px solid #1a2540;border-radius:4px;color:#9ca3af;font-family:'Courier New',Courier,monospace;font-size:12px;font-weight:700;padding:10px 6px;cursor:pointer;">Pop-up</button>
+    </div>
+  </div>
+
+  <div class="field">
+    <label>Huidjes lengte (mm)</label>
+    <div style="display:flex;gap:8px;margin-bottom:8px;">
+      <button onclick="kiesHuidje(500)" id="huidje-500" style="flex:1;background:#141d2e;border:1px solid #1a2540;border-radius:4px;color:#9ca3af;font-family:'Courier New',Courier,monospace;font-size:13px;font-weight:700;padding:9px 0;cursor:pointer;">500</button>
+      <button onclick="kiesHuidje(800)" id="huidje-800" style="flex:1;background:#141d2e;border:1px solid #1a2540;border-radius:4px;color:#9ca3af;font-family:'Courier New',Courier,monospace;font-size:13px;font-weight:700;padding:9px 0;cursor:pointer;">800</button>
+      <button onclick="kiesHuidje(1000)" id="huidje-1000" style="flex:1;background:#141d2e;border:1px solid #1a2540;border-radius:4px;color:#9ca3af;font-family:'Courier New',Courier,monospace;font-size:13px;font-weight:700;padding:9px 0;cursor:pointer;">1000</button>
+      <button onclick="kiesHuidje(1200)" id="huidje-1200" style="flex:1;background:#141d2e;border:1px solid #1a2540;border-radius:4px;color:#9ca3af;font-family:'Courier New',Courier,monospace;font-size:13px;font-weight:700;padding:9px 0;cursor:pointer;">1200</button>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <button onclick="stapVeld('f-huidje',-100)" class="stap-btn">&#8722;</button>
+      <input id="f-huidje" type="number" placeholder="0" value="0"
+        oninput="berekenOrder()"
+        style="flex:1;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:20px;padding:12px 14px;outline:none;text-align:center;">
+      <button onclick="stapVeld('f-huidje',100)" class="stap-btn">+</button>
+    </div>
+  </div>
+
+  <!-- Resultaten -->
+  <div id="order-resultaten" style="display:none;margin-top:12px;background:#070a10;border:1px solid rgba(167,139,250,.4);border-radius:6px;padding:14px;">
+    <div style="font-size:9px;color:#a78bfa;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;">Berekening</div>
+    <div id="order-rijen"></div>
+  </div>
+</div>
+
 <div class="form-card">
   <div class="form-card-title">Klant & Product</div>
   <div class="grid2">
@@ -1007,6 +1060,7 @@ function stapVeld(id, stap) {
     }
   }
   if(id === 'f-zakrol') herbereken();
+  if(id === 'f-order-stuks' || id === 'f-huidje') berekenOrder();
 }
 
 function vulOperatorIn() {
@@ -1209,7 +1263,8 @@ function slaOp() {
 }
 
 function resetForm() {
-  var ids=['f-klantnr','f-klantnaam','f-versie','f-breedte','f-lengte','f-dikte','f-koker','f-seal','f-snelheid','f-zakmin','f-zakrol','f-static-mat','f-drukker','f-temp-boven','f-temp-onder','f-notities','f-offset1'];
+  var ids=['f-klantnr','f-klantnaam','f-versie','f-breedte','f-lengte','f-dikte','f-koker','f-seal','f-snelheid','f-zakmin','f-zakrol','f-static-mat','f-drukker','f-temp-boven','f-temp-onder','f-notities','f-offset1','f-order-stuks'];
+  document.getElementById('order-resultaten') && (document.getElementById('order-resultaten').style.display='none');
   // Alle tekstvelden geel
   ['f-klantnr','f-klantnaam','f-versie'].forEach(function(id){
     var el=document.getElementById(id);
@@ -1431,7 +1486,12 @@ function bewerkRecept(key) {
         el.value = r[fields[i]];
         el.classList.remove('veld-leeg','veld-benadering');
         el.classList.add('veld-definitief');
-        el.readOnly = true;
+        // Notities nooit readonly
+        if(fnames[i] !== 'f-notities') {
+          el.readOnly = true;
+        } else {
+          el.readOnly = false;
+        }
         // Temp velden inline stijl
         if(fnames[i]==='f-temp-boven'||fnames[i]==='f-temp-onder'){
           el.style.borderBottom='2px solid #34d399';
@@ -1466,6 +1526,145 @@ function bewerkRecept(key) {
   });
 }
 
+
+
+// ── SOORTELIJK GEWICHT per materiaal (kg/m³)
+var SOORTELIJK_GEWICHT = {
+  'peld':         920,
+  'lldpe':        920,
+  'ldpe':         920,
+  'pehd':         960,
+  'pp':           910,
+  'andere':       930,
+  'recycle-mix':  950,
+  'recycle-peld': 930,
+  'recycle-pehd': 955
+};
+
+// Palletformaten (mm) en max stapelhoogte (mm)
+var PALLETS = {
+  'euro':        {naam:'Euro pallet',    b:800,  l:1200, maxH:1200},
+  'euro-formaat':{naam:'Euro formaat',   b:800,  l:1200, maxH:1200},
+  'blok':        {naam:'Blokpallet',     b:1000, l:1200, maxH:1200},
+  'pop-up':      {naam:'Pop-up',         b:600,  l:800,  maxH:1000}
+};
+var MAX_PALLET_KG = 750;
+
+var _gekozenPallet = 'euro';
+var _gekozenHuidje = 0;
+
+function kiesPallet(type) {
+  _gekozenPallet = type;
+  Object.keys(PALLETS).forEach(function(k){
+    var btn = document.getElementById('pallet-'+k);
+    if(!btn) return;
+    if(k === type) {
+      btn.style.background = 'rgba(167,139,250,0.1)';
+      btn.style.borderColor = '#a78bfa';
+      btn.style.color = '#a78bfa';
+    } else {
+      btn.style.background = '#141d2e';
+      btn.style.borderColor = '#1a2540';
+      btn.style.color = '#9ca3af';
+    }
+  });
+  berekenOrder();
+}
+
+function kiesHuidje(val) {
+  _gekozenHuidje = val;
+  document.getElementById('f-huidje').value = val;
+  [500,800,1000,1200].forEach(function(v){
+    var btn = document.getElementById('huidje-'+v);
+    if(!btn) return;
+    if(v === val) {
+      btn.style.background = 'rgba(167,139,250,0.1)';
+      btn.style.borderColor = '#a78bfa';
+      btn.style.color = '#a78bfa';
+    } else {
+      btn.style.background = '#141d2e';
+      btn.style.borderColor = '#1a2540';
+      btn.style.color = '#9ca3af';
+    }
+  });
+  berekenOrder();
+}
+
+function berekenOrder() {
+  var stuks1000 = parseFloat(document.getElementById('f-order-stuks').value) || 0;
+  var zakrol    = parseFloat(document.getElementById('f-zakrol').value) || 0;
+  var breedte   = parseFloat(document.getElementById('f-breedte').value) || 0;
+  var lengte    = parseFloat(document.getElementById('f-lengte').value) || 0;
+  var dikte     = parseFloat(document.getElementById('f-dikte').value) || 0;
+  var huidje    = parseFloat(document.getElementById('f-huidje').value) || _gekozenHuidje;
+  var koker     = parseFloat(document.getElementById('f-koker').value) || 90;
+
+  if(!stuks1000 || !zakrol) {
+    document.getElementById('order-resultaten').style.display = 'none';
+    return;
+  }
+
+  var totaleStuks = stuks1000 * 1000;
+  var aantalRollen = Math.ceil(totaleStuks / zakrol);
+
+  // Gewicht per rol
+  var sv = SOORTELIJK_GEWICHT[selectedMat] || 920;
+  // Folie volume per rol: breedte(m) x rollengte(m) x dikte(m) x 2 (dubbele folie voor zak)
+  var rolLengte = zakrol * lengte / 1000; // in meter
+  var folieBreedteM = breedte / 1000;
+  var dikte_m = dikte / 1000;
+  var volumeM3 = folieBreedteM * rolLengte * dikte_m * 2;
+  var gewichtPerRol = Math.round(volumeM3 * sv * 10) / 10; // kg
+
+  var totaalGewicht = Math.round(aantalRollen * gewichtPerRol);
+
+  // Pallet berekening
+  var pallet = PALLETS[_gekozenPallet] || PALLETS['euro'];
+  var rollenPerPalletGewicht = Math.floor(MAX_PALLET_KG / gewichtPerRol);
+  // Schat rolhoogte: roldiameter = sqrt(koker²/4 + zakrol*dikte*lengte/1000/pi)*2
+  var rolRadius = Math.sqrt((koker/2)*(koker/2) + (zakrol * dikte * lengte/1000) / Math.PI);
+  var rolDiameter = Math.round(rolRadius * 2);
+  var rollenPerLaag = Math.max(1, Math.floor(pallet.b / (rolDiameter+20)) * Math.floor(pallet.l / (rolDiameter+20)));
+  var lagen = Math.floor(pallet.maxH / (rolDiameter+10));
+  var rollenPerPalletStapel = rollenPerLaag * lagen;
+  var rollenPerPallet = Math.min(rollenPerPalletGewicht, rollenPerPalletStapel);
+  var aantalPallets = Math.ceil(aantalRollen / rollenPerPallet);
+
+  // Folie verbruik
+  var totaleFolieMeter = aantalRollen * rolLengte;
+  var totaleFolieKg = totaalGewicht;
+
+  // Huidjes
+  var huidjesPerRol = huidje > 0 ? Math.ceil(rolDiameter / huidje * 1000) : 0;
+  var totaalHuidjes = huidje > 0 ? aantalRollen * huidjesPerRol : 0;
+
+  // Render
+  function rij(icon, lbl, val, kleur) {
+    return '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #1a2540;">' +
+      '<span style="font-size:11px;color:#9ca3af;">'+icon+' '+lbl+'</span>' +
+      '<span style="font-size:20px;font-weight:700;color:'+(kleur||'#e5e7eb')+';">'+val+'</span>' +
+    '</div>';
+  }
+
+  var html =
+    rij('&#128260;','Aantal rollen', aantalRollen+' rol', '#a78bfa') +
+    rij('&#9878;', 'Gewicht per rol', gewichtPerRol+' kg', '#60a5fa') +
+    rij('&#9878;', 'Totaal gewicht', totaalGewicht+' kg', '#60a5fa') +
+    rij('&#128230;','Rollen per pallet ('+pallet.naam+')', rollenPerPallet+' rol', '#f59e0b') +
+    rij('&#128230;','Aantal pallets nodig', aantalPallets+' pallet', '#f59e0b') +
+    rij('&#128221;','Folie verbruik (meters)', Math.round(totaleFolieMeter)+' m', '#34d399');
+
+  if(huidje > 0) {
+    html += rij('&#128462;','Huidjes per rol ('+huidje+'mm)', huidjesPerRol+' st', '#9ca3af') +
+            rij('&#128462;','Totaal huidjes', totaalHuidjes+' st', '#9ca3af');
+  }
+
+  // Roldiameter info
+  html += '<div style="margin-top:8px;font-size:10px;color:#6b7280;">Berekende roldiameter: '+rolDiameter+'mm &middot; '+rollenPerLaag+' per laag &middot; '+lagen+' lagen</div>';
+
+  document.getElementById('order-rijen').innerHTML = html;
+  document.getElementById('order-resultaten').style.display = 'block';
+}
 
 // ── PROBLEEMSTELLINGEN ────────────────────────────────────────────────────
 
@@ -1577,14 +1776,41 @@ var PROBLEEMGROEPEN = [
         ]},
       {titel:'Seal is uitgerekt of vervormd',
         oorzaken:[
-          'Folie staat te strak in de neutrale zone',
+          'Folie staat te strak in de neutrale zone — niprollen te los geeft juist méér spanning',
+          'Rewinder trekt te hard (te hoog torque/tension)',
           'Koeltijd is te kort',
-          'Niprollen trekken te vroeg aan'
+          'Dancer spanning te hoog ingesteld'
         ],
         oplossingen:[
-          'Niproldruk verlagen',
+          'Niproldruk iets verhogen (bv. 2 naar 2.5–3.5 bar, stappen van 0.3–0.5 bar) — méér grip = minder trekken door rewinder',
+          'Rewinder torque/tension verlagen met 20–40% (zoek: Rewind Torque of Rewind Tension)',
+          'Material Loop max tension lager instellen (naar 100–120%)',
+          'Dancer cilinder-druk: 1.5–2 bar (niet op 0)',
+          'Machinesnelheid bij wissel verlagen naar 80–100 m/min',
           'Koeltijd verhogen',
           'Temperatuur iets verlagen'
+        ]},
+      {titel:'Niprollen losser zetten helpt niet bij strakke folie',
+        oorzaken:[
+          'Niprollen losser = minder grip = rewinder trekt harder door = folie strakker',
+          'Tegenintuitief: losser zetten maakt spanning tussen niprollen en rewinder hoger'
+        ],
+        oplossingen:[
+          'Niproldruk juist iets verhogen voor meer grip',
+          'Rewinder torque verlagen is de echte oplossing',
+          'Kp at running instellen op 20–30',
+          'Test in kleine stappen van 0.3–0.5 bar'
+        ]},
+      {titel:'AVI oplossing — sleep band met gedoseerd gewicht',
+        oorzaken:[
+          'Foliespanning moeilijk te regelen via machine parameters alleen',
+          'Spanning voor de seal unit is onregelmatig'
+        ],
+        oplossingen:[
+          'Sleep band gebruiken met gedoseerd gewicht op de folie',
+          'Via het hekje de spanning instellen en fijn reguleren',
+          'Gewicht doseren tot de folie soepel en gelijkmatig loopt',
+          'Hekje positie aanpassen voor optimale spanning vóór de seal unit'
         ]}
     ]
   },
@@ -1825,7 +2051,7 @@ function toggleFlowProb(id) {
 }
 
 
-var APP_VERSION = '4.7';
+var APP_VERSION = '5.0';
 
 function checkVersie() {
   fetch('version.json?t=' + Date.now())
