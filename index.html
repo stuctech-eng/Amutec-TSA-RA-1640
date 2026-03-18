@@ -218,7 +218,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
     <button onclick="terugNaarStap1()" style="width:100%;background:transparent;border:1px solid #1a2540;border-radius:4px;color:#6b7280;font-family:'Courier New',Courier,monospace;font-size:13px;padding:10px;cursor:pointer;margin-top:10px;">&#8249; Terug</button>
   </div>
 
-  <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v6.2 &#8212; 2026-03-13</div>
+  <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v6.4 &#8212; 2026-03-13</div>
 </div>
 ```
 
@@ -357,7 +357,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
   </div>
 
   <div class="field">
-    <label>Huidjes lengte (mm)</label>
+    <label>Huidjes lengte override (mm) — leeg = automatisch</label>
     <input id="f-huidje" type="number" placeholder="0" value="0" class="veld-leeg" readonly
       onclick="openInvul(this)"
       style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:20px;padding:14px;outline:none;text-align:center;cursor:pointer;">
@@ -1222,13 +1222,20 @@ function slaOp() {
   ];
   for(var ci=0;ci<checks.length;ci++){
     var el = document.getElementById(checks[ci].id);
-    if(!el || !el.value || el.value.trim()==='') {
+    var heeftWaarde = el && el.value && el.value.trim() !== '';
+    var isGroen = el && el.classList.contains('veld-definitief');
+    if(!heeftWaarde) {
+      // Geen waarde
       ontbrekend.push(checks[ci].label);
       if(el) { el.classList.remove('veld-definitief','veld-benadering'); el.classList.add('veld-leeg'); }
+    } else if(!isGroen) {
+      // Heeft waarde maar nog blauw (benadering) - ook blokkeren
+      ontbrekend.push(checks[ci].label + ' (nog niet bevestigd)');
+      // Laat veld blauw - operator moet 1x tikken om te bevestigen
     }
   }
   if(ontbrekend.length > 0){
-    toast('Vergeten: ' + ontbrekend.join(', '), true);
+    toast('Bevestig eerst: ' + ontbrekend.join(', '), true);
     return;
   }
   var klantnr = document.getElementById('f-klantnr').value.trim();
@@ -1482,6 +1489,7 @@ function openDetail(key) {
         var gwRol = Math.round(vol * sv * 10)/10;
         var rollen = Math.ceil(stuks/zakrol);
         var palletNaam = {'euro':'Euro pallet','euro-formaat':'Euro formaat','blok':'Blokpallet'}[r.order_pallet]||'Euro pallet';
+        var pallet2 = {'euro':{b:800},'euro-formaat':{b:800},'blok':{b:1000}}[r.order_pallet]||{b:800};
         var rpPallet = Math.max(1,Math.floor(500/gwRol));
         var pallets = Math.ceil(rollen/rpPallet);
         var huidje = parseFloat(r.order_huidje)||0;
@@ -1497,8 +1505,7 @@ function openDetail(key) {
             '<div class="info-row"><div class="ir-lbl">PALLET TYPE</div><div class="ir-val">'+palletNaam+'</div></div>'+
             '<div class="info-row"><div class="ir-lbl">ROLLEN PER PALLET</div><div class="ir-val" style="color:#f59e0b;">'+rpPallet+'</div></div>'+
             '<div class="info-row"><div class="ir-lbl">AANTAL PALLETS</div><div class="ir-val" style="color:#f59e0b;">'+pallets+'</div></div>'+
-            (huidje>0 ? '<div class="info-row"><div class="ir-lbl">HUIDJES PER ROL</div><div class="ir-val">'+huidjesRol+' st</div></div>'+
-            '<div class="info-row"><div class="ir-lbl">TOTAAL HUIDJES</div><div class="ir-val">'+(rollen*huidjesRol)+' st</div></div>' : '')+
+            '<div class="info-row"><div class="ir-lbl">HUIDJE LENGTE</div><div class="ir-val">'+(Math.round((Math.floor(pallet2.b/(rolD+10)))*(rolD+10)+200))+' mm</div></div>'+
           '</div>';
       })()+
       '<button class="btn btn-amber" style="margin-top:8px;" onclick="bewerkRecept(\'' + key + '\')">' +
@@ -1697,9 +1704,16 @@ function berekenOrder() {
   var totaleFolieMeter = aantalRollen * rolLengte;
   var totaleFolieKg = totaalGewicht;
 
-  // Huidjes
-  var huidjesPerRol = huidje > 0 ? Math.ceil(rolDiameter / huidje * 1000) : 0;
-  var totaalHuidjes = huidje > 0 ? aantalRollen * huidjesPerRol : 0;
+  // Huidjes berekening
+  // Rollen per rij op pallet
+  var rollenPerRij = Math.max(1, Math.floor((pallet.b) / (rolDiameter + 10)));
+  var lagen2 = Math.max(1, Math.ceil(rollenPerPallet / rollenPerRij));
+  // Huidje lengte = rollen per rij x roldiameter + 200mm overhang
+  var huidjeLengte = Math.round(rollenPerRij * (rolDiameter + 10) + 200);
+  // Aantal huidjes = tussen elke laag 1 huidje x aantal pallets
+  var aantalHuidjes = Math.max(0, (lagen2 - 1)) * aantalPallets;
+  // Totaal folie voor huidjes (meter)
+  var huidjesTotaalM = aantalHuidjes > 0 ? Math.round(aantalHuidjes * huidjeLengte / 1000 * 10) / 10 : 0;
 
   // Render
 
@@ -1711,10 +1725,11 @@ function berekenOrder() {
     rij('&#128230;','Aantal pallets nodig', aantalPallets+' pallet', '#f59e0b') +
     rij('&#128221;','Folie verbruik (meters)', Math.round(totaleFolieMeter)+' m', '#34d399');
 
-  if(huidje > 0) {
-    html += rij('&#128462;','Huidjes per rol ('+huidje+'mm)', huidjesPerRol+' st', '#9ca3af') +
-            rij('&#128462;','Totaal huidjes', totaalHuidjes+' st', '#9ca3af');
-  }
+  html += rij('&#128462;','Huidje lengte (berekend)', huidjeLengte+' mm', '#9ca3af') +
+          rij('&#128462;','Rollen per rij', rollenPerRij+' rol', '#9ca3af') +
+          rij('&#128462;','Lagen op pallet', lagen2+' lagen', '#9ca3af') +
+          rij('&#128462;','Aantal huidjes nodig', aantalHuidjes+' st', '#9ca3af') +
+          rij('&#128462;','Totaal folie huidjes', huidjesTotaalM+' m', '#9ca3af');
 
   // Roldiameter info
   html += '<div style="margin-top:8px;font-size:10px;color:#6b7280;">Berekende roldiameter: '+rolDiameter+'mm &middot; '+rollenPerLaag+' per laag &middot; '+lagen+' lagen</div>';
@@ -2198,7 +2213,7 @@ function toggleFlowProb(id) {
 }
 
 
-var APP_VERSION = '6.2';
+var APP_VERSION = '6.4';
 
 function checkVersie() {
   fetch('version.json?t=' + Date.now())
