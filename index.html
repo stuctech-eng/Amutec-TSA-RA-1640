@@ -154,6 +154,21 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 .flow-items li{font-size:13px;padding:7px 10px;background:#070a10;border:1px solid #1a2540;border-radius:3px;display:flex;gap:8px;align-items:flex-start;line-height:1.4}
 .flow-items li::before{flex-shrink:0;margin-top:1px}
 @media(max-width:380px){.grid2{grid-template-columns:1fr}}
+.invul-overlay{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:9100;display:none;align-items:flex-end;justify-content:center}
+.invul-box{background:#0f1520;border-top:3px solid #f59e0b;width:100%;max-width:480px;padding:24px 20px 36px;border-radius:12px 12px 0 0}
+.invul-label{font-size:10px;color:#9ca3af;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;}
+.invul-waarde{font-size:52px;font-weight:700;color:#e5e7eb;text-align:center;margin-bottom:16px;min-height:64px;letter-spacing:2px;background:#070a10;border:2px solid #1a2540;border-radius:8px;padding:12px;}
+.invul-waarde.geel{border-color:rgba(245,158,11,0.6);color:#fcd34d;}
+.invul-waarde.blauw{border-color:rgba(96,165,250,0.5);color:#93c5fd;}
+.invul-waarde.groen{border-color:rgba(52,211,153,0.6);color:#6ee7b7;}
+.invul-snel{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
+.invul-snel-btn{background:#141d2e;border:1px solid #1a2540;border-radius:6px;color:#9ca3af;font-family:'Courier New',Courier,monospace;font-size:14px;font-weight:700;padding:10px 16px;cursor:pointer;flex:1;min-width:60px;text-align:center;}
+.invul-snel-btn:active{background:#f59e0b;color:#000;}
+.invul-nrs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:8px;}
+.invul-nr{background:#141d2e;border:1px solid #1a2540;border-radius:8px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:26px;font-weight:700;padding:18px 0;cursor:pointer;text-align:center;}
+.invul-nr:active{background:#f59e0b;color:#000;}
+.invul-ok{width:100%;background:#34d399;color:#000;border:none;border-radius:8px;font-family:'Courier New',Courier,monospace;font-weight:700;font-size:18px;letter-spacing:2px;padding:16px;cursor:pointer;margin-top:4px;}
+.invul-annuleer{width:100%;background:transparent;border:1px solid #1a2540;border-radius:8px;color:#6b7280;font-family:'Courier New',Courier,monospace;font-size:13px;padding:12px;cursor:pointer;margin-top:8px;}
 .stap-btn{width:52px;height:52px;background:#141d2e;border:1px solid #1a2540;border-radius:6px;color:#e5e7eb;font-size:28px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Courier New',Courier,monospace;line-height:1}
 .stap-btn:active{background:#f59e0b;color:#000;border-color:#f59e0b}
 .veld-leeg{background:rgba(245,158,11,0.08)!important;border-color:rgba(245,158,11,0.6)!important;color:#fcd34d!important}
@@ -203,7 +218,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
     <button onclick="terugNaarStap1()" style="width:100%;background:transparent;border:1px solid #1a2540;border-radius:4px;color:#6b7280;font-family:'Courier New',Courier,monospace;font-size:13px;padding:10px;cursor:pointer;margin-top:10px;">&#8249; Terug</button>
   </div>
 
-  <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v5.0 &#8212; 2026-03-13</div>
+  <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v6.2 &#8212; 2026-03-13</div>
 </div>
 ```
 
@@ -312,13 +327,11 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
   <div class="form-card-title" style="color:#a78bfa;">&#128230; Order</div>
 
   <div class="field">
-    <label>Te leveren (x 1000 stuks)</label>
+    <label>Te leveren (stuks)</label>
     <div style="display:flex;align-items:center;gap:8px;">
-      <button onclick="stapVeld('f-order-stuks',-1)" class="stap-btn">&#8722;</button>
-      <input id="f-order-stuks" type="number" placeholder="0" class="veld-leeg"
-        onclick="veldTik(this)" oninput="berekenOrder()"
+      <input id="f-order-stuks" type="number" placeholder="0" class="veld-leeg" readonly
+        onclick="openInvul(this)"
         style="flex:1;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:12px 14px;outline:none;text-align:center;">
-      <button onclick="stapVeld('f-order-stuks',1)" class="stap-btn">+</button>
     </div>
   </div>
 
@@ -331,26 +344,23 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
         style="flex:1;background:#141d2e;border:1px solid #1a2540;border-radius:4px;color:#9ca3af;font-family:'Courier New',Courier,monospace;font-size:12px;font-weight:700;padding:10px 6px;cursor:pointer;">Euro<br>formaat</button>
       <button onclick="kiesPallet('blok')" id="pallet-blok"
         style="flex:1;background:#141d2e;border:1px solid #1a2540;border-radius:4px;color:#9ca3af;font-family:'Courier New',Courier,monospace;font-size:12px;font-weight:700;padding:10px 6px;cursor:pointer;">Blok<br>1000x1200</button>
-      <button onclick="kiesPallet('pop-up')" id="pallet-pop-up"
-        style="flex:1;background:#141d2e;border:1px solid #1a2540;border-radius:4px;color:#9ca3af;font-family:'Courier New',Courier,monospace;font-size:12px;font-weight:700;padding:10px 6px;cursor:pointer;">Pop-up</button>
+
     </div>
   </div>
 
   <div class="field">
+    <label>Gewicht per 100 meter (kg)</label>
+    <input id="f-gew100m" type="number" placeholder="auto" class="veld-leeg" readonly
+      onclick="openInvul(this)"
+      style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:20px;padding:14px;outline:none;text-align:center;cursor:pointer;">
+    <div style="font-size:10px;color:#6b7280;margin-top:4px;">Leeg = automatisch berekend &bull; Invullen = eigen waarde</div>
+  </div>
+
+  <div class="field">
     <label>Huidjes lengte (mm)</label>
-    <div style="display:flex;gap:8px;margin-bottom:8px;">
-      <button onclick="kiesHuidje(500)" id="huidje-500" style="flex:1;background:#141d2e;border:1px solid #1a2540;border-radius:4px;color:#9ca3af;font-family:'Courier New',Courier,monospace;font-size:13px;font-weight:700;padding:9px 0;cursor:pointer;">500</button>
-      <button onclick="kiesHuidje(800)" id="huidje-800" style="flex:1;background:#141d2e;border:1px solid #1a2540;border-radius:4px;color:#9ca3af;font-family:'Courier New',Courier,monospace;font-size:13px;font-weight:700;padding:9px 0;cursor:pointer;">800</button>
-      <button onclick="kiesHuidje(1000)" id="huidje-1000" style="flex:1;background:#141d2e;border:1px solid #1a2540;border-radius:4px;color:#9ca3af;font-family:'Courier New',Courier,monospace;font-size:13px;font-weight:700;padding:9px 0;cursor:pointer;">1000</button>
-      <button onclick="kiesHuidje(1200)" id="huidje-1200" style="flex:1;background:#141d2e;border:1px solid #1a2540;border-radius:4px;color:#9ca3af;font-family:'Courier New',Courier,monospace;font-size:13px;font-weight:700;padding:9px 0;cursor:pointer;">1200</button>
-    </div>
-    <div style="display:flex;align-items:center;gap:8px;">
-      <button onclick="stapVeld('f-huidje',-100)" class="stap-btn">&#8722;</button>
-      <input id="f-huidje" type="number" placeholder="0" value="0"
-        oninput="berekenOrder()"
-        style="flex:1;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:20px;padding:12px 14px;outline:none;text-align:center;">
-      <button onclick="stapVeld('f-huidje',100)" class="stap-btn">+</button>
-    </div>
+    <input id="f-huidje" type="number" placeholder="0" value="0" class="veld-leeg" readonly
+      onclick="openInvul(this)"
+      style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:20px;padding:14px;outline:none;text-align:center;cursor:pointer;">
   </div>
 
   <!-- Resultaten -->
@@ -393,6 +403,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
     <label>Materiaalsoort</label>
     <div class="grid3">
       <button class="mat-btn active" id="mat-ldpe"  onclick="selectMat('ldpe')">LDPE</button>
+      <button class="mat-btn" id="mat-mdpe"  onclick="selectMat('mdpe')">MDPE</button>
       <button class="mat-btn" id="mat-recycle-mix"  onclick="selectMat('recycle-mix')">&#9851; Mix</button>
       <button class="mat-btn" id="mat-recycle-peld" onclick="selectMat('recycle-peld')">&#9851; PE-LD</button>
     </div>
@@ -419,26 +430,22 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 
 
   <div style="margin-top:12px;display:flex;flex-direction:column;gap:10px;">
-    <div class="field"><label>Sealtijd (ms)</label><div style="display:flex;align-items:center;gap:8px;">
-      <button onclick="stapVeld('f-seal',-5)" class="stap-btn">−</button>
-      <input id="f-seal" type="number" placeholder="750" onclick="veldTik(this)" readonly style="flex:1;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:12px 14px;outline:none;text-align:center;">
-      <button onclick="stapVeld('f-seal',5)" class="stap-btn">+</button>
-    </div></div>
-    <div class="field"><label>Snelheid (m/min)</label><div style="display:flex;align-items:center;gap:8px;">
-      <button onclick="stapVeld('f-snelheid',-5)" class="stap-btn">−</button>
-      <input id="f-snelheid" type="number" placeholder="140" onclick="veldTik(this)" readonly style="flex:1;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:12px 14px;outline:none;text-align:center;">
-      <button onclick="stapVeld('f-snelheid',5)" class="stap-btn">+</button>
-    </div></div>
+    <div class="field"><label>Sealtijd (ms)</label>
+      <input id="f-seal" type="number" placeholder="750" onclick="openInvul(this)" readonly
+        style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;cursor:pointer;">
+    </div>
+    <div class="field"><label>Snelheid (m/min)</label>
+      <input id="f-snelheid" type="number" placeholder="140" onclick="openInvul(this)" readonly
+        style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;cursor:pointer;">
+    </div>
     <div class="field"><label>Zakken/rol</label>
       <div style="display:flex;gap:8px;margin-bottom:8px;">
         <button onclick="kiesZakrol(250)" id="zakrol-250" style="flex:1;background:#141d2e;border:1px solid #1a2540;border-radius:4px;color:#9ca3af;font-family:'Courier New',Courier,monospace;font-size:15px;font-weight:700;padding:10px 0;cursor:pointer;">250</button>
         <button onclick="kiesZakrol(500)" id="zakrol-500" style="flex:1;background:#141d2e;border:1px solid #1a2540;border-radius:4px;color:#9ca3af;font-family:'Courier New',Courier,monospace;font-size:15px;font-weight:700;padding:10px 0;cursor:pointer;">500</button>
       </div>
-      <div style="display:flex;align-items:center;gap:8px;">
-        <button onclick="stapVeld('f-zakrol',-5)" class="stap-btn">−</button>
-        <input id="f-zakrol" type="number" placeholder="250" value="250" class="veld-definitief" onclick="veldTik(this)" oninput="herbereken()" style="flex:1;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:12px 14px;outline:none;text-align:center;">
-        <button onclick="stapVeld('f-zakrol',5)" class="stap-btn">+</button>
-      </div>
+      <input id="f-zakrol" type="number" placeholder="250" value="250" class="veld-definitief" readonly
+        onclick="openInvul(this)"
+        style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;cursor:pointer;">
     </div>
   </div>
 </div>
@@ -456,9 +463,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
   <div class="field">
     <label>Material to be charged (mm)</label>
     <div style="display:flex;align-items:center;gap:8px;">
-      <button onclick="stapVeld('f-static-mat',-10000)" class="stap-btn">&#8722;</button>
-      <input id="f-static-mat" type="number" placeholder="0" style="flex:1;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:20px;padding:12px 14px;outline:none;text-align:center;">
-      <button onclick="stapVeld('f-static-mat',10000)" class="stap-btn">+</button>
+      <input id="f-static-mat" type="number" placeholder="0" readonly onclick="openInvul(this)" style="flex:1;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:20px;padding:12px 14px;outline:none;text-align:center;">
     </div>
   </div>
   <div class="field"><label>Cycle met drukker</label>
@@ -475,17 +480,13 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
     <div>
       <div style="font-size:9px;color:#9ca3af;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">BOVEN &deg;C</div>
       <div style="display:flex;align-items:center;gap:8px;">
-        <button onclick="stapVeld('f-temp-boven',-5)" class="stap-btn">&#8722;</button>
-        <input class="temp-input veld-leeg" id="f-temp-boven" type="number" placeholder="160" onclick="veldTik(this)" readonly style="flex:1;text-align:center;">
-        <button onclick="stapVeld('f-temp-boven',5)" class="stap-btn">+</button>
+        <input class="temp-input veld-leeg" id="f-temp-boven" type="number" placeholder="160" onclick="openInvul(this)" readonly style="flex:1;text-align:center;">
       </div>
     </div>
     <div>
       <div style="font-size:9px;color:#9ca3af;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">ONDER &deg;C</div>
       <div style="display:flex;align-items:center;gap:8px;">
-        <button onclick="stapVeld('f-temp-onder',-5)" class="stap-btn">&#8722;</button>
-        <input class="temp-input veld-leeg" id="f-temp-onder" type="number" placeholder="160" onclick="veldTik(this)" readonly style="flex:1;text-align:center;">
-        <button onclick="stapVeld('f-temp-onder',5)" class="stap-btn">+</button>
+        <input class="temp-input veld-leeg" id="f-temp-onder" type="number" placeholder="160" onclick="openInvul(this)" readonly style="flex:1;text-align:center;">
       </div>
     </div>
   </div>
@@ -498,9 +499,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
   <div class="field">
     <label>Werkelijke Offset 1</label>
     <div style="display:flex;align-items:center;gap:8px;">
-      <button onclick="stapVeld('f-offset1',-5)" class="stap-btn">&#8722;</button>
-      <input id="f-offset1" type="number" placeholder="bv. 10850" class="veld-leeg" style="flex:1;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:20px;padding:12px 14px;outline:none;text-align:center;">
-      <button onclick="stapVeld('f-offset1',5)" class="stap-btn">+</button>
+      <input id="f-offset1" type="number" placeholder="bv. 10850" class="veld-leeg" readonly onclick="openInvul(this)" style="flex:1;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:20px;padding:12px 14px;outline:none;text-align:center;">
     </div>
   </div>
   <div id="f-offset2-toon" style="display:none;margin-top:8px;background:#070a10;border:1px solid rgba(96,165,250,.3);border-radius:4px;padding:10px 14px;font-size:13px;color:#60a5fa;"></div>
@@ -600,6 +599,7 @@ var MATERIALEN = {
   'peld':         {label:'PE-LD virgin',  temp_b:157,temp_o:154,sv:1.00,st:1.00,recycle:false},
   'lldpe':        {label:'LDPE/LLDPE',    temp_b:152,temp_o:149,sv:1.05,st:0.95,recycle:false},
   'ldpe':         {label:'LDPE',          temp_b:155,temp_o:152,sv:1.00,st:1.00,recycle:false},
+  'mdpe':         {label:'MDPE',          temp_b:162,temp_o:159,sv:0.98,st:1.05,recycle:false},
   'pehd':         {label:'PE-HD virgin',  temp_b:172,temp_o:169,sv:0.90,st:1.10,recycle:false},
   'pp':           {label:'PP virgin',     temp_b:177,temp_o:174,sv:0.85,st:1.15,recycle:false},
   'andere':       {label:'Andere',        temp_b:160,temp_o:157,sv:1.00,st:1.00,recycle:false},
@@ -743,17 +743,17 @@ function calcUpdate() {
   // Offset
   var o1 = lengte ? berekenOffset(lengte) : 0;
   var o2 = berekenOffset2(o1);
-  document.getElementById('c-offset1').textContent = o1 ? o1 : '-';
-  document.getElementById('c-offset2').textContent = o2 ? o2 : '-';
+  var co1=document.getElementById('c-offset1'); if(co1) co1.textContent = o1 ? o1 : '-';
+  var co2=document.getElementById('c-offset2'); if(co2) co2.textContent = o2 ? o2 : '-';
 
   // Rol data
   var rolData = berekenRolData(lengte, zakrol, dikte, kern);
   if(rolData) {
-    document.getElementById('c-rollengte').textContent = Math.round(rolData.rolLengte/1000) + ' m';
-    document.getElementById('c-roldiameter').textContent = rolData.rolDiameter + ' mm';
+    var crl=document.getElementById('c-rollengte'); if(crl) crl.textContent = Math.round(rolData.rolLengte/1000) + ' m';
+    var crd=document.getElementById('c-roldiameter'); if(crd) crd.textContent = rolData.rolDiameter + ' mm';
   } else {
-    document.getElementById('c-rollengte').textContent = '- m';
-    document.getElementById('c-roldiameter').textContent = '- mm';
+    var crl2=document.getElementById('c-rollengte'); if(crl2) crl2.textContent = '- m';
+    var crd2=document.getElementById('c-roldiameter'); if(crd2) crd2.textContent = '- mm';
   }
 
   // Info interpolatie
@@ -1006,17 +1006,18 @@ function toggleDrukker() {
   drukkerAan = !drukkerAan;
   var btn = document.getElementById('drukker-btn');
   var extra = document.getElementById('drukker-extra');
-  btn.textContent = drukkerAan ? 'AAN' : 'UIT';
-  btn.className = 'toggle-btn ' + (drukkerAan ? 'toggle-aan' : 'toggle-uit');
-  extra.style.display = drukkerAan ? 'block' : 'none';
+  if(btn) { btn.textContent = drukkerAan ? 'AAN' : 'UIT'; btn.className = 'toggle-btn ' + (drukkerAan ? 'toggle-aan' : 'toggle-uit'); }
+  if(extra) extra.style.display = drukkerAan ? 'block' : 'none';
 }
 
 function prodtypeChange(val) {
-  if(val === 'Vel') {
-    document.getElementById('f-seal').value = '50';
-    document.getElementById('f-temp-boven').value = '0';
-    document.getElementById('f-temp-onder').value = '0';
-  }
+  try {
+    if(val === 'Vel') {
+      var fs = document.getElementById('f-seal'); if(fs) fs.value = '50';
+      var fb = document.getElementById('f-temp-boven'); if(fb) fb.value = '0';
+      var fo = document.getElementById('f-temp-onder'); if(fo) fo.value = '0';
+    }
+  } catch(e) {}
 }
 
 // ── VELD STATEN ──────────────────────────────────────────────────────────
@@ -1060,7 +1061,7 @@ function stapVeld(id, stap) {
     }
   }
   if(id === 'f-zakrol') herbereken();
-  if(id === 'f-order-stuks' || id === 'f-huidje') berekenOrder();
+  if(id === 'f-order-stuks' || id === 'f-huidje') try{berekenOrder();}catch(e){};
 }
 
 function vulOperatorIn() {
@@ -1159,8 +1160,8 @@ function herbereken() {
 
   // Koker: default 90 als nog niet ingevuld
   var kokerEl = document.getElementById('f-koker');
-  if(!kokerEl.value) { kokerEl.value = 90; }
-  var koker = parseFloat(kokerEl.value) || 90;
+  if(kokerEl && !kokerEl.value) { kokerEl.value = 90; }
+  var koker = kokerEl ? (parseFloat(kokerEl.value) || 90) : 90;
   // Roldiameter: berekend uit zakrol + koker + dikte
   var zakrolVal = parseFloat(document.getElementById('f-zakrol').value) || 0;
   var rolRadius = zakrolVal > 0
@@ -1185,7 +1186,8 @@ function herbereken() {
   // Toon preview blok
 
   // Vul alle velden automatisch in met blauwe markering
-  var prodtype = document.getElementById('f-prodtype').value;
+  var prodtypeEl = document.getElementById('f-prodtype');
+  var prodtype = prodtypeEl ? prodtypeEl.value : 'Zak';
   if(prodtype !== 'Vel') {
     setBerekend('f-seal',     sealtijd);
     setBerekend('f-temp-boven', mat.temp_b);
@@ -1193,7 +1195,7 @@ function herbereken() {
   }
   setBerekend('f-snelheid', snelheid);
   setBerekend('f-zakrol',   zakrol);
-  if(!document.getElementById('f-offset1').value) {
+  if(!document.getElementById('f-offset1') || !document.getElementById('f-offset1').value) {
     setBerekend('f-offset1', offset1);
   }
 
@@ -1252,7 +1254,11 @@ function slaOp() {
     temp_onder:document.getElementById('f-temp-onder').value,
     notities:document.getElementById('f-notities').value.trim(),
     offset1_werke:document.getElementById('f-offset1').value||'',
-    datum:new Date().toISOString().split('T')[0]
+    datum:new Date().toISOString().split('T')[0],
+    order_stuks:document.getElementById('f-order-stuks').value||'',
+    order_pallet:_gekozenPallet||'euro',
+    order_huidje:document.getElementById('f-huidje').value||'',
+    order_gew100m:document.getElementById('f-gew100m') ? document.getElementById('f-gew100m').value||'' : ''
   };
   toast('Opslaan...');
   if(editKey){
@@ -1265,19 +1271,19 @@ function slaOp() {
 function resetForm() {
   var ids=['f-klantnr','f-klantnaam','f-versie','f-breedte','f-lengte','f-dikte','f-koker','f-seal','f-snelheid','f-zakmin','f-zakrol','f-static-mat','f-drukker','f-temp-boven','f-temp-onder','f-notities','f-offset1','f-order-stuks'];
   document.getElementById('order-resultaten') && (document.getElementById('order-resultaten').style.display='none');
+  var gew100mReset=document.getElementById('f-gew100m'); if(gew100mReset){gew100mReset.value='';gew100mReset.classList.remove('veld-definitief');gew100mReset.classList.add('veld-leeg');}
   // Alle tekstvelden geel
   ['f-klantnr','f-klantnaam','f-versie'].forEach(function(id){
     var el=document.getElementById(id);
     if(el){el.classList.remove('veld-definitief','veld-benadering');el.classList.add('veld-leeg');}
   });
   for(var i=0;i<ids.length;i++){var el=document.getElementById(ids[i]);if(el)el.value='';}
-  document.getElementById('f-prodtype').value='Zak';
+  var prodEl=document.getElementById('f-prodtype'); if(prodEl) prodEl.value='Zak';
   selectMat('ldpe'); selectStatic('Off');
   drukkerAan=false;
-  document.getElementById('drukker-btn').textContent='UIT';
-  document.getElementById('drukker-btn').className='toggle-btn toggle-uit';
-  document.getElementById('drukker-extra').style.display='none';
-  document.getElementById('mat-info-temp').style.display='none';
+  var drkBtn=document.getElementById('drukker-btn'); if(drkBtn){drkBtn.textContent='UIT';drkBtn.className='toggle-btn toggle-uit';}
+  var drkEx=document.getElementById('drukker-extra'); if(drkEx) drkEx.style.display='none';
+  var matInfo=document.getElementById('mat-info-temp'); if(matInfo) matInfo.style.display='none';
   // Staten wissen
   var berekend = ['f-seal','f-snelheid','f-temp-boven','f-temp-onder','f-offset1'];
   // Zakrol default 250 en groen
@@ -1301,7 +1307,7 @@ function resetForm() {
     var el = document.getElementById(id);
     if(el){ el.classList.add('veld-leeg'); el.value = ''; }
   });
-  document.getElementById('nieuw-title').textContent='Nieuw Recept';
+  var ntEl=document.getElementById('nieuw-title'); if(ntEl) ntEl.textContent='Nieuw Recept';
   editKey=null;
 }
 
@@ -1433,7 +1439,7 @@ function openDetail(key) {
     var r=null;for(var i=0;i<lijst.length;i++){if(lijst[i]._key===key){r=lijst[i];break;}}
     if(!r) return;
     var mat=MATERIALEN[r.materiaal]||{};
-    document.getElementById('detail-title').textContent=(r.klantnr||'')+' - '+(r.prodtype||'');
+    var dtEl=document.getElementById('detail-title'); if(dtEl) dtEl.textContent=(r.klantnr||'')+' - '+(r.prodtype||'');
     function row(lbl,val){if(!val&&val!==0)return '';return '<div class="info-row"><div class="ir-lbl">'+lbl+'</div><div class="ir-val">'+val+'</div></div>';}
     document.getElementById('detail-content').innerHTML=
       '<div class="slabel">Klant & Product</div>' +
@@ -1465,7 +1471,38 @@ function openDetail(key) {
         '<div class="temp-card"><div class="temp-lbl">ONDER</div><div style="font-size:34px;font-weight:700;color:#fcd34d;text-align:center;">'+(r.temp_onder||'-')+'</div><div class="temp-unit">C</div></div>' +
       '</div>'+
       (r.notities?'<div class="slabel">Notities</div><div class="info-block"><div style="padding:12px 14px;font-size:13px;color:#9ca3af;line-height:1.6;">'+r.notities+'</div></div>':'')+
-      '<button class="btn btn-amber" style="margin-top:8px;" onclick="bewerkRecept(\''+key+'\')">Bewerken</button>';
+      (function(){
+        if(!r.order_stuks) return '';
+        // Herbereken order voor detail
+        var stuks = parseFloat(r.order_stuks)||0; // direct aantal stuks
+        var zakrol = parseFloat(r.zakrol)||0;
+        var sv = SOORTELIJK_GEWICHT[r.materiaal]||920;
+        var rolLengte = zakrol * (parseFloat(r.lengte)||0) / 1000;
+        var vol = (parseFloat(r.breedte)||0)/1000 * rolLengte * (parseFloat(r.dikte)||0)/1000 * 2;
+        var gwRol = Math.round(vol * sv * 10)/10;
+        var rollen = Math.ceil(stuks/zakrol);
+        var palletNaam = {'euro':'Euro pallet','euro-formaat':'Euro formaat','blok':'Blokpallet'}[r.order_pallet]||'Euro pallet';
+        var rpPallet = Math.max(1,Math.floor(500/gwRol));
+        var pallets = Math.ceil(rollen/rpPallet);
+        var huidje = parseFloat(r.order_huidje)||0;
+        var koker = parseFloat(r.koker)||90;
+        var rolD = Math.round(Math.sqrt((koker/2)*(koker/2)+(zakrol*(parseFloat(r.dikte)||0)*(parseFloat(r.lengte)||0)/1000)/Math.PI)*2);
+        var huidjesRol = huidje>0 ? Math.ceil(rolD/huidje*1000) : 0;
+        return '<div class="slabel">Order Berekening</div>'+
+          '<div class="info-block">'+
+            '<div class="info-row"><div class="ir-lbl">TE LEVEREN</div><div class="ir-val">'+stuks.toLocaleString()+' st</div></div>'+
+            '<div class="info-row"><div class="ir-lbl">AANTAL ROLLEN</div><div class="ir-val" style="color:#a78bfa;">'+rollen+'</div></div>'+
+            '<div class="info-row"><div class="ir-lbl">GEWICHT PER ROL</div><div class="ir-val" style="color:#60a5fa;">'+gwRol+' kg</div></div>'+
+            '<div class="info-row"><div class="ir-lbl">TOTAAL GEWICHT</div><div class="ir-val" style="color:#60a5fa;">'+(rollen*gwRol).toFixed(0)+' kg</div></div>'+
+            '<div class="info-row"><div class="ir-lbl">PALLET TYPE</div><div class="ir-val">'+palletNaam+'</div></div>'+
+            '<div class="info-row"><div class="ir-lbl">ROLLEN PER PALLET</div><div class="ir-val" style="color:#f59e0b;">'+rpPallet+'</div></div>'+
+            '<div class="info-row"><div class="ir-lbl">AANTAL PALLETS</div><div class="ir-val" style="color:#f59e0b;">'+pallets+'</div></div>'+
+            (huidje>0 ? '<div class="info-row"><div class="ir-lbl">HUIDJES PER ROL</div><div class="ir-val">'+huidjesRol+' st</div></div>'+
+            '<div class="info-row"><div class="ir-lbl">TOTAAL HUIDJES</div><div class="ir-val">'+(rollen*huidjesRol)+' st</div></div>' : '')+
+          '</div>';
+      })()+
+      '<button class="btn btn-amber" style="margin-top:8px;" onclick="bewerkRecept(\'' + key + '\')">' +
+      'Bewerken</button>';
     go('s-detail');
   });
 }
@@ -1521,7 +1558,7 @@ function bewerkRecept(key) {
     }
     if(r.drukker){drukkerAan=true;document.getElementById('drukker-btn').textContent='AAN';document.getElementById('drukker-btn').className='toggle-btn toggle-aan';document.getElementById('drukker-extra').style.display='block';}
     editKey=key;
-    document.getElementById('nieuw-title').textContent='Recept Bewerken';
+    var ntEl2=document.getElementById('nieuw-title'); if(ntEl2) ntEl2.textContent='Recept Bewerken';
     go('s-nieuw');
   });
 }
@@ -1533,6 +1570,7 @@ var SOORTELIJK_GEWICHT = {
   'peld':         920,
   'lldpe':        920,
   'ldpe':         920,
+  'mdpe':         935,
   'pehd':         960,
   'pp':           910,
   'andere':       930,
@@ -1545,35 +1583,36 @@ var SOORTELIJK_GEWICHT = {
 var PALLETS = {
   'euro':        {naam:'Euro pallet',    b:800,  l:1200, maxH:1200},
   'euro-formaat':{naam:'Euro formaat',   b:800,  l:1200, maxH:1200},
-  'blok':        {naam:'Blokpallet',     b:1000, l:1200, maxH:1200},
-  'pop-up':      {naam:'Pop-up',         b:600,  l:800,  maxH:1000}
+  'blok':        {naam:'Blokpallet',     b:1000, l:1200, maxH:1200}
 };
-var MAX_PALLET_KG = 750;
+var MAX_PALLET_KG = 500;
 
 var _gekozenPallet = 'euro';
 var _gekozenHuidje = 0;
 
 function kiesPallet(type) {
+  if(!type) return;
   _gekozenPallet = type;
   Object.keys(PALLETS).forEach(function(k){
     var btn = document.getElementById('pallet-'+k);
     if(!btn) return;
     if(k === type) {
-      btn.style.background = 'rgba(167,139,250,0.1)';
-      btn.style.borderColor = '#a78bfa';
-      btn.style.color = '#a78bfa';
+      btn.style.background = 'rgba(52,211,153,0.1)';
+      btn.style.borderColor = '#34d399';
+      btn.style.color = '#34d399';
     } else {
       btn.style.background = '#141d2e';
       btn.style.borderColor = '#1a2540';
       btn.style.color = '#9ca3af';
     }
   });
-  berekenOrder();
+  try{berekenOrder();}catch(e){}
 }
 
 function kiesHuidje(val) {
   _gekozenHuidje = val;
-  document.getElementById('f-huidje').value = val;
+  var el = document.getElementById('f-huidje');
+  if(el) { el.value = val; el.classList.remove('veld-leeg'); el.classList.add('veld-definitief'); }
   [500,800,1000,1200].forEach(function(v){
     var btn = document.getElementById('huidje-'+v);
     if(!btn) return;
@@ -1587,34 +1626,58 @@ function kiesHuidje(val) {
       btn.style.color = '#9ca3af';
     }
   });
-  berekenOrder();
+  try{berekenOrder();}catch(e){}
+}
+
+function rij(icon, lbl, val, kleur) {
+  return '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #1a2540;">' +
+    '<span style="font-size:11px;color:#9ca3af;">'+icon+' '+lbl+'</span>' +
+    '<span style="font-size:20px;font-weight:700;color:'+(kleur||'#e5e7eb')+';">'+val+'</span>' +
+  '</div>';
 }
 
 function berekenOrder() {
-  var stuks1000 = parseFloat(document.getElementById('f-order-stuks').value) || 0;
-  var zakrol    = parseFloat(document.getElementById('f-zakrol').value) || 0;
-  var breedte   = parseFloat(document.getElementById('f-breedte').value) || 0;
-  var lengte    = parseFloat(document.getElementById('f-lengte').value) || 0;
-  var dikte     = parseFloat(document.getElementById('f-dikte').value) || 0;
-  var huidje    = parseFloat(document.getElementById('f-huidje').value) || _gekozenHuidje;
-  var koker     = parseFloat(document.getElementById('f-koker').value) || 90;
+  try {
+  var orderEl = document.getElementById('order-resultaten');
+  if(!orderEl) return;
+  var stuks1000 = parseFloat((document.getElementById('f-order-stuks')||{}).value) || 0; // gewoon aantal stuks
+  var zakrol    = parseFloat((document.getElementById('f-zakrol')||{}).value) || 0;
+  var breedte   = parseFloat((document.getElementById('f-breedte')||{}).value) || 0;
+  var lengte    = parseFloat((document.getElementById('f-lengte')||{}).value) || 0;
+  var dikte     = parseFloat((document.getElementById('f-dikte')||{}).value) || 0;
+  var huidje    = parseFloat((document.getElementById('f-huidje')||{}).value) || _gekozenHuidje || 0;
+  var koker     = parseFloat((document.getElementById('f-koker')||{}).value) || 90;
 
-  if(!stuks1000 || !zakrol) {
-    document.getElementById('order-resultaten').style.display = 'none';
+  if(!zakrol || !breedte || !lengte || !dikte) {
+    orderEl.style.display = 'none';
     return;
   }
+  if(!stuks1000) { orderEl.style.display = 'none'; return; }
 
-  var totaleStuks = stuks1000 * 1000;
+  var totaleStuks = stuks1000; // direct aantal stuks
   var aantalRollen = Math.ceil(totaleStuks / zakrol);
 
   // Gewicht per rol
   var sv = SOORTELIJK_GEWICHT[selectedMat] || 920;
-  // Folie volume per rol: breedte(m) x rollengte(m) x dikte(m) x 2 (dubbele folie voor zak)
   var rolLengte = zakrol * lengte / 1000; // in meter
-  var folieBreedteM = breedte / 1000;
-  var dikte_m = dikte / 1000;
-  var volumeM3 = folieBreedteM * rolLengte * dikte_m * 2;
-  var gewichtPerRol = Math.round(volumeM3 * sv * 10) / 10; // kg
+  var gew100mEl = document.getElementById('f-gew100m');
+  var gew100m = gew100mEl ? parseFloat(gew100mEl.value) : 0;
+  var gewichtPerRol;
+  if(gew100m > 0) {
+    // Gebruik opgegeven gewicht per 100m
+    gewichtPerRol = Math.round(gew100m * rolLengte / 100 * 10) / 10;
+  } else {
+    // Bereken uit dikte, breedte, soortelijk gewicht
+    var folieBreedteM = breedte / 1000;
+    var dikte_m = dikte / 1000;
+    var volumeM3 = folieBreedteM * rolLengte * dikte_m * 2;
+    gewichtPerRol = Math.round(volumeM3 * sv * 10) / 10;
+    // Toon berekend gewicht per 100m als blauw hint
+    if(gew100mEl && !gew100mEl.classList.contains('veld-definitief')) {
+      var auto100m = Math.round((breedte/1000) * (dikte/1000) * 2 * sv * 100 * 10) / 10;
+      gew100mEl.placeholder = 'auto: ' + auto100m + ' kg';
+    }
+  }
 
   var totaalGewicht = Math.round(aantalRollen * gewichtPerRol);
 
@@ -1639,18 +1702,12 @@ function berekenOrder() {
   var totaalHuidjes = huidje > 0 ? aantalRollen * huidjesPerRol : 0;
 
   // Render
-  function rij(icon, lbl, val, kleur) {
-    return '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #1a2540;">' +
-      '<span style="font-size:11px;color:#9ca3af;">'+icon+' '+lbl+'</span>' +
-      '<span style="font-size:20px;font-weight:700;color:'+(kleur||'#e5e7eb')+';">'+val+'</span>' +
-    '</div>';
-  }
 
   var html =
     rij('&#128260;','Aantal rollen', aantalRollen+' rol', '#a78bfa') +
     rij('&#9878;', 'Gewicht per rol', gewichtPerRol+' kg', '#60a5fa') +
     rij('&#9878;', 'Totaal gewicht', totaalGewicht+' kg', '#60a5fa') +
-    rij('&#128230;','Rollen per pallet ('+pallet.naam+')', rollenPerPallet+' rol', '#f59e0b') +
+    rij('&#128230;','Rollen per pallet | '+pallet.naam+' | max 500 kg', rollenPerPallet+' rol', '#f59e0b') +
     rij('&#128230;','Aantal pallets nodig', aantalPallets+' pallet', '#f59e0b') +
     rij('&#128221;','Folie verbruik (meters)', Math.round(totaleFolieMeter)+' m', '#34d399');
 
@@ -1663,7 +1720,97 @@ function berekenOrder() {
   html += '<div style="margin-top:8px;font-size:10px;color:#6b7280;">Berekende roldiameter: '+rolDiameter+'mm &middot; '+rollenPerLaag+' per laag &middot; '+lagen+' lagen</div>';
 
   document.getElementById('order-rijen').innerHTML = html;
-  document.getElementById('order-resultaten').style.display = 'block';
+  orderEl.style.display = 'block';
+  } catch(e) { /* stil falen */ }
+}
+
+
+// ── INVUL MODAL ──────────────────────────────────────────────────────────
+var _invulEl = null;
+var _invulWaarde = '';
+
+var INVUL_CONFIG = {
+  'f-seal':       {label:'Sealtijd (ms)', snel:[50,75,100,150,200,500]},
+  'f-snelheid':   {label:'Snelheid (m/min)', snel:[80,100,130,150,180,200]},
+  'f-zakrol':     {label:'Zakken/rol', snel:[100,150,200,250,500,1000]},
+  'f-temp-boven': {label:'Temperatuur Boven (°C)', snel:[140,145,150,155,160,165,170]},
+  'f-temp-onder': {label:'Temperatuur Onder (°C)', snel:[140,145,150,155,160,165,170]},
+  'f-offset1':    {label:'Werkelijke Offset 1', snel:[]},
+  'f-static-mat': {label:'Material to be charged (mm)', snel:[10000,20000,30000,40000]},
+  'f-order-stuks':{label:'Te leveren (stuks)', snel:[1000,2000,5000,10000,20000,50000]},
+  'f-huidje':     {label:'Huidjes lengte (mm)', snel:[500,800,1000,1200,1500]},
+  'f-gew100m':    {label:'Gewicht per 100 meter (kg)', snel:[1,2,3,5,8,10,15,20]}
+};
+
+function openInvul(el) {
+  _invulEl = el;
+  _invulWaarde = el.value ? String(el.value) : '';
+  var cfg = INVUL_CONFIG[el.id] || {label: el.id, snel:[]};
+  document.getElementById('invul-label').textContent = cfg.label;
+
+  // Kleur van waarde display
+  var disp = document.getElementById('invul-waarde');
+  disp.className = 'invul-waarde';
+  if(el.classList.contains('veld-benadering')) disp.classList.add('blauw');
+  else if(el.classList.contains('veld-definitief')) disp.classList.add('groen');
+  else disp.classList.add('geel');
+  disp.textContent = _invulWaarde || '0';
+
+  // Snelknoppen
+  var snelHtml = '';
+  if(cfg.snel && cfg.snel.length) {
+    cfg.snel.forEach(function(v){
+      snelHtml += '<div class="invul-snel-btn" onclick="invulSnel('+v+')">'+v+'</div>';
+    });
+  }
+  document.getElementById('invul-snel').innerHTML = snelHtml;
+  document.getElementById('invul-overlay').style.display = 'flex';
+}
+
+function invulSluit() {
+  document.getElementById('invul-overlay').style.display = 'none';
+  _invulEl = null; _invulWaarde = '';
+}
+
+function invulCijfer(c) {
+  if(c === '.' && _invulWaarde.indexOf('.') >= 0) return;
+  if(_invulWaarde === '0' && c !== '.') _invulWaarde = c;
+  else _invulWaarde += c;
+  document.getElementById('invul-waarde').textContent = _invulWaarde;
+}
+
+function invulWis() {
+  _invulWaarde = _invulWaarde.slice(0,-1);
+  document.getElementById('invul-waarde').textContent = _invulWaarde || '0';
+}
+
+function invulSnel(val) {
+  _invulWaarde = String(val);
+  document.getElementById('invul-waarde').textContent = _invulWaarde;
+}
+
+function invulOk() {
+  if(!_invulEl || !_invulWaarde) { invulSluit(); return; }
+  _invulEl.value = _invulWaarde;
+  _invulEl.classList.remove('veld-benadering','veld-leeg');
+  _invulEl.classList.add('veld-definitief');
+  _invulEl.readOnly = true;
+  // Temp inline stijl
+  if(_invulEl.id==='f-temp-boven'||_invulEl.id==='f-temp-onder'){
+    _invulEl.style.borderBottom='2px solid #34d399';
+    _invulEl.style.color='#6ee7b7';
+  }
+  // Offset2 tonen
+  if(_invulEl.id==='f-offset1'){
+    var v=parseFloat(_invulWaarde);
+    var toon=document.getElementById('f-offset2-toon');
+    if(toon&&v>0){toon.style.display='block';toon.textContent='Offset 2 (automatisch): '+Math.round(v/2);}
+  }
+  invulSluit();
+  if(_invulEl.id==='f-zakrol') herbereken();
+  if(_invulEl.id==='f-order-stuks'||_invulEl.id==='f-huidje') try{berekenOrder();}catch(e){};
+  // Ook berekenOrder na alle invullingen als order-stuks al een waarde heeft
+  if(['f-breedte','f-lengte','f-dikte','f-zakrol'].indexOf(_invulEl.id)>=0) try{berekenOrder();}catch(e){};
 }
 
 // ── PROBLEEMSTELLINGEN ────────────────────────────────────────────────────
@@ -2051,23 +2198,52 @@ function toggleFlowProb(id) {
 }
 
 
-var APP_VERSION = '5.0';
+var APP_VERSION = '6.2';
 
 function checkVersie() {
   fetch('version.json?t=' + Date.now())
     .then(function(r){ return r.json(); })
     .then(function(data){
       if(data.version && data.version !== APP_VERSION) {
-        // Nieuwe versie beschikbaar - hard reload
         window.location.href = window.location.pathname + '?v=' + data.version;
       }
     })
-    .catch(function(){});
+    .catch(function(){ /* stil */ });
 }
+
+window.addEventListener('unhandledrejection', function(e) {
+  e.preventDefault(); // Voorkom "Script error" in Safari
+});
 
 checkVersie();
 checkLogin();
 </script>
+
+<!-- INVUL MODAL -->
+
+<div id="invul-overlay" class="invul-overlay">
+  <div class="invul-box">
+    <div class="invul-label" id="invul-label">Waarde</div>
+    <div class="invul-waarde" id="invul-waarde">0</div>
+    <div class="invul-snel" id="invul-snel"></div>
+    <div class="invul-nrs">
+      <div class="invul-nr" onclick="invulCijfer('7')">7</div>
+      <div class="invul-nr" onclick="invulCijfer('8')">8</div>
+      <div class="invul-nr" onclick="invulCijfer('9')">9</div>
+      <div class="invul-nr" onclick="invulCijfer('4')">4</div>
+      <div class="invul-nr" onclick="invulCijfer('5')">5</div>
+      <div class="invul-nr" onclick="invulCijfer('6')">6</div>
+      <div class="invul-nr" onclick="invulCijfer('1')">1</div>
+      <div class="invul-nr" onclick="invulCijfer('2')">2</div>
+      <div class="invul-nr" onclick="invulCijfer('3')">3</div>
+      <div class="invul-nr" onclick="invulCijfer('.')">.</div>
+      <div class="invul-nr" onclick="invulCijfer('0')">0</div>
+      <div class="invul-nr" onclick="invulWis()" style="color:#ef4444;">&#9003;</div>
+    </div>
+    <button class="invul-ok" onclick="invulOk()">OK &#10003;</button>
+    <button class="invul-annuleer" onclick="invulSluit()">Annuleer</button>
+  </div>
+</div>
 
 <!-- PIN MODAL -->
 
