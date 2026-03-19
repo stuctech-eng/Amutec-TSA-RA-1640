@@ -218,7 +218,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
     <button onclick="terugNaarStap1()" style="width:100%;background:transparent;border:1px solid #1a2540;border-radius:4px;color:#6b7280;font-family:'Courier New',Courier,monospace;font-size:13px;padding:10px;cursor:pointer;margin-top:10px;">&#8249; Terug</button>
   </div>
 
-  <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v8.6 &#8212; 2026-03-13</div>
+  <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v8.8 &#8212; 2026-03-13</div>
 </div>
 ```
 
@@ -350,7 +350,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
     <input id="f-order-zakrol" type="number" placeholder="bv. 250" class="veld-leeg" readonly
       onclick="openInvul(this)"
       style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;cursor:pointer;">
-    <div style="font-size:10px;color:#6b7280;margin-top:4px;">Zelfde als zakken/rol in het recept</div>
+    <input id="f-zakrol" type="hidden" value="250">
   </div>
 
   <div class="field">
@@ -456,15 +456,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
       <input id="f-snelheid" type="number" placeholder="140" onclick="openInvul(this)" readonly
         style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;cursor:pointer;">
     </div>
-    <div class="field"><label>Zakken/rol</label>
-      <div style="display:flex;gap:8px;margin-bottom:8px;">
-        <button onclick="kiesZakrol(250)" id="zakrol-250" style="flex:1;background:#141d2e;border:1px solid #1a2540;border-radius:4px;color:#9ca3af;font-family:'Courier New',Courier,monospace;font-size:15px;font-weight:700;padding:10px 0;cursor:pointer;">250</button>
-        <button onclick="kiesZakrol(500)" id="zakrol-500" style="flex:1;background:#141d2e;border:1px solid #1a2540;border-radius:4px;color:#9ca3af;font-family:'Courier New',Courier,monospace;font-size:15px;font-weight:700;padding:10px 0;cursor:pointer;">500</button>
-      </div>
-      <input id="f-zakrol" type="number" placeholder="250" value="250" class="veld-definitief" readonly
-        onclick="openInvul(this)"
-        style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;cursor:pointer;">
-    </div>
+
   </div>
 </div>
 
@@ -1130,6 +1122,8 @@ function setLeeg(id) {
 }
 
 function kiesZakrol(val) {
+  var ozr = document.getElementById('f-order-zakrol');
+  if(ozr) { ozr.value = val; ozr.classList.remove('veld-leeg'); ozr.classList.add('veld-definitief'); }
   var el = document.getElementById('f-zakrol');
   el.value = val;
   el.classList.remove('veld-leeg','veld-benadering');
@@ -1961,6 +1955,11 @@ function invulOk() {
   }
   invulSluit();
   if(_invulEl.id==='f-zakrol') herbereken();
+  // Sync f-zakrol hidden field met f-order-zakrol
+  if(_invulEl && _invulEl.id === 'f-order-zakrol') {
+    var fzr = document.getElementById('f-zakrol');
+    if(fzr) fzr.value = _invulWaarde;
+  }
   // Altijd berekenOrder aanroepen na invullen
   try { berekenOrder(); } catch(e) {}
 }
@@ -2350,7 +2349,7 @@ function toggleFlowProb(id) {
 }
 
 
-var APP_VERSION = '8.6';
+var APP_VERSION = '8.8';
 
 function checkVersie() {
   fetch('version.json?t=' + Date.now())
