@@ -218,7 +218,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
     <button onclick="terugNaarStap1()" style="width:100%;background:transparent;border:1px solid #1a2540;border-radius:4px;color:#6b7280;font-family:'Courier New',Courier,monospace;font-size:13px;padding:10px;cursor:pointer;margin-top:10px;">&#8249; Terug</button>
   </div>
 
-  <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v7.6 &#8212; 2026-03-13</div>
+  <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v8.6 &#8212; 2026-03-13</div>
 </div>
 ```
 
@@ -333,6 +333,24 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
         onclick="openInvul(this)"
         style="flex:1;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:12px 14px;outline:none;text-align:center;">
     </div>
+  </div>
+
+  <div class="field">
+    <label>Max hoogte beperking</label>
+    <button id="btn-maxhoogte" onclick="toggleMaxHoogte()"
+      style="width:100%;background:#141d2e;border:2px solid #1a2540;border-radius:6px;color:#9ca3af;font-family:'Courier New',Courier,monospace;font-size:15px;font-weight:700;padding:14px;cursor:pointer;text-align:left;display:flex;align-items:center;gap:12px;">
+      <span id="maxhoogte-icon">☐</span>
+      <span>Max 1200mm incl. pallet</span>
+      <span style="margin-left:auto;font-size:11px;color:#6b7280;">standaard 1600mm</span>
+    </button>
+  </div>
+
+  <div class="field">
+    <label>Zakken op rol</label>
+    <input id="f-order-zakrol" type="number" placeholder="bv. 250" class="veld-leeg" readonly
+      onclick="openInvul(this)"
+      style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;cursor:pointer;">
+    <div style="font-size:10px;color:#6b7280;margin-top:4px;">Zelfde als zakken/rol in het recept</div>
   </div>
 
   <div class="field">
@@ -1132,6 +1150,7 @@ function kiesZakrol(val) {
     actief.style.color = '#34d399';
   }
   herbereken();
+  try { berekenOrder(); } catch(e) {}
 }
 
 function kiesKoker(val) {
@@ -1167,7 +1186,7 @@ function herbereken() {
   // Roldiameter: berekend uit zakrol + koker + dikte
   var zakrolVal = parseFloat(document.getElementById('f-zakrol').value) || 0;
   var rolRadius = zakrolVal > 0
-    ? Math.sqrt((koker/2)*(koker/2) + (zakrolVal * d * l) / Math.PI)
+    ? Math.sqrt((koker/2)*(koker/2) + (zakrolVal * d * l * 2) / Math.PI)
     : 150;
   var rol = rolRadius;
 
@@ -1260,9 +1279,11 @@ function slaOp() {
     offset1_werke:document.getElementById('f-offset1').value||'',
     datum:new Date().toISOString().split('T')[0],
     order_stuks:document.getElementById('f-order-stuks').value||'',
+    order_zakrol:document.getElementById('f-order-zakrol') ? document.getElementById('f-order-zakrol').value||'' : '',
     order_pallet:_gekozenPallet||'euro',
     order_huidje:document.getElementById('f-huidje').value||'',
-    order_gew100m:document.getElementById('f-gew100m') ? document.getElementById('f-gew100m').value||'' : ''
+    order_gew100m:document.getElementById('f-gew100m') ? document.getElementById('f-gew100m').value||'' : '',
+    order_maxhoogte:_maxHoogte ? '1' : '0'
   };
   toast('Opslaan...');
   if(editKey){
@@ -1275,7 +1296,9 @@ function slaOp() {
 function resetForm() {
   var ids=['f-klantnr','f-klantnaam','f-versie','f-breedte','f-lengte','f-dikte','f-koker','f-seal','f-snelheid','f-zakmin','f-zakrol','f-static-mat','f-drukker','f-temp-boven','f-temp-onder','f-notities','f-offset1','f-order-stuks'];
   document.getElementById('order-resultaten') && (document.getElementById('order-resultaten').style.display='none');
+  var ozrReset=document.getElementById('f-order-zakrol'); if(ozrReset){ozrReset.value='';ozrReset.classList.remove('veld-definitief');ozrReset.classList.add('veld-leeg');}
   var gew100mReset=document.getElementById('f-gew100m'); if(gew100mReset){gew100mReset.value='';gew100mReset.classList.remove('veld-definitief');gew100mReset.classList.add('veld-leeg');}
+  if(_maxHoogte){ _maxHoogte=false; var mhBtn=document.getElementById('btn-maxhoogte'); var mhIcon=document.getElementById('maxhoogte-icon'); if(mhBtn){mhBtn.style.borderColor='#1a2540';mhBtn.style.background='#141d2e';mhBtn.style.color='#9ca3af';} if(mhIcon)mhIcon.textContent='☐'; }
   // Alle tekstvelden geel
   ['f-klantnr','f-klantnaam','f-versie'].forEach(function(id){
     var el=document.getElementById(id);
@@ -1493,7 +1516,7 @@ function openDetail(key) {
         var pallets = Math.ceil(rollen/rpPallet);
         var huidje = parseFloat(r.order_huidje)||0;
         var koker = parseFloat(r.koker)||90;
-        var rolD = Math.round(Math.sqrt((koker/2)*(koker/2)+(zakrol*(parseFloat(r.dikte)||0)*(parseFloat(r.lengte)||0)/1000)/Math.PI)*2);
+        var rolD = Math.round(Math.sqrt((koker/2)*(koker/2)+(zakrol*(parseFloat(r.dikte)||0)*(parseFloat(r.lengte)||0)*2)/Math.PI)*2);
         var huidjesRol = huidje>0 ? Math.ceil(rolD/huidje*1000) : 0;
         return '<div class="slabel">Order Berekening</div>'+
           '<div class="info-block">'+
@@ -1563,6 +1586,10 @@ function bewerkRecept(key) {
     }
     if(r.drukker){drukkerAan=true;document.getElementById('drukker-btn').textContent='AAN';document.getElementById('drukker-btn').className='toggle-btn toggle-aan';document.getElementById('drukker-extra').style.display='block';}
     // Order velden laden
+    if(r.order_zakrol) {
+      var ozEl = document.getElementById('f-order-zakrol');
+      if(ozEl) { ozEl.value = r.order_zakrol; ozEl.classList.remove('veld-leeg'); ozEl.classList.add('veld-definitief'); }
+    }
     if(r.order_stuks) {
       var osEl = document.getElementById('f-order-stuks');
       if(osEl) { osEl.value = r.order_stuks; osEl.classList.remove('veld-leeg'); osEl.classList.add('veld-definitief'); }
@@ -1582,6 +1609,11 @@ function bewerkRecept(key) {
     editKey=key;
     var ntEl2=document.getElementById('nieuw-title'); if(ntEl2) ntEl2.textContent='Recept Bewerken';
     go('s-nieuw');
+    // Max hoogte herstellen
+    if(r.order_maxhoogte === '1') {
+      _maxHoogte = false; // reset eerst
+      toggleMaxHoogte();
+    }
     // Berekenorder na laden
     setTimeout(function(){ try { berekenOrder(); } catch(e) {} }, 100);
   });
@@ -1613,6 +1645,26 @@ var MAX_PALLET_KG = 500;
 
 var _gekozenPallet = 'euro';
 var _gekozenHuidje = 0;
+var _maxHoogte = false; // max 1200mm incl pallet
+
+function toggleMaxHoogte() {
+  _maxHoogte = !_maxHoogte;
+  var btn = document.getElementById('btn-maxhoogte');
+  var icon = document.getElementById('maxhoogte-icon');
+  if(!btn || !icon) return;
+  if(_maxHoogte) {
+    btn.style.borderColor = '#f59e0b';
+    btn.style.background = 'rgba(245,158,11,0.08)';
+    btn.style.color = '#fcd34d';
+    icon.textContent = '☑';
+  } else {
+    btn.style.borderColor = '#1a2540';
+    btn.style.background = '#141d2e';
+    btn.style.color = '#9ca3af';
+    icon.textContent = '☐';
+  }
+  try { berekenOrder(); } catch(e) {}
+}
 
 function kiesPallet(type) {
   if(!type) return;
@@ -1665,7 +1717,11 @@ function berekenOrder() {
   var orderEl = document.getElementById('order-resultaten');
   if(!orderEl) return;
   var stuks1000 = parseFloat((document.getElementById('f-order-stuks')||{}).value) || 0; // gewoon aantal stuks
-  var zakrol    = parseFloat((document.getElementById('f-zakrol')||{}).value) || 0;
+  // Zakrol: gebruik order-zakrol als ingevuld, anders recept zakrol
+  var orderZakrolEl = document.getElementById('f-order-zakrol');
+  var zakrol = (orderZakrolEl && parseFloat(orderZakrolEl.value) > 0)
+    ? parseFloat(orderZakrolEl.value)
+    : parseFloat((document.getElementById('f-zakrol')||{}).value) || 0;
   var breedte   = parseFloat((document.getElementById('f-breedte')||{}).value) || 0;
   var lengte    = parseFloat((document.getElementById('f-lengte')||{}).value) || 0;
   var dikte     = parseFloat((document.getElementById('f-dikte')||{}).value) || 0;
@@ -1707,44 +1763,64 @@ function berekenOrder() {
 
   // Pallet berekening
   var pallet = PALLETS[_gekozenPallet] || PALLETS['euro'];
-  var rollenPerPalletGewicht = Math.floor(MAX_PALLET_KG / gewichtPerRol);
-  var rolRadius = Math.sqrt((koker/2)*(koker/2) + (zakrol * dikte * lengte/1000) / Math.PI);
+  // Roldiameter berekenen - alles in mm, factor 2 voor dubbele folie (zak = heen+terug)
+  // pi*(R²-r²) = zakrol * lengte * dikte * 2
+  var rolRadius = Math.sqrt((koker/2)*(koker/2) + (zakrol * lengte * dikte * 2) / Math.PI);
   var rolDiameter = Math.round(rolRadius * 2);
 
-  // Stapelen: breedte <= 400mm = staand, anders liggend
-  var staand = breedte <= 400;
-  var rollenPerPallet, lagen, rollenPerRijCalc;
+  // Stapelwijze bepalen op basis van zakbreedte
+  var staand = breedte <= 470; // <= 470mm = staand
+
+  var rollenPerPalletGewicht = Math.max(1, Math.floor(MAX_PALLET_KG / (gewichtPerRol || 1)));
+  var rollenPerRijCalc = 1;
+  var lagen = 1;
+  var rollenPerPallet = 1;
+
+  // Max stapelhoogte: standaard onbeperkt, met knop = 1050mm (1200-150 pallet)
+  var maxStapelHoogte = _maxHoogte ? 1050 : 9999;
 
   if(staand) {
-    // Staand: rollen staan rechtop — diameter is de voetafdruk
-    // Patroon: rij van 4, dan 3 (verschoven), dan 4 = 11 per 2 lagen = 22 op pallet
-    var rijA = Math.floor(pallet.b / (rolDiameter + 10));
-    var rijB = Math.max(1, rijA - 1);
-    var rollenPerLaagStaand = rijA + rijB; // bijv. 4+3=7 per dubbele rij
-    var rijen = Math.floor(pallet.l / (rolDiameter + 10));
-    var rollenPerPalletStapel = rollenPerLaagStaand * Math.floor(rijen / 2) * 2;
-    lagen = 1; // staand = 1 laag hoogte
-    rollenPerRijCalc = rijA;
-    rollenPerPallet = Math.min(rollenPerPalletGewicht, Math.max(1, rollenPerPalletStapel));
+    // Staand: rollen rechtop, 22 per pallet (praktijk)
+    // Hoogte = lengte van de rol
+    var lagenStaand = _maxHoogte ? Math.max(1, Math.floor(maxStapelHoogte / lengte)) : 99;
+    lagen = lagenStaand;
+    rollenPerRijCalc = 4; // indicatie
+    rollenPerPallet = Math.min(rollenPerPalletGewicht, 22); // praktijk: 22 per pallet
   } else {
-    // Liggend
-    var rollenPerLaag = Math.max(1, Math.floor(pallet.b / (rolDiameter+20)) * Math.floor(pallet.l / (rolDiameter+20)));
-    lagen = Math.floor(pallet.maxH / (rolDiameter+10));
-    rollenPerRijCalc = Math.max(1, Math.floor(pallet.b / (rolDiameter+20)));
-    var rollenPerPalletStapel = rollenPerLaag * lagen;
+    // Liggend - breedte mag NIET over pallet uitsteken
+    var rollenPerRijLiggend = Math.max(1, Math.floor(pallet.b / rolDiameter));
+    rollenPerRijCalc = rollenPerRijLiggend;
+    // Lagen: beperkt door gewicht EN eventueel hoogte
+    var lagenGewicht = Math.max(1, Math.floor(MAX_PALLET_KG / (rollenPerRijLiggend * (gewichtPerRol||1))));
+    var lagenHoogte  = _maxHoogte ? Math.max(1, Math.floor(maxStapelHoogte / rolDiameter)) : lagenGewicht;
+    lagen = Math.min(lagenGewicht, lagenHoogte);
+    var rollenPerPalletStapel = rollenPerRijLiggend * lagen;
     rollenPerPallet = Math.min(rollenPerPalletGewicht, Math.max(1, rollenPerPalletStapel));
   }
 
-  // Afronden: verdeel rollen zo eerlijk mogelijk over pallets
-  var aantalPallets = Math.ceil(aantalRollen / rollenPerPallet);
-  // Check of we 1 pallet kunnen besparen door iets meer op een pallet te zetten (+1 rol)
-  if(aantalPallets > 1) {
-    var rollenPerPalletPlus1 = rollenPerPallet + 1;
-    if(rollenPerPalletPlus1 * gewichtPerRol <= MAX_PALLET_KG) {
-      var palletsMet1Extra = Math.ceil(aantalRollen / rollenPerPalletPlus1);
-      if(palletsMet1Extra < aantalPallets) {
-        rollenPerPallet = rollenPerPalletPlus1;
-        aantalPallets = palletsMet1Extra;
+  // Afronden: probeer pallets te besparen met +1 rol
+  var aantalPallets = 0;
+  var losseRollen = 0;
+  if(aantalRollen > 0) {
+    var vollePallets = Math.floor(aantalRollen / rollenPerPallet);
+    var restRollen = aantalRollen % rollenPerPallet;
+    if(restRollen > 0 && restRollen <= 4) {
+      // Losse rollen - geen extra pallet
+      aantalPallets = vollePallets;
+      losseRollen = restRollen;
+    } else {
+      aantalPallets = Math.ceil(aantalRollen / rollenPerPallet);
+      losseRollen = 0;
+    }
+    if(aantalPallets === 0 && aantalRollen > 0) { aantalPallets = 1; losseRollen = 0; }
+  }
+  if(aantalPallets > 1 && gewichtPerRol > 0) {
+    var rollenPlus1 = rollenPerPallet + 1;
+    if(rollenPlus1 * gewichtPerRol <= MAX_PALLET_KG) {
+      var palletsPlus1 = Math.ceil(aantalRollen / rollenPlus1);
+      if(palletsPlus1 < aantalPallets) {
+        rollenPerPallet = rollenPlus1;
+        aantalPallets = palletsPlus1;
       }
     }
   }
@@ -1753,18 +1829,24 @@ function berekenOrder() {
   var totaleFolieMeter = aantalRollen * rolLengte;
   var totaleFolieKg = totaalGewicht;
 
-  // Huidjes: alleen bij liggend stapelen (>400mm breedte)
-  // Stapelwijze: 4 rollen (laag 1) + 3 rollen piramide (laag 2) + 4 rollen (laag 3)
-  // Groep = 11 rollen, huidje om de bovenste 4 rollen van laag 3
-  // Huidje breedte = 200mm (vast)
-  // Huidje lengte = 2 x (4 x rolDiameter + rolDiameter) + 150mm overlap
+  // Huidjes: alleen bij liggend (breedte > 470mm)
+  // Buizenzak 200mm breed, past om 4 rollen naast elkaar
+  // Lengte = 4 x roldiameter + 130mm overlap, afgerond naar boven op 50mm (reeks 700-1400mm)
   var huidjeLengte = 0, aantalHuidjes = 0, huidjesTotaalM = 0;
   var rollenPerRij = rollenPerRijCalc;
-  if(!staand) {
-    huidjeLengte = Math.round(2 * (4*rolDiameter + rolDiameter) + 150);
-    // 1 huidje per groep van 11 rollen
-    var aantalGroepen = Math.ceil(aantalRollen / 11);
-    aantalHuidjes = aantalGroepen;
+  if(!staand && lagen > 1) {
+    var huidjeRuw = 4 * rolDiameter + 130;
+    // Afronden naar dichtstbijzijnde standaardmaat (700,750,...,1400mm)
+    var huidjeMaten = [700,750,800,850,900,950,1000,1050,1100,1150,1200,1250,1300,1350,1400];
+    huidjeLengte = huidjeMaten[huidjeMaten.length - 1]; // default max
+    for(var hi = 0; hi < huidjeMaten.length; hi++) {
+      if(huidjeMaten[hi] >= huidjeRuw) { huidjeLengte = huidjeMaten[hi]; break; }
+    }
+    // Aantal huidjes: 1 per laagovergang per rij rollen
+    // Elke laag boven laag 1 heeft 1 huidje per groep van 4 rollen in die laag
+    var rollenInBovenLaag = rollenPerRij; // rollen per rij in laag
+    var groepenPerLaag = Math.ceil(rollenInBovenLaag / 4);
+    aantalHuidjes = groepenPerLaag * (lagen - 1) * aantalPallets;
     huidjesTotaalM = Math.round(aantalHuidjes * huidjeLengte / 1000 * 10) / 10;
   }
 
@@ -1775,6 +1857,7 @@ function berekenOrder() {
     rij('&#9878;', 'Totaal gewicht', totaalGewicht+' kg', '#60a5fa') +
     rij('&#128230;','Rollen per pallet | '+pallet.naam+' | max 500 kg', rollenPerPallet+' rol', '#f59e0b') +
     rij('&#128230;','Aantal pallets nodig', aantalPallets+' pallet', '#f59e0b') +
+    (losseRollen > 0 ? rij('&#128230;','Los op pallet', losseRollen+' rol', '#9ca3af') : '') +
     rij('&#128221;','Folie verbruik (meters)', Math.round(totaleFolieMeter)+' m', '#34d399');
 
   if(!staand) {
@@ -1807,6 +1890,7 @@ var INVUL_CONFIG = {
   'f-offset1':    {label:'Werkelijke Offset 1', snel:[]},
   'f-static-mat': {label:'Material to be charged (mm)', snel:[10000,20000,30000,40000]},
   'f-order-stuks':{label:'Te leveren (stuks)', snel:[1000,2000,5000,10000,20000,50000]},
+  'f-order-zakrol':{label:'Zakken op rol', snel:[100,150,200,250,500,750,1000]},
   'f-huidje':     {label:'Huidjes lengte (mm)', snel:[500,800,1000,1200,1500]},
   'f-gew100m':    {label:'Gewicht per 100 meter (kg)', snel:[1,2,3,5,8,10,15,20]}
 };
@@ -2266,7 +2350,7 @@ function toggleFlowProb(id) {
 }
 
 
-var APP_VERSION = '7.6';
+var APP_VERSION = '8.6';
 
 function checkVersie() {
   fetch('version.json?t=' + Date.now())
