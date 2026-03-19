@@ -218,7 +218,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
     <button onclick="terugNaarStap1()" style="width:100%;background:transparent;border:1px solid #1a2540;border-radius:4px;color:#6b7280;font-family:'Courier New',Courier,monospace;font-size:13px;padding:10px;cursor:pointer;margin-top:10px;">&#8249; Terug</button>
   </div>
 
-  <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v6.9 &#8212; 2026-03-13</div>
+  <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v7.0 &#8212; 2026-03-13</div>
 </div>
 ```
 
@@ -947,7 +947,9 @@ function isAdmin() {
 }
 
 function magBewerken(receptOperator) {
+  if(!_huidigeOperator) return true; // niet ingelogd via operatorscherm = toestaan
   if(isAdmin()) return true;
+  if(!receptOperator || receptOperator === '') return true; // oud recept zonder operator
   return receptOperator === _huidigeOperator;
 }
 
@@ -2244,7 +2246,7 @@ function toggleFlowProb(id) {
 }
 
 
-var APP_VERSION = '6.9';
+var APP_VERSION = '7.0';
 
 function checkVersie() {
   fetch('version.json?t=' + Date.now())
