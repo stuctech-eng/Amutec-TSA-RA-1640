@@ -218,7 +218,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
     <button onclick="terugNaarStap1()" style="width:100%;background:transparent;border:1px solid #1a2540;border-radius:4px;color:#6b7280;font-family:'Courier New',Courier,monospace;font-size:13px;padding:10px;cursor:pointer;margin-top:10px;">&#8249; Terug</button>
   </div>
 
-  <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v7.0 &#8212; 2026-03-13</div>
+  <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v7.2 &#8212; 2026-03-13</div>
 </div>
 ```
 
@@ -1358,7 +1358,7 @@ function renderReceptenTree(lijst, query, openAll) {
     for(var ri=0;ri<groepen[klant].length;ri++){
       var rec=groepen[klant][ri];
       var mat=MATERIALEN[rec.materiaal];
-      items+='<div class="tree-item" onclick="openDetail(\''+rec._key+'\')">' +
+      items+='<div class="tree-item" onclick="window._detailKey=\''+rec._key+'\';openDetail(window._detailKey)">' +
         '<div class="tree-item-inner">' +
           '<div class="tree-connector"></div>' +
           '<div class="tree-content">' +
@@ -1390,6 +1390,7 @@ function renderReceptenTree(lijst, query, openAll) {
 }
 
 function verwijderRecept(btn, key) {
+  key = key || window._delKey;
   // Check rechten
   fbLoad('/recepten', function(lijst){
     var r=null;
@@ -1439,6 +1440,7 @@ function bevestigPin() {
 }
 
 function openDetail(key) {
+  key = key || window._detailKey;
   fbLoad('/recepten',function(lijst){
     var r=null;for(var i=0;i<lijst.length;i++){if(lijst[i]._key===key){r=lijst[i];break;}}
     if(!r) return;
@@ -1505,8 +1507,7 @@ function openDetail(key) {
             '<div class="info-row"><div class="ir-lbl">HUIDJE LENGTE</div><div class="ir-val">'+(Math.round((Math.floor(pallet2.b/(rolD+10)))*(rolD+10)+200))+' mm</div></div>'+
           '</div>';
       })()+
-      '<button class="btn btn-amber" style="margin-top:8px;" onclick="bewerkRecept(\'' + key + '\')">' +
-      'Bewerken</button>';
+      '<button class="btn btn-amber" style="margin-top:8px;" onclick="window._bewerkKey=\''+key+'\';bewerkRecept(window._bewerkKey)">Bewerken</button>';
     go('s-detail');
   });
 }
@@ -2246,7 +2247,7 @@ function toggleFlowProb(id) {
 }
 
 
-var APP_VERSION = '7.0';
+var APP_VERSION = '7.2';
 
 function checkVersie() {
   fetch('version.json?t=' + Date.now())
