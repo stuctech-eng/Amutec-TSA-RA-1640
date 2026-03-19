@@ -218,7 +218,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
     <button onclick="terugNaarStap1()" style="width:100%;background:transparent;border:1px solid #1a2540;border-radius:4px;color:#6b7280;font-family:'Courier New',Courier,monospace;font-size:13px;padding:10px;cursor:pointer;margin-top:10px;">&#8249; Terug</button>
   </div>
 
-  <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v7.4 &#8212; 2026-03-13</div>
+  <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v7.5 &#8212; 2026-03-13</div>
 </div>
 ```
 
@@ -1562,9 +1562,28 @@ function bewerkRecept(key) {
       if(toon){toon.style.display='block';toon.textContent='Offset 2 (automatisch): '+Math.round(r.offset1_werke/2);}
     }
     if(r.drukker){drukkerAan=true;document.getElementById('drukker-btn').textContent='AAN';document.getElementById('drukker-btn').className='toggle-btn toggle-aan';document.getElementById('drukker-extra').style.display='block';}
+    // Order velden laden
+    if(r.order_stuks) {
+      var osEl = document.getElementById('f-order-stuks');
+      if(osEl) { osEl.value = r.order_stuks; osEl.classList.remove('veld-leeg'); osEl.classList.add('veld-definitief'); }
+    }
+    if(r.order_pallet) {
+      _gekozenPallet = r.order_pallet;
+      try { kiesPallet(r.order_pallet); } catch(e) {}
+    }
+    if(r.order_huidje) {
+      var ohEl = document.getElementById('f-huidje');
+      if(ohEl) { ohEl.value = r.order_huidje; ohEl.classList.remove('veld-leeg'); ohEl.classList.add('veld-definitief'); }
+    }
+    if(r.order_gew100m) {
+      var ogEl = document.getElementById('f-gew100m');
+      if(ogEl) { ogEl.value = r.order_gew100m; ogEl.classList.remove('veld-leeg'); ogEl.classList.add('veld-definitief'); }
+    }
     editKey=key;
     var ntEl2=document.getElementById('nieuw-title'); if(ntEl2) ntEl2.textContent='Recept Bewerken';
     go('s-nieuw');
+    // Berekenorder na laden
+    setTimeout(function(){ try { berekenOrder(); } catch(e) {} }, 100);
   });
 }
 
@@ -2245,7 +2264,7 @@ function toggleFlowProb(id) {
 }
 
 
-var APP_VERSION = '7.4';
+var APP_VERSION = '7.5';
 
 function checkVersie() {
   fetch('version.json?t=' + Date.now())
