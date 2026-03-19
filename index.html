@@ -218,7 +218,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
     <button onclick="terugNaarStap1()" style="width:100%;background:transparent;border:1px solid #1a2540;border-radius:4px;color:#6b7280;font-family:'Courier New',Courier,monospace;font-size:13px;padding:10px;cursor:pointer;margin-top:10px;">&#8249; Terug</button>
   </div>
 
-  <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v7.5 &#8212; 2026-03-13</div>
+  <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v7.6 &#8212; 2026-03-13</div>
 </div>
 ```
 
@@ -1777,14 +1777,16 @@ function berekenOrder() {
     rij('&#128230;','Aantal pallets nodig', aantalPallets+' pallet', '#f59e0b') +
     rij('&#128221;','Folie verbruik (meters)', Math.round(totaleFolieMeter)+' m', '#34d399');
 
-  html += rij('&#128462;','Huidje lengte (berekend)', huidjeLengte+' mm', '#9ca3af') +
-          rij('&#128462;','Rollen per rij', rollenPerRij+' rol', '#9ca3af') +
-          rij('&#128462;','Lagen op pallet', lagen2+' lagen', '#9ca3af') +
-          rij('&#128462;','Aantal huidjes nodig', aantalHuidjes+' st', '#9ca3af') +
-          rij('&#128462;','Totaal folie huidjes', huidjesTotaalM+' m', '#9ca3af');
+  if(!staand) {
+    html += rij('&#128462;','Huidje (om bovenste 4 van 4+3+4) — 200mm breed', huidjeLengte+' mm lang', '#9ca3af') +
+            rij('&#128462;','Aantal huidjes nodig', aantalHuidjes+' st', '#9ca3af') +
+            rij('&#128462;','Totaal folie huidjes', huidjesTotaalM+' m', '#9ca3af');
+  } else {
+    html += rij('&#128462;','Huidjes', 'Niet nodig — staand gestapeld', '#6b7280');
+  }
 
   // Roldiameter info
-  html += '<div style="margin-top:8px;font-size:10px;color:#6b7280;">Berekende roldiameter: '+rolDiameter+'mm &middot; '+rollenPerLaag+' per laag &middot; '+lagen+' lagen</div>';
+  html += '<div style="margin-top:8px;font-size:10px;color:#6b7280;">Roldiameter: '+rolDiameter+'mm · Stapeling: '+(staand?'staand':'liggend')+' · '+lagen+' lagen</div>';
 
   document.getElementById('order-rijen').innerHTML = html;
   orderEl.style.display = 'block';
@@ -2264,7 +2266,7 @@ function toggleFlowProb(id) {
 }
 
 
-var APP_VERSION = '7.5';
+var APP_VERSION = '7.6';
 
 function checkVersie() {
   fetch('version.json?t=' + Date.now())
