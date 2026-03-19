@@ -218,7 +218,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
     <button onclick="terugNaarStap1()" style="width:100%;background:transparent;border:1px solid #1a2540;border-radius:4px;color:#6b7280;font-family:'Courier New',Courier,monospace;font-size:13px;padding:10px;cursor:pointer;margin-top:10px;">&#8249; Terug</button>
   </div>
 
-  <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v7.2 &#8212; 2026-03-13</div>
+  <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v7.4 &#8212; 2026-03-13</div>
 </div>
 ```
 
@@ -413,9 +413,9 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 <div class="form-card">
   <div class="form-card-title">Zakmaat & Berekening</div>
   <div class="grid3">
-    <div class="field"><label>Breedte (mm)</label><input id="f-breedte" type="number" placeholder="400" oninput="herbereken()" class="veld-leeg"></div>
-    <div class="field"><label>Lengte (mm)</label><input id="f-lengte" type="number" placeholder="600" oninput="herbereken()" class="veld-leeg"></div>
-    <div class="field"><label>Dikte (mm)</label><input id="f-dikte" type="number" placeholder="0.03" step="0.001" oninput="herbereken()" class="veld-leeg"></div>
+    <div class="field"><label>Breedte (mm)</label><input id="f-breedte" type="number" placeholder="400" oninput="herbereken();try{berekenOrder();}catch(e){}" class="veld-leeg"></div>
+    <div class="field"><label>Lengte (mm)</label><input id="f-lengte" type="number" placeholder="600" oninput="herbereken();try{berekenOrder();}catch(e){}" class="veld-leeg"></div>
+    <div class="field"><label>Dikte (mm)</label><input id="f-dikte" type="number" placeholder="0.03" step="0.001" oninput="herbereken();try{berekenOrder();}catch(e){}" class="veld-leeg"></div>
   </div>
   <div class="grid2">
     <div class="field">
@@ -1657,10 +1657,10 @@ function berekenOrder() {
     orderEl.style.display = 'none';
     return;
   }
-  if(!stuks1000) { orderEl.style.display = 'none'; return; }
+  // Stuks niet verplicht - toon berekening altijd als basis gegevens bekend zijn
 
-  var totaleStuks = stuks1000; // direct aantal stuks
-  var aantalRollen = Math.ceil(totaleStuks / zakrol);
+  var totaleStuks = stuks1000;
+  var aantalRollen = stuks1000 > 0 ? Math.ceil(totaleStuks / zakrol) : 0;
 
   // Gewicht per rol
   var sv = SOORTELIJK_GEWICHT[selectedMat] || 920;
@@ -1751,8 +1751,7 @@ function berekenOrder() {
 
   // Render
 
-  var html =
-    rij('&#128260;','Aantal rollen', aantalRollen+' rol', '#a78bfa') +
+  var html = (aantalRollen > 0 ? rij('&#128260;','Aantal rollen', aantalRollen+' rol', '#a78bfa') : '') +
     rij('&#9878;', 'Gewicht per rol', gewichtPerRol+' kg', '#60a5fa') +
     rij('&#9878;', 'Totaal gewicht', totaalGewicht+' kg', '#60a5fa') +
     rij('&#128230;','Rollen per pallet | '+pallet.naam+' | max 500 kg', rollenPerPallet+' rol', '#f59e0b') +
@@ -1857,9 +1856,8 @@ function invulOk() {
   }
   invulSluit();
   if(_invulEl.id==='f-zakrol') herbereken();
-  if(_invulEl.id==='f-order-stuks'||_invulEl.id==='f-huidje') try{berekenOrder();}catch(e){};
-  // Ook berekenOrder na alle invullingen als order-stuks al een waarde heeft
-  if(['f-breedte','f-lengte','f-dikte','f-zakrol'].indexOf(_invulEl.id)>=0) try{berekenOrder();}catch(e){};
+  // Altijd berekenOrder aanroepen na invullen
+  try { berekenOrder(); } catch(e) {}
 }
 
 // ── PROBLEEMSTELLINGEN ────────────────────────────────────────────────────
@@ -2247,7 +2245,7 @@ function toggleFlowProb(id) {
 }
 
 
-var APP_VERSION = '7.2';
+var APP_VERSION = '7.4';
 
 function checkVersie() {
   fetch('version.json?t=' + Date.now())
