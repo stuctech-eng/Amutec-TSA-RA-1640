@@ -218,7 +218,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
     <button onclick="terugNaarStap1()" style="width:100%;background:transparent;border:1px solid #1a2540;border-radius:4px;color:#6b7280;font-family:'Courier New',Courier,monospace;font-size:13px;padding:10px;cursor:pointer;margin-top:10px;">&#8249; Terug</button>
   </div>
 
-  <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v6.4 &#8212; 2026-03-13</div>
+  <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v6.8 &#8212; 2026-03-13</div>
 </div>
 ```
 
@@ -495,7 +495,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 
 <div class="form-card" style="border-top-color:#60a5fa;">
   <div class="form-card-title" style="color:#60a5fa;">Werkelijke Offset (leerdata)</div>
-  <div style="font-size:11px;color:#9ca3af;margin-bottom:12px;line-height:1.6;">Vul de offset in die op de machine werkte. Offset 2 is altijd automatisch de helft.</div>
+  <div style="font-size:11px;color:#9ca3af;margin-bottom:12px;line-height:1.6;">Blauw = berekende schatting. Vul de werkelijke offset in die op de machine werkte — dan wordt hij groen en leert de app ervan.</div>
   <div class="field">
     <label>Werkelijke Offset 1</label>
     <div style="display:flex;align-items:center;gap:8px;">
@@ -1691,29 +1691,65 @@ function berekenOrder() {
   // Pallet berekening
   var pallet = PALLETS[_gekozenPallet] || PALLETS['euro'];
   var rollenPerPalletGewicht = Math.floor(MAX_PALLET_KG / gewichtPerRol);
-  // Schat rolhoogte: roldiameter = sqrt(koker²/4 + zakrol*dikte*lengte/1000/pi)*2
   var rolRadius = Math.sqrt((koker/2)*(koker/2) + (zakrol * dikte * lengte/1000) / Math.PI);
   var rolDiameter = Math.round(rolRadius * 2);
-  var rollenPerLaag = Math.max(1, Math.floor(pallet.b / (rolDiameter+20)) * Math.floor(pallet.l / (rolDiameter+20)));
-  var lagen = Math.floor(pallet.maxH / (rolDiameter+10));
-  var rollenPerPalletStapel = rollenPerLaag * lagen;
-  var rollenPerPallet = Math.min(rollenPerPalletGewicht, rollenPerPalletStapel);
+
+  // Stapelen: breedte <= 400mm = staand, anders liggend
+  var staand = breedte <= 400;
+  var rollenPerPallet, lagen, rollenPerRijCalc;
+
+  if(staand) {
+    // Staand: rollen staan rechtop — diameter is de voetafdruk
+    // Patroon: rij van 4, dan 3 (verschoven), dan 4 = 11 per 2 lagen = 22 op pallet
+    var rijA = Math.floor(pallet.b / (rolDiameter + 10));
+    var rijB = Math.max(1, rijA - 1);
+    var rollenPerLaagStaand = rijA + rijB; // bijv. 4+3=7 per dubbele rij
+    var rijen = Math.floor(pallet.l / (rolDiameter + 10));
+    var rollenPerPalletStapel = rollenPerLaagStaand * Math.floor(rijen / 2) * 2;
+    lagen = 1; // staand = 1 laag hoogte
+    rollenPerRijCalc = rijA;
+    rollenPerPallet = Math.min(rollenPerPalletGewicht, Math.max(1, rollenPerPalletStapel));
+  } else {
+    // Liggend
+    var rollenPerLaag = Math.max(1, Math.floor(pallet.b / (rolDiameter+20)) * Math.floor(pallet.l / (rolDiameter+20)));
+    lagen = Math.floor(pallet.maxH / (rolDiameter+10));
+    rollenPerRijCalc = Math.max(1, Math.floor(pallet.b / (rolDiameter+20)));
+    var rollenPerPalletStapel = rollenPerLaag * lagen;
+    rollenPerPallet = Math.min(rollenPerPalletGewicht, Math.max(1, rollenPerPalletStapel));
+  }
+
+  // Afronden: verdeel rollen zo eerlijk mogelijk over pallets
   var aantalPallets = Math.ceil(aantalRollen / rollenPerPallet);
+  // Check of we 1 pallet kunnen besparen door iets meer op een pallet te zetten (+1 rol)
+  if(aantalPallets > 1) {
+    var rollenPerPalletPlus1 = rollenPerPallet + 1;
+    if(rollenPerPalletPlus1 * gewichtPerRol <= MAX_PALLET_KG) {
+      var palletsMet1Extra = Math.ceil(aantalRollen / rollenPerPalletPlus1);
+      if(palletsMet1Extra < aantalPallets) {
+        rollenPerPallet = rollenPerPalletPlus1;
+        aantalPallets = palletsMet1Extra;
+      }
+    }
+  }
 
   // Folie verbruik
   var totaleFolieMeter = aantalRollen * rolLengte;
   var totaleFolieKg = totaalGewicht;
 
-  // Huidjes berekening
-  // Rollen per rij op pallet
-  var rollenPerRij = Math.max(1, Math.floor((pallet.b) / (rolDiameter + 10)));
-  var lagen2 = Math.max(1, Math.ceil(rollenPerPallet / rollenPerRij));
-  // Huidje lengte = rollen per rij x roldiameter + 200mm overhang
-  var huidjeLengte = Math.round(rollenPerRij * (rolDiameter + 10) + 200);
-  // Aantal huidjes = tussen elke laag 1 huidje x aantal pallets
-  var aantalHuidjes = Math.max(0, (lagen2 - 1)) * aantalPallets;
-  // Totaal folie voor huidjes (meter)
-  var huidjesTotaalM = aantalHuidjes > 0 ? Math.round(aantalHuidjes * huidjeLengte / 1000 * 10) / 10 : 0;
+  // Huidjes: alleen bij liggend stapelen (>400mm breedte)
+  // Stapelwijze: 4 rollen (laag 1) + 3 rollen piramide (laag 2) + 4 rollen (laag 3)
+  // Groep = 11 rollen, huidje om de bovenste 4 rollen van laag 3
+  // Huidje breedte = 200mm (vast)
+  // Huidje lengte = 2 x (4 x rolDiameter + rolDiameter) + 150mm overlap
+  var huidjeLengte = 0, aantalHuidjes = 0, huidjesTotaalM = 0;
+  var rollenPerRij = rollenPerRijCalc;
+  if(!staand) {
+    huidjeLengte = Math.round(2 * (4*rolDiameter + rolDiameter) + 150);
+    // 1 huidje per groep van 11 rollen
+    var aantalGroepen = Math.ceil(aantalRollen / 11);
+    aantalHuidjes = aantalGroepen;
+    huidjesTotaalM = Math.round(aantalHuidjes * huidjeLengte / 1000 * 10) / 10;
+  }
 
   // Render
 
@@ -2213,7 +2249,7 @@ function toggleFlowProb(id) {
 }
 
 
-var APP_VERSION = '6.4';
+var APP_VERSION = '6.8';
 
 function checkVersie() {
   fetch('version.json?t=' + Date.now())
