@@ -218,7 +218,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
     <button onclick="terugNaarStap1()" style="width:100%;background:transparent;border:1px solid #1a2540;border-radius:4px;color:#6b7280;font-family:'Courier New',Courier,monospace;font-size:13px;padding:10px;cursor:pointer;margin-top:10px;">&#8249; Terug</button>
   </div>
 
-  <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v6.8 &#8212; 2026-03-13</div>
+  <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v6.9 &#8212; 2026-03-13</div>
 </div>
 ```
 
@@ -1223,19 +1223,14 @@ function slaOp() {
   for(var ci=0;ci<checks.length;ci++){
     var el = document.getElementById(checks[ci].id);
     var heeftWaarde = el && el.value && el.value.trim() !== '';
-    var isGroen = el && el.classList.contains('veld-definitief');
     if(!heeftWaarde) {
-      // Geen waarde
       ontbrekend.push(checks[ci].label);
       if(el) { el.classList.remove('veld-definitief','veld-benadering'); el.classList.add('veld-leeg'); }
-    } else if(!isGroen) {
-      // Heeft waarde maar nog blauw (benadering) - ook blokkeren
-      ontbrekend.push(checks[ci].label + ' (nog niet bevestigd)');
-      // Laat veld blauw - operator moet 1x tikken om te bevestigen
     }
+    // Blauw (berekend) is OK om op te slaan
   }
   if(ontbrekend.length > 0){
-    toast('Bevestig eerst: ' + ontbrekend.join(', '), true);
+    toast('Vergeten: ' + ontbrekend.join(', '), true);
     return;
   }
   var klantnr = document.getElementById('f-klantnr').value.trim();
@@ -2249,7 +2244,7 @@ function toggleFlowProb(id) {
 }
 
 
-var APP_VERSION = '6.8';
+var APP_VERSION = '6.9';
 
 function checkVersie() {
   fetch('version.json?t=' + Date.now())
