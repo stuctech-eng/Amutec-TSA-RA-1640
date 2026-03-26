@@ -222,7 +222,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
     <button onclick="terugNaarStap1()" style="width:100%;background:transparent;border:1px solid #1a2540;border-radius:4px;color:#6b7280;font-family:'Courier New',Courier,monospace;font-size:13px;padding:10px;cursor:pointer;margin-top:10px;">&#8249; Terug</button>
   </div>
 
-  <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v9.4 &#8212; 2026-03-26</div>
+  <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v9.5 &#8212; 2026-03-26</div>
 </div>
 ```
 
@@ -517,6 +517,23 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
     </div>
   </div>
   <div id="mat-info-temp" style="display:none;margin-top:10px;background:#070a10;border:1px solid rgba(96,165,250,.3);border-radius:4px;padding:8px 12px;font-size:11px;color:#60a5fa;"></div>
+</div>
+
+<div class="form-card" style="border-top-color:#a78bfa;">
+  <div class="form-card-title" style="color:#a78bfa;">Werkelijke Pallet & Huidje data</div>
+  <div style="font-size:11px;color:#9ca3af;margin-bottom:12px;line-height:1.6;">Vul in wat er in de praktijk werkte. De app leert hiervan voor volgende berekeningen.</div>
+  <div class="field">
+    <label>Werkelijk rollen per pallet</label>
+    <input id="f-werk-rpp" type="number" placeholder="leeg = niet gemeten" class="veld-leeg" readonly
+      onclick="openInvul(this)" inputmode="none"
+      style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;cursor:pointer;">
+  </div>
+  <div class="field">
+    <label>Werkelijke huidje lengte (mm)</label>
+    <input id="f-werk-huidje" type="number" placeholder="leeg = niet gemeten" class="veld-leeg" readonly
+      onclick="openInvul(this)" inputmode="none"
+      style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;cursor:pointer;">
+  </div>
 </div>
 
 <div class="form-card" style="border-top-color:#60a5fa;">
@@ -1310,7 +1327,9 @@ function slaOp() {
     order_huidje:document.getElementById('f-huidje').value||'',
     order_gew100m:document.getElementById('f-gew100m') ? document.getElementById('f-gew100m').value||'' : '',
     order_maxhoogte:_maxHoogte ? '1' : '0',
-    order_rpp:document.getElementById('f-order-rpp') ? document.getElementById('f-order-rpp').value||'' : ''
+    order_rpp:document.getElementById('f-order-rpp') ? document.getElementById('f-order-rpp').value||'' : '',
+    werk_rpp:document.getElementById('f-werk-rpp') ? document.getElementById('f-werk-rpp').value||'' : '',
+    werk_huidje:document.getElementById('f-werk-huidje') ? document.getElementById('f-werk-huidje').value||'' : ''
   };
   toast('Opslaan...');
   if(editKey){
@@ -1323,6 +1342,8 @@ function slaOp() {
 function resetForm() {
   var ids=['f-klantnr','f-klantnaam','f-versie','f-breedte','f-lengte','f-dikte','f-koker','f-seal','f-snelheid','f-zakmin','f-zakrol','f-static-mat','f-drukker','f-temp-boven','f-temp-onder','f-notities','f-offset1','f-order-stuks'];
   document.getElementById('order-resultaten') && (document.getElementById('order-resultaten').style.display='none');
+  var wrppReset=document.getElementById('f-werk-rpp'); if(wrppReset){wrppReset.value='';wrppReset.classList.remove('veld-definitief');wrppReset.classList.add('veld-leeg');}
+  var whReset=document.getElementById('f-werk-huidje'); if(whReset){whReset.value='';whReset.classList.remove('veld-definitief');whReset.classList.add('veld-leeg');}
   var orppReset=document.getElementById('f-order-rpp'); if(orppReset){orppReset.value='';orppReset.classList.remove('veld-definitief');orppReset.classList.add('veld-leeg');}
   var ozrReset=document.getElementById('f-order-zakrol'); if(ozrReset){ozrReset.value='';ozrReset.classList.remove('veld-definitief');ozrReset.classList.add('veld-leeg');}
   var gew100mReset=document.getElementById('f-gew100m'); if(gew100mReset){gew100mReset.value='';gew100mReset.classList.remove('veld-definitief');gew100mReset.classList.add('veld-leeg');}
@@ -1570,7 +1591,7 @@ function openDetail(key) {
           rpPallet = Math.max(1, rijB * rijL * lagenD);
         } else {
           lagenD   = Math.max(1, Math.floor(maxHD / rolD));
-          var rijBL = Math.max(1, Math.floor(palletD.b / rolD));
+          var rijBL = Math.max(1, Math.floor((palletD.b + 5) / rolD));
           rpPallet = Math.max(1, rijBL * lagenD);
         }
 
@@ -1696,6 +1717,14 @@ function bewerkRecept(key) {
     var ntEl2=document.getElementById('nieuw-title'); if(ntEl2) ntEl2.textContent='Recept Bewerken';
     go('s-nieuw');
     // Max hoogte herstellen
+    if(r.werk_rpp) {
+      var wrppEl = document.getElementById('f-werk-rpp');
+      if(wrppEl) { wrppEl.value = r.werk_rpp; wrppEl.classList.remove('veld-leeg'); wrppEl.classList.add('veld-definitief'); }
+    }
+    if(r.werk_huidje) {
+      var whEl = document.getElementById('f-werk-huidje');
+      if(whEl) { whEl.value = r.werk_huidje; whEl.classList.remove('veld-leeg'); whEl.classList.add('veld-definitief'); }
+    }
     if(r.order_rpp) {
       var orppEl = document.getElementById('f-order-rpp');
       if(orppEl) { orppEl.value = r.order_rpp; orppEl.classList.remove('veld-leeg'); orppEl.classList.add('veld-definitief'); }
@@ -1917,9 +1946,10 @@ function berekenOrder() {
     rollenPerPallet = Math.min(rollenPerPalletGewicht, 22); // praktijk: 22 per pallet
   } else {
     // Liggend - breedte mag NIET over pallet uitsteken
-    var rollenPerRijLiggend = Math.max(1, Math.floor(pallet.b / rolDiameter));
+    // Kleine speling van 5mm per rol voor nauwkeuriger berekening
+    var rollenPerRijLiggend = Math.max(1, Math.floor((pallet.b + 5) / rolDiameter));
     rollenPerRijCalc = rollenPerRijLiggend;
-    // Lagen: beperkt door gewicht EN eventueel hoogte
+    // Lagen: hoogte bepaalt EN eventueel hoogte
     var lagenGewicht = Math.max(1, Math.floor(MAX_PALLET_KG / (rollenPerRijLiggend * (gewichtPerRol||1))));
     var lagenHoogte  = _maxHoogte ? Math.max(1, Math.floor(maxStapelHoogte / rolDiameter)) : lagenGewicht;
     lagen = Math.min(lagenGewicht, lagenHoogte);
@@ -2020,6 +2050,8 @@ var INVUL_CONFIG = {
   'f-static-mat': {label:'Material to be charged (mm)', snel:[10000,20000,30000,40000]},
   'f-order-stuks':{label:'Te leveren (stuks)', snel:[1000,2000,5000,10000,20000,50000]},
   'f-order-rpp':  {label:'Rollen per pallet (klant)', snel:[4,6,8,10,12,15,20,24]},
+  'f-werk-rpp':   {label:'Werkelijk rollen per pallet', snel:[4,6,8,10,12,15,20,24,28]},
+  'f-werk-huidje':{label:'Werkelijke huidje lengte (mm)', snel:[700,750,800,850,900,950,1000,1050,1100,1200,1250,1300]},
   'f-order-zakrol':{label:'Zakken op rol', snel:[100,150,200,250,500,750,1000]},
   'f-huidje':     {label:'Huidjes lengte (mm)', snel:[500,800,1000,1200,1500]},
   'f-gew100m':    {label:'Gewicht per 100 meter (kg)', snel:[1,2,3,5,8,10,15,20]}
@@ -2109,37 +2141,58 @@ function invulOk() {
 function initSwipe(el, key) {
   var c = el.querySelector('.swipe-content');
   if(!c) return;
-  var startX=0, startY=0, dist=0, vertMove=false;
 
-  function onStart(px, py) {
-    startX=px; startY=py; dist=0; vertMove=false;
-    c.style.transition='none';
-  }
-  function onMove(px, py) {
-    var dx=px-startX, dy=py-startY;
-    if(!vertMove && Math.abs(dy)>Math.abs(dx)+5) { vertMove=true; }
-    if(vertMove) return;
-    dist=dx;
-    c.style.transform='translateX('+Math.max(-90,Math.min(90,dx))+'px)';
-  }
-  function onEnd() {
-    if(vertMove) { c.style.transform=''; return; }
-    c.style.transition='transform 0.2s';
-    if(dist < -55) {
-      c.style.transform='translateX(-90px)';
-      setTimeout(function(){ c.style.cssText=''; window._delKey=key; verwijderRecept(null,key); },300);
-    } else if(dist > 55) {
-      c.style.transform='translateX(90px)';
-      setTimeout(function(){ c.style.cssText=''; bewerkRecept(key); },300);
+  var ts=0, te=0, tx=0, ty=0, ex=0, ey=0, live=false;
+
+  el.addEventListener('touchstart', function(e) {
+    ts = Date.now();
+    tx = e.changedTouches[0].pageX;
+    ty = e.changedTouches[0].pageY;
+    live = true;
+    c.style.transition = 'none';
+  }, {passive:true});
+
+  el.addEventListener('touchmove', function(e) {
+    if(!live) return;
+    ex = e.changedTouches[0].pageX;
+    ey = e.changedTouches[0].pageY;
+    var dx = ex - tx;
+    var dy = ey - ty;
+    // Als verticaal scrollen → annuleer swipe
+    if(Math.abs(dy) > Math.abs(dx) + 10) { live = false; c.style.transform=''; return; }
+    // Horizontaal bewegen
+    var clamped = Math.max(-85, Math.min(85, dx));
+    c.style.transform = 'translateX('+clamped+'px)';
+  }, {passive:true});
+
+  el.addEventListener('touchend', function(e) {
+    if(!live) return;
+    live = false;
+    te = Date.now();
+    var dx = e.changedTouches[0].pageX - tx;
+    c.style.transition = 'transform 0.25s ease';
+
+    if(dx < -50) {
+      // Links = verwijderen (rood)
+      c.style.transform = 'translateX(-85px)';
+      setTimeout(function() {
+        c.style.transition = '';
+        c.style.transform = '';
+        window._delKey = key;
+        verwijderRecept(null, key);
+      }, 350);
+    } else if(dx > 50) {
+      // Rechts = bewerken (oranje)
+      c.style.transform = 'translateX(85px)';
+      setTimeout(function() {
+        c.style.transition = '';
+        c.style.transform = '';
+        bewerkRecept(key);
+      }, 300);
     } else {
-      c.style.transform='translateX(0)';
+      c.style.transform = 'translateX(0)';
     }
-  }
-
-  // Touch events
-  c.addEventListener('touchstart', function(e){ onStart(e.touches[0].clientX, e.touches[0].clientY); }, {passive:true});
-  c.addEventListener('touchmove',  function(e){ onMove(e.touches[0].clientX, e.touches[0].clientY); }, {passive:true});
-  c.addEventListener('touchend',   onEnd, {passive:true});
+  }, {passive:true});
 }
 
 // ── PROBLEEMSTELLINGEN ────────────────────────────────────────────────────
@@ -2533,7 +2586,7 @@ function toggleFlowProb(id) {
 }
 
 
-var APP_VERSION = '9.4';
+var APP_VERSION = '9.5';
 
 function checkVersie() {
   fetch('version.json?t=' + Date.now())
