@@ -222,7 +222,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
     <button onclick="terugNaarStap1()" style="width:100%;background:transparent;border:1px solid #1a2540;border-radius:4px;color:#6b7280;font-family:'Courier New',Courier,monospace;font-size:13px;padding:10px;cursor:pointer;margin-top:10px;">&#8249; Terug</button>
   </div>
 
-  <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v9.5 &#8212; 2026-03-26</div>
+  <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v9.7 &#8212; 2026-03-26</div>
 </div>
 ```
 
@@ -1311,7 +1311,11 @@ function slaOp() {
     koker:document.getElementById('f-koker').value||76,
     seal:document.getElementById('f-seal').value,
     snelheid:document.getElementById('f-snelheid').value,
-    zakrol:document.getElementById('f-zakrol').value,
+    zakrol:(function(){
+      var ozr = document.getElementById('f-order-zakrol');
+      if(ozr && parseFloat(ozr.value) > 0) return ozr.value;
+      return document.getElementById('f-zakrol').value;
+    })(),
     static_ch:selectedStatic,
     static_mat:document.getElementById('f-static-mat').value.trim(),
     drukker:drukkerAan,
@@ -1875,11 +1879,15 @@ function berekenOrder() {
   var orderEl = document.getElementById('order-resultaten');
   if(!orderEl) return;
   var stuks1000 = parseFloat((document.getElementById('f-order-stuks')||{}).value) || 0; // gewoon aantal stuks
-  // Zakrol: gebruik order-zakrol als ingevuld, anders recept zakrol
+  // Zakrol: gebruik order-zakrol als ingevuld, anders f-zakrol hidden
   var orderZakrolEl = document.getElementById('f-order-zakrol');
-  var zakrol = (orderZakrolEl && parseFloat(orderZakrolEl.value) > 0)
-    ? parseFloat(orderZakrolEl.value)
-    : parseFloat((document.getElementById('f-zakrol')||{}).value) || 0;
+  var fZakrolEl = document.getElementById('f-zakrol');
+  var zakrol = 0;
+  if(orderZakrolEl && parseFloat(orderZakrolEl.value) > 0) {
+    zakrol = parseFloat(orderZakrolEl.value);
+  } else if(fZakrolEl && parseFloat(fZakrolEl.value) > 0) {
+    zakrol = parseFloat(fZakrolEl.value);
+  }
   var breedte   = parseFloat((document.getElementById('f-breedte')||{}).value) || 0;
   var lengte    = parseFloat((document.getElementById('f-lengte')||{}).value) || 0;
   var dikte     = parseFloat((document.getElementById('f-dikte')||{}).value) || 0;
@@ -1935,7 +1943,7 @@ function berekenOrder() {
   var rollenPerPallet = 1;
 
   // Max stapelhoogte: standaard onbeperkt, met knop = 1050mm (1200-150 pallet)
-  var maxStapelHoogte = _maxHoogte ? 1050 : 9999;
+  var maxStapelHoogte = _maxHoogte ? 1050 : 1450; // 1200-150 of 1600-150
 
   if(staand) {
     // Staand: rollen rechtop, 22 per pallet (praktijk)
@@ -2126,7 +2134,9 @@ function invulOk() {
   // Sync f-zakrol hidden field met f-order-zakrol
   if(_invulEl && _invulEl.id === 'f-order-zakrol') {
     var fzr = document.getElementById('f-zakrol');
-    if(fzr) fzr.value = _invulWaarde;
+    if(fzr) { fzr.value = _invulWaarde; }
+    // Ook herbereken zodat sealtijd etc bijwerkt
+    herbereken();
   }
   // Herbereken bij zakmaat velden
   if(_invulEl && ['f-breedte','f-lengte','f-dikte','f-koker'].indexOf(_invulEl.id) >= 0) {
@@ -2144,51 +2154,34 @@ function initSwipe(el, key) {
 
   var ts=0, te=0, tx=0, ty=0, ex=0, ey=0, live=false;
 
-  el.addEventListener('touchstart', function(e) {
-    ts = Date.now();
-    tx = e.changedTouches[0].pageX;
-    ty = e.changedTouches[0].pageY;
+  c.addEventListener('touchstart', function(e) {
+    tx = e.touches[0].clientX;
+    ty = e.touches[0].clientY;
     live = true;
     c.style.transition = 'none';
   }, {passive:true});
 
-  el.addEventListener('touchmove', function(e) {
+  c.addEventListener('touchmove', function(e) {
     if(!live) return;
-    ex = e.changedTouches[0].pageX;
-    ey = e.changedTouches[0].pageY;
-    var dx = ex - tx;
-    var dy = ey - ty;
-    // Als verticaal scrollen → annuleer swipe
-    if(Math.abs(dy) > Math.abs(dx) + 10) { live = false; c.style.transform=''; return; }
-    // Horizontaal bewegen
+    var dx = e.touches[0].clientX - tx;
+    var dy = e.touches[0].clientY - ty;
+    if(Math.abs(dy) > Math.abs(dx) + 8) { live = false; c.style.transform='translateX(0)'; return; }
+    e.preventDefault && e.preventDefault();
     var clamped = Math.max(-85, Math.min(85, dx));
     c.style.transform = 'translateX('+clamped+'px)';
-  }, {passive:true});
+  }, {passive:false});
 
-  el.addEventListener('touchend', function(e) {
+  c.addEventListener('touchend', function(e) {
     if(!live) return;
     live = false;
-    te = Date.now();
-    var dx = e.changedTouches[0].pageX - tx;
+    var dx = e.changedTouches[0].clientX - tx;
     c.style.transition = 'transform 0.25s ease';
-
     if(dx < -50) {
-      // Links = verwijderen (rood)
       c.style.transform = 'translateX(-85px)';
-      setTimeout(function() {
-        c.style.transition = '';
-        c.style.transform = '';
-        window._delKey = key;
-        verwijderRecept(null, key);
-      }, 350);
+      setTimeout(function() { c.style.transition=''; c.style.transform=''; window._delKey=key; verwijderRecept(null,key); }, 350);
     } else if(dx > 50) {
-      // Rechts = bewerken (oranje)
       c.style.transform = 'translateX(85px)';
-      setTimeout(function() {
-        c.style.transition = '';
-        c.style.transform = '';
-        bewerkRecept(key);
-      }, 300);
+      setTimeout(function() { c.style.transition=''; c.style.transform=''; bewerkRecept(key); }, 300);
     } else {
       c.style.transform = 'translateX(0)';
     }
@@ -2586,7 +2579,7 @@ function toggleFlowProb(id) {
 }
 
 
-var APP_VERSION = '9.5';
+var APP_VERSION = '9.7';
 
 function checkVersie() {
   fetch('version.json?t=' + Date.now())
