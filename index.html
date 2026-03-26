@@ -222,7 +222,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
     <button onclick="terugNaarStap1()" style="width:100%;background:transparent;border:1px solid #1a2540;border-radius:4px;color:#6b7280;font-family:'Courier New',Courier,monospace;font-size:13px;padding:10px;cursor:pointer;margin-top:10px;">&#8249; Terug</button>
   </div>
 
-  <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v9.3 &#8212; 2026-03-26</div>
+  <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v9.4 &#8212; 2026-03-26</div>
 </div>
 ```
 
@@ -403,7 +403,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 <div class="form-card">
   <div class="form-card-title">Klant & Product</div>
   <div class="grid2" style="position:relative;">
-    <div class="field"><label>Klantnummer</label><input id="f-klantnr" type="text" placeholder="bv. 1001" class="veld-leeg" onclick="openInvul(this)" readonly style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;cursor:pointer;"></div>
+    <div class="field"><label>Klantnummer</label><input id="f-klantnr" type="text" placeholder="bv. 1001" class="veld-leeg" onclick="openInvul(this)" readonly inputmode="none" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;cursor:pointer;"></div>
     <div class="field"><label>Klantnaam</label>
       <input id="f-klantnaam" type="text" placeholder="bv. ACME BV" class="veld-leeg"
         autocomplete="off"
@@ -451,14 +451,14 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 <div class="form-card">
   <div class="form-card-title">Zakmaat & Berekening</div>
   <div class="grid3">
-    <div class="field"><label>Breedte (mm)</label><input id="f-breedte" type="number" placeholder="400" onclick="openInvul(this)" readonly class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;cursor:pointer;"></div>
-    <div class="field"><label>Lengte (mm)</label><input id="f-lengte" type="number" placeholder="600" onclick="openInvul(this)" readonly class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;cursor:pointer;"></div>
-    <div class="field"><label>Dikte (mm)</label><input id="f-dikte" type="number" placeholder="0.03" onclick="openInvul(this)" readonly class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;cursor:pointer;"></div>
+    <div class="field"><label>Breedte (mm)</label><input id="f-breedte" type="number" placeholder="400" onclick="openInvul(this)" readonly inputmode="none" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;cursor:pointer;"></div>
+    <div class="field"><label>Lengte (mm)</label><input id="f-lengte" type="number" placeholder="600" onclick="openInvul(this)" readonly inputmode="none" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;cursor:pointer;"></div>
+    <div class="field"><label>Dikte (mm)</label><input id="f-dikte" type="number" placeholder="0.03" onclick="openInvul(this)" readonly inputmode="none" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;cursor:pointer;"></div>
   </div>
   <div class="grid2">
     <div class="field">
       <label>Koker dia (mm)</label>
-      <input id="f-koker" type="number" placeholder="90" value="90" class="veld-definitief" onclick="openInvul(this)" readonly style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;cursor:pointer;">
+      <input id="f-koker" type="number" placeholder="90" value="90" class="veld-definitief" onclick="openInvul(this)" readonly inputmode="none" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;cursor:pointer;">
     </div>
   </div>
 
@@ -1409,19 +1409,23 @@ function renderReceptenTree(lijst, query, openAll) {
     for(var ri=0;ri<groepen[klant].length;ri++){
       var rec=groepen[klant][ri];
       var mat=MATERIALEN[rec.materiaal];
-      items+='<div class="tree-item" onclick="window._detailKey=\''+rec._key+'\';openDetail(window._detailKey)">' +
-        '<div class="tree-item-inner">' +
-          '<div class="tree-connector"></div>' +
-          '<div class="tree-content">' +
-            '<div class="tree-name">'+(rec.prodtype||'')+(rec.breedte?' '+rec.breedte+'mm':'')+(rec.lengte?' x '+rec.lengte+'mm':'')+(rec.dikte?' / '+rec.dikte+' mm':'')+'</div>' +
-            '<div class="tree-meta">' +
-              '<span class="tag">'+(rec.versie||'')+'</span>' +
-              '<span class="tag">'+(rec.datum||'')+'</span>' +
-              (mat?'<span class="tag '+(mat.recycle?'tag-rec':'tag-mat')+'">'+mat.label+'</span>':'') +
-              (rec.snelheid?'<span class="tag tag-spd">'+rec.snelheid+' m/min</span>':'') +
+      var rk = rec._key;
+      items+='<div class="swipe-item" id="si-'+rk+'">' +
+        '<div class="swipe-edit" onclick="window._bewerkKey=\''+rk+'\';bewerkRecept(window._bewerkKey)">&#9998;</div>' +
+        '<div class="swipe-del" onclick="window._delKey=\''+rk+'\';verwijderRecept(null,window._delKey)">&#10005;</div>' +
+        '<div class="swipe-content tree-item" onclick="window._detailKey=\''+rk+'\';openDetail(window._detailKey)">' +
+          '<div class="tree-item-inner">' +
+            '<div class="tree-connector"></div>' +
+            '<div class="tree-content">' +
+              '<div class="tree-name">'+(rec.prodtype||'')+(rec.breedte?' '+rec.breedte+'mm':'')+(rec.lengte?' x '+rec.lengte+'mm':'')+(rec.dikte?' / '+rec.dikte+' mm':'')+'</div>' +
+              '<div class="tree-meta">' +
+                '<span class="tag">'+(rec.versie||'')+'</span>' +
+                '<span class="tag">'+(rec.datum||'')+'</span>' +
+                (mat?'<span class="tag '+(mat.recycle?'tag-rec':'tag-mat')+'">'+mat.label+'</span>':'') +
+                (rec.snelheid?'<span class="tag tag-spd">'+rec.snelheid+' m/min</span>':'') +
+              '</div>' +
             '</div>' +
           '</div>' +
-          '<button class="rc-del" onclick="event.stopPropagation();verwijderRecept(this,\''+rec._key+'\')">&#10005;</button>' +
         '</div>' +
       '</div>';
     }
@@ -2507,11 +2511,12 @@ function renderFlow() {
   }
 
   el.innerHTML = html;
-  // Init swipe voor elk item
-  document.querySelectorAll('.swipe-item').forEach(function(item){
-    var key = item.id.replace('si-','');
-    initSwipe(item, key);
-  });
+  // Init swipe
+  var items2 = el.querySelectorAll('.swipe-item');
+  for(var si=0; si<items2.length; si++) {
+    var skey = items2[si].id.replace('si-','');
+    initSwipe(items2[si], skey);
+  }
 }
 
 function toggleFlowStep(i) {
@@ -2528,7 +2533,7 @@ function toggleFlowProb(id) {
 }
 
 
-var APP_VERSION = '9.3';
+var APP_VERSION = '9.4';
 
 function checkVersie() {
   fetch('version.json?t=' + Date.now())
