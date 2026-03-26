@@ -222,7 +222,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
     <button onclick="terugNaarStap1()" style="width:100%;background:transparent;border:1px solid #1a2540;border-radius:4px;color:#6b7280;font-family:'Courier New',Courier,monospace;font-size:13px;padding:10px;cursor:pointer;margin-top:10px;">&#8249; Terug</button>
   </div>
 
-  <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v9.1 &#8212; 2026-03-26</div>
+  <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v9.3 &#8212; 2026-03-26</div>
 </div>
 ```
 
@@ -403,7 +403,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 <div class="form-card">
   <div class="form-card-title">Klant & Product</div>
   <div class="grid2" style="position:relative;">
-    <div class="field"><label>Klantnummer</label><input id="f-klantnr" type="text" placeholder="bv. 1001" class="veld-leeg" oninput="veldIngevuld(this)"></div>
+    <div class="field"><label>Klantnummer</label><input id="f-klantnr" type="text" placeholder="bv. 1001" class="veld-leeg" onclick="openInvul(this)" readonly style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;cursor:pointer;"></div>
     <div class="field"><label>Klantnaam</label>
       <input id="f-klantnaam" type="text" placeholder="bv. ACME BV" class="veld-leeg"
         autocomplete="off"
@@ -451,18 +451,14 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 <div class="form-card">
   <div class="form-card-title">Zakmaat & Berekening</div>
   <div class="grid3">
-    <div class="field"><label>Breedte (mm)</label><input id="f-breedte" type="number" placeholder="400" oninput="herbereken();try{berekenOrder();}catch(e){}" class="veld-leeg"></div>
-    <div class="field"><label>Lengte (mm)</label><input id="f-lengte" type="number" placeholder="600" oninput="herbereken();try{berekenOrder();}catch(e){}" class="veld-leeg"></div>
-    <div class="field"><label>Dikte (mm)</label><input id="f-dikte" type="number" placeholder="0.03" step="0.001" oninput="herbereken();try{berekenOrder();}catch(e){}" class="veld-leeg"></div>
+    <div class="field"><label>Breedte (mm)</label><input id="f-breedte" type="number" placeholder="400" onclick="openInvul(this)" readonly class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;cursor:pointer;"></div>
+    <div class="field"><label>Lengte (mm)</label><input id="f-lengte" type="number" placeholder="600" onclick="openInvul(this)" readonly class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;cursor:pointer;"></div>
+    <div class="field"><label>Dikte (mm)</label><input id="f-dikte" type="number" placeholder="0.03" onclick="openInvul(this)" readonly class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;cursor:pointer;"></div>
   </div>
   <div class="grid2">
     <div class="field">
       <label>Koker dia (mm)</label>
-      <div style="display:flex;gap:8px;align-items:center;">
-        <input id="f-koker" type="number" placeholder="90" class="veld-leeg" oninput="herbereken();this.classList.remove('veld-leeg','veld-benadering');this.classList.add('veld-definitief')" style="flex:1;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:17px;padding:12px 14px;outline:none;">
-        <button onclick="kiesKoker(90)" style="background:#0f1520;border:1px solid #1a2540;border-radius:4px;color:#9ca3af;font-family:'Courier New',Courier,monospace;font-size:13px;padding:10px 14px;cursor:pointer;white-space:nowrap;">90</button>
-        <button onclick="kiesKoker(100)" style="background:#0f1520;border:1px solid #1a2540;border-radius:4px;color:#9ca3af;font-family:'Courier New',Courier,monospace;font-size:13px;padding:10px 14px;cursor:pointer;white-space:nowrap;">100</button>
-      </div>
+      <input id="f-koker" type="number" placeholder="90" value="90" class="veld-definitief" onclick="openInvul(this)" readonly style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;cursor:pointer;">
     </div>
   </div>
 
@@ -1559,7 +1555,7 @@ function openDetail(key) {
 
         // Stapelwijze
         var staandD = breedte <= 500;
-        var maxHD   = r.order_maxhoogte==='1' ? 1050 : 1450;
+        var maxHD   = (r.order_maxhoogte==='1' || r.order_maxhoogte===1 || r.order_maxhoogte===true) ? 1050 : 1450;
         var palletD = {'euro':{b:800,l:1200,naam:'Euro pallet'},'euro-formaat':{b:800,l:1200,naam:'Euro formaat'},'blok':{b:1000,l:1200,naam:'Blokpallet'}}[r.order_pallet]||{b:800,l:1200,naam:'Euro pallet'};
 
         var rpPallet, lagenD;
@@ -2007,6 +2003,10 @@ var _invulWaarde = '';
 
 var INVUL_CONFIG = {
   'f-koker':      {label:'Koker diameter (mm)', snel:[76,90,100,150,200]},
+  'f-klantnr':    {label:'Klantnummer', snel:[]},
+  'f-breedte':    {label:'Breedte (mm)', snel:[200,300,400,470,500,600,800,1000,1200,1600]},
+  'f-lengte':     {label:'Lengte (mm)', snel:[300,400,500,600,800,1000,1200,1500,2000,3000]},
+  'f-dikte':      {label:'Dikte (mm)', snel:[0.02,0.025,0.03,0.04,0.05,0.06,0.08,0.1]},
   'f-seal':       {label:'Sealtijd (ms)', snel:[50,75,100,150,200,500]},
   'f-snelheid':   {label:'Snelheid (m/min)', snel:[80,100,130,150,180,200]},
   'f-zakrol':     {label:'Zakken/rol', snel:[100,150,200,250,500,1000]},
@@ -2092,6 +2092,10 @@ function invulOk() {
     var fzr = document.getElementById('f-zakrol');
     if(fzr) fzr.value = _invulWaarde;
   }
+  // Herbereken bij zakmaat velden
+  if(_invulEl && ['f-breedte','f-lengte','f-dikte','f-koker'].indexOf(_invulEl.id) >= 0) {
+    herbereken();
+  }
   // Altijd berekenOrder aanroepen na invullen
   try { berekenOrder(); } catch(e) {}
 }
@@ -2101,36 +2105,37 @@ function invulOk() {
 function initSwipe(el, key) {
   var c = el.querySelector('.swipe-content');
   if(!c) return;
-  var x0=0, y0=0, dx=0, moved=false;
+  var startX=0, startY=0, dist=0, vertMove=false;
 
-  c.addEventListener('touchstart', function(e){
-    x0 = e.touches[0].pageX;
-    y0 = e.touches[0].pageY;
-    dx = 0; moved = false;
-    c.style.transition = '';
-  }, {passive:true});
-
-  c.addEventListener('touchmove', function(e){
-    dx = e.touches[0].pageX - x0;
-    var dy = e.touches[0].pageY - y0;
-    if(!moved && Math.abs(dy) > Math.abs(dx)) return;
-    moved = true;
-    var t = Math.max(-90, Math.min(90, dx));
-    c.style.transform = 'translateX('+t+'px)';
-  }, {passive:true});
-
-  c.addEventListener('touchend', function(){
-    c.style.transition = 'transform 0.25s';
-    if(dx < -60) {
-      c.style.transform = 'translateX(-90px)';
-      setTimeout(function(){ c.style.transition=''; c.style.transform=''; window._delKey=key; verwijderRecept(null,key); }, 350);
-    } else if(dx > 60) {
-      c.style.transform = 'translateX(90px)';
-      setTimeout(function(){ c.style.transition=''; c.style.transform=''; bewerkRecept(key); }, 300);
+  function onStart(px, py) {
+    startX=px; startY=py; dist=0; vertMove=false;
+    c.style.transition='none';
+  }
+  function onMove(px, py) {
+    var dx=px-startX, dy=py-startY;
+    if(!vertMove && Math.abs(dy)>Math.abs(dx)+5) { vertMove=true; }
+    if(vertMove) return;
+    dist=dx;
+    c.style.transform='translateX('+Math.max(-90,Math.min(90,dx))+'px)';
+  }
+  function onEnd() {
+    if(vertMove) { c.style.transform=''; return; }
+    c.style.transition='transform 0.2s';
+    if(dist < -55) {
+      c.style.transform='translateX(-90px)';
+      setTimeout(function(){ c.style.cssText=''; window._delKey=key; verwijderRecept(null,key); },300);
+    } else if(dist > 55) {
+      c.style.transform='translateX(90px)';
+      setTimeout(function(){ c.style.cssText=''; bewerkRecept(key); },300);
     } else {
-      c.style.transform = 'translateX(0)';
+      c.style.transform='translateX(0)';
     }
-  });
+  }
+
+  // Touch events
+  c.addEventListener('touchstart', function(e){ onStart(e.touches[0].clientX, e.touches[0].clientY); }, {passive:true});
+  c.addEventListener('touchmove',  function(e){ onMove(e.touches[0].clientX, e.touches[0].clientY); }, {passive:true});
+  c.addEventListener('touchend',   onEnd, {passive:true});
 }
 
 // ── PROBLEEMSTELLINGEN ────────────────────────────────────────────────────
@@ -2523,7 +2528,7 @@ function toggleFlowProb(id) {
 }
 
 
-var APP_VERSION = '9.1';
+var APP_VERSION = '9.3';
 
 function checkVersie() {
   fetch('version.json?t=' + Date.now())
