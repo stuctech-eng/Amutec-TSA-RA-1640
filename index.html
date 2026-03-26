@@ -169,6 +169,10 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 .invul-nr:active{background:#f59e0b;color:#000;}
 .invul-ok{width:100%;background:#34d399;color:#000;border:none;border-radius:8px;font-family:'Courier New',Courier,monospace;font-weight:700;font-size:18px;letter-spacing:2px;padding:16px;cursor:pointer;margin-top:4px;}
 .invul-annuleer{width:100%;background:transparent;border:1px solid #1a2540;border-radius:8px;color:#6b7280;font-family:'Courier New',Courier,monospace;font-size:13px;padding:12px;cursor:pointer;margin-top:8px;}
+.swipe-item{position:relative;overflow:hidden;touch-action:pan-y;}
+.swipe-content{position:relative;transition:transform 0.2s ease;background:#0f1520;}
+.swipe-del{position:absolute;right:0;top:0;bottom:0;width:80px;background:#ef4444;display:flex;align-items:center;justify-content:center;color:#fff;font-size:22px;cursor:pointer;}
+.swipe-edit{position:absolute;left:0;top:0;bottom:0;width:80px;background:#f59e0b;display:flex;align-items:center;justify-content:center;color:#000;font-size:22px;cursor:pointer;}
 .stap-btn{width:52px;height:52px;background:#141d2e;border:1px solid #1a2540;border-radius:6px;color:#e5e7eb;font-size:28px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Courier New',Courier,monospace;line-height:1}
 .stap-btn:active{background:#f59e0b;color:#000;border-color:#f59e0b}
 .veld-leeg{background:rgba(245,158,11,0.08)!important;border-color:rgba(245,158,11,0.6)!important;color:#fcd34d!important}
@@ -218,7 +222,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
     <button onclick="terugNaarStap1()" style="width:100%;background:transparent;border:1px solid #1a2540;border-radius:4px;color:#6b7280;font-family:'Courier New',Courier,monospace;font-size:13px;padding:10px;cursor:pointer;margin-top:10px;">&#8249; Terug</button>
   </div>
 
-  <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v8.8 &#8212; 2026-03-13</div>
+  <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v9.0 &#8212; 2026-03-26</div>
 </div>
 ```
 
@@ -367,6 +371,14 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
   </div>
 
   <div class="field">
+    <label>Rollen per pallet (klant vereiste)</label>
+    <input id="f-order-rpp" type="number" placeholder="auto" class="veld-leeg" readonly
+      onclick="openInvul(this)"
+      style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;cursor:pointer;">
+    <div style="font-size:10px;color:#6b7280;margin-top:4px;">Leeg = automatisch berekend op hoogte</div>
+  </div>
+
+  <div class="field">
     <label>Gewicht per 100 meter (kg)</label>
     <input id="f-gew100m" type="number" placeholder="auto" class="veld-leeg" readonly
       onclick="openInvul(this)"
@@ -375,7 +387,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
   </div>
 
   <div class="field">
-    <label>Huidjes lengte override (mm) — leeg = automatisch</label>
+    <label>Huidjes lengte override (mm) -- leeg = automatisch</label>
     <input id="f-huidje" type="number" placeholder="0" value="0" class="veld-leeg" readonly
       onclick="openInvul(this)"
       style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:20px;padding:14px;outline:none;text-align:center;cursor:pointer;">
@@ -505,7 +517,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 
 <div class="form-card" style="border-top-color:#60a5fa;">
   <div class="form-card-title" style="color:#60a5fa;">Werkelijke Offset (leerdata)</div>
-  <div style="font-size:11px;color:#9ca3af;margin-bottom:12px;line-height:1.6;">Blauw = berekende schatting. Vul de werkelijke offset in die op de machine werkte — dan wordt hij groen en leert de app ervan.</div>
+  <div style="font-size:11px;color:#9ca3af;margin-bottom:12px;line-height:1.6;">Blauw = berekende schatting. Vul de werkelijke offset in die op de machine werkte -- dan wordt hij groen en leert de app ervan.</div>
   <div class="field">
     <label>Werkelijke Offset 1</label>
     <div style="display:flex;align-items:center;gap:8px;">
@@ -521,7 +533,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 </div>
 
 <button class="btn btn-amber" onclick="slaOp()">Opslaan</button>
-<button class="btn btn-ghost" onclick="resetForm()">Annuleer</button>
+<button class="btn btn-ghost" onclick="resetForm();go('s-recepten')">Annuleer</button>
 <div style="height:20px;"></div>
 ```
 
@@ -638,7 +650,7 @@ var OFFSET_DATA = [
 ];
 
 // ── MECHANISCHE CONSTANTEN ───────────────────────────────────────────────
-var MECH_BASIS = 10290; // mm (seal→perforatie 10mm + perforatie→hart koker 10280mm)
+var MECH_BASIS = 10280; // mm (seal→perforatie 10mm + perforatie→hart koker 10280mm)
 
 function interpoleerOffset(dataset, lengte) {
   var sorted = dataset.slice().sort(function(a,b){return a.lengte-b.lengte;});
@@ -675,7 +687,7 @@ function berekenOffset(lengte) {
   // Stap 1: formule gebaseerd op mechanische afstand
   var formuleOffset = berekenFormuleOffset(lengte);
 
-  // Stap 2: leerdata correctie — gemiddeld verschil tussen formule en werkelijkheid
+  // Stap 2: leerdata correctie -- gemiddeld verschil tussen formule en werkelijkheid
   if(window._leerdataOffset && window._leerdataOffset.length >= 3) {
     // Bereken gemiddelde afwijking van de formule op basis van leerdata
     var afwijkingen = [];
@@ -684,7 +696,7 @@ function berekenOffset(lengte) {
       var formuleVoorLd = berekenFormuleOffset(ld.lengte);
       afwijkingen.push(ld.offset - formuleVoorLd);
     }
-    // Gewogen gemiddelde — dichtstbijzijnde leerdata punten wegen zwaarder
+    // Gewogen gemiddelde -- dichtstbijzijnde leerdata punten wegen zwaarder
     var gewogenSom = 0, gewichtTotaal = 0;
     for(var j=0;j<window._leerdataOffset.length;j++){
       var ld2 = window._leerdataOffset[j];
@@ -856,7 +868,21 @@ function go(id) {
   if(id==='s-recepten') laadRecepten();
   if(id==='s-flow') renderFlow();
   if(id==='s-calculator') laadLeerdataOffset();
-  if(id==='s-nieuw' && !editKey) vulOperatorIn();
+  if(id==='s-nieuw' && !editKey) {
+    vulOperatorIn();
+    // Lege order bij nieuw recept
+    var ozr=document.getElementById('f-order-zakrol'); if(ozr){ozr.value='';ozr.classList.remove('veld-definitief');ozr.classList.add('veld-leeg');}
+    var ost=document.getElementById('f-order-stuks'); if(ost){ost.value='';ost.classList.remove('veld-definitief');ost.classList.add('veld-leeg');}
+    var ogh=document.getElementById('f-gew100m'); if(ogh){ogh.value='';ogh.placeholder='auto';}
+    var orpp=document.getElementById('f-order-rpp'); if(orpp){orpp.value='';orpp.classList.remove('veld-definitief');orpp.classList.add('veld-leeg');}
+    _maxHoogte=false;
+    var mhBtn=document.getElementById('btn-maxhoogte');
+    var mhIcon=document.getElementById('maxhoogte-icon');
+    if(mhBtn){mhBtn.style.borderColor='#1a2540';mhBtn.style.background='#141d2e';mhBtn.style.color='#9ca3af';}
+    if(mhIcon)mhIcon.textContent='☐';
+    _gekozenPallet='euro'; try{kiesPallet('euro');}catch(e){}
+    var orderEl=document.getElementById('order-resultaten'); if(orderEl) orderEl.style.display='none';
+  }
 }
 
 function toast(msg, err) {
@@ -948,7 +974,7 @@ function updateHomeOperator() {
   var el = document.getElementById('home-operator');
   if(!el || !_huidigeOperator) return;
   var isAdm = OPERATORS_CONFIG[_huidigeOperator] && OPERATORS_CONFIG[_huidigeOperator].admin;
-  el.textContent = _huidigeOperator + (isAdm ? ' — ADMIN' : '');
+  el.textContent = _huidigeOperator + (isAdm ? ' -- ADMIN' : '');
   el.style.color = isAdm ? '#f59e0b' : '#34d399';
 }
 
@@ -1059,7 +1085,7 @@ function stapVeld(id, stap) {
   el.classList.remove('veld-benadering','veld-leeg');
   el.classList.add('veld-definitief');
   el.readOnly = true;
-  // Temp-input heeft eigen styling — forceer groen via inline style
+  // Temp-input heeft eigen styling -- forceer groen via inline style
   if(id === 'f-temp-boven' || id === 'f-temp-onder') {
     el.style.borderBottom = '2px solid #34d399';
     el.style.color = '#6ee7b7';
@@ -1277,7 +1303,8 @@ function slaOp() {
     order_pallet:_gekozenPallet||'euro',
     order_huidje:document.getElementById('f-huidje').value||'',
     order_gew100m:document.getElementById('f-gew100m') ? document.getElementById('f-gew100m').value||'' : '',
-    order_maxhoogte:_maxHoogte ? '1' : '0'
+    order_maxhoogte:_maxHoogte ? '1' : '0',
+    order_rpp:document.getElementById('f-order-rpp') ? document.getElementById('f-order-rpp').value||'' : ''
   };
   toast('Opslaan...');
   if(editKey){
@@ -1290,6 +1317,7 @@ function slaOp() {
 function resetForm() {
   var ids=['f-klantnr','f-klantnaam','f-versie','f-breedte','f-lengte','f-dikte','f-koker','f-seal','f-snelheid','f-zakmin','f-zakrol','f-static-mat','f-drukker','f-temp-boven','f-temp-onder','f-notities','f-offset1','f-order-stuks'];
   document.getElementById('order-resultaten') && (document.getElementById('order-resultaten').style.display='none');
+  var orppReset=document.getElementById('f-order-rpp'); if(orppReset){orppReset.value='';orppReset.classList.remove('veld-definitief');orppReset.classList.add('veld-leeg');}
   var ozrReset=document.getElementById('f-order-zakrol'); if(ozrReset){ozrReset.value='';ozrReset.classList.remove('veld-definitief');ozrReset.classList.add('veld-leeg');}
   var gew100mReset=document.getElementById('f-gew100m'); if(gew100mReset){gew100mReset.value='';gew100mReset.classList.remove('veld-definitief');gew100mReset.classList.add('veld-leeg');}
   if(_maxHoogte){ _maxHoogte=false; var mhBtn=document.getElementById('btn-maxhoogte'); var mhIcon=document.getElementById('maxhoogte-icon'); if(mhBtn){mhBtn.style.borderColor='#1a2540';mhBtn.style.background='#141d2e';mhBtn.style.color='#9ca3af';} if(mhIcon)mhIcon.textContent='☐'; }
@@ -1495,34 +1523,88 @@ function openDetail(key) {
       '</div>'+
       (r.notities?'<div class="slabel">Notities</div><div class="info-block"><div style="padding:12px 14px;font-size:13px;color:#9ca3af;line-height:1.6;">'+r.notities+'</div></div>':'')+
       (function(){
-        if(!r.order_stuks) return '';
-        // Herbereken order voor detail
-        var stuks = parseFloat(r.order_stuks)||0; // direct aantal stuks
-        var zakrol = parseFloat(r.zakrol)||0;
-        var sv = SOORTELIJK_GEWICHT[r.materiaal]||920;
-        var rolLengte = zakrol * (parseFloat(r.lengte)||0) / 1000;
-        var vol = (parseFloat(r.breedte)||0)/1000 * rolLengte * (parseFloat(r.dikte)||0)/1000 * 2;
-        var gwRol = Math.round(vol * sv * 10)/10;
-        var rollen = Math.ceil(stuks/zakrol);
-        var palletNaam = {'euro':'Euro pallet','euro-formaat':'Euro formaat','blok':'Blokpallet'}[r.order_pallet]||'Euro pallet';
-        var pallet2 = {'euro':{b:800},'euro-formaat':{b:800},'blok':{b:1000}}[r.order_pallet]||{b:800};
-        var rpPallet = Math.max(1,Math.floor(500/gwRol));
-        var pallets = Math.ceil(rollen/rpPallet);
-        var huidje = parseFloat(r.order_huidje)||0;
-        var koker = parseFloat(r.koker)||90;
-        var rolD = Math.round(Math.sqrt((koker/2)*(koker/2)+(zakrol*(parseFloat(r.dikte)||0)*(parseFloat(r.lengte)||0)*2)/Math.PI)*2);
-        var huidjesRol = huidje>0 ? Math.ceil(rolD/huidje*1000) : 0;
-        return '<div class="slabel">Order Berekening</div>'+
-          '<div class="info-block">'+
-            '<div class="info-row"><div class="ir-lbl">TE LEVEREN</div><div class="ir-val">'+stuks.toLocaleString()+' st</div></div>'+
-            '<div class="info-row"><div class="ir-lbl">AANTAL ROLLEN</div><div class="ir-val" style="color:#a78bfa;">'+rollen+'</div></div>'+
-            '<div class="info-row"><div class="ir-lbl">GEWICHT PER ROL</div><div class="ir-val" style="color:#60a5fa;">'+gwRol+' kg</div></div>'+
-            '<div class="info-row"><div class="ir-lbl">TOTAAL GEWICHT</div><div class="ir-val" style="color:#60a5fa;">'+(rollen*gwRol).toFixed(0)+' kg</div></div>'+
-            '<div class="info-row"><div class="ir-lbl">PALLET TYPE</div><div class="ir-val">'+palletNaam+'</div></div>'+
-            '<div class="info-row"><div class="ir-lbl">ROLLEN PER PALLET</div><div class="ir-val" style="color:#f59e0b;">'+rpPallet+'</div></div>'+
-            '<div class="info-row"><div class="ir-lbl">AANTAL PALLETS</div><div class="ir-val" style="color:#f59e0b;">'+pallets+'</div></div>'+
-            '<div class="info-row"><div class="ir-lbl">HUIDJE LENGTE</div><div class="ir-val">'+(Math.round((Math.floor(pallet2.b/(rolD+10)))*(rolD+10)+200))+' mm</div></div>'+
-          '</div>';
+        if(!r.order_stuks && !r.order_zakrol) return '';
+        var stuks    = parseFloat(r.order_stuks)||0;
+        var zakrol   = parseFloat(r.order_zakrol||r.zakrol)||0;
+        var breedte  = parseFloat(r.breedte)||0;
+        var lengte   = parseFloat(r.lengte)||0;
+        var dikte    = parseFloat(r.dikte)||0;
+        var koker    = parseFloat(r.koker)||90;
+        var sv       = SOORTELIJK_GEWICHT[r.materiaal]||920;
+        if(!zakrol || !breedte || !lengte || !dikte) return '';
+
+        // Roldiameter
+        var rolD = Math.round(Math.sqrt((koker/2)*(koker/2)+(zakrol*lengte*dikte*2)/Math.PI)*2);
+
+        // Gewicht per rol
+        var gew100m = parseFloat(r.order_gew100m)||0;
+        var rolLengte = zakrol * lengte / 1000;
+        var gwRol;
+        if(gew100m > 0) {
+          gwRol = Math.round(gew100m * rolLengte / 100 * 10)/10;
+        } else {
+          var vol = (breedte/1000) * rolLengte * (dikte/1000) * 2;
+          gwRol = Math.round(vol * sv * 10)/10;
+        }
+
+        // Stapelwijze
+        var staandD = breedte <= 500;
+        var maxHD   = r.order_maxhoogte==='1' ? 1050 : 1450;
+        var palletD = {'euro':{b:800,l:1200,naam:'Euro pallet'},'euro-formaat':{b:800,l:1200,naam:'Euro formaat'},'blok':{b:1000,l:1200,naam:'Blokpallet'}}[r.order_pallet]||{b:800,l:1200,naam:'Euro pallet'};
+
+        var rpPallet, lagenD;
+        if(staandD) {
+          lagenD   = Math.max(1, Math.floor(maxHD / lengte));
+          var rijB = Math.max(1, Math.floor(palletD.b / rolD));
+          var rijL = Math.max(1, Math.floor(palletD.l / rolD));
+          rpPallet = Math.max(1, rijB * rijL * lagenD);
+        } else {
+          lagenD   = Math.max(1, Math.floor(maxHD / rolD));
+          var rijBL = Math.max(1, Math.floor(palletD.b / rolD));
+          rpPallet = Math.max(1, rijBL * lagenD);
+        }
+
+        // Klant vereiste overschrijft
+        var rppKlantD = parseFloat(r.order_rpp)||0;
+        if(rppKlantD > 0) rpPallet = rppKlantD;
+
+        // Rollen en pallets
+        var rollen = stuks > 0 ? Math.ceil(stuks/zakrol) : 0;
+        var vollePallets = rollen > 0 ? Math.floor(rollen/rpPallet) : 0;
+        var restD = rollen > 0 ? rollen % rpPallet : 0;
+        var losD = (restD > 0 && restD <= 4) ? restD : 0;
+        var pallets = rollen > 0 ? (losD > 0 ? vollePallets : Math.ceil(rollen/rpPallet)) : 0;
+
+        // Huidjes
+        var huidjeLenD = 0, aantalHuidjesD = 0;
+        if(!staandD && lagenD > 1) {
+          var hRuw = 4 * rolD + 130;
+          var hMaten = [700,750,800,850,900,950,1000,1050,1100,1150,1200,1250,1300,1350,1400];
+          huidjeLenD = hMaten[hMaten.length-1];
+          for(var hi=0;hi<hMaten.length;hi++){ if(hMaten[hi]>=hRuw){huidjeLenD=hMaten[hi];break;} }
+          aantalHuidjesD = Math.ceil(rollen/11) * (pallets||1);
+        }
+
+        var html2 = '<div class="slabel">Order Berekening</div><div class="info-block">';
+        if(stuks>0) html2 += '<div class="info-row"><div class="ir-lbl">TE LEVEREN</div><div class="ir-val">'+stuks.toLocaleString()+' st</div></div>';
+        if(rollen>0) html2 += '<div class="info-row"><div class="ir-lbl">AANTAL ROLLEN</div><div class="ir-val" style="color:#a78bfa;">'+rollen+'</div></div>';
+        html2 += '<div class="info-row"><div class="ir-lbl">GEWICHT PER ROL</div><div class="ir-val" style="color:#60a5fa;">'+gwRol+' kg</div></div>';
+        if(rollen>0) html2 += '<div class="info-row"><div class="ir-lbl">TOTAAL GEWICHT</div><div class="ir-val" style="color:#60a5fa;">'+(rollen*gwRol).toFixed(0)+' kg</div></div>';
+        html2 += '<div class="info-row"><div class="ir-lbl">STAPELWIJZE</div><div class="ir-val">'+(staandD?'Staand':'Liggend')+' · '+lagenD+' laag/lagen</div></div>';
+        html2 += '<div class="info-row"><div class="ir-lbl">PALLET</div><div class="ir-val">'+palletD.naam+'</div></div>';
+        html2 += '<div class="info-row"><div class="ir-lbl">ROLLEN PER PALLET</div><div class="ir-val" style="color:#f59e0b;">'+rpPallet+(rppKlantD>0?' (klant)':'')+'</div></div>';
+        if(pallets>0) {
+          html2 += '<div class="info-row"><div class="ir-lbl">AANTAL PALLETS</div><div class="ir-val" style="color:#f59e0b;">'+pallets+'</div></div>';
+          if(losD>0) html2 += '<div class="info-row"><div class="ir-lbl">LOS OP PALLET</div><div class="ir-val" style="color:#9ca3af;">'+losD+' rol</div></div>';
+        }
+        if(!staandD && lagenD>1) {
+          html2 += '<div class="info-row"><div class="ir-lbl">HUIDJE LENGTE</div><div class="ir-val">'+huidjeLenD+' mm</div></div>';
+          if(rollen>0) html2 += '<div class="info-row"><div class="ir-lbl">AANTAL HUIDJES</div><div class="ir-val">'+aantalHuidjesD+' st</div></div>';
+        } else {
+          html2 += '<div class="info-row"><div class="ir-lbl">HUIDJES</div><div class="ir-val" style="color:#6b7280;">Niet nodig</div></div>';
+        }
+        html2 += '</div>';
+        return html2;
       })()+
       '<button class="btn btn-amber" style="margin-top:8px;" onclick="window._bewerkKey=\''+key+'\';bewerkRecept(window._bewerkKey)">Bewerken</button>';
     go('s-detail');
@@ -1604,6 +1686,10 @@ function bewerkRecept(key) {
     var ntEl2=document.getElementById('nieuw-title'); if(ntEl2) ntEl2.textContent='Recept Bewerken';
     go('s-nieuw');
     // Max hoogte herstellen
+    if(r.order_rpp) {
+      var orppEl = document.getElementById('f-order-rpp');
+      if(orppEl) { orppEl.value = r.order_rpp; orppEl.classList.remove('veld-leeg'); orppEl.classList.add('veld-definitief'); }
+    }
     if(r.order_maxhoogte === '1') {
       _maxHoogte = false; // reset eerst
       toggleMaxHoogte();
@@ -1763,7 +1849,7 @@ function berekenOrder() {
   var rolDiameter = Math.round(rolRadius * 2);
 
   // Stapelwijze bepalen op basis van zakbreedte
-  var staand = breedte <= 470; // <= 470mm = staand
+  var staand = breedte <= 500; // <= 500mm = staand
 
   var rollenPerPalletGewicht = Math.max(1, Math.floor(MAX_PALLET_KG / (gewichtPerRol || 1)));
   var rollenPerRijCalc = 1;
@@ -1793,13 +1879,17 @@ function berekenOrder() {
   }
 
   // Afronden: probeer pallets te besparen met +1 rol
+  // Klant vereiste rollen per pallet overschrijft berekening
+  var rppEl = document.getElementById('f-order-rpp');
+  var rppKlant = rppEl ? parseFloat(rppEl.value) : 0;
+  if(rppKlant > 0) rollenPerPallet = rppKlant;
+
   var aantalPallets = 0;
   var losseRollen = 0;
   if(aantalRollen > 0) {
     var vollePallets = Math.floor(aantalRollen / rollenPerPallet);
     var restRollen = aantalRollen % rollenPerPallet;
     if(restRollen > 0 && restRollen <= 4) {
-      // Losse rollen - geen extra pallet
       aantalPallets = vollePallets;
       losseRollen = restRollen;
     } else {
@@ -1855,11 +1945,11 @@ function berekenOrder() {
     rij('&#128221;','Folie verbruik (meters)', Math.round(totaleFolieMeter)+' m', '#34d399');
 
   if(!staand) {
-    html += rij('&#128462;','Huidje (om bovenste 4 van 4+3+4) — 200mm breed', huidjeLengte+' mm lang', '#9ca3af') +
+    html += rij('&#128462;','Huidje (om bovenste 4 van 4+3+4) -- 200mm breed', huidjeLengte+' mm lang', '#9ca3af') +
             rij('&#128462;','Aantal huidjes nodig', aantalHuidjes+' st', '#9ca3af') +
             rij('&#128462;','Totaal folie huidjes', huidjesTotaalM+' m', '#9ca3af');
   } else {
-    html += rij('&#128462;','Huidjes', 'Niet nodig — staand gestapeld', '#6b7280');
+    html += rij('&#128462;','Huidjes', 'Niet nodig -- staand gestapeld', '#6b7280');
   }
 
   // Roldiameter info
@@ -1884,6 +1974,7 @@ var INVUL_CONFIG = {
   'f-offset1':    {label:'Werkelijke Offset 1', snel:[]},
   'f-static-mat': {label:'Material to be charged (mm)', snel:[10000,20000,30000,40000]},
   'f-order-stuks':{label:'Te leveren (stuks)', snel:[1000,2000,5000,10000,20000,50000]},
+  'f-order-rpp':  {label:'Rollen per pallet (klant)', snel:[4,6,8,10,12,15,20,24]},
   'f-order-zakrol':{label:'Zakken op rol', snel:[100,150,200,250,500,750,1000]},
   'f-huidje':     {label:'Huidjes lengte (mm)', snel:[500,800,1000,1200,1500]},
   'f-gew100m':    {label:'Gewicht per 100 meter (kg)', snel:[1,2,3,5,8,10,15,20]}
@@ -1962,6 +2053,56 @@ function invulOk() {
   }
   // Altijd berekenOrder aanroepen na invullen
   try { berekenOrder(); } catch(e) {}
+}
+
+
+// ── SWIPE ACTIES ──────────────────────────────────────────────────────────
+function initSwipe(el, key) {
+  var startX = 0, startY = 0, curX = 0, swiping = false, dir = 0;
+  var content = el.querySelector('.swipe-content');
+  if(!content) return;
+
+  el.addEventListener('touchstart', function(e){
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+    curX = 0; swiping = true; dir = 0;
+    content.style.transition = 'none';
+  }, {passive:true});
+
+  el.addEventListener('touchmove', function(e){
+    if(!swiping) return;
+    var dx = e.touches[0].clientX - startX;
+    var dy = e.touches[0].clientY - startY;
+    if(Math.abs(dy) > Math.abs(dx) && curX === 0) { swiping = false; return; }
+    curX = dx;
+    dir = dx > 0 ? 1 : -1;
+    var clamped = Math.max(-80, Math.min(80, dx));
+    content.style.transform = 'translateX(' + clamped + 'px)';
+  }, {passive:true});
+
+  el.addEventListener('touchend', function(){
+    if(!swiping) return;
+    content.style.transition = 'transform 0.2s ease';
+    if(curX < -50) {
+      // Swipe links = verwijderen
+      content.style.transform = 'translateX(-80px)';
+      setTimeout(function(){
+        content.style.transform = 'translateX(0)';
+        window._delKey = key;
+        verwijderRecept(null, key);
+      }, 400);
+    } else if(curX > 50) {
+      // Swipe rechts = bewerken
+      content.style.transform = 'translateX(80px)';
+      setTimeout(function(){
+        content.style.transform = 'translateX(0)';
+        bewerkRecept(key);
+      }, 300);
+    } else {
+      content.style.transform = 'translateX(0)';
+    }
+    swiping = false;
+  });
 }
 
 // ── PROBLEEMSTELLINGEN ────────────────────────────────────────────────────
@@ -2074,13 +2215,13 @@ var PROBLEEMGROEPEN = [
         ]},
       {titel:'Seal is uitgerekt of vervormd',
         oorzaken:[
-          'Folie staat te strak in de neutrale zone — niprollen te los geeft juist méér spanning',
+          'Folie staat te strak in de neutrale zone -- niprollen te los geeft juist méér spanning',
           'Rewinder trekt te hard (te hoog torque/tension)',
           'Koeltijd is te kort',
           'Dancer spanning te hoog ingesteld'
         ],
         oplossingen:[
-          'Niproldruk iets verhogen (bv. 2 naar 2.5–3.5 bar, stappen van 0.3–0.5 bar) — méér grip = minder trekken door rewinder',
+          'Niproldruk iets verhogen (bv. 2 naar 2.5–3.5 bar, stappen van 0.3–0.5 bar) -- méér grip = minder trekken door rewinder',
           'Rewinder torque/tension verlagen met 20–40% (zoek: Rewind Torque of Rewind Tension)',
           'Material Loop max tension lager instellen (naar 100–120%)',
           'Dancer cilinder-druk: 1.5–2 bar (niet op 0)',
@@ -2099,7 +2240,7 @@ var PROBLEEMGROEPEN = [
           'Kp at running instellen op 20–30',
           'Test in kleine stappen van 0.3–0.5 bar'
         ]},
-      {titel:'AVI oplossing — sleep band met gedoseerd gewicht',
+      {titel:'AVI oplossing -- sleep band met gedoseerd gewicht',
         oorzaken:[
           'Foliespanning moeilijk te regelen via machine parameters alleen',
           'Spanning voor de seal unit is onregelmatig'
@@ -2232,14 +2373,14 @@ var PROBLEEMGROEPEN = [
           'Moederrol controleren op kwaliteit',
           'Mes vervangen'
         ]},
-      {titel:'AVI uitsparing — instelling sealbalken',
+      {titel:'AVI uitsparing -- instelling sealbalken',
         oorzaken:[
           'Seal instelling niet aangepast voor uitsparing',
           'Teflon verkeerd of niet geplaatst',
           'Temperatuur boven en onderbalk niet correct voor uitsparing'
         ],
         oplossingen:[
-          'MET invouw: breed teflon op boven én onderbalk — behalve ter hoogte van de uitsparing',
+          'MET invouw: breed teflon op boven én onderbalk -- behalve ter hoogte van de uitsparing',
           'MET invouw: extra smal teflon plakken op de onderbalk bij de uitsparing',
           'MET invouw: temperatuur onderbalk instellen op 145°C',
           'MET invouw: temperatuur bovenbalk instellen op 210°C',
@@ -2333,6 +2474,11 @@ function renderFlow() {
   }
 
   el.innerHTML = html;
+  // Init swipe voor elk item
+  document.querySelectorAll('.swipe-item').forEach(function(item){
+    var key = item.id.replace('si-','');
+    initSwipe(item, key);
+  });
 }
 
 function toggleFlowStep(i) {
@@ -2349,7 +2495,7 @@ function toggleFlowProb(id) {
 }
 
 
-var APP_VERSION = '8.8';
+var APP_VERSION = '9.0';
 
 function checkVersie() {
   fetch('version.json?t=' + Date.now())
