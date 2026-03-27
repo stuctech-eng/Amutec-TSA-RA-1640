@@ -223,7 +223,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
     <button onclick="terugNaarStap1()" style="width:100%;background:transparent;border:1px solid #1a2540;border-radius:4px;color:#6b7280;font-family:'Courier New',Courier,monospace;font-size:13px;padding:10px;cursor:pointer;margin-top:10px;">&#8249; Terug</button>
   </div>
 
-  <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v11.5 &#8212; 2026-03-26</div>
+  <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v11.6 &#8212; 2026-03-26</div>
 </div>
 ```
 
@@ -557,6 +557,124 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 <button class="btn btn-amber" onclick="slaOp()">Opslaan</button>
 <button class="btn btn-ghost" onclick="resetForm();go('s-recepten')">Annuleer</button>
 <div style="height:20px;"></div>
+```
+
+  </div>
+</div>
+
+<!-- PALLET CONFIGURATIE -->
+
+<div class="screen" id="s-palletconfig" style="display:none;">
+  <div class="topbar">
+    <button class="back-btn" onclick="go('s-home')">&#8249;</button>
+    <div class="topbar-title">Pallet Configuratie</div>
+  </div>
+  <div style="padding:16px;max-width:600px;margin:0 auto;padding-bottom:80px;">
+
+```
+<!-- INVOER -->
+<div class="form-card" style="border-top-color:#34d399;">
+  <div class="form-card-title" style="color:#34d399;">&#9881;&#65039; Parameters</div>
+
+  <!-- Pallettype -->
+  <div class="field">
+    <label>Pallet type</label>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <button id="pc-btn-euro" onclick="pcKiesPallet('euro')"
+        style="flex:1;padding:12px;border-radius:6px;border:2px solid #34d399;background:rgba(52,211,153,0.15);color:#34d399;font-family:'Courier New',monospace;font-size:13px;font-weight:700;cursor:pointer;">
+        EURO<br><span style="font-size:11px;color:#9ca3af;">800×1200mm</span>
+      </button>
+      <button id="pc-btn-blok" onclick="pcKiesPallet('blok')"
+        style="flex:1;padding:12px;border-radius:6px;border:2px solid #1a2540;background:#0f1520;color:#9ca3af;font-family:'Courier New',monospace;font-size:13px;font-weight:700;cursor:pointer;">
+        BLOK<br><span style="font-size:11px;color:#6b7280;">1000×1200mm</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Max hoogte -->
+  <div class="field">
+    <label>Max stapelhoogte</label>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <button id="pc-btn-h1700" onclick="pcKiesHoogte(1550)"
+        style="flex:1;padding:12px;border-radius:6px;border:2px solid #34d399;background:rgba(52,211,153,0.15);color:#34d399;font-family:'Courier New',monospace;font-size:13px;font-weight:700;cursor:pointer;">
+        1700mm<br><span style="font-size:11px;color:#9ca3af;">incl. pallet</span>
+      </button>
+      <button id="pc-btn-h1200" onclick="pcKiesHoogte(1050)"
+        style="flex:1;padding:12px;border-radius:6px;border:2px solid #1a2540;background:#0f1520;color:#9ca3af;font-family:'Courier New',monospace;font-size:13px;font-weight:700;cursor:pointer;">
+        1200mm<br><span style="font-size:11px;color:#6b7280;">incl. pallet</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Stapelpatroon -->
+  <div class="field">
+    <label>Stapelpatroon</label>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <button id="pc-pat-auto" onclick="pcKiesPatroon('auto')"
+        style="flex:1;padding:10px;border-radius:6px;border:2px solid #34d399;background:rgba(52,211,153,0.15);color:#34d399;font-family:'Courier New',monospace;font-size:13px;font-weight:700;cursor:pointer;">AUTO</button>
+      <button id="pc-pat-43" onclick="pcKiesPatroon('43')"
+        style="flex:1;padding:10px;border-radius:6px;border:2px solid #1a2540;background:#0f1520;color:#9ca3af;font-family:'Courier New',monospace;font-size:13px;cursor:pointer;">4-3</button>
+      <button id="pc-pat-54" onclick="pcKiesPatroon('54')"
+        style="flex:1;padding:10px;border-radius:6px;border:2px solid #1a2540;background:#0f1520;color:#9ca3af;font-family:'Courier New',monospace;font-size:13px;cursor:pointer;">5-4</button>
+      <button id="pc-pat-65" onclick="pcKiesPatroon('65')"
+        style="flex:1;padding:10px;border-radius:6px;border:2px solid #1a2540;background:#0f1520;color:#9ca3af;font-family:'Courier New',monospace;font-size:13px;cursor:pointer;">6-5</button>
+    </div>
+  </div>
+
+  <!-- Invoervelden -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px;">
+    <div class="field">
+      <label>Roldiameter (mm)</label>
+      <input id="pc-rolD" type="number" placeholder="auto" inputmode="decimal"
+        oninput="pcBereken()"
+        style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:20px;padding:12px;text-align:center;">
+    </div>
+    <div class="field">
+      <label>Zakken op rol</label>
+      <input id="pc-zakrol" type="number" placeholder="250" inputmode="decimal"
+        oninput="pcBereken()"
+        style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:20px;padding:12px;text-align:center;">
+    </div>
+    <div class="field">
+      <label>Zaklengte (mm)</label>
+      <input id="pc-lengte" type="number" placeholder="1900" inputmode="decimal"
+        oninput="pcBereken()"
+        style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:20px;padding:12px;text-align:center;">
+    </div>
+    <div class="field">
+      <label>Folie dikte (mm)</label>
+      <input id="pc-dikte" type="number" placeholder="0.015" inputmode="decimal" step="0.001"
+        oninput="pcBereken()"
+        style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:20px;padding:12px;text-align:center;">
+    </div>
+    <div class="field">
+      <label>Koker (mm)</label>
+      <input id="pc-koker" type="number" placeholder="90" inputmode="decimal"
+        oninput="pcBereken()"
+        style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:20px;padding:12px;text-align:center;">
+    </div>
+    <div class="field">
+      <label>Aantal rollen</label>
+      <input id="pc-rollen" type="number" placeholder="950" inputmode="decimal"
+        oninput="pcBereken()"
+        style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:20px;padding:12px;text-align:center;">
+    </div>
+  </div>
+</div>
+
+<!-- RESULTAAT -->
+<div id="pc-resultaat" style="display:none;">
+  <div class="form-card" style="border-top-color:#f59e0b;">
+    <div class="form-card-title" style="color:#f59e0b;">&#128230; Resultaat</div>
+    <div id="pc-output" style="font-family:'Courier New',monospace;"></div>
+  </div>
+
+  <!-- Visuele stapel -->
+  <div class="form-card" style="border-top-color:#a78bfa;">
+    <div class="form-card-title" style="color:#a78bfa;">&#128064; Stapelvisualisatie</div>
+    <div id="pc-visual" style="text-align:center;font-size:22px;line-height:1.6;letter-spacing:4px;"></div>
+  </div>
+</div>
 ```
 
   </div>
@@ -1233,7 +1351,10 @@ function stapVeld(id, stap) {
 
 function toonAdminFuncties(isAdmin) {
   var gidsBtn = document.getElementById('gids-btn');
-  if(gidsBtn) gidsBtn.style.display = isAdmin ? 'block' : 'none';
+  if(gidsBtn) {
+    gidsBtn.style.display = isAdmin ? 'block' : 'none';
+    gidsBtn.style.visibility = isAdmin ? 'visible' : 'hidden';
+  }
 }
 
 function vulOperatorIn() {
@@ -1930,6 +2051,140 @@ function sluitKlantnamen() {
   if(dd) dd.style.display = 'none';
 }
 
+
+// ── PALLET CONFIGURATIE ───────────────────────────────────────────────────
+var _pcPallet = 'euro';
+var _pcMaxH = 1550;
+var _pcPatroon = 'auto';
+
+function pcKiesPallet(type) {
+  _pcPallet = type;
+  ['euro','blok'].forEach(function(t) {
+    var btn = document.getElementById('pc-btn-'+t);
+    if(!btn) return;
+    if(t === type) {
+      btn.style.borderColor='#34d399'; btn.style.background='rgba(52,211,153,0.15)'; btn.style.color='#34d399';
+    } else {
+      btn.style.borderColor='#1a2540'; btn.style.background='#0f1520'; btn.style.color='#9ca3af';
+    }
+  });
+  pcBereken();
+}
+
+function pcKiesHoogte(h) {
+  _pcMaxH = h;
+  var isH1700 = h === 1550;
+  var b1 = document.getElementById('pc-btn-h1700');
+  var b2 = document.getElementById('pc-btn-h1200');
+  if(b1) { b1.style.borderColor=isH1700?'#34d399':'#1a2540'; b1.style.background=isH1700?'rgba(52,211,153,0.15)':'#0f1520'; b1.style.color=isH1700?'#34d399':'#9ca3af'; }
+  if(b2) { b2.style.borderColor=!isH1700?'#34d399':'#1a2540'; b2.style.background=!isH1700?'rgba(52,211,153,0.15)':'#0f1520'; b2.style.color=!isH1700?'#34d399':'#9ca3af'; }
+  pcBereken();
+}
+
+function pcKiesPatroon(pat) {
+  _pcPatroon = pat;
+  ['auto','43','54','65'].forEach(function(p) {
+    var btn = document.getElementById('pc-pat-'+p);
+    if(!btn) return;
+    if(p === pat) {
+      btn.style.borderColor='#34d399'; btn.style.background='rgba(52,211,153,0.15)'; btn.style.color='#34d399';
+    } else {
+      btn.style.borderColor='#1a2540'; btn.style.background='#0f1520'; btn.style.color='#9ca3af';
+    }
+  });
+  pcBereken();
+}
+
+function pcBereken() {
+  var palletB = _pcPallet === 'blok' ? 1000 : 800;
+  var palletNaam = _pcPallet === 'blok' ? 'Blokpallet 1000mm' : 'Euro pallet 800mm';
+  var maxH = _pcMaxH;
+
+  // Roldiameter: direct ingevuld of berekend
+  var rolDInput = parseFloat(document.getElementById('pc-rolD').value) || 0;
+  var zakrol = parseFloat(document.getElementById('pc-zakrol').value) || 0;
+  var lengte = parseFloat(document.getElementById('pc-lengte').value) || 0;
+  var dikte  = parseFloat(document.getElementById('pc-dikte').value)  || 0;
+  var koker  = parseFloat(document.getElementById('pc-koker').value)  || 90;
+  var aantalRollen = parseFloat(document.getElementById('pc-rollen').value) || 0;
+
+  var rolD = rolDInput;
+  if(!rolD && zakrol && lengte && dikte) {
+    var wf = Math.max(1.0, 2.5 - dikte * 30);
+    rolD = Math.round(Math.sqrt((koker/2)*(koker/2) + (zakrol*lengte*dikte*2*wf)/Math.PI)*2);
+  }
+  if(!rolD) { document.getElementById('pc-resultaat').style.display='none'; return; }
+
+  // Rijen
+  var rijA, rijB;
+  if(_pcPatroon === '43') { rijA=4; rijB=3; }
+  else if(_pcPatroon === '54') { rijA=5; rijB=4; }
+  else if(_pcPatroon === '65') { rijA=6; rijB=5; }
+  else { rijA = Math.max(1, Math.round(palletB / rolD)); rijB = Math.max(1, rijA-1); }
+
+  // Lagen
+  var maxLagen = 1;
+  for(var nl=2; nl<=20; nl++) {
+    if(rolD + (nl-1)*rolD*0.866 <= maxH) maxLagen=nl; else break;
+  }
+  var paren = Math.floor(maxLagen/2);
+  var extra = maxLagen%2;
+  var rpp = paren*(rijA+rijB) + extra*rijA;
+  var stapelHoogte = Math.round(rolD + (maxLagen-1)*rolD*0.866);
+
+  // Pallets
+  var pallets=0, losRollen=0, rppToon=rpp;
+  if(aantalRollen > 0) {
+    var volP = Math.floor(aantalRollen/rpp);
+    var rest = aantalRollen%rpp;
+    if(rest===0) { pallets=volP; }
+    else if(rest<=4) { pallets=volP; losRollen=rest; }
+    else if(volP>0 && rest<=volP) { pallets=volP; rppToon=rpp+1; }
+    else { pallets=volP+1; }
+    if(pallets===0) pallets=1;
+  }
+
+  // Huidjes
+  var huidjeRuw = rijA * rolD + 50;
+  var hMaten=[700,750,800,850,900,950,1000,1050,1100,1150,1200,1250,1300,1350,1400];
+  var huidje = hMaten[hMaten.length-1];
+  for(var hi=0;hi<hMaten.length;hi++){if(hMaten[hi]>=huidjeRuw){huidje=hMaten[hi];break;}}
+  var aantalHuidjes = pallets > 0 ? Math.floor(maxLagen/2)*pallets : 0;
+
+  // Output
+  function rr(lbl, val, kleur) {
+    return '<div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #1a2540;">' +
+      '<div style="color:#9ca3af;font-size:12px;letter-spacing:1px;">'+lbl+'</div>' +
+      '<div style="color:'+(kleur||'#e5e7eb')+';font-size:18px;font-weight:700;">'+val+'</div></div>';
+  }
+
+  var html = rr('PALLET', palletNaam);
+  html += rr('ROLDIAMETER', rolD+'mm', '#60a5fa');
+  html += rr('RIJEN LAAG 1', rijA+' rollen', '#34d399');
+  html += rr('RIJEN LAAG 2', rijB+' rollen', '#34d399');
+  html += rr('PATROON', rijA+'-'+rijB+' (piramide)');
+  html += rr('AANTAL LAGEN', maxLagen+' lagen', '#a78bfa');
+  html += rr('STAPELHOOGTE', stapelHoogte+'mm');
+  html += rr('ROLLEN PER PALLET', rppToon+' rollen', '#f59e0b');
+  if(aantalRollen>0) html += rr('AANTAL PALLETS', pallets+' pallets', '#f59e0b');
+  if(losRollen>0) html += rr('LOS OP PALLET', losRollen+' rollen', '#9ca3af');
+  html += rr('HUIDJE LENGTE', huidje+'mm', '#34d399');
+  if(aantalRollen>0) html += rr('AANTAL HUIDJES', aantalHuidjes+' stuks');
+
+  document.getElementById('pc-output').innerHTML = html;
+
+  // Visuele stapel
+  var visual = '';
+  for(var lag=maxLagen; lag>=1; lag--) {
+    var rij = (lag%2===1) ? rijA : rijB;
+    var kleurL = (lag%2===1) ? '&#128992;' : '&#128994;'; // oranje / groen
+    visual += kleurL.repeat ? kleurL.repeat(rij) : Array(rij+1).join(kleurL);
+    if(lag>1) visual += '<br>';
+  }
+  document.getElementById('pc-visual').innerHTML = visual;
+  document.getElementById('pc-resultaat').style.display = 'block';
+}
+
 // ── SOORTELIJK GEWICHT per materiaal (kg/m³)
 var SOORTELIJK_GEWICHT = {
   'peld':         920,
@@ -2292,6 +2547,140 @@ function invulOk() {
 
 // ── ICOONTJES ACTIES (long press verwijderd) ─────────────────────────────
 function initSwipe(el, key) { /* niet meer gebruikt */ }
+
+
+// ── PALLET CONFIGURATIE ───────────────────────────────────────────────────
+var _pcPallet = 'euro';
+var _pcMaxH = 1550;
+var _pcPatroon = 'auto';
+
+function pcKiesPallet(type) {
+  _pcPallet = type;
+  ['euro','blok'].forEach(function(t) {
+    var btn = document.getElementById('pc-btn-'+t);
+    if(!btn) return;
+    if(t === type) {
+      btn.style.borderColor='#34d399'; btn.style.background='rgba(52,211,153,0.15)'; btn.style.color='#34d399';
+    } else {
+      btn.style.borderColor='#1a2540'; btn.style.background='#0f1520'; btn.style.color='#9ca3af';
+    }
+  });
+  pcBereken();
+}
+
+function pcKiesHoogte(h) {
+  _pcMaxH = h;
+  var isH1700 = h === 1550;
+  var b1 = document.getElementById('pc-btn-h1700');
+  var b2 = document.getElementById('pc-btn-h1200');
+  if(b1) { b1.style.borderColor=isH1700?'#34d399':'#1a2540'; b1.style.background=isH1700?'rgba(52,211,153,0.15)':'#0f1520'; b1.style.color=isH1700?'#34d399':'#9ca3af'; }
+  if(b2) { b2.style.borderColor=!isH1700?'#34d399':'#1a2540'; b2.style.background=!isH1700?'rgba(52,211,153,0.15)':'#0f1520'; b2.style.color=!isH1700?'#34d399':'#9ca3af'; }
+  pcBereken();
+}
+
+function pcKiesPatroon(pat) {
+  _pcPatroon = pat;
+  ['auto','43','54','65'].forEach(function(p) {
+    var btn = document.getElementById('pc-pat-'+p);
+    if(!btn) return;
+    if(p === pat) {
+      btn.style.borderColor='#34d399'; btn.style.background='rgba(52,211,153,0.15)'; btn.style.color='#34d399';
+    } else {
+      btn.style.borderColor='#1a2540'; btn.style.background='#0f1520'; btn.style.color='#9ca3af';
+    }
+  });
+  pcBereken();
+}
+
+function pcBereken() {
+  var palletB = _pcPallet === 'blok' ? 1000 : 800;
+  var palletNaam = _pcPallet === 'blok' ? 'Blokpallet 1000mm' : 'Euro pallet 800mm';
+  var maxH = _pcMaxH;
+
+  // Roldiameter: direct ingevuld of berekend
+  var rolDInput = parseFloat(document.getElementById('pc-rolD').value) || 0;
+  var zakrol = parseFloat(document.getElementById('pc-zakrol').value) || 0;
+  var lengte = parseFloat(document.getElementById('pc-lengte').value) || 0;
+  var dikte  = parseFloat(document.getElementById('pc-dikte').value)  || 0;
+  var koker  = parseFloat(document.getElementById('pc-koker').value)  || 90;
+  var aantalRollen = parseFloat(document.getElementById('pc-rollen').value) || 0;
+
+  var rolD = rolDInput;
+  if(!rolD && zakrol && lengte && dikte) {
+    var wf = Math.max(1.0, 2.5 - dikte * 30);
+    rolD = Math.round(Math.sqrt((koker/2)*(koker/2) + (zakrol*lengte*dikte*2*wf)/Math.PI)*2);
+  }
+  if(!rolD) { document.getElementById('pc-resultaat').style.display='none'; return; }
+
+  // Rijen
+  var rijA, rijB;
+  if(_pcPatroon === '43') { rijA=4; rijB=3; }
+  else if(_pcPatroon === '54') { rijA=5; rijB=4; }
+  else if(_pcPatroon === '65') { rijA=6; rijB=5; }
+  else { rijA = Math.max(1, Math.round(palletB / rolD)); rijB = Math.max(1, rijA-1); }
+
+  // Lagen
+  var maxLagen = 1;
+  for(var nl=2; nl<=20; nl++) {
+    if(rolD + (nl-1)*rolD*0.866 <= maxH) maxLagen=nl; else break;
+  }
+  var paren = Math.floor(maxLagen/2);
+  var extra = maxLagen%2;
+  var rpp = paren*(rijA+rijB) + extra*rijA;
+  var stapelHoogte = Math.round(rolD + (maxLagen-1)*rolD*0.866);
+
+  // Pallets
+  var pallets=0, losRollen=0, rppToon=rpp;
+  if(aantalRollen > 0) {
+    var volP = Math.floor(aantalRollen/rpp);
+    var rest = aantalRollen%rpp;
+    if(rest===0) { pallets=volP; }
+    else if(rest<=4) { pallets=volP; losRollen=rest; }
+    else if(volP>0 && rest<=volP) { pallets=volP; rppToon=rpp+1; }
+    else { pallets=volP+1; }
+    if(pallets===0) pallets=1;
+  }
+
+  // Huidjes
+  var huidjeRuw = rijA * rolD + 50;
+  var hMaten=[700,750,800,850,900,950,1000,1050,1100,1150,1200,1250,1300,1350,1400];
+  var huidje = hMaten[hMaten.length-1];
+  for(var hi=0;hi<hMaten.length;hi++){if(hMaten[hi]>=huidjeRuw){huidje=hMaten[hi];break;}}
+  var aantalHuidjes = pallets > 0 ? Math.floor(maxLagen/2)*pallets : 0;
+
+  // Output
+  function rr(lbl, val, kleur) {
+    return '<div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #1a2540;">' +
+      '<div style="color:#9ca3af;font-size:12px;letter-spacing:1px;">'+lbl+'</div>' +
+      '<div style="color:'+(kleur||'#e5e7eb')+';font-size:18px;font-weight:700;">'+val+'</div></div>';
+  }
+
+  var html = rr('PALLET', palletNaam);
+  html += rr('ROLDIAMETER', rolD+'mm', '#60a5fa');
+  html += rr('RIJEN LAAG 1', rijA+' rollen', '#34d399');
+  html += rr('RIJEN LAAG 2', rijB+' rollen', '#34d399');
+  html += rr('PATROON', rijA+'-'+rijB+' (piramide)');
+  html += rr('AANTAL LAGEN', maxLagen+' lagen', '#a78bfa');
+  html += rr('STAPELHOOGTE', stapelHoogte+'mm');
+  html += rr('ROLLEN PER PALLET', rppToon+' rollen', '#f59e0b');
+  if(aantalRollen>0) html += rr('AANTAL PALLETS', pallets+' pallets', '#f59e0b');
+  if(losRollen>0) html += rr('LOS OP PALLET', losRollen+' rollen', '#9ca3af');
+  html += rr('HUIDJE LENGTE', huidje+'mm', '#34d399');
+  if(aantalRollen>0) html += rr('AANTAL HUIDJES', aantalHuidjes+' stuks');
+
+  document.getElementById('pc-output').innerHTML = html;
+
+  // Visuele stapel
+  var visual = '';
+  for(var lag=maxLagen; lag>=1; lag--) {
+    var rij = (lag%2===1) ? rijA : rijB;
+    var kleurL = (lag%2===1) ? '&#128992;' : '&#128994;'; // oranje / groen
+    visual += kleurL.repeat ? kleurL.repeat(rij) : Array(rij+1).join(kleurL);
+    if(lag>1) visual += '<br>';
+  }
+  document.getElementById('pc-visual').innerHTML = visual;
+  document.getElementById('pc-resultaat').style.display = 'block';
+}
 
 // ── SOORTELIJK GEWICHT per materiaal (kg/m³)
 var SOORTELIJK_GEWICHT = {
@@ -2892,7 +3281,7 @@ function toggleFlowProb(id) {
 }
 
 
-var APP_VERSION = '11.5';
+var APP_VERSION = '11.6';
 
 function checkVersie() {
   fetch('version.json?t=' + Date.now())
