@@ -43,7 +43,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 .tree-header.open .tree-chevron{transform:rotate(90deg);color:#f59e0b}
 .tree-klant{font-weight:700;font-size:16px;letter-spacing:1px;text-transform:uppercase;color:#f59e0b;flex:1}
 .tree-count{font-size:10px;color:#9ca3af}
-.tree-item{background:#0f1520;border:1px solid #1a2540;border-top:none;cursor:pointer}
+.tree-item{background:#0f1520;border:1px solid #1a2540;border-top:none;cursor:pointer;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;}
 .tree-item:last-child{border-radius:0 0 4px 4px}
 .tree-item:active{background:#141d2e}
 .tree-item-inner{display:flex;align-items:center;gap:10px;padding:10px 12px}
@@ -169,8 +169,8 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 .invul-nr:active{background:#f59e0b;color:#000;}
 .invul-ok{width:100%;background:#34d399;color:#000;border:none;border-radius:8px;font-family:'Courier New',Courier,monospace;font-weight:700;font-size:18px;letter-spacing:2px;padding:16px;cursor:pointer;margin-top:4px;}
 .invul-annuleer{width:100%;background:transparent;border:1px solid #1a2540;border-radius:8px;color:#6b7280;font-family:'Courier New',Courier,monospace;font-size:13px;padding:12px;cursor:pointer;margin-top:8px;}
-.swipe-item{position:relative;}
-.swipe-content{position:relative;background:#0f1520;}
+.swipe-item{position:relative;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;}
+.swipe-content{position:relative;background:#0f1520;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;}
 .swipe-del{display:none;}
 .swipe-edit{display:none;}
 .longpress-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:8000;display:none;align-items:flex-end;justify-content:center;}
@@ -229,7 +229,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
     <button onclick="terugNaarStap1()" style="width:100%;background:transparent;border:1px solid #1a2540;border-radius:4px;color:#6b7280;font-family:'Courier New',Courier,monospace;font-size:13px;padding:10px;cursor:pointer;margin-top:10px;">&#8249; Terug</button>
   </div>
 
-  <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v9.9 &#8212; 2026-03-26</div>
+  <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v10.1 &#8212; 2026-03-26</div>
 </div>
 ```
 
@@ -1272,8 +1272,12 @@ function herbereken() {
 
   // Materiaal info
   var infoEl = document.getElementById('mat-info-temp');
-  infoEl.style.display = 'block';
-  infoEl.textContent = mat.label + ' - aanbevolen: ' + (mat.temp_b-8) + '°C - ' + (mat.temp_b+8) + '°C' + (mat.recycle ? ' - Recycle: hogere temp' : '');
+  if(infoEl) {
+    infoEl.style.display = 'block';
+    infoEl.textContent = mat.label + ' - aanbevolen: ' + (mat.temp_b-8) + '°C - ' + (mat.temp_b+8) + '°C' + (mat.recycle ? ' - Recycle: hogere temp' : '');
+  }
+  // Automatisch berekenOrder
+  try { berekenOrder(); } catch(e) {}
 }
 
 function slaOp() {
@@ -2069,7 +2073,7 @@ var INVUL_CONFIG = {
   'f-offset1':    {label:'Werkelijke Offset 1', snel:[]},
   'f-static-mat': {label:'Material to be charged (mm)', snel:[10000,20000,30000,40000]},
   'f-order-stuks':{label:'Te leveren (stuks)', snel:[1000,2000,5000,10000,20000,50000]},
-  'f-order-rpp':  {label:'Rollen per pallet (klant)', snel:[4,6,8,10,12,15,20,24]},
+  'f-order-rpp':  {label:'Rollen per pallet (klant) -- 0 = auto', snel:[0,4,6,8,10,12,15,20,24]},
   'f-werk-rpp':   {label:'Werkelijk rollen per pallet', snel:[4,6,8,10,12,15,20,24,28]},
   'f-werk-huidje':{label:'Werkelijke huidje lengte (mm)', snel:[700,750,800,850,900,950,1000,1050,1100,1200,1250,1300]},
   'f-order-zakrol':{label:'Zakken op rol', snel:[100,150,200,250,500,750,1000]},
@@ -2150,6 +2154,15 @@ function invulOk() {
     // Ook herbereken zodat sealtijd etc bijwerkt
     herbereken();
   }
+  // Als rpp = 0 → reset naar auto
+  if(_invulEl && _invulEl.id === 'f-order-rpp' && (!_invulWaarde || parseFloat(_invulWaarde) <= 0)) {
+    _invulEl.value = '';
+    _invulEl.classList.remove('veld-definitief','veld-benadering');
+    _invulEl.classList.add('veld-leeg');
+    invulSluit();
+    try { berekenOrder(); } catch(e) {}
+    return;
+  }
   // Herbereken bij zakmaat velden
   if(_invulEl && ['f-breedte','f-lengte','f-dikte','f-koker'].indexOf(_invulEl.id) >= 0) {
     herbereken();
@@ -2167,27 +2180,44 @@ var _lpTitel = '';
 function initSwipe(el, key) {
   var c = el.querySelector('.swipe-content');
   if(!c) return;
+  var lpStart = 0, lpFired = false;
 
   c.addEventListener('touchstart', function(e) {
     _lpKey = key;
+    lpFired = false;
+    lpStart = Date.now();
     _lpTimer = setTimeout(function() {
-      // Long press gedetecteerd
+      lpFired = true;
       var titleEl = el.querySelector('.tree-name');
       _lpTitel = titleEl ? titleEl.textContent : 'Recept';
       var ov = document.getElementById('longpress-overlay');
       var tit = document.getElementById('longpress-titel');
       if(tit) tit.textContent = _lpTitel;
-      if(ov) ov.style.display = 'flex';
-    }, 500);
+      if(ov) { ov.style.display = 'flex'; }
+      // Vibreer als beschikbaar
+      if(navigator.vibrate) navigator.vibrate(50);
+    }, 600);
   }, {passive:true});
 
-  c.addEventListener('touchend', function() {
+  c.addEventListener('touchend', function(e) {
     clearTimeout(_lpTimer);
   }, {passive:true});
 
-  c.addEventListener('touchmove', function() {
+  c.addEventListener('touchmove', function(e) {
     clearTimeout(_lpTimer);
   }, {passive:true});
+
+  // Fallback: contextmenu event
+  c.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+    _lpKey = key;
+    var titleEl = el.querySelector('.tree-name');
+    _lpTitel = titleEl ? titleEl.textContent : 'Recept';
+    var ov = document.getElementById('longpress-overlay');
+    var tit = document.getElementById('longpress-titel');
+    if(tit) tit.textContent = _lpTitel;
+    if(ov) ov.style.display = 'flex';
+  });
 }
 
 function sluitLongpress() {
@@ -2480,7 +2510,7 @@ var INVUL_CONFIG = {
   'f-offset1':    {label:'Werkelijke Offset 1', snel:[]},
   'f-static-mat': {label:'Material to be charged (mm)', snel:[10000,20000,30000,40000]},
   'f-order-stuks':{label:'Te leveren (stuks)', snel:[1000,2000,5000,10000,20000,50000]},
-  'f-order-rpp':  {label:'Rollen per pallet (klant)', snel:[4,6,8,10,12,15,20,24]},
+  'f-order-rpp':  {label:'Rollen per pallet (klant) -- 0 = auto', snel:[0,4,6,8,10,12,15,20,24]},
   'f-werk-rpp':   {label:'Werkelijk rollen per pallet', snel:[4,6,8,10,12,15,20,24,28]},
   'f-werk-huidje':{label:'Werkelijke huidje lengte (mm)', snel:[700,750,800,850,900,950,1000,1050,1100,1200,1250,1300]},
   'f-order-zakrol':{label:'Zakken op rol', snel:[100,150,200,250,500,750,1000]},
@@ -2560,6 +2590,15 @@ function invulOk() {
     if(fzr) { fzr.value = _invulWaarde; }
     // Ook herbereken zodat sealtijd etc bijwerkt
     herbereken();
+  }
+  // Als rpp = 0 → reset naar auto
+  if(_invulEl && _invulEl.id === 'f-order-rpp' && (!_invulWaarde || parseFloat(_invulWaarde) <= 0)) {
+    _invulEl.value = '';
+    _invulEl.classList.remove('veld-definitief','veld-benadering');
+    _invulEl.classList.add('veld-leeg');
+    invulSluit();
+    try { berekenOrder(); } catch(e) {}
+    return;
   }
   // Herbereken bij zakmaat velden
   if(_invulEl && ['f-breedte','f-lengte','f-dikte','f-koker'].indexOf(_invulEl.id) >= 0) {
@@ -3002,7 +3041,7 @@ function toggleFlowProb(id) {
 }
 
 
-var APP_VERSION = '9.9';
+var APP_VERSION = '10.1';
 
 function checkVersie() {
   fetch('version.json?t=' + Date.now())
@@ -3025,7 +3064,7 @@ checkLogin();
 
 <!-- LONG PRESS POPUP -->
 
-<div id="longpress-overlay" class="longpress-overlay">
+<div id="longpress-overlay" class="longpress-overlay" onclick="if(event.target===this)sluitLongpress()">
   <div class="longpress-box">
     <div class="longpress-title" id="longpress-titel">Recept</div>
     <button class="longpress-btn longpress-bewerk" onclick="longpressBewerk()">&#9998; Bewerken</button>
