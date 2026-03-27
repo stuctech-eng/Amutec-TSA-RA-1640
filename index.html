@@ -222,7 +222,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
     <button onclick="terugNaarStap1()" style="width:100%;background:transparent;border:1px solid #1a2540;border-radius:4px;color:#6b7280;font-family:'Courier New',Courier,monospace;font-size:13px;padding:10px;cursor:pointer;margin-top:10px;">&#8249; Terug</button>
   </div>
 
-  <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v9.7 &#8212; 2026-03-26</div>
+  <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v9.8 &#8212; 2026-03-26</div>
 </div>
 ```
 
@@ -1560,7 +1560,7 @@ function openDetail(key) {
       (function(){
         if(!r.order_stuks && !r.order_zakrol) return '';
         var stuks    = parseFloat(r.order_stuks)||0;
-        var zakrol   = parseFloat(r.order_zakrol||r.zakrol)||0;
+        var zakrol   = parseFloat(r.order_zakrol) > 0 ? parseFloat(r.order_zakrol) : parseFloat(r.zakrol)||0;
         var breedte  = parseFloat(r.breedte)||0;
         var lengte   = parseFloat(r.lengte)||0;
         var dikte    = parseFloat(r.dikte)||0;
@@ -1733,9 +1733,14 @@ function bewerkRecept(key) {
       var orppEl = document.getElementById('f-order-rpp');
       if(orppEl) { orppEl.value = r.order_rpp; orppEl.classList.remove('veld-leeg'); orppEl.classList.add('veld-definitief'); }
     }
-    if(r.order_maxhoogte === '1') {
-      _maxHoogte = false; // reset eerst
+    // Reset maxhoogte altijd eerst naar false
+    if(_maxHoogte) {
+      _maxHoogte = true; // forceer reset via toggle
       toggleMaxHoogte();
+    }
+    // Dan instellen op opgeslagen waarde
+    if(r.order_maxhoogte === '1') {
+      toggleMaxHoogte(); // zet aan
     }
     // Berekenorder na laden
     setTimeout(function(){ try { berekenOrder(); } catch(e) {} }, 100);
@@ -2166,10 +2171,10 @@ function initSwipe(el, key) {
     var dx = e.touches[0].clientX - tx;
     var dy = e.touches[0].clientY - ty;
     if(Math.abs(dy) > Math.abs(dx) + 8) { live = false; c.style.transform='translateX(0)'; return; }
-    e.preventDefault && e.preventDefault();
+    e.preventDefault();
     var clamped = Math.max(-85, Math.min(85, dx));
     c.style.transform = 'translateX('+clamped+'px)';
-  }, {passive:false});
+  }, {passive:false, capture:false});
 
   c.addEventListener('touchend', function(e) {
     if(!live) return;
@@ -2579,7 +2584,7 @@ function toggleFlowProb(id) {
 }
 
 
-var APP_VERSION = '9.7';
+var APP_VERSION = '9.8';
 
 function checkVersie() {
   fetch('version.json?t=' + Date.now())
