@@ -173,14 +173,8 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 .swipe-content{position:relative;background:#0f1520;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;}
 .swipe-del{display:none;}
 .swipe-edit{display:none;}
-.longpress-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:8000;display:none;align-items:flex-end;justify-content:center;}
-.longpress-box{background:#0f1520;border-top:3px solid #f59e0b;width:100%;max-width:480px;border-radius:14px 14px 0 0;padding:20px 16px 36px;}
-.longpress-title{font-size:11px;color:#9ca3af;letter-spacing:2px;text-transform:uppercase;margin-bottom:16px;text-align:center;}
-.longpress-btn{width:100%;border:none;border-radius:8px;font-family:'Courier New',Courier,monospace;font-weight:700;font-size:17px;letter-spacing:2px;padding:16px;cursor:pointer;margin-bottom:10px;}
-.longpress-bewerk{background:#f59e0b;color:#000;}
-.longpress-del{background:#ef4444;color:#fff;}
-.longpress-annuleer{background:transparent;border:1px solid #1a2540 !important;color:#6b7280;}
-.stap-btn{width:52px;height:52px;background:#141d2e;border:1px solid #1a2540;border-radius:6px;color:#e5e7eb;font-size:28px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Courier New',Courier,monospace;line-height:1}
+
+.stap-btn{width:52px;height:52px;background:#141d2e;border:1px solid #1a2540;border-radius:6px;color:#e5e7eb;font-size:28px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:‘Courier New’,Courier,monospace;line-height:1}
 .stap-btn:active{background:#f59e0b;color:#000;border-color:#f59e0b}
 .veld-leeg{background:rgba(245,158,11,0.08)!important;border-color:rgba(245,158,11,0.6)!important;color:#fcd34d!important}
 .veld-benadering{background:rgba(96,165,250,0.08)!important;border-color:rgba(96,165,250,0.5)!important;color:#93c5fd!important}
@@ -229,7 +223,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
     <button onclick="terugNaarStap1()" style="width:100%;background:transparent;border:1px solid #1a2540;border-radius:4px;color:#6b7280;font-family:'Courier New',Courier,monospace;font-size:13px;padding:10px;cursor:pointer;margin-top:10px;">&#8249; Terug</button>
   </div>
 
-  <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v10.1 &#8212; 2026-03-26</div>
+  <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v10.2 &#8212; 2026-03-26</div>
 </div>
 ```
 
@@ -1446,21 +1440,23 @@ function renderReceptenTree(lijst, query, openAll) {
       var rec=groepen[klant][ri];
       var mat=MATERIALEN[rec.materiaal];
       var rk = rec._key;
-      items+='<div class="swipe-item" id="si-'+rk+'">' +
-        '<div class="swipe-edit" onclick="window._bewerkKey=\''+rk+'\';bewerkRecept(window._bewerkKey)">&#9998;</div>' +
-        '<div class="swipe-del" onclick="window._delKey=\''+rk+'\';verwijderRecept(null,window._delKey)">&#10005;</div>' +
-        '<div class="swipe-content tree-item" onclick="window._detailKey=\''+rk+'\';openDetail(window._detailKey)">' +
-          '<div class="tree-item-inner">' +
-            '<div class="tree-connector"></div>' +
-            '<div class="tree-content">' +
-              '<div class="tree-name">'+(rec.prodtype||'')+(rec.breedte?' '+rec.breedte+'mm':'')+(rec.lengte?' x '+rec.lengte+'mm':'')+(rec.dikte?' / '+rec.dikte+' mm':'')+'</div>' +
-              '<div class="tree-meta">' +
-                '<span class="tag">'+(rec.versie||'')+'</span>' +
-                '<span class="tag">'+(rec.datum||'')+'</span>' +
-                (mat?'<span class="tag '+(mat.recycle?'tag-rec':'tag-mat')+'">'+mat.label+'</span>':'') +
-                (rec.snelheid?'<span class="tag tag-spd">'+rec.snelheid+' m/min</span>':'') +
-              '</div>' +
+      items+='<div class="tree-item" onclick="window._detailKey=\''+rk+'\';openDetail(window._detailKey)">' +
+        '<div class="tree-item-inner">' +
+          '<div class="tree-connector"></div>' +
+          '<div class="tree-content">' +
+            '<div class="tree-name">'+(rec.prodtype||'')+(rec.breedte?' '+rec.breedte+'mm':'')+(rec.lengte?' x '+rec.lengte+'mm':'')+(rec.dikte?' / '+rec.dikte+' mm':'')+'</div>' +
+            '<div class="tree-meta">' +
+              '<span class="tag">'+(rec.versie||'')+'</span>' +
+              '<span class="tag">'+(rec.datum||'')+'</span>' +
+              (mat?'<span class="tag '+(mat.recycle?'tag-rec':'tag-mat')+'">'+mat.label+'</span>':'') +
+              (rec.snelheid?'<span class="tag tag-spd">'+rec.snelheid+' m/min</span>':'') +
             '</div>' +
+          '</div>' +
+          '<div style="display:flex;gap:6px;align-items:center;flex-shrink:0;">' +
+            '<button onclick="event.stopPropagation();window._bewerkKey=\''+rk+'\';bewerkRecept(window._bewerkKey)" ' +
+              'style="background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.4);border-radius:6px;color:#f59e0b;font-size:16px;width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center;">&#9998;</button>' +
+            '<button onclick="event.stopPropagation();window._delKey=\''+rk+'\';verwijderRecept(null,window._delKey)" ' +
+              'style="background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.4);border-radius:6px;color:#ef4444;font-size:16px;width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center;">&#10005;</button>' +
           '</div>' +
         '</div>' +
       '</div>';
@@ -2172,69 +2168,8 @@ function invulOk() {
 }
 
 
-// ── LONG PRESS ACTIES ────────────────────────────────────────────────────
-var _lpKey = null;
-var _lpTimer = null;
-var _lpTitel = '';
-
-function initSwipe(el, key) {
-  var c = el.querySelector('.swipe-content');
-  if(!c) return;
-  var lpStart = 0, lpFired = false;
-
-  c.addEventListener('touchstart', function(e) {
-    _lpKey = key;
-    lpFired = false;
-    lpStart = Date.now();
-    _lpTimer = setTimeout(function() {
-      lpFired = true;
-      var titleEl = el.querySelector('.tree-name');
-      _lpTitel = titleEl ? titleEl.textContent : 'Recept';
-      var ov = document.getElementById('longpress-overlay');
-      var tit = document.getElementById('longpress-titel');
-      if(tit) tit.textContent = _lpTitel;
-      if(ov) { ov.style.display = 'flex'; }
-      // Vibreer als beschikbaar
-      if(navigator.vibrate) navigator.vibrate(50);
-    }, 600);
-  }, {passive:true});
-
-  c.addEventListener('touchend', function(e) {
-    clearTimeout(_lpTimer);
-  }, {passive:true});
-
-  c.addEventListener('touchmove', function(e) {
-    clearTimeout(_lpTimer);
-  }, {passive:true});
-
-  // Fallback: contextmenu event
-  c.addEventListener('contextmenu', function(e) {
-    e.preventDefault();
-    _lpKey = key;
-    var titleEl = el.querySelector('.tree-name');
-    _lpTitel = titleEl ? titleEl.textContent : 'Recept';
-    var ov = document.getElementById('longpress-overlay');
-    var tit = document.getElementById('longpress-titel');
-    if(tit) tit.textContent = _lpTitel;
-    if(ov) ov.style.display = 'flex';
-  });
-}
-
-function sluitLongpress() {
-  var ov = document.getElementById('longpress-overlay');
-  if(ov) ov.style.display = 'none';
-  _lpKey = null;
-}
-
-function longpressBewerk() {
-  sluitLongpress();
-  if(_lpKey) bewerkRecept(_lpKey);
-}
-
-function longpressVerwijder() {
-  sluitLongpress();
-  if(_lpKey) { window._delKey = _lpKey; verwijderRecept(null, _lpKey); }
-}
+// ── ICOONTJES ACTIES (long press verwijderd) ─────────────────────────────
+function initSwipe(el, key) { /* niet meer gebruikt */ }
 
 // ── SOORTELIJK GEWICHT per materiaal (kg/m³)
 var SOORTELIJK_GEWICHT = {
@@ -3041,7 +2976,7 @@ function toggleFlowProb(id) {
 }
 
 
-var APP_VERSION = '10.1';
+var APP_VERSION = '10.2';
 
 function checkVersie() {
   fetch('version.json?t=' + Date.now())
@@ -3061,17 +2996,6 @@ window.addEventListener('unhandledrejection', function(e) {
 checkVersie();
 checkLogin();
 </script>
-
-<!-- LONG PRESS POPUP -->
-
-<div id="longpress-overlay" class="longpress-overlay" onclick="if(event.target===this)sluitLongpress()">
-  <div class="longpress-box">
-    <div class="longpress-title" id="longpress-titel">Recept</div>
-    <button class="longpress-btn longpress-bewerk" onclick="longpressBewerk()">&#9998; Bewerken</button>
-    <button class="longpress-btn longpress-del" onclick="longpressVerwijder()">&#10005; Verwijderen</button>
-    <button class="longpress-btn longpress-annuleer" onclick="sluitLongpress()" style="border:1px solid #1a2540;">Annuleer</button>
-  </div>
-</div>
 
 <!-- INVUL MODAL -->
 
