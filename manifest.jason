@@ -1,0 +1,22 @@
+{
+  "name": "TSA D-Roller 1600",
+  "short_name": "TSA 1600",
+  "description": "AMUTEC TSA-RA 1640 Machine Database & Recepten",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#070a10",
+  "theme_color": "#f59e0b",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "https://via.placeholder.com/192x192/f59e0b/000000?text=TSA",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://via.placeholder.com/512x512/f59e0b/000000?text=TSA",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
