@@ -1,4 +1,25 @@
-<!DOCTYPE html>
+<!DOCTYP
+
+      <button onclick="go(\'s-palletconfig\')" style="flex:1;background:#0f1520;border:none;border-bottom:1px solid #1a2540;border-left:5px solid #34d399;display:flex;align-items:center;gap:16px;padding:0 20px;cursor:pointer;text-align:left;width:100%;min-height:80px;">
+
+```
+    <div style="width:52px;height:52px;background:#0a0d14;border:1px solid #1a2540;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;">&#128230;</div>
+    <div style="flex:1;">
+      <div style="font-weight:700;font-size:22px;letter-spacing:2px;text-transform:uppercase;color:#e5e7eb;">Pallet Config</div>
+      <div style="font-size:12px;color:#9ca3af;margin-top:3px;">Stapeling, maten, huidjes berekenen</div>
+    </div>
+    <div style="font-size:26px;color:#34d399;">&#8250;</div>
+  </button>
+
+  <button id="gids-btn" onclick="go(\'s-gids\')" style="flex:1;background:#0f1520;border:none;border-bottom:1px solid #1a2540;border-left:5px solid #f59e0b;display:flex;align-items:center;gap:16px;padding:0 20px;cursor:pointer;text-align:left;width:100%;min-height:80px;">
+    <div style="width:52px;height:52px;background:#0a0d14;border:1px solid #1a2540;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;">&#128218;</div>
+    <div style="flex:1;">
+      <div style="font-weight:700;font-size:22px;letter-spacing:2px;text-transform:uppercase;color:#f59e0b;">App Gids</div>
+      <div style="font-size:12px;color:#9ca3af;margin-top:3px;">Functies, berekeningen, handleiding</div>
+    </div>
+    <div style="font-size:26px;color:#f59e0b;">&#8250;</div>
+  </button>E html>
+```
 
 <html lang="nl">
 <head>
@@ -223,7 +244,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
     <button onclick="terugNaarStap1()" style="width:100%;background:transparent;border:1px solid #1a2540;border-radius:4px;color:#6b7280;font-family:'Courier New',Courier,monospace;font-size:13px;padding:10px;cursor:pointer;margin-top:10px;">&#8249; Terug</button>
   </div>
 
-  <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v11.6 &#8212; 2026-03-26</div>
+  <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v12.1 &#8212; 2026-03-26</div>
 </div>
 ```
 
@@ -276,6 +297,25 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
     </div>
     <div style="font-size:26px;color:#60a5fa;">&#8250;</div>
   </button>
+
+  <div id="admin-knoppen" style="display:none;flex-direction:column;">
+    <button onclick="go('s-palletconfig')" style="flex:1;background:#0f1520;border:none;border-bottom:1px solid #1a2540;border-left:5px solid #34d399;display:flex;align-items:center;gap:16px;padding:0 20px;cursor:pointer;text-align:left;width:100%;min-height:80px;">
+      <div style="width:52px;height:52px;background:#0a0d14;border:1px solid #1a2540;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;">&#128230;</div>
+      <div style="flex:1;">
+        <div style="font-weight:700;font-size:22px;letter-spacing:2px;text-transform:uppercase;color:#e5e7eb;">Pallet Config</div>
+        <div style="font-size:12px;color:#9ca3af;margin-top:3px;">Stapeling, maten, huidjes berekenen</div>
+      </div>
+      <div style="font-size:26px;color:#34d399;">&#8250;</div>
+    </button>
+    <button onclick="go('s-gids')" style="flex:1;background:#0f1520;border:none;border-bottom:1px solid #1a2540;border-left:5px solid #f59e0b;display:flex;align-items:center;gap:16px;padding:0 20px;cursor:pointer;text-align:left;width:100%;min-height:80px;">
+      <div style="width:52px;height:52px;background:#0a0d14;border:1px solid #1a2540;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;">&#128218;</div>
+      <div style="flex:1;">
+        <div style="font-weight:700;font-size:22px;letter-spacing:2px;text-transform:uppercase;color:#f59e0b;">App Gids</div>
+        <div style="font-size:12px;color:#9ca3af;margin-top:3px;">Functies, berekeningen, handleiding</div>
+      </div>
+      <div style="font-size:26px;color:#f59e0b;">&#8250;</div>
+    </button>
+  </div>
 
 </div>
 ```
@@ -1350,11 +1390,8 @@ function stapVeld(id, stap) {
 }
 
 function toonAdminFuncties(isAdmin) {
-  var gidsBtn = document.getElementById('gids-btn');
-  if(gidsBtn) {
-    gidsBtn.style.display = isAdmin ? 'block' : 'none';
-    gidsBtn.style.visibility = isAdmin ? 'visible' : 'hidden';
-  }
+  var adminDiv = document.getElementById('admin-knoppen');
+  if(adminDiv) adminDiv.style.display = isAdmin ? 'flex' : 'none';
 }
 
 function vulOperatorIn() {
@@ -3281,7 +3318,7 @@ function toggleFlowProb(id) {
 }
 
 
-var APP_VERSION = '11.6';
+var APP_VERSION = '12.1';
 
 function checkVersie() {
   fetch('version.json?t=' + Date.now())
