@@ -223,7 +223,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
     <button onclick="terugNaarStap1()" style="width:100%;background:transparent;border:1px solid #1a2540;border-radius:4px;color:#6b7280;font-family:'Courier New',Courier,monospace;font-size:13px;padding:10px;cursor:pointer;margin-top:10px;">&#8249; Terug</button>
   </div>
 
-  <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v10.4 &#8212; 2026-03-26</div>
+  <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v10.6 &#8212; 2026-03-26</div>
 </div>
 ```
 
@@ -1602,8 +1602,18 @@ function openDetail(key) {
           rpPallet = Math.max(1, rijB * rijL * lagenD);
         } else {
           lagenD   = Math.max(1, Math.floor(maxHD / rolD));
-          var rijBL = Math.max(1, Math.floor((palletD.b + 5) / rolD));
-          rpPallet = Math.max(1, rijBL * lagenD);
+          var rijAD = Math.max(1, Math.floor((palletD.b + 5) / rolD));
+          var rijBD = Math.max(1, rijAD - 1);
+          // Piramide hoogte
+          var maxLagenD = 1;
+          for(var nld=2; nld<=20; nld++) {
+            var hNld = rolD + (nld-1)*rolD*0.866;
+            if(hNld <= maxHD) maxLagenD = nld; else break;
+          }
+          lagenD = maxLagenD;
+          var parenD = Math.floor(lagenD/2);
+          var extraD = lagenD%2;
+          rpPallet = Math.max(1, parenD*(rijAD+rijBD) + extraD*rijAD);
         }
 
         // Klant vereiste overschrijft
@@ -1985,17 +1995,24 @@ function berekenOrder() {
 
   var aantalPallets = 0;
   var losseRollen = 0;
+  var rollenPerPalletToon = rollenPerPallet;
   if(aantalRollen > 0) {
     var vollePallets = Math.floor(aantalRollen / rollenPerPallet);
     var restRollen = aantalRollen % rollenPerPallet;
-    if(restRollen > 0 && restRollen <= 4) {
+    if(restRollen === 0) {
+      aantalPallets = vollePallets;
+    } else if(restRollen <= 4) {
+      // Weinig over - los op laatste pallet
       aantalPallets = vollePallets;
       losseRollen = restRollen;
+    } else if(vollePallets > 0 && restRollen <= vollePallets) {
+      // Rest verdelen over bestaande pallets (1 extra per pallet)
+      aantalPallets = vollePallets;
+      rollenPerPalletToon = rollenPerPallet + 1; // toon max per pallet
     } else {
-      aantalPallets = Math.ceil(aantalRollen / rollenPerPallet);
-      losseRollen = 0;
+      aantalPallets = vollePallets + 1;
     }
-    if(aantalPallets === 0 && aantalRollen > 0) { aantalPallets = 1; losseRollen = 0; }
+    if(aantalPallets === 0 && aantalRollen > 0) { aantalPallets = 1; }
   }
   // Geen gewicht optimalisatie - hoogte is bepalend
 
@@ -2029,7 +2046,7 @@ function berekenOrder() {
   var html = (aantalRollen > 0 ? rij('&#128260;','Aantal rollen', aantalRollen+' rol', '#a78bfa') : '') +
     rij('&#9878;', 'Gewicht per rol', gewichtPerRol+' kg', '#60a5fa') +
     rij('&#9878;', 'Totaal gewicht', totaalGewicht+' kg', '#60a5fa') +
-    rij('&#128230;','Rollen per pallet | '+pallet.naam, rollenPerPallet+' rol', '#f59e0b') +
+    rij('&#128230;','Rollen per pallet | '+pallet.naam, rollenPerPalletToon+' rol', '#f59e0b') +
     rij('&#128230;','Aantal pallets nodig', aantalPallets+' pallet', '#f59e0b') +
     (losseRollen > 0 ? rij('&#128230;','Los op pallet', losseRollen+' rol', '#9ca3af') : '') +
     rij('&#128221;','Folie verbruik (meters)', Math.round(totaleFolieMeter)+' m', '#34d399');
@@ -2360,17 +2377,24 @@ function berekenOrder() {
 
   var aantalPallets = 0;
   var losseRollen = 0;
+  var rollenPerPalletToon = rollenPerPallet;
   if(aantalRollen > 0) {
     var vollePallets = Math.floor(aantalRollen / rollenPerPallet);
     var restRollen = aantalRollen % rollenPerPallet;
-    if(restRollen > 0 && restRollen <= 4) {
+    if(restRollen === 0) {
+      aantalPallets = vollePallets;
+    } else if(restRollen <= 4) {
+      // Weinig over - los op laatste pallet
       aantalPallets = vollePallets;
       losseRollen = restRollen;
+    } else if(vollePallets > 0 && restRollen <= vollePallets) {
+      // Rest verdelen over bestaande pallets (1 extra per pallet)
+      aantalPallets = vollePallets;
+      rollenPerPalletToon = rollenPerPallet + 1; // toon max per pallet
     } else {
-      aantalPallets = Math.ceil(aantalRollen / rollenPerPallet);
-      losseRollen = 0;
+      aantalPallets = vollePallets + 1;
     }
-    if(aantalPallets === 0 && aantalRollen > 0) { aantalPallets = 1; losseRollen = 0; }
+    if(aantalPallets === 0 && aantalRollen > 0) { aantalPallets = 1; }
   }
   // Geen gewicht optimalisatie - hoogte is bepalend
 
@@ -2404,7 +2428,7 @@ function berekenOrder() {
   var html = (aantalRollen > 0 ? rij('&#128260;','Aantal rollen', aantalRollen+' rol', '#a78bfa') : '') +
     rij('&#9878;', 'Gewicht per rol', gewichtPerRol+' kg', '#60a5fa') +
     rij('&#9878;', 'Totaal gewicht', totaalGewicht+' kg', '#60a5fa') +
-    rij('&#128230;','Rollen per pallet | '+pallet.naam, rollenPerPallet+' rol', '#f59e0b') +
+    rij('&#128230;','Rollen per pallet | '+pallet.naam, rollenPerPalletToon+' rol', '#f59e0b') +
     rij('&#128230;','Aantal pallets nodig', aantalPallets+' pallet', '#f59e0b') +
     (losseRollen > 0 ? rij('&#128230;','Los op pallet', losseRollen+' rol', '#9ca3af') : '') +
     rij('&#128221;','Folie verbruik (meters)', Math.round(totaleFolieMeter)+' m', '#34d399');
@@ -2974,7 +2998,7 @@ function toggleFlowProb(id) {
 }
 
 
-var APP_VERSION = '10.4';
+var APP_VERSION = '10.6';
 
 function checkVersie() {
   fetch('version.json?t=' + Date.now())
