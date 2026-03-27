@@ -223,7 +223,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
     <button onclick="terugNaarStap1()" style="width:100%;background:transparent;border:1px solid #1a2540;border-radius:4px;color:#6b7280;font-family:'Courier New',Courier,monospace;font-size:13px;padding:10px;cursor:pointer;margin-top:10px;">&#8249; Terug</button>
   </div>
 
-  <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v10.2 &#8212; 2026-03-26</div>
+  <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v10.4 &#8212; 2026-03-26</div>
 </div>
 ```
 
@@ -295,7 +295,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
   <div class="topbar">
     <button class="back-btn" onclick="go('s-home')">&#8249;</button>
     <div class="topbar-title">Recepten</div>
-    <button class="topbar-btn" onclick="go('s-nieuw')">+ Nieuw</button>
+    <button class="topbar-btn" onclick="resetForm();go('s-nieuw')">+ Nieuw</button>
   </div>
   <div style="padding:10px 14px 0;background:#070a10;position:sticky;top:56px;z-index:99;">
     <div style="position:relative;">
@@ -404,7 +404,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 <div class="form-card">
   <div class="form-card-title">Klant & Product</div>
   <div class="grid2" style="position:relative;">
-    <div class="field"><label>Klantnummer</label><input id="f-klantnr" type="text" placeholder="bv. 1001" class="veld-leeg" onclick="openInvul(this)" readonly inputmode="none" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;cursor:pointer;"></div>
+    <div class="field"><label>Klantnummer</label><input id="f-klantnr" type="text" placeholder="bv. 1001" class="veld-leeg" oninput="veldIngevuld(this)" autocomplete="off" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;cursor:pointer;"></div>
     <div class="field"><label>Klantnaam</label>
       <input id="f-klantnaam" type="text" placeholder="bv. ACME BV" class="veld-leeg"
         autocomplete="off"
@@ -1432,7 +1432,7 @@ function renderReceptenTree(lijst, query, openAll) {
     if(!groepen[k]) groepen[k]=[];
     groepen[k].push(r);
   }
-  var keys=Object.keys(groepen).sort();
+  var keys=Object.keys(groepen).sort(function(a,b){ return a.localeCompare(b, undefined, {numeric:true, sensitivity:'base'}); });
   var html='';
   for(var ki=0;ki<keys.length;ki++){
     var klant=keys[ki],items='';
@@ -2057,7 +2057,6 @@ var _invulWaarde = '';
 
 var INVUL_CONFIG = {
   'f-koker':      {label:'Koker diameter (mm)', snel:[76,90,100,150,200]},
-  'f-klantnr':    {label:'Klantnummer', snel:[]},
   'f-breedte':    {label:'Breedte (mm)', snel:[200,300,400,470,500,600,800,1000,1200,1600]},
   'f-lengte':     {label:'Lengte (mm)', snel:[300,400,500,600,800,1000,1200,1500,2000,3000]},
   'f-dikte':      {label:'Dikte (mm)', snel:[0.02,0.025,0.03,0.04,0.05,0.06,0.08,0.1]},
@@ -2433,7 +2432,6 @@ var _invulWaarde = '';
 
 var INVUL_CONFIG = {
   'f-koker':      {label:'Koker diameter (mm)', snel:[76,90,100,150,200]},
-  'f-klantnr':    {label:'Klantnummer', snel:[]},
   'f-breedte':    {label:'Breedte (mm)', snel:[200,300,400,470,500,600,800,1000,1200,1600]},
   'f-lengte':     {label:'Lengte (mm)', snel:[300,400,500,600,800,1000,1200,1500,2000,3000]},
   'f-dikte':      {label:'Dikte (mm)', snel:[0.02,0.025,0.03,0.04,0.05,0.06,0.08,0.1]},
@@ -2976,7 +2974,7 @@ function toggleFlowProb(id) {
 }
 
 
-var APP_VERSION = '10.2';
+var APP_VERSION = '10.4';
 
 function checkVersie() {
   fetch('version.json?t=' + Date.now())
