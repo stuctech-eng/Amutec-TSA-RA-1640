@@ -223,7 +223,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
     <button onclick="terugNaarStap1()" style="width:100%;background:transparent;border:1px solid #1a2540;border-radius:4px;color:#6b7280;font-family:'Courier New',Courier,monospace;font-size:13px;padding:10px;cursor:pointer;margin-top:10px;">&#8249; Terug</button>
   </div>
 
-  <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v11.4 &#8212; 2026-03-26</div>
+  <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v11.5 &#8212; 2026-03-26</div>
 </div>
 ```
 
@@ -1073,6 +1073,7 @@ function doLoginPin() {
     _huidigeOperator = _geselecteerdeOperator;
     sessionStorage.setItem('tsa_auth', APP_PW);
     sessionStorage.setItem('tsa_operator', _huidigeOperator);
+    toonAdminFuncties(_huidigeOperator === 'Dirk');
     var btn = document.getElementById('opbtn-'+_huidigeOperator);
     if(btn){ btn.style.borderColor='#34d399'; btn.style.background='rgba(52,211,153,0.08)'; btn.style.color='#34d399'; }
     setTimeout(function(){ updateHomeOperator(); go('s-home'); }, 400);
@@ -1092,6 +1093,7 @@ function terugNaarStap1() {
 function checkLogin() {
   if(sessionStorage.getItem('tsa_auth') === APP_PW) {
     _huidigeOperator = sessionStorage.getItem('tsa_operator') || null;
+    toonAdminFuncties(_huidigeOperator === 'Dirk');
     if(_huidigeOperator) { updateHomeOperator(); go('s-home'); }
     else { go('s-login'); setTimeout(toonStap2, 50); }
   }
@@ -2890,7 +2892,7 @@ function toggleFlowProb(id) {
 }
 
 
-var APP_VERSION = '11.4';
+var APP_VERSION = '11.5';
 
 function checkVersie() {
   fetch('version.json?t=' + Date.now())
