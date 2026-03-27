@@ -223,7 +223,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
     <button onclick="terugNaarStap1()" style="width:100%;background:transparent;border:1px solid #1a2540;border-radius:4px;color:#6b7280;font-family:'Courier New',Courier,monospace;font-size:13px;padding:10px;cursor:pointer;margin-top:10px;">&#8249; Terug</button>
   </div>
 
-  <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v10.9 &#8212; 2026-03-26</div>
+  <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v11.2 &#8212; 2026-03-26</div>
 </div>
 ```
 
@@ -346,7 +346,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
       style="width:100%;background:#141d2e;border:2px solid #1a2540;border-radius:6px;color:#9ca3af;font-family:'Courier New',Courier,monospace;font-size:15px;font-weight:700;padding:14px;cursor:pointer;text-align:left;display:flex;align-items:center;gap:12px;">
       <span id="maxhoogte-icon">☐</span>
       <span>Max 1200mm incl. pallet</span>
-      <span style="margin-left:auto;font-size:11px;color:#6b7280;">standaard 1600mm</span>
+      <span style="margin-left:auto;font-size:11px;color:#6b7280;">standaard 1700mm</span>
     </button>
   </div>
 
@@ -1229,8 +1229,9 @@ function herbereken() {
   var koker = kokerEl ? (parseFloat(kokerEl.value) || 90) : 90;
   // Roldiameter: berekend uit zakrol + koker + dikte
   var zakrolVal = parseFloat(document.getElementById('f-zakrol').value) || 0;
+  var windingsF = Math.max(1.0, 2.5 - d * 30);
   var rolRadius = zakrolVal > 0
-    ? Math.sqrt((koker/2)*(koker/2) + (zakrolVal * d * l * 2) / Math.PI)
+    ? Math.sqrt((koker/2)*(koker/2) + (zakrolVal * d * l * 2 * windingsF) / Math.PI)
     : 150;
   var rol = rolRadius;
 
@@ -1576,7 +1577,8 @@ function openDetail(key) {
         if(!zakrol || !breedte || !lengte || !dikte) return '';
 
         // Roldiameter
-        var rolD = Math.round(Math.sqrt((koker/2)*(koker/2)+(zakrol*lengte*dikte*2)/Math.PI)*2);
+        var windingsFactorD = Math.max(1.0, 2.5 - dikte * 30);
+        var rolD = Math.round(Math.sqrt((koker/2)*(koker/2)+(zakrol*lengte*dikte*2*windingsFactorD)/Math.PI)*2);
 
         // Gewicht per rol
         var gew100m = parseFloat(r.order_gew100m)||0;
@@ -1591,7 +1593,7 @@ function openDetail(key) {
 
         // Stapelwijze
         var staandD = breedte <= 500;
-        var maxHD   = (r.order_maxhoogte==='1' || r.order_maxhoogte===1 || r.order_maxhoogte===true) ? 1050 : 1450;
+        var maxHD   = (r.order_maxhoogte==='1' || r.order_maxhoogte===1 || r.order_maxhoogte===true) ? 1050 : 1550;
         var palletD = {'euro':{b:800,l:1200,naam:'Euro pallet'},'euro-formaat':{b:800,l:1200,naam:'Euro formaat'},'blok':{b:1000,l:1200,naam:'Blokpallet'}}[r.order_pallet]||{b:800,l:1200,naam:'Euro pallet'};
 
         var rpPallet, lagenD;
@@ -1602,7 +1604,7 @@ function openDetail(key) {
           rpPallet = Math.max(1, rijB * rijL * lagenD);
         } else {
           lagenD   = Math.max(1, Math.floor(maxHD / rolD));
-          var rijAD = Math.max(1, Math.floor((palletD.b + 5) / rolD));
+          var rijAD = Math.max(1, Math.round(palletD.b / rolD));
           var rijBD = Math.max(1, rijAD - 1);
           // Piramide hoogte
           var maxLagenD = 1;
@@ -1643,10 +1645,10 @@ function openDetail(key) {
         // Huidjes
         var huidjeLenD = 0, aantalHuidjesD = 0;
         if(!staandD && lagenD > 1) {
-          var hRuw = 4 * rolD + 130;
+          var hRuw = rijAD * rolD + 50;
           var hMaten = [700,750,800,850,900,950,1000,1050,1100,1150,1200,1250,1300,1350,1400];
           huidjeLenD = hMaten[hMaten.length-1];
-          for(var hi=0;hi<hMaten.length;hi++){ if(hMaten[hi]>=hRuw){huidjeLenD=hMaten[hi];break;} }
+          for(var hi2=0;hi2<hMaten.length;hi2++){ if(hMaten[hi2]>=(rijAD*rolD+50)){huidjeLenD=hMaten[hi2];break;} }
           aantalHuidjesD = Math.ceil(rollen/11) * (pallets||1);
         }
 
@@ -1946,9 +1948,10 @@ function berekenOrder() {
 
   // Pallet berekening
   var pallet = PALLETS[_gekozenPallet] || PALLETS['euro'];
-  // Roldiameter berekenen - alles in mm, factor 2 voor dubbele folie (zak = heen+terug)
-  // pi*(R²-r²) = zakrol * lengte * dikte * 2
-  var rolRadius = Math.sqrt((koker/2)*(koker/2) + (zakrol * lengte * dikte * 2) / Math.PI);
+  // Roldiameter berekenen - met windingsfactor voor lucht tussen lagen
+  // Dunne folie pakt meer lucht mee: factor = max(1.0, 2.5 - dikte*30)
+  var windingsFactor = Math.max(1.0, 2.5 - dikte * 30);
+  var rolRadius = Math.sqrt((koker/2)*(koker/2) + (zakrol * lengte * dikte * 2 * windingsFactor) / Math.PI);
   var rolDiameter = Math.round(rolRadius * 2);
 
   // Stapelwijze bepalen op basis van zakbreedte
@@ -1960,7 +1963,7 @@ function berekenOrder() {
   var rollenPerPallet = 1;
 
   // Max stapelhoogte: standaard onbeperkt, met knop = 1050mm (1200-150 pallet)
-  var maxStapelHoogte = _maxHoogte ? 1050 : 1450; // 1200-150 of 1600-150
+  var maxStapelHoogte = _maxHoogte ? 1050 : 1550; // knop=1200-150, standaard=1700-150=1550mm
 
   if(staand) {
     // Staand: rollen rechtop, 22 per pallet (praktijk)
@@ -2081,7 +2084,7 @@ var INVUL_CONFIG = {
   'f-static-mat': {label:'Material to be charged (mm)', snel:[10000,20000,30000,40000]},
   'f-order-stuks':{label:'Te leveren (stuks)', snel:[1000,2000,5000,10000,20000,50000]},
   'f-order-rpp':  {label:'Rollen per pallet (klant) -- 0 = auto', snel:[0,4,6,8,10,12,15,20,24]},
-  'f-werk-rpp':   {label:'Werkelijk rollen per pallet', snel:[4,6,8,10,12,15,20,24,28]},
+  'f-werk-rpp':   {label:'Werkelijk rollen per pallet -- 0=wissen', snel:[0,4,6,8,10,12,15,20,24,28,36]},
   'f-werk-huidje':{label:'Werkelijke huidje lengte (mm)', snel:[700,750,800,850,900,950,1000,1050,1100,1200,1250,1300]},
   'f-order-zakrol':{label:'Zakken op rol', snel:[100,150,200,250,500,750,1000]},
   'f-huidje':     {label:'Huidjes lengte (mm)', snel:[500,800,1000,1200,1500]},
@@ -2161,8 +2164,8 @@ function invulOk() {
     // Ook herbereken zodat sealtijd etc bijwerkt
     herbereken();
   }
-  // Als rpp = 0 → reset naar auto
-  if(_invulEl && _invulEl.id === 'f-order-rpp' && (!_invulWaarde || parseFloat(_invulWaarde) <= 0)) {
+  // Als rpp/werk-veld = 0 → reset naar leeg
+  if(_invulEl && ['f-order-rpp','f-werk-rpp','f-werk-huidje'].indexOf(_invulEl.id) >= 0 && (!_invulWaarde || parseFloat(_invulWaarde) <= 0)) {
     _invulEl.value = '';
     _invulEl.classList.remove('veld-definitief','veld-benadering');
     _invulEl.classList.add('veld-leeg');
@@ -2291,7 +2294,7 @@ var INVUL_CONFIG = {
   'f-static-mat': {label:'Material to be charged (mm)', snel:[10000,20000,30000,40000]},
   'f-order-stuks':{label:'Te leveren (stuks)', snel:[1000,2000,5000,10000,20000,50000]},
   'f-order-rpp':  {label:'Rollen per pallet (klant) -- 0 = auto', snel:[0,4,6,8,10,12,15,20,24]},
-  'f-werk-rpp':   {label:'Werkelijk rollen per pallet', snel:[4,6,8,10,12,15,20,24,28]},
+  'f-werk-rpp':   {label:'Werkelijk rollen per pallet -- 0=wissen', snel:[0,4,6,8,10,12,15,20,24,28,36]},
   'f-werk-huidje':{label:'Werkelijke huidje lengte (mm)', snel:[700,750,800,850,900,950,1000,1050,1100,1200,1250,1300]},
   'f-order-zakrol':{label:'Zakken op rol', snel:[100,150,200,250,500,750,1000]},
   'f-huidje':     {label:'Huidjes lengte (mm)', snel:[500,800,1000,1200,1500]},
@@ -2371,8 +2374,8 @@ function invulOk() {
     // Ook herbereken zodat sealtijd etc bijwerkt
     herbereken();
   }
-  // Als rpp = 0 → reset naar auto
-  if(_invulEl && _invulEl.id === 'f-order-rpp' && (!_invulWaarde || parseFloat(_invulWaarde) <= 0)) {
+  // Als rpp/werk-veld = 0 → reset naar leeg
+  if(_invulEl && ['f-order-rpp','f-werk-rpp','f-werk-huidje'].indexOf(_invulEl.id) >= 0 && (!_invulWaarde || parseFloat(_invulWaarde) <= 0)) {
     _invulEl.value = '';
     _invulEl.classList.remove('veld-definitief','veld-benadering');
     _invulEl.classList.add('veld-leeg');
@@ -2781,7 +2784,7 @@ function toggleFlowProb(id) {
 }
 
 
-var APP_VERSION = '10.9';
+var APP_VERSION = '11.2';
 
 function checkVersie() {
   fetch('version.json?t=' + Date.now())
