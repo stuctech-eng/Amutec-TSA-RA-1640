@@ -223,7 +223,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
     <button onclick="terugNaarStap1()" style="width:100%;background:transparent;border:1px solid #1a2540;border-radius:4px;color:#6b7280;font-family:'Courier New',Courier,monospace;font-size:13px;padding:10px;cursor:pointer;margin-top:10px;">&#8249; Terug</button>
   </div>
 
-  <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v11.3 &#8212; 2026-03-26</div>
+  <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v11.4 &#8212; 2026-03-26</div>
 </div>
 ```
 
@@ -557,6 +557,109 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 <button class="btn btn-amber" onclick="slaOp()">Opslaan</button>
 <button class="btn btn-ghost" onclick="resetForm();go('s-recepten')">Annuleer</button>
 <div style="height:20px;"></div>
+```
+
+  </div>
+</div>
+
+<!-- APP GIDS (admin only) -->
+
+<div class="screen" id="s-gids" style="display:none;">
+  <div class="topbar">
+    <button class="back-btn" onclick="go('s-home')">&#8249;</button>
+    <div class="topbar-title">App Gids</div>
+  </div>
+  <div style="padding:16px;max-width:600px;margin:0 auto;padding-bottom:80px;">
+
+```
+<div class="form-card" style="border-top-color:#f59e0b;">
+  <div class="form-card-title" style="color:#f59e0b;">&#128218; Wat kan deze app?</div>
+  <div style="font-size:12px;color:#9ca3af;line-height:1.8;">
+    De TSA-RA 1640 app is een intelligente recepten- en ordercalculator voor de AMUTEC TSA-D-Roller 1600 machine. Alles wordt opgeslagen in de cloud en is altijd beschikbaar op de werkvloer.
+  </div>
+</div>
+
+<div class="form-card" style="border-top-color:#60a5fa;">
+  <div class="form-card-title" style="color:#60a5fa;">&#129518; Berekeningen</div>
+  <div style="font-size:12px;color:#9ca3af;line-height:2;">
+    <div style="margin-bottom:8px;"><span style="color:#f59e0b;">Roldiameter</span><br>Berekend uit zakrol &times; lengte &times; dikte, met windingsfactor voor dunne folie (&lt;0.05mm). Dunne folie pakt meer lucht mee tussen de lagen.</div>
+    <div style="margin-bottom:8px;"><span style="color:#f59e0b;">Offset 1 &amp; 2</span><br>Berekend vanuit machinebasis (10.280mm). Leerdata: vul de werkelijke offset in en de app leert ervan voor volgende berekeningen.</div>
+    <div style="margin-bottom:8px;"><span style="color:#f59e0b;">Sealtijd &amp; snelheid</span><br>Advieswaarden per materiaalsoort op basis van dikte en zaklengte.</div>
+    <div style="margin-bottom:8px;"><span style="color:#f59e0b;">Gewicht per rol &amp; totaal</span><br>Berekend uit breedte &times; rollengte &times; dikte &times; soortelijk gewicht. Of via eigen gewicht per 100m.</div>
+    <div><span style="color:#f59e0b;">Folie verbruik</span><br>Totaal meters folie voor de hele order.</div>
+  </div>
+</div>
+
+<div class="form-card" style="border-top-color:#34d399;">
+  <div class="form-card-title" style="color:#34d399;">&#128230; Pallet Calculator</div>
+  <div style="font-size:12px;color:#9ca3af;line-height:2;">
+    <div style="margin-bottom:8px;"><span style="color:#34d399;">Stap 1 &mdash; Roldiameter</span><br>Bepaalt hoeveel rollen er naast elkaar passen op een pallet.</div>
+    <div style="margin-bottom:8px;"><span style="color:#34d399;">Stap 2 &mdash; Rijen op laag 1</span><br>round(palletbreedte &divide; roldiameter)<br>Euro pallet = 800mm &bull; Blokpallet = 1000mm</div>
+    <div style="margin-bottom:8px;"><span style="color:#34d399;">Stap 3 &mdash; Piramide stapeling</span><br>Laag 1: rijA rollen &bull; Laag 2: rijA-1 rollen &bull; Laag 3: rijA &bull; enz.<br>Voorbeeld: 5-4-5-4-5-4-5-4 = 8 lagen = 36 rollen</div>
+    <div style="margin-bottom:8px;"><span style="color:#34d399;">Stap 4 &mdash; Hoogte</span><br>Standaard: max 1700mm incl. pallet (1550mm stapel)<br>Knop aan: max 1200mm incl. pallet (1050mm stapel)</div>
+    <div><span style="color:#34d399;">Stap 5 &mdash; Huidjes</span><br>Buizenzak 200mm breed om de oneven lagen (1e, 3e, 5e...)<br>Lengte = rijA &times; roldiameter + 50mm, afgerond op 50mm<br>Voorbeeld: 5 &times; 213mm + 50mm = 1115mm &rarr; 1150mm</div>
+  </div>
+</div>
+
+<div class="form-card" style="border-top-color:#a78bfa;">
+  <div class="form-card-title" style="color:#a78bfa;">&#128196; Recepten</div>
+  <div style="font-size:12px;color:#9ca3af;line-height:2;">
+    <div>&bull; Opslaan, bewerken en verwijderen van recepten</div>
+    <div>&bull; Gesorteerd op klantnummer (oplopend, met leading zeros)</div>
+    <div>&bull; Zoeken op klant of materiaal</div>
+    <div>&bull; Groepen per klant (uitklapbaar)</div>
+    <div>&bull; Klantnaam autocomplete bij invoer</div>
+    <div>&bull; Versienummer per recept</div>
+    <div>&bull; Bewerken via ✏️ knop, verwijderen via ✕ knop</div>
+    <div>&bull; Werkelijke pallet &amp; huidje data opslaan (leerdata)</div>
+  </div>
+</div>
+
+<div class="form-card" style="border-top-color:#f59e0b;">
+  <div class="form-card-title" style="color:#f59e0b;">&#128203; Order</div>
+  <div style="font-size:12px;color:#9ca3af;line-height:2;">
+    <div>&bull; Te leveren (stuks) &rarr; aantal rollen &rarr; aantal pallets</div>
+    <div>&bull; Klant vereiste rollen per pallet (overschrijft hoogte berekening)</div>
+    <div>&bull; Max hoogte knop (1200mm) voor transportbeperkingen</div>
+    <div>&bull; Losse rollen worden verdeeld over bestaande pallets</div>
+    <div>&bull; Huidjes: aantal en totaal meters folie</div>
+    <div>&bull; Gewicht per 100m (auto of eigen waarde)</div>
+  </div>
+</div>
+
+<div class="form-card" style="border-top-color:#ef4444;">
+  <div class="form-card-title" style="color:#ef4444;">&#128101; Operators</div>
+  <div style="font-size:12px;color:#9ca3af;line-height:2;">
+    <div>&bull; App wachtwoord: beveiligde toegang</div>
+    <div>&bull; Pincode per operator (Dirk: 007, Casper: 100)</div>
+    <div>&bull; Casper: eigen recepten zichtbaar</div>
+    <div>&bull; Dirk: admin, toegang tot alles incl. App Gids</div>
+    <div>&bull; Verwijder pincode: 007</div>
+  </div>
+</div>
+
+<div class="form-card" style="border-top-color:#f59e0b;">
+  <div class="form-card-title" style="color:#f59e0b;">&#128295; Probleemoplossing</div>
+  <div style="font-size:12px;color:#9ca3af;line-height:2;">
+    <div>&bull; Rolwissel &amp; offset berekening</div>
+    <div>&bull; Seal problemen</div>
+    <div>&bull; Niprol spanning (losser = strakker paradox)</div>
+    <div>&bull; Plooien in de folie</div>
+    <div>&bull; Uitsparing problemen</div>
+    <div>&bull; Static charger (AVI sleep band methode)</div>
+  </div>
+</div>
+
+<div class="form-card" style="border-top-color:#6b7280;">
+  <div class="form-card-title" style="color:#6b7280;">&#9881;&#65039; Technisch</div>
+  <div style="font-size:12px;color:#9ca3af;line-height:2;">
+    <div>&bull; Firebase Realtime Database (cloud opslag)</div>
+    <div>&bull; GitHub Pages hosting</div>
+    <div>&bull; Auto-update via version.json</div>
+    <div>&bull; Machinebasis: 10.280mm (seal tot hart koker)</div>
+    <div>&bull; Materialen: LDPE, MDPE, Recycle Mix, Recycle Gepeld</div>
+  </div>
+</div>
 ```
 
   </div>
@@ -1124,6 +1227,11 @@ function stapVeld(id, stap) {
   }
   if(id === 'f-zakrol') herbereken();
   if(id === 'f-order-stuks' || id === 'f-huidje') try{berekenOrder();}catch(e){};
+}
+
+function toonAdminFuncties(isAdmin) {
+  var gidsBtn = document.getElementById('gids-btn');
+  if(gidsBtn) gidsBtn.style.display = isAdmin ? 'block' : 'none';
 }
 
 function vulOperatorIn() {
@@ -2782,7 +2890,7 @@ function toggleFlowProb(id) {
 }
 
 
-var APP_VERSION = '11.3';
+var APP_VERSION = '11.4';
 
 function checkVersie() {
   fetch('version.json?t=' + Date.now())
