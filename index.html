@@ -223,7 +223,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
     <button onclick="terugNaarStap1()" style="width:100%;background:transparent;border:1px solid #1a2540;border-radius:4px;color:#6b7280;font-family:'Courier New',Courier,monospace;font-size:13px;padding:10px;cursor:pointer;margin-top:10px;">&#8249; Terug</button>
   </div>
 
-  <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v11.2 &#8212; 2026-03-26</div>
+  <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v11.3 &#8212; 2026-03-26</div>
 </div>
 ```
 
@@ -1973,20 +1973,22 @@ function berekenOrder() {
     rollenPerRijCalc = 4; // indicatie
     rollenPerPallet = Math.min(rollenPerPalletGewicht, 22); // praktijk: 22 per pallet
   } else {
-    // Liggend - breedte mag NIET over pallet uitsteken
-    // Kleine speling van 5mm per rol voor nauwkeuriger berekening
-    var rollenPerRijLiggend = Math.max(1, Math.floor((pallet.b + 5) / rolDiameter));
-    rollenPerRijCalc = rollenPerRijLiggend;
-    // Lagen: hoogte bepaalt EN eventueel hoogte
-    var lagenGewicht = Math.max(1, Math.floor(MAX_PALLET_KG / (rollenPerRijLiggend * (gewichtPerRol||1))));
-    var lagenHoogte  = _maxHoogte ? Math.max(1, Math.floor(maxStapelHoogte / rolDiameter)) : lagenGewicht;
-    lagen = Math.min(lagenGewicht, lagenHoogte);
-    var rollenPerPalletStapel = rollenPerRijLiggend * lagen;
-    rollenPerPallet = Math.min(rollenPerPalletGewicht, Math.max(1, rollenPerPalletStapel));
+    // Liggend: piramide stapel (afwisselend rijA en rijB)
+    var rijA = Math.max(1, Math.round(pallet.b / rolDiameter));
+    var rijB = Math.max(1, rijA - 1);
+    rollenPerRijCalc = rijA;
+    var maxLagen = 1;
+    for(var nl=2; nl<=20; nl++) {
+      var hNl = rolDiameter + (nl-1) * rolDiameter * 0.866;
+      if(hNl <= maxStapelHoogte) maxLagen = nl; else break;
+    }
+    lagen = maxLagen;
+    var parenLagen = Math.floor(lagen / 2);
+    var extraLaag = lagen % 2;
+    rollenPerPallet = Math.max(1, parenLagen * (rijA + rijB) + extraLaag * rijA);
   }
 
-  // Afronden: probeer pallets te besparen met +1 rol
-  // Klant vereiste rollen per pallet overschrijft berekening
+  // Klant vereiste overschrijft
   var rppEl = document.getElementById('f-order-rpp');
   var rppKlant = rppEl ? parseFloat(rppEl.value) : 0;
   if(rppKlant > 0) rollenPerPallet = rppKlant;
@@ -2000,17 +2002,13 @@ function berekenOrder() {
     if(restRollen === 0) {
       aantalPallets = vollePallets;
     } else if(restRollen <= 4) {
-      // Weinig over - los op laatste pallet
-      aantalPallets = vollePallets;
-      losseRollen = restRollen;
+      aantalPallets = vollePallets; losseRollen = restRollen;
     } else if(vollePallets > 0 && restRollen <= vollePallets) {
-      // Rest verdelen over bestaande pallets (1 extra per pallet)
-      aantalPallets = vollePallets;
-      rollenPerPalletToon = rollenPerPallet + 1; // toon max per pallet
+      aantalPallets = vollePallets; rollenPerPalletToon = rollenPerPallet + 1;
     } else {
       aantalPallets = vollePallets + 1;
     }
-    if(aantalPallets === 0 && aantalRollen > 0) { aantalPallets = 1; }
+    if(aantalPallets === 0) aantalPallets = 1;
   }
   // Geen gewicht optimalisatie - hoogte is bepalend
 
@@ -2024,7 +2022,7 @@ function berekenOrder() {
   var huidjeLengte = 0, aantalHuidjes = 0, huidjesTotaalM = 0;
   var rollenPerRij = rollenPerRijCalc;
   if(!staand && lagen > 1) {
-    var huidjeRuw = 4 * rolDiameter + 130;
+    var huidjeRuw = rollenPerRij * rolDiameter + 50;
     // Afronden naar dichtstbijzijnde standaardmaat (700,750,...,1400mm)
     var huidjeMaten = [700,750,800,850,900,950,1000,1050,1100,1150,1200,1250,1300,1350,1400];
     huidjeLengte = huidjeMaten[huidjeMaten.length - 1]; // default max
@@ -2784,7 +2782,7 @@ function toggleFlowProb(id) {
 }
 
 
-var APP_VERSION = '11.2';
+var APP_VERSION = '11.3';
 
 function checkVersie() {
   fetch('version.json?t=' + Date.now())
