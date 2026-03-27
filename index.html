@@ -26,6 +26,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.json">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="TSA 1600">
 <meta name="theme-color" content="#070a10">
@@ -244,7 +245,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
     <button onclick="terugNaarStap1()" style="width:100%;background:transparent;border:1px solid #1a2540;border-radius:4px;color:#6b7280;font-family:'Courier New',Courier,monospace;font-size:13px;padding:10px;cursor:pointer;margin-top:10px;">&#8249; Terug</button>
   </div>
 
-  <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v12.1 &#8212; 2026-03-26</div>
+  <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v12.2 &#8212; 2026-03-26</div>
 </div>
 ```
 
@@ -2222,6 +2223,31 @@ function pcBereken() {
   document.getElementById('pc-resultaat').style.display = 'block';
 }
 
+// ── AUTO UPDATE ──────────────────────────────────────────────────────────
+function checkVoorUpdate() {
+  fetch('version.json?t=' + Date.now())
+    .then(function(r){ return r.json(); })
+    .then(function(data) {
+      if(data.version && data.version !== APP_VERSION) {
+        // Nieuwe versie beschikbaar - forceer reload
+        if('caches' in window) {
+          caches.keys().then(function(names) {
+            names.forEach(function(name) { caches.delete(name); });
+          });
+        }
+        // Wacht even dan reload
+        setTimeout(function() {
+          window.location.reload(true);
+        }, 500);
+      }
+    })
+    .catch(function(){});
+}
+
+// Check bij opstarten en elke 5 minuten
+checkVoorUpdate();
+setInterval(checkVoorUpdate, 5 * 60 * 1000);
+
 // ── SOORTELIJK GEWICHT per materiaal (kg/m³)
 var SOORTELIJK_GEWICHT = {
   'peld':         920,
@@ -2718,6 +2744,31 @@ function pcBereken() {
   document.getElementById('pc-visual').innerHTML = visual;
   document.getElementById('pc-resultaat').style.display = 'block';
 }
+
+// ── AUTO UPDATE ──────────────────────────────────────────────────────────
+function checkVoorUpdate() {
+  fetch('version.json?t=' + Date.now())
+    .then(function(r){ return r.json(); })
+    .then(function(data) {
+      if(data.version && data.version !== APP_VERSION) {
+        // Nieuwe versie beschikbaar - forceer reload
+        if('caches' in window) {
+          caches.keys().then(function(names) {
+            names.forEach(function(name) { caches.delete(name); });
+          });
+        }
+        // Wacht even dan reload
+        setTimeout(function() {
+          window.location.reload(true);
+        }, 500);
+      }
+    })
+    .catch(function(){});
+}
+
+// Check bij opstarten en elke 5 minuten
+checkVoorUpdate();
+setInterval(checkVoorUpdate, 5 * 60 * 1000);
 
 // ── SOORTELIJK GEWICHT per materiaal (kg/m³)
 var SOORTELIJK_GEWICHT = {
@@ -3318,7 +3369,7 @@ function toggleFlowProb(id) {
 }
 
 
-var APP_VERSION = '12.1';
+var APP_VERSION = '12.2';
 
 function checkVersie() {
   fetch('version.json?t=' + Date.now())
