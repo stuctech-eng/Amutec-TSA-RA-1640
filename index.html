@@ -173,7 +173,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
         </div>
         <button onclick="terugNaarStap1()" style="width:100%;background:transparent;border:1px solid #1a2540;border-radius:4px;color:#6b7280;font-family:'Courier New',Courier,monospace;font-size:13px;padding:10px;cursor:pointer;margin-top:10px;">&#8249; Terug</button>
       </div>
-      <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v12.7 &#8212; 2026-03-27</div>
+      <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v13.3 &#8212; 2026-03-27</div>
     </div>
   </div>
 </div>
@@ -640,7 +640,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 'use strict';
 var FB_URL = 'https://amutec-tsa-ra-1640-default-rtdb.europe-west1.firebasedatabase.app';
 var APP_PW = 'tsa1600';
-var APP_VERSION = '12.7';
+var APP_VERSION = '13.3';
 
 var OPERATORS_CONFIG = {
   'Dirk':   { pin: '007', admin: true  },
@@ -1446,34 +1446,268 @@ function invulOk(){
 
 // ── PROBLEEMOPLOSSING ─────────────────────────────────────────────────
 var PROBLEEMGROEPEN=[
-  {id:'wissel',icon:'&#128260;',kleur:'#60a5fa',vraag:'Waarom wisselt hij niet goed?',omschrijving:'De machine wisselt niet correct naar een nieuwe rol',problemen:[
-    {titel:'Halve zak op de nieuwe rol',oorzaken:['Offset 1 staat verkeerd ingesteld','Rolwissel timing klopt niet','Perforatie positie staat niet goed'],oplossingen:['Offset opnieuw berekenen via de Calculator','Rolwissel cyclus controleren en bijstellen','Perforatie positie controleren en corrigeren']},
-    {titel:'Wissel breekt of laat los',oorzaken:['Folie heeft een slappe kant','Drukker laat te vroeg los','Roldiameter bij de wissel is te klein','Machinesnelheid te hoog tijdens wissel'],oplossingen:['Static charger op Einde van de rol','Roldiameter bij de wissel verhogen','Machinesnelheid verlagen','Hekje controleren en bijstellen']},
-    {titel:'Rol bouwt niet strak op',oorzaken:['Winder koppel te laag','Drukrol te laag afgesteld','Foliespanning te laag'],oplossingen:['Winder koppel verhogen','Drukrol opnieuw afstellen','Dancer spanning verhogen']},
-    {titel:'Rol loopt scheef op de winder',oorzaken:['Folie niet gecentreerd','Winder spanning ongelijk'],oplossingen:['Folie centreren voor de winder','Winder koppel controleren']}
-  ]},
-  {id:'seal',icon:'&#9632;',kleur:'#f59e0b',vraag:'Waarom sealt hij niet goed?',omschrijving:'De sealnaad is niet in orde',problemen:[
-    {titel:'Seal breekt open',oorzaken:['Sealtemperatuur te laag','Sealtijd te kort','Sealdruk te laag'],oplossingen:['Temperatuur verhogen','Sealtijd verlengen','Sealdruk controleren']},
-    {titel:'Seal verbrandt / PTFE tape beschadigd',oorzaken:['Temperatuur te hoog','Sealtijd te lang','PTFE tape beschadigd'],oplossingen:['Temperatuur verlagen','Sealtijd verkorten','PTFE tape vervangen']},
-    {titel:'Seal is uitgerekt of vervormd',oorzaken:['Folie te strak in neutrale zone','Niprollen te los = paradox: meer spanning','Rewinder torque te hoog','Koeltijd te kort'],oplossingen:['Niproldruk iets verhogen (meer grip = minder trekken)','Rewinder torque verlagen 20-40%','Koeltijd verhogen','Machinesnelheid bij wissel verlagen']},
-    {titel:'AVI sleep band methode',oorzaken:['Foliespanning moeilijk te regelen','Spanning voor seal onregelmatig'],oplossingen:['Sleep band met gedoseerd gewicht','Via het hekje spanning instellen','Gewicht doseren tot folie soepel loopt']}
-  ]},
-  {id:'niprollen',icon:'&#8651;',kleur:'#a78bfa',vraag:'Problemen met niprollen?',omschrijving:'Folie wikkelt om niprollen of zaklengte varieert',problemen:[
-    {titel:'Folie wikkelt zich om de niprollen',oorzaken:['Sealtemperatuur te hoog','Sealtijd te lang','Koeling werkt niet'],oplossingen:['Sealtemperatuur verlagen','Sealtijd verkorten','Koeling controleren']},
-    {titel:'Zaklengte varieert',oorzaken:['Encoder slip op niprollen','Niprollen vuil','Foliespanning wisselt'],oplossingen:['Niprollen reinigen','Encoder controleren','Foliespanning stabiliseren']}
-  ]},
-  {id:'plooien',icon:'&#9699;',kleur:'#fb923c',vraag:'Verwijderen van plooien',omschrijving:'Folie vertoont plooien of kreukels',problemen:[
-    {titel:'Folie loopt scheef en geeft plooien',oorzaken:['Moederrol niet gecentreerd','Invoerrollen niet loodrecht','Foliespanning ongelijk'],oplossingen:['Moederrol centreren','Invoerrollen uitlijnen','Folie centreren via het hekje']},
-    {titel:'Slappe kant geeft plooien',oorzaken:['Foliedikte ongelijk','Recyclefolie: minder uniformiteit'],oplossingen:['Static charger op Altijd aan','Hekje strakker aan slappe zijde','Snelheid verlagen']}
-  ]},
-  {id:'uitsparing',icon:'&#9633;',kleur:'#34d399',vraag:'Het maken van een uitsparing',omschrijving:'Instellen en produceren van zakken met uitsparing',problemen:[
-    {titel:'Uitsparing niet op juiste positie',oorzaken:['Offset niet correct','Perforatie positie klopt niet'],oplossingen:['Offset opnieuw instellen','Perforatie positie corrigeren']},
-    {titel:'AVI uitsparing -- sealbalken',oorzaken:['Seal instelling niet aangepast','Teflon verkeerd geplaatst'],oplossingen:['MET invouw: breed teflon op boven EN onderbalk (behalve bij uitsparing)','MET invouw: smal teflon extra op onderbalk bij uitsparing','MET invouw: onderbalk 145°C, bovenbalk 210°C','MET invouw: klein stukje karton in de uitsparing']}
-  ]},
-  {id:'static',icon:'&#9889;',kleur:'#facc15',vraag:'Static charger instelling',omschrijving:'Instelling van de static charger',problemen:[
-    {titel:'Folie plakt aan de rollen',oorzaken:['Te veel statische lading','Static charger te hoog'],oplossingen:['Static uitschakelen of verlagen','Ionisatie balk controleren']},
-    {titel:'Rol vormt niet goed',oorzaken:['PE/PP slecht geleidend','Droge omgeving'],oplossingen:['Einde van de rol: End of roll','Slappe folie: Always on','Static charger reinigen']}
-  ]}
+  {
+    id:'wissel',icon:'&#128260;',kleur:'#60a5fa',
+    vraag:'Waarom wisselt hij niet goed?',
+    omschrijving:'De machine wisselt niet correct naar een nieuwe rol',
+    problemen:[
+      {titel:'Vrijloop (flap) te lang',
+        oorzaken:[
+          'Rolls change advance staat te hoog (bijv. 1000ms)',
+          'Turret draaitijd + wachttijd samen te lang',
+          'Machine wacht te lang na turret-stop'
+        ],
+        oplossingen:[
+          'Rolls change advance verlagen naar 200ms als startpunt',
+          'Daarna naar 100ms als wissel stabiel is',
+          'NOOIT op 0ms -- armen kunnen slaan terwijl turret nog trilt',
+          'Dancer setpoint verhogen voor meer foliebuffer tijdens wissel'
+        ]},
+      {titel:'Maantjes slaan vóór de perforatie',
+        oorzaken:[
+          'Offset te laag -- armen komen te vroeg',
+          'Folie te dun of te weinig spanning'
+        ],
+        oplossingen:[
+          'Offset 1 verhogen met 50-100mm (bijv. 10750 → 10850)',
+          'Kleine stappen -- testen op lage snelheid',
+          'Eerst spanning controleren vóór offset aanpassen'
+        ]},
+      {titel:'Maantjes slaan voorbij de perforatie',
+        oorzaken:[
+          'Offset te hoog -- armen komen te laat',
+          'Folie te dik of te veel spanning'
+        ],
+        oplossingen:[
+          'Offset 1 verlagen met 50-100mm',
+          'Kleine stappen van 50mm tegelijk',
+          'Altijd eerst spanning goed zetten dan pas offset'
+        ]},
+      {titel:'Folie loopt weg links/rechts bij wissel',
+        oorzaken:[
+          'Drukarm fixeert folie te laat of te zwak',
+          'Pressor roll advance te hoog -- drukarm te traag',
+          'Mat.speed <75mm te laag -- folie niet strak genoeg',
+          'Smoorventiel drukarm-cilinder te dicht'
+        ],
+        oplossingen:[
+          'Pressor roll advance verlagen naar 1500-2000ms',
+          'Mat.speed diam. <75mm verhogen naar 90-95 m/min',
+          'Smoorventiel drukarm cilinder verder openzetten (+)',
+          'Smoorventielen slagarmen ook verder open -- armen moeten schieten niet vallen'
+        ]},
+      {titel:'Rol bouwt niet strak op',
+        oorzaken:[
+          'V DAC rewinder te laag -- te weinig trekkracht',
+          'Drukrol te laag afgesteld',
+          'KFF Material te laag'
+        ],
+        oplossingen:[
+          'V DAC verhogen (bijv. 8000 → 8500mV)',
+          'Drukrol opnieuw afstellen',
+          'KFF Material verhogen naar 80-90%'
+        ]},
+      {titel:'Rol start scheef',
+        oorzaken:[
+          'Drukarm te laat of te weinig druk',
+          'Folie niet correct gefixeerd voor de klap'
+        ],
+        oplossingen:[
+          'Pressor roll advance verlagen voor snellere fixatie',
+          'Smoorventiel drukarm verder openzetten',
+          'Drukarm moet BOEM op folie vallen voordat slagarmen komen'
+        ]}
+    ]
+  },
+  {
+    id:'spanning',icon:'&#9889;',kleur:'#a78bfa',
+    vraag:'Spanningsproblemen bij de folie',
+    omschrijving:'Folie te strak, te slap of instabiel',
+    problemen:[
+      {titel:'Folie te strak -- scheurt vóór perforatie',
+        oorzaken:[
+          'V DAC rewinder te hoog -- te veel trekkracht',
+          'Pressure roll druk te hoog',
+          'Material Loop te hoog',
+          'KFF Material te hoog (>80%)'
+        ],
+        oplossingen:[
+          'Altijd in volgorde: 1) Spanning 2) Pressure roll 3) Offset',
+          'V DAC verlagen (bijv. 9000 → 8000mV)',
+          'Material Loop verlagen (80 → 60-70)',
+          'KFF Material verlagen naar 70-80%',
+          'Pressure roll druk verlagen'
+        ]},
+      {titel:'Folie te slap -- instabiel of lussen',
+        oorzaken:[
+          'V DAC rewinder te laag',
+          'Material Loop te laag',
+          'Dancer te hoog -- te veel foliebuffer'
+        ],
+        oplossingen:[
+          'Material Loop verhogen',
+          "Material's Releasing verlagen (8 → 6mm)",
+          'V DAC iets verhogen',
+          'Dancer setpoint verlagen'
+        ]},
+      {titel:'Folie te strak in de wisselzone',
+        oorzaken:[
+          'Rewinder trekt te hard tijdens wissel',
+          'Material loop Kp at running te hoog',
+          'Niprollen te los -- paradox: meer spanning',
+          'Material loop max tension te hoog'
+        ],
+        oplossingen:[
+          'Rewinder torque verlagen 20-40% (V DAC)',
+          'Material loop Kp at running verlagen naar 50-60',
+          'Material loop max tension verlagen naar 150%',
+          'Niproldruk iets verhogen (meer grip = minder trekken)',
+          'Machinesnelheid bij wissel verlagen naar 80-100 m/min',
+          'Dancer cilinder druk: 1.5-2 bar (niet op 0)'
+        ]},
+      {titel:'Spanning instabiel / oscillerend',
+        oorzaken:[
+          'Time cycle te laag -- systeem reageert te snel',
+          'KFF Material te hoog',
+          'Loop integral time te laag'
+        ],
+        oplossingen:[
+          'Time cycle verhogen naar 15-20s',
+          'KFF Material verlagen naar 70-80%',
+          'Loop integral time verhogen naar 2000-4000ms'
+        ]}
+    ]
+  },
+  {
+    id:'dancer',icon:'&#8651;',kleur:'#34d399',
+    vraag:'Dancer problemen',
+    omschrijving:'Dancer hangt te hoog, te laag of oscilleert',
+    problemen:[
+      {titel:'Dancer hangt te hoog -- te weinig foliebuffer',
+        oorzaken:[
+          'Dancer setpoint (mV) te laag ingesteld',
+          'Rewinder trekt te hard',
+          'Luchtdruk dancer cilinder te hoog'
+        ],
+        oplossingen:[
+          'Danc.roll.work posit. verhogen naar 3700-4000mV',
+          'Computer denkt dancer te hoog → unwinder sneller → dancer zakt',
+          'Luchtdruk dancer cilinder verlagen (bijv. 2 → 1.5 bar)',
+          'Dancing roll relieving speed verhogen naar 20 m/min'
+        ]},
+      {titel:'Dancer oscilleert / instabiel',
+        oorzaken:[
+          'Kp Dancing roll te hoog',
+          'Time cycle te laag',
+          'Loop integral time te laag'
+        ],
+        oplossingen:[
+          'Kp Dancing roll verlagen',
+          'Time cycle verhogen naar 15-20s',
+          'Loop integral time verhogen naar 2000ms'
+        ]},
+      {titel:'Dancer reageert te traag',
+        oorzaken:[
+          'Kp Dancing roll te laag',
+          'Time cycle te hoog'
+        ],
+        oplossingen:[
+          'Kp Dancing roll iets verhogen',
+          'Time cycle verlagen naar 10-15s'
+        ]}
+    ]
+  },
+  {
+    id:'seal',icon:'&#9632;',kleur:'#f59e0b',
+    vraag:'Waarom sealt hij niet goed?',
+    omschrijving:'De sealnaad is niet in orde',
+    problemen:[
+      {titel:'Seal breekt open',
+        oorzaken:['Sealtemperatuur te laag','Sealtijd te kort','Sealdruk te laag'],
+        oplossingen:['Temperatuur verhogen (controleer recept)','Sealtijd verlengen','Sealdruk controleren']},
+      {titel:'Seal verbrandt / PTFE tape beschadigd',
+        oorzaken:['Temperatuur te hoog','Sealtijd te lang','PTFE tape beschadigd'],
+        oplossingen:['Temperatuur verlagen','Sealtijd verkorten','PTFE tape vervangen']},
+      {titel:'Seal uitgerekt of vervormd',
+        oorzaken:[
+          'Folie te strak in neutrale zone',
+          'Niprollen te los = paradox: meer spanning',
+          'Rewinder torque te hoog',
+          'Dancer spanning te hoog'
+        ],
+        oplossingen:[
+          'Niproldruk iets verhogen (meer grip = minder trekken door rewinder)',
+          'Rewinder torque verlagen 20-40%',
+          'Material Loop max tension verlagen naar 100-120%',
+          'Dancer cilinder druk 1.5-2 bar',
+          'Machinesnelheid bij wissel verlagen'
+        ]},
+      {titel:'AVI sleep band methode',
+        oorzaken:['Foliespanning moeilijk te regelen','Spanning voor seal onregelmatig'],
+        oplossingen:[
+          'Sleep band met gedoseerd gewicht op de folie',
+          'Via het hekje spanning instellen',
+          'Gewicht doseren tot folie soepel en gelijkmatig loopt'
+        ]}
+    ]
+  },
+  {
+    id:'niprollen',icon:'&#8651;',kleur:'#a78bfa',
+    vraag:'Problemen met niprollen?',
+    omschrijving:'Folie wikkelt om niprollen of zaklengte varieert',
+    problemen:[
+      {titel:'Folie wikkelt zich om de niprollen',
+        oorzaken:['Sealtemperatuur te hoog','Sealtijd te lang','Koeling werkt niet'],
+        oplossingen:['Sealtemperatuur verlagen','Sealtijd verkorten','Koeling controleren']},
+      {titel:'Zaklengte varieert',
+        oorzaken:['Encoder slip op niprollen','Niprollen vuil','Foliespanning wisselt'],
+        oplossingen:['Niprollen reinigen','Encoder controleren','Foliespanning stabiliseren']}
+    ]
+  },
+  {
+    id:'plooien',icon:'&#9699;',kleur:'#fb923c',
+    vraag:'Verwijderen van plooien',
+    omschrijving:'Folie vertoont plooien of kreukels',
+    problemen:[
+      {titel:'Folie loopt scheef en geeft plooien',
+        oorzaken:['Moederrol niet gecentreerd','Invoerrollen niet loodrecht','Foliespanning ongelijk'],
+        oplossingen:['Moederrol centreren','Invoerrollen uitlijnen','Folie centreren via het hekje']},
+      {titel:'Slappe kant geeft plooien',
+        oorzaken:['Foliedikte ongelijk','Recyclefolie: minder uniformiteit'],
+        oplossingen:['Static charger op Altijd aan','Hekje strakker aan slappe zijde','Snelheid verlagen']}
+    ]
+  },
+  {
+    id:'uitsparing',icon:'&#9633;',kleur:'#34d399',
+    vraag:'Het maken van een uitsparing',
+    omschrijving:'Instellen en produceren van zakken met uitsparing',
+    problemen:[
+      {titel:'Uitsparing niet op juiste positie',
+        oorzaken:['Offset niet correct','Perforatie positie klopt niet'],
+        oplossingen:['Offset opnieuw instellen','Perforatie positie corrigeren']},
+      {titel:'AVI uitsparing -- sealbalken',
+        oorzaken:['Seal instelling niet aangepast','Teflon verkeerd geplaatst'],
+        oplossingen:[
+          'MET invouw: breed teflon op boven EN onderbalk (behalve bij uitsparing)',
+          'MET invouw: smal teflon extra op onderbalk bij uitsparing',
+          'MET invouw: onderbalk 145°C, bovenbalk 210°C',
+          'MET invouw: klein stukje karton in de uitsparing'
+        ]}
+    ]
+  },
+  {
+    id:'static',icon:'&#9889;',kleur:'#facc15',
+    vraag:'Static charger instelling',
+    omschrijving:'Instelling van de static charger',
+    problemen:[
+      {titel:'Folie plakt aan de rollen',
+        oorzaken:['Te veel statische lading','Static charger te hoog'],
+        oplossingen:['Static uitschakelen of verlagen','Ionisatie balk controleren']},
+      {titel:'Rol vormt niet goed',
+        oorzaken:['PE/PP slecht geleidend','Droge omgeving'],
+        oplossingen:['Einde van de rol: End of roll','Slappe folie: Always on','Static charger reinigen']}
+    ]
+  }
 ];
 
 function renderFlow(){
@@ -1513,6 +1747,615 @@ setInterval(checkVoorUpdate,5*60*1000);
 
 window.addEventListener('unhandledrejection',function(e){e.preventDefault();});
 
+
+// ── PARAMETER UITLEG ─────────────────────────────────────────────────────
+var PARAM_UITLEG = {
+
+  // ── WISSELCYCLUS PARAMETERS ────────────────────────────────────────
+  'Rewinder offset 1': {
+    wat: 'Compenseert voor folie-eigenschappen (dikte, spanning, snelheid) zodat de maantjes precies op de perforatie slaan. Basisafstand stilstand = 10280mm. In werkende machine = 10750mm door foliespanning en snelheid.',
+    hoger: 'Meer folie tussen perforatie en koker → armen slaan later → maantjes komen voorbij de perforatie. Bereik: +200mm tot +400mm van basiswaarde.',
+    lager: 'Minder folie → armen slaan eerder → maantjes komen vóór de perforatie. Verlagen is beperkt mogelijk.',
+    advies: 'Maantjes slaan vóór perforatie? Verhoog met 50-100mm. Maantjes slaan voorbij perforatie? Verlagen. Dunne folie/lage spanning = andere offset dan dikke folie/hoge spanning. Standaard: 10750mm.',
+    systeem: 'De offset bepaalt het EXACTE slagmoment op de perforatie. De ms-parameters (Rolls change advance, Pressor roll) bepalen de snelheid van de armen. Gebruik eerst ms-parameters, dan offset voor fijnafstelling. Offset 1 en Offset 2 werken onafhankelijk -- je gebruikt ze niet tegelijk.',
+    tijdlijn: 'BASISAFSTAND: 10280mm (stilstand, gemeten van seal naar hart koker). WERKELIJK: 10750mm (in productie door spanning/snelheid/dikte). BEREIK: 10750mm + 200mm tot 400mm aanpassing.'
+  },
+  'Rewinder offset 2': {
+    wat: 'Zelfde functie als Offset 1 maar voor het tweede wisselmoment. Basiswaarde 10550mm. Compenseert voor folie-eigenschappen zodat de armen precies op de perforatie slaan.',
+    hoger: 'Meer folie → armen slaan later. Offset 2 op 10750mm = zelfde als Offset 1 basiswaarde. Bereik: +200mm tot +400mm.',
+    lager: 'Minder folie → armen slaan eerder.',
+    advies: 'Werkt onafhankelijk van Offset 1 -- gebruik OF Offset 1 OF Offset 2, niet tegelijk. Standaard: 10550mm. Aanpassen in stappen van 50-100mm.',
+    systeem: 'De machine wisselt op basis van het opgegeven aantal zakken (ingesteld op machine samen met zaklengte). Als turret stilstaat starten de Roll change parameters. Offset bepaalt het slagmoment.',
+    tijdlijn: 'BEREIK: 10550mm basis. +200mm = 10750mm. +400mm = 10950mm. Het 200mm verschil met Offset 1 geeft je een alternatief wisselmoment.'
+  },
+  'Rolls change advance': {
+    wat: 'Wachttijd in ms na het bereiken van de ingestelde rollengte ("rol vol"). De timer begint direct bij "rol vol" en bepaalt wanneer de drukarm en slagarmen in actie komen.',
+    hoger: 'Langere pauze → folie loopt langer door na "rol vol" → langere vrijloop (flap) → folie kan gaan wabberen of scheef trekken.',
+    lager: 'Kortere pauze → armen komen sneller → kortere vrijloop → schonere wissel. MINIMUM: 100ms (veiligheidsmarge voor turret-vergrendeling).',
+    advies: 'Advies: start op 200ms. Daarna 100ms proberen. NOOIT 0ms -- armen kunnen slaan terwijl turret nog trilt → schade aan armen/koker. Risico op "Turret not in position" foutmelding. Origineel RC1: 800ms / RC2: 400ms.',
+    systeem: 'Dit is de BELANGRIJKSTE parameter voor de vrijloop. De totale flaplengte = turretdraaitijd (vast) + Rolls change advance (instelbaar). Turretdraai kun je niet aanpassen -- dit is jouw enige knop.',
+    tijdlijn: 'TIJDLIJN: 1) Metersteller bereikt nul (rol vol) → 2) Rolls change advance timer start → 3) Drukarm schiet → 4) Slagarmen volgen direct → 5) Lucht blaast flap om koker → 6) Drukarm blijft drukken (Pressor roll advance)'
+  },
+  'Mat. speed at change diam. <75mm': {
+    wat: 'Machinesnelheid als de spoel kleiner dan 75mm diameter is (bijna leeg). Hogere snelheid trekt folie snaarstrak over de drukarm.',
+    hoger: 'Folie strakker → Tension Break werkt beter → perforatie knapt beter → minder weglopen. Advies: 90-95 m/min.',
+    lager: 'Folie slapper → meer kans op weglopen en rimpelen tijdens wissel.',
+    advies: 'Advies: 90 m/min als startpunt. Folie lubbert/rimpelt? Verhoog naar 95 m/min. Origineel: 82 m/min (RC1) / 82 m/min (RC2).',
+    systeem: 'Tension Break principe: door wikkelas sneller dan lijnsnelheid te zetten, trekt folie strak. Op dit strakke moment valt de mechanische klap van de armen.',
+    tijdlijn: ''
+  },
+  'Material speed at change': {
+    wat: 'Machinesnelheid tijdens de rolwissel bij normale spoel diameter (>75mm).',
+    hoger: 'Hogere snelheid → folie strakker maar meer risico op scheuren bij wissel.',
+    lager: 'Lagere snelheid → rustiger wissel maar meer kans op slappe folie.',
+    advies: 'Standaard 80 m/min. Niet aanpassen tenzij de folie tijdens wissel slapt of scheurt. Werk eerst met Mat.speed <75mm.',
+    systeem: 'Werkt samen met Mat.speed diam. <75mm. De <75mm waarde is kritischer omdat dat het moment is vlak voor de wissel.',
+    tijdlijn: ''
+  },
+  'Blow advance at low speed': {
+    wat: 'Timing van de luchtstoot die de losse flap om de koker blaast, bij lage machinesnelheid. Loopt parallel aan de klap van de armen.',
+    hoger: 'Lucht begint eerder → folie "ontsnapt" niet maar kan ook weggeblazen worden als te vroeg. Te hoog: folie vliegt over koker zonder te plakken.',
+    lager: 'Lucht komt later → flap heeft meer tijd om te vallen. Te laag: lucht mist de flap.',
+    advies: 'Advies: 300-600ms. Machine blaast NIET vooraf maar pas bij de klap. Armen sneller (smoorventielen open) = blow advance iets inkorten. Controleer: flap rimpelt/dubbelslaat? Verlagen. Flap ontsnapt? Verhogen. Origineel: 100ms.',
+    systeem: 'Stap 4 in de wisselcyclus. Lucht werkt samen met de mechanische klap, niet als voorbereiding.',
+    tijdlijn: 'VOLGORDE: Armen slaan → parallel start luchtstoot → flap wordt om koker geblazen → drukarm houdt vast'
+  },
+  'Blow advance at high speed': {
+    wat: 'Timing van de luchtstoot bij hoge machinesnelheid. Bij hoge snelheid heeft folie meer traagheid -- timing is kritischer.',
+    hoger: 'Lucht staat al klaar als armen slaan → folie wordt direct tegen koker gezogen. Te hoog: folie weggeblazen.',
+    lager: 'Lucht komt te laat → flap wordt niet om koker gevouwen.',
+    advies: 'Advies: start op 600ms en finetunen. Flap dubbelslaat/rimpelt? Naar 400-500ms. Flap ontsnapt? Naar 700-800ms. Bij kortere Rolls change advance wordt dit kritischer. Origineel: 100ms.',
+    systeem: 'Bij lage Rolls change advance (100-200ms) moet Blow advance extra zorgvuldig afgesteld worden -- de actie volgt zo snel dat lucht-timing cruciaal is.',
+    tijdlijn: ''
+  },
+  'Pressor roll advance': {
+    wat: 'Hoe lang de drukarm (pressure arm) de folie vasthoudt tegen de koker na de wissel. De drukarm is de EERSTE die beweegt -- hij fixeert de folie voordat de slagarmen komen.',
+    hoger: 'Drukarm houdt langer vast → meer tijd voor folie om te hechten op koker. Origineel 4000-5000ms is lang -- folie kan in die tijd verschuiven.',
+    lager: 'Drukarm laat eerder los → snellere cyclus. Minimum: 1500ms voor voldoende hechting.',
+    advies: 'Advies: 1500-2000ms. Drukarm moet "Boem" op folie vallen -- snelle, krachtige actie. Ook smoorventiel drukarm-cilinder verder openzetten voor snellere beweging. Folie loopt weg L/R? Drukarm moet sneller en harder komen. Origineel: 4000ms.',
+    systeem: 'Tension Break: drukarm fixeert folie → spanning tussen oude en nieuwe rol → perforatie knapt. Drukarm is de "wegbereider" van de hele wisselcyclus.',
+    tijdlijn: 'VOLGORDE: Rolls change advance loopt af → drukarm schiet als eerste → slagarmen direct daarna → lucht parallel → drukarm blijft (Pressor roll advance ms) → drukarm omhoog'
+  },
+  'Advance 2° break.EV': {
+    wat: 'Vertraging in ms tussen arm 1 (maantjes -- breekt perforatie) en arm 2 (duwarm -- vouwt flap achter koker). Dit is de "inter-arm delay" van het Sequential Overlap systeem.',
+    hoger: 'Meer tijd tussen maantjes en duwarm → folie hangt korter los in de lucht → meer kans op weglopen links/rechts.',
+    lager: 'Armen komen bijna tegelijk → folie direct gegrepen na breken → schonere wissel.',
+    advies: 'Advies: 40-50ms. Zo laag mogelijk voor de schoonste wissel. De twee armen moeten praktisch gelijktijdig slaan. Origineel: 60ms.',
+    systeem: 'Sequential Overlap: één beweging, twee functies. Arm 1 breekt perforatie, arm 2 duwt flap 60ms later achter de koker. Dit is het bewijs dat de armen onafhankelijk aangestuurd worden.',
+    tijdlijn: ''
+  },
+
+  // ── DANCER / UNWINDER ─────────────────────────────────────────────
+  'Danc.roll.work posit.': {
+    wat: 'Setpoint van de dancer-positie in mV. De sensor meet de positie van de dancer en stuurt een waarde terug. De machine regelt de unwinder-snelheid zodat de dancer op dit setpoint blijft.',
+    hoger: 'Computer "denkt" dancer hangt te hoog → unwinder draait sneller → dancer zakt lager → meer foliebuffer (slack) voor de wissel.',
+    lager: 'Dancer hangt hoger → minder foliebuffer → minder slack bij wissel.',
+    advies: 'Advies: verhoog naar 3700-4000 mV voor meer slack tijdens wissel. Dancer hangt te hoog (te weinig buffer)? Verhoog setpoint. Origineel: 5000mV. Combineer met luchtdruk aanpassing op dancer-cilinder.',
+    systeem: 'De dancer is de foliebuffer tussen unwinder en machine. Meer slack = meer tijd voor de wissel. Werkt samen met Dancing roll relieving speed voor wisselmoment.',
+    tijdlijn: ''
+  },
+  'Dancing roll. relieving speed': {
+    wat: 'Extra snelheid waarmee de unwinder folie vrijgeeft op het exacte moment van de wissel. Geeft een extra foliebuffer (slack) precies wanneer de armen slaan.',
+    hoger: 'Meer folie vrijgegeven op wisselmoment → dancer zakt dieper → grotere buffer → minder spanning op folie tijdens wissel.',
+    lager: 'Kleinere extra buffer op wisselmoment.',
+    advies: 'Advies: verhoog naar 20 m/min als je meer slack wilt tijdens wissel. Alleen actief op het wisselmoment. Origineel: 10 m/min.',
+    systeem: 'Specifiek voor het wisselmoment. Werkt samen met Danc.roll.work posit. voor totale foliebeheersing.',
+    tijdlijn: ''
+  },
+  'Kp Dancing roll.': {
+    wat: 'Regelingsgevoeligheid (proportionele versterking) van de dancer. Bepaalt hoe snel de unwinder reageert op afwijking van het setpoint.',
+    hoger: 'Snellere reactie → dancer houdt positie strakker maar kan onstabiel worden/trillen.',
+    lager: 'Langzamere reactie → dancer schommelt meer maar stabieler bij snelheidsveranderingen.',
+    advies: 'Niet aanpassen tenzij dancer onstabiel gedraagt of te traag reageert. Origineel: 5.',
+    systeem: 'PID regeling. Kp = proportionele versterking. Werkt samen met Kff Material voor voorwaartse regeling.',
+    tijdlijn: ''
+  },
+
+  // ── MATERIAL LOOP ─────────────────────────────────────────────────
+  'Material loop max tension': {
+    wat: 'Maximale spanning die de materiaalloop mag uitoefenen als percentage. Begrenst de spanning bij pieken.',
+    hoger: 'Meer spanning toegestaan → folie strakker → minder kans op slappe folie maar meer risico op scheuren.',
+    lager: 'Minder spanning → folie soepeler → meer kans op lussen of slappe folie bij wissel.',
+    advies: 'Folie te strak bij wissel? Verlagen naar 150%. Folie slap/lust? Verhogen. Origineel: 180%.',
+    systeem: 'Bovengrens voor de spanning-regeling. Werkt samen met Kp at running voor stabiele foliegeleiding.',
+    tijdlijn: ''
+  },
+  'Material loop Kp at running': {
+    wat: 'Regelingsgevoeligheid van de materiaalloop tijdens productie. Bepaalt hoe snel de spanning gecorrigeerd wordt.',
+    hoger: 'Snellere reactie op spanningsverschillen → strakker bijsturen maar kan trillen/oscilleren.',
+    lager: 'Langzamere reactie → rustiger maar trager bijsturen. Folie kan tijdelijk te strak of te slap zijn.',
+    advies: 'Folie te strak bij wissel? Verlagen naar 50-60. Origineel: 70. Kleine stappen van 5-10 tegelijk aanpassen.',
+    systeem: 'PID regeling voor foliespanning. Cruciale parameter bij "Folie te strak wisselzone" probleem.',
+    tijdlijn: ''
+  },
+  'Material loop Kp on ramp': {
+    wat: 'Regelingsgevoeligheid tijdens het optrekken en afremmen van de machine (ramp).',
+    hoger: 'Snellere aanpassing tijdens acceleratie/deceleratie → spanning blijft stabieler.',
+    lager: 'Rustiger maar trager bijsturen → spanning kan variëren bij starten/stoppen.',
+    advies: 'Meestal niet aanpassen. Problemen bij starten/stoppen? Dan aanpassen. Origineel: 120.',
+    systeem: 'Alleen actief tijdens versnellen en vertragen. Bij constante snelheid neemt Kp at running het over.',
+    tijdlijn: ''
+  },
+
+  // ── RA REWINDERS ─────────────────────────────────────────────────
+  'V DAC max rewinder': {
+    wat: 'Maximale trekkracht/spanning van de rewinder motor. De belangrijkste parameter voor folieaantrekking. Hogere waarde = motor trekt harder aan de folie.',
+    hoger: 'Meer trekkracht → folie strakker → betere rolvorming maar risico op scheuren vóór perforatie of uitgerekte seals.',
+    lager: 'Minder trekkracht → folie soepeler → minder kans op scheuren maar rollen kunnen telescoperen.',
+    advies: 'Folie scheurt vóór perforatie? Verlagen. Rollen te los/telescoperen? Verhogen. Origineel: 9000mV. Typisch bereik: 8000-9000mV.',
+    systeem: 'Rewinder = sterkste invloed op foliespanning. Werkt samen met KFF Material en Material Loop. Als rewinder te hard trekt kan Material Loop niet compenseren.',
+    tijdlijn: ''
+  },
+  'Max speed rewinder': {
+    wat: 'Maximale rotatiesnelheid van de rewinder. Begrenst hoe snel de rewinder kan accelereren of trekken.',
+    hoger: 'Hogere maximumsnelheid → agressievere aantrekking mogelijk → risico op spanningspieken.',
+    lager: 'Veiligere, soepelere werking → voorkomt spanningspieken bij snelle wisselingen.',
+    advies: 'Alleen aanpassen als rewinder te agressief gedraagt. Origineel: 2400rpm.',
+    systeem: 'Veiligheidsgrens voor rewinder snelheid. Niet primaire regelparameter.',
+    tijdlijn: ''
+  },
+  'Matertens.speed': {
+    wat: 'Snelheid gebruikt tijdens de spanningsregelloop. Bepaalt hoe snel de spanningscorrectie reageert.',
+    hoger: 'Snellere spanningscorrectie → kan onstabiel of agressief worden.',
+    lager: 'Langzamere reactie → soepelere correctie maar spanning kan weglopen.',
+    advies: 'Niet aanpassen tenzij spanning instabiel is. Origineel: 500rpm.',
+    systeem: 'Onderdeel van spanningsregelloop. Werkt samen met KFF Material en Time cycle.',
+    tijdlijn: ''
+  },
+  "Roll's ch.sp.low": {
+    wat: 'Lage rotatiesnelheid tijdens de rolwissel. Bepaalt het initiële wikkelen aan het begin van de wissel.',
+    hoger: 'Snellere start maar agressiever → meer kans op schokken.',
+    lager: 'Meer controle → rustiger wisselstart → minder schok op folie.',
+    advies: 'Origineel: 150rpm. Verlagen voor rustigere wisselstart.',
+    systeem: 'Werkt samen met ch.sp.high voor de overgang van laag naar hoog wikkelen.',
+    tijdlijn: ''
+  },
+  "Roll's ch.sp.high": {
+    wat: 'Hoge snelheidsreferentie tijdens de rolwissel. Bepaalt de overgang van traag naar snel wikkelen.',
+    hoger: 'Snellere overgang → agressiever maar sneller op productiesnelheid.',
+    lager: 'Soepelere overgang → rustiger maar langzamer.',
+    advies: 'Origineel: 30 m/min. Aanpassen voor soepelere overgang tijdens wissel.',
+    systeem: 'Samen met ch.sp.low de twee wikkelsnelheden tijdens wissel.',
+    tijdlijn: ''
+  },
+  'Inversion length': {
+    wat: 'Afstand waarover de snelheids- of richtingscorrectie plaatsvindt tijdens inversie.',
+    hoger: 'Langere, soepelere overgang → rustiger wikkelen.',
+    lager: 'Kortere, scherpere correctie → sneller maar meer schok.',
+    advies: 'Origineel: 200mm. Verhogen voor soepeler wikkelen. Heeft indirect effect op wisselstabiliteit.',
+    systeem: 'Indirecte invloed op wisselstabiliteit via overgangsgedrag.',
+    tijdlijn: ''
+  },
+  'Inversion speed': {
+    wat: 'Snelheid gebruikt tijdens de inversiefase van de rewinder.',
+    hoger: 'Snellere correctie → risico op spanningspieken.',
+    lager: 'Soepeler maar langzamer correctie.',
+    advies: 'Origineel: 300rpm. Verlagen voor soepeler gedrag.',
+    systeem: 'Werkt samen met Inversion length.',
+    tijdlijn: ''
+  },
+  'Break stop Timer': {
+    wat: 'Vertraging na de breuk voordat het systeem stopt of reset. Stabiliseert het systeem na de wissel.',
+    hoger: 'Meer tijd na wissel → systeem rustiger → langzamere cyclus.',
+    lager: 'Snellere cyclus maar risico op abrupte stop.',
+    advies: 'Origineel: 2000ms. Verhogen als systeem te abrupt stopt na wissel.',
+    systeem: 'Veiligheidstimer na de breukactie.',
+    tijdlijn: ''
+  },
+  'Reduction numerator': {
+    wat: 'Teller van de tandwielverhouding voor motorregeling. Definieert de mechanisch-elektrische conversie.',
+    hoger: 'Verandert de verhouding → ALLEEN aanpassen bij kalibratie.',
+    lager: 'NIET aanpassen -- onjuiste waarde = verkeerde snelheden en afstanden.',
+    advies: 'NIET AANPASSEN tenzij het systeem gekalibreerd wordt. Origineel: 1600.',
+    systeem: 'Kalibratieparameter. Samen met Reduction denomination de tandwielverhouding (1600/400 = 4).',
+    tijdlijn: ''
+  },
+  'Reduction denomination': {
+    wat: 'Noemer van de tandwielverhouding. Samen met Reduction numerator de mechanisch-elektrische conversie.',
+    hoger: 'NIET aanpassen -- onjuiste waarde = verkeerde snelheden.',
+    lager: 'NIET aanpassen tenzij kalibratie.',
+    advies: 'NIET AANPASSEN. Origineel: 400. Verhouding = 1600/400 = 4.',
+    systeem: 'Kalibratieparameter. Nooit wijzigen tijdens productie.',
+    tijdlijn: ''
+  },
+  'Tail recuperat. deceleration time': {
+    wat: 'Vertragingstijd na de staartafhandeling (einde rol). Bepaalt hoe soepel het systeem vertraagt na de wissel.',
+    hoger: 'Soepelere stop → rustiger systeemgedrag na wissel.',
+    lager: 'Snellere stop maar agressiever → risico op spanningspieken.',
+    advies: 'Origineel: 2000ms. Verhogen voor soepelere stop na wissel.',
+    systeem: 'Stabiliseert het systeem na de rolwissel.',
+    tijdlijn: ''
+  },
+  'Blower timer': {
+    wat: 'Duur van de luchtstoot tijdens de wissel. Helpt de folie correct op de koker te positioneren.',
+    hoger: 'Langere luchtstoot → folie beter geholpen om koker te omsluiten. Te lang kan instabiliteit geven.',
+    lager: 'Kortere luchtstoot → minder hulp bij omvouwen maar minder risico op verstoring.',
+    advies: 'Origineel: 2000ms. Verhogen als folie niet goed om de koker wikkelt. Verlagen als lucht de stabiliteit verstoort.',
+    systeem: 'Werkt samen met Blow advance parameters voor correcte flap-omvouwing.',
+    tijdlijn: ''
+  },
+  'Kff Material': {
+    wat: 'Voorwaartse regelingsfactor (feedforward) voor spanningsregeling. Voorspelt de benodigde spanning proactief in plaats van reactief te corrigeren.',
+    hoger: 'Agressievere voorspellende reactie → sneller maar kan overschieten.',
+    lager: 'Langzamere voorspellende reactie → rustiger maar trager bijsturen.',
+    advies: 'Ideaal: 70-80% voor stabiele regeling. Origineel: 100%. Verlagen naar 70-80% voor stabielere spanning. Instabiel systeem? Verlagen.',
+    systeem: 'Feedforward regeling. Werkt samen met V DAC en Time cycle. Te hoog = agressief. Te laag = traag.',
+    tijdlijn: ''
+  },
+  'Time cycle': {
+    wat: 'Cyclustijd van de spanningsregelloop. Bepaalt hoe snel het systeem reageert op spanningsverschillen.',
+    hoger: 'Langzamere reactie → stabieler maar trager bijsturen bij spanningsvariaties.',
+    lager: 'Snellere reactie → responsiever maar risico op oscillatie bij te lage waarde.',
+    advies: 'Verlagen naar 10-20s voor responsievere regeling. Origineel: 36s. Te laag = oscillatierisico.',
+    systeem: 'Cruciaal voor spanningsstabiliteit. Samen met KFF Material de twee belangrijkste spanningsparameters.',
+    tijdlijn: ''
+  },
+  'T.out danc.roll.zero': {
+    wat: 'Timeout voor de dancer die terugkeert naar nulpositie. Veiligheidsparameter die bepaalt wanneer een foutmelding gegeven wordt.',
+    hoger: 'Meer tijd voor dancer om terug te keren → minder valse alarmen.',
+    lager: 'Snellere foutdetectie → strengere veiligheid maar meer kans op valse alarm.',
+    advies: 'Origineel: 30000ms. Verhogen als valse alarmen optreden. Verlagen voor snellere foutdetectie.',
+    systeem: 'Veiligheids-/stabiliteitsparameter voor dancer systeem.',
+    tijdlijn: ''
+  },
+  'Offset static charger': {
+    wat: 'Positie-offset voor het statische-eliminatiesysteem. Bepaalt waar de statische neutralisatie wordt toegepast op de folie.',
+    hoger: 'Statische neutralisatie wordt later/verder toegepast.',
+    lager: 'Statische neutralisatie wordt eerder toegepast.',
+    advies: 'Origineel: 5310mm. Alleen aanpassen als statische problemen op verkeerde positie optreden. Niet gerelateerd aan spanning of wisseltiming.',
+    systeem: 'Statische-eliminatiesysteem. Staat los van spanning en wisseltiming.',
+    tijdlijn: ''
+  },
+
+  // ── SHUTTLE MOTOR ──────────────────────────────────────────────────
+  'bit / meter shuttle motor': {
+    wat: 'Encoder resolutie -- hoeveel encoder-bits overeenkomen met 1 meter beweging van de shuttle. Kalibratieparameter.',
+    hoger: 'Fijnere resolutie. NIET aanpassen -- onjuiste waarde = verkeerde positionering.',
+    lager: 'NIET aanpassen tenzij kalibratie.',
+    advies: 'NIET AANPASSEN. Origineel: 62056 bit. Alleen bij volledige systeemkalibratie.',
+    systeem: 'Kalibratieparameter. Bepaalt de nauwkeurigheid van shuttle-positionering.',
+    tijdlijn: ''
+  },
+  'kp shuttle': {
+    wat: 'Proportionele versterking voor shuttle-positieregeling. Bepaalt hoe agressief de shuttle positiefouten corrigeert.',
+    hoger: 'Snellere reactie → risico op oscillatie of overschieten van positie.',
+    lager: 'Langzamere reactie → soepeler maar minder precies.',
+    advies: 'Shuttle oscilleert? Verlagen. Shuttle te traag/onnauwkeurig? Iets verhogen. Origineel: 2500.',
+    systeem: 'PID regeling voor shuttle positie. Shuttle stuurt arm-timing en positionering aan.',
+    tijdlijn: ''
+  },
+  "Shuttle's Motor Max. Speed": {
+    wat: 'Maximale rotatiesnelheid van de shuttle motor. Bepaalt hoe snel de shuttle kan bewegen.',
+    hoger: 'Snellere positionering → risico op mechanische schokken.',
+    lager: 'Soepelere maar tragere beweging.',
+    advies: 'Beweging te agressief? Verlagen. Shuttle kan timing niet bijhouden? Verhogen. Origineel: 2500rpm.',
+    systeem: 'Shuttle moet gesynchroniseerd zijn met offset-timing en drukarm. Te traag = armen te laat = slechte wissel.',
+    tijdlijn: ''
+  },
+  "Shuttle's Motor Max. Acceler.": {
+    wat: 'Acceleratierampttijd van de shuttle motor. Lagere waarde = snellere acceleratie (agressiever).',
+    hoger: 'Soepelere acceleratie → minder schokken maar trager.',
+    lager: 'Snellere acceleratie → agressiever maar snellere reactie.',
+    advies: 'Schokken of instabiliteit? Verhogen. Shuttle reageert te traag? Verlagen. Origineel: 30ms.',
+    systeem: 'Balans tussen snelheid en stabiliteit. Altijd eerst testen op lage machinesnelheid.',
+    tijdlijn: ''
+  },
+  "Shuttle 0 position": {
+    wat: 'Referentie "home" positie van de shuttle. Basisposition voor alle bewegingen. Kalibratieparameter.',
+    hoger: 'NIET aanpassen -- onjuiste waarde = verkeerde uitlijning.',
+    lager: 'NIET aanpassen tenzij kalibratie.',
+    advies: 'NIET AANPASSEN. Origineel: 150mm. Alleen bij volledige systeemkalibratie.',
+    systeem: 'Kalibratieparameter. Verkeerde waarde = mechanische botsingrisico.',
+    tijdlijn: ''
+  },
+  "Shuttle's Maximum Run": {
+    wat: 'Maximale bewegingsafstand van de shuttle. Veiligheidslimiet voor mechanische slag.',
+    hoger: 'NIET aanpassen -- moet overeenkomen met fysieke machine.',
+    lager: 'NIET aanpassen tenzij kalibratie.',
+    advies: 'NIET AANPASSEN. Origineel: 285mm. Onjuiste waarde = mechanische botsing.',
+    systeem: 'Veiligheidslimiet. Altijd gelijk aan fysieke machine-specificatie houden.',
+    tijdlijn: ''
+  },
+  "Shuttle's performances": {
+    wat: 'Globale schaalfactor voor shuttle gedrag. Vermindert de algehele agressiviteit van de beweging.',
+    hoger: 'Snellere, vollere respons (100% = maximale snelheid en reactie).',
+    lager: 'Soepelere, veiligere beweging. Minder agressief.',
+    advies: 'Systeem te agressief? Verlagen (bijv. 89% → 75%). Systeem te traag? Iets verhogen. Origineel: 89%.',
+    systeem: 'Masterregelaar voor shuttle gedrag. Aanpassen vóór individuele parameters als algemeen gedrag niet klopt.',
+    tijdlijn: ''
+  },
+
+  // ── MATERIAL LOOP ─────────────────────────────────────────────────
+  'Material loop': {
+    wat: 'Hoofdspanningswaarde voor de materiaalloop. De primaire referentiewaarde voor foliespanning tussen unwinder en machine.',
+    hoger: 'Meer spanning → folie strakker → betere controle maar risico op uitgerekte seals of scheuren.',
+    lager: 'Minder spanning → folie soepeler → minder kans op uitrekken maar folie kan instabiel worden.',
+    advies: 'Folie te strak of seals rekken uit? Verlagen (80→60-70). Folie te los/instabiel? Verhogen. Typisch bereik: 60-90. Origineel: 80.',
+    systeem: 'BASIS spanningsregeling. Als rewinder te hard trekt werkt aanpassing van Material Loop alleen niet. Rewinder en Material Loop samen aanpassen.',
+    tijdlijn: ''
+  },
+  'Material loop initial tension': {
+    wat: 'Startspanning bij het opstarten van de machine. Bepaalt hoe spanning aangebracht wordt bij het begin.',
+    hoger: 'Meer spanning bij opstarten → stabielere start maar risico op schokken.',
+    lager: 'Minder spanning bij start → rustigere aanloop.',
+    advies: 'Normaal op 0 houden. Alleen verhogen als instabiliteit bij opstarten optreedt. Origineel: 0.',
+    systeem: 'Alleen actief bij machine opstarten.',
+    tijdlijn: ''
+  },
+  "Material's Releasing": {
+    wat: 'Hoeveelheid folie die vrijgegeven wordt (slack) tijdens spanningscorrectie. Fijnafstemming van de basisspanning.',
+    hoger: 'Meer slack → zachtere spanning → folie soepeler.',
+    lager: 'Minder slack → strakker systeem → risico op instabiliteit.',
+    advies: 'Folie te strak? Verhogen (6→8-10mm). Systeem instabiel of te los? Verlagen. Typisch bereik: 5-10mm. Origineel: 6mm.',
+    systeem: 'Fijnafstemming na Material Loop instelling. Stap 2 in afstelstrategie.',
+    tijdlijn: ''
+  },
+  'loop integral time': {
+    wat: 'Integraalterm van de PID regeling. Bepaalt hoe snel het systeem geaccumuleerde spanningsfouten corrigeert.',
+    hoger: 'Langzamere correctie → soepeler maar trager bijsturen. Minder oscillatie.',
+    lager: 'Snellere correctie → responsiever maar risico op over-correctie en oscillatie.',
+    advies: 'Systeem oscilleert of over-corrigeert? Verhogen (1000→2000-4000ms). Systeem reageert te traag? Iets verlagen. Origineel: 1000ms.',
+    systeem: 'Stabiliteitsparameter voor spanningsregeling. Stap 3 in afstelstrategie na Material Loop en Material Releasing.',
+    tijdlijn: ''
+  },
+
+  // ── CORES DIAMETER INCREMENT ───────────────────────────────────────
+  'Cores diameter increment': {
+    wat: 'Extra diameter correctie die opgeteld wordt bij de kokerdiameter in de wikkelberekening. Effectieve kokerdiameter = kokerdiameter + increment. Alleen effect op het BEGIN van het wikkelen.',
+    hoger: 'Machine gaat uit van grotere koker → rewinder start met lager effectief koppel → zachtere start → minder spanning bij begin van wikkelen.',
+    lager: 'Machine gebruikt werkelijke kokergrootte → directere koppelrespons → iets hogere initiële spanning.',
+    advies: 'Normaal op 0mm laten staan. Rollen starten te strak op koker? Verhogen met 5-10mm. Koker vervormt? Iets verhogen. Wikkelen te los bij start? Terug naar 0mm. Bereik: 0-20mm.',
+    systeem: 'ALLEEN voor start-van-rol spanning. Niet gebruiken voor offset timing, breukpositie of vrijloopproblemen. Die vereisen andere parameters.',
+    tijdlijn: ''
+  },
+
+  // ── MATERIAL & FEEDER MOTORS ───────────────────────────────────────
+  'bit / meter material': {
+    wat: 'Encoder resolutie voor het folie-transport -- hoeveel encoder-bits overeenkomen met 1 meter folie. Kalibratieparameter voor nauwkeurige meting van foliedoorloop.',
+    hoger: 'NIET aanpassen -- onjuiste waarde = verkeerde foliemeting en timing.',
+    lager: 'NIET aanpassen tenzij kalibratie.',
+    advies: 'NIET AANPASSEN. Origineel: 12299 bit. Alleen bij volledige systeemkalibratie.',
+    systeem: 'Kalibratieparameter. Bepaalt nauwkeurigheid van foliemeting voor perforatie en wisseltiming.',
+    tijdlijn: ''
+  },
+  'kp Material': {
+    wat: 'Proportionele versterking voor de materiaalmotor regeling. Bepaalt hoe snel de motor reageert op snelheidsverschillen.',
+    hoger: 'Snellere reactie → risico op oscillatie of instabiele folievoer.',
+    lager: 'Langzamere reactie → soepeler maar minder precies.',
+    advies: 'Folievoer instabiel of trillend? Verlagen. Folievoer te traag reagerend? Iets verhogen. Origineel: 300.',
+    systeem: 'PID regeling voor materiaalmotor. Werkt samen met kp Feeder voor gesynchroniseerde folievoer.',
+    tijdlijn: ''
+  },
+  'kp Feeder': {
+    wat: 'Proportionele versterking voor de feeder motor regeling. Bepaalt hoe snel de feeder reageert op afwijkingen.',
+    hoger: 'Snellere reactie → risico op oscillatie.',
+    lager: 'Soepelere reactie → minder precies.',
+    advies: 'Feeder instabiel? Verlagen. Te traag? Iets verhogen. Origineel: 300. Feeder en materiaalmotor moeten in balans zijn.',
+    systeem: 'Feeder duwt folie vooruit. Rewinder trekt achteruit. Balans tussen beide = stabiel systeem.',
+    tijdlijn: ''
+  },
+  "Material's Maximum Speed": {
+    wat: 'Maximale transportsnelheid van het folie door de machine. Bovengrens voor productiesnelheid.',
+    hoger: 'Hogere productie mogelijk → meer slijtage en risico op instabiliteit bij hoge snelheid.',
+    lager: 'Veiligere werking → lagere productie.',
+    advies: 'Niet aanpassen tenzij productiesnelheid verhoogd moet worden. Origineel: 180 m/min.',
+    systeem: 'Veiligheidslimiet voor folie-transport snelheid.',
+    tijdlijn: ''
+  },
+  "Material's acceleration": {
+    wat: 'Tijd waarbinnen de materiaalmotor optrekt naar productie snelheid. Langere tijd = soepelere acceleratie.',
+    hoger: 'Soepelere aanloop → minder spanningspieken bij starten → folie rustiger.',
+    lager: 'Snellere aanloop → agressiever → risico op spanningspieken en folie-instabiliteit.',
+    advies: 'Spanningspieken bij starten? Verhogen. Origineel: 15s.',
+    systeem: 'Werkt samen met Material deceleration. Folie en feeder moeten gelijk accelereren.',
+    tijdlijn: ''
+  },
+  "Material's deceleration": {
+    wat: 'Tijd waarbinnen de materiaalmotor afremt bij stoppen. Langere tijd = soepelere stop.',
+    hoger: 'Soepelere stop → minder spanningspieken bij stoppen.',
+    lager: 'Snellere stop → agressiever → risico op spanningspieken.',
+    advies: 'Spanningspieken bij stoppen? Verhogen. Origineel: 15s.',
+    systeem: 'Samen met acceleration de ramp-parameters voor folie-transport.',
+    tijdlijn: ''
+  },
+  "Material's fast deceleration": {
+    wat: 'Snelle noodstop vertraging voor de materiaalmotor. Actief bij noodstop of foutconditie.',
+    hoger: 'Langzamere noodstop → soepeler maar meer folie-doorloop bij fout.',
+    lager: 'Snellere noodstop → abrupter maar minder folie-verspilling bij fout.',
+    advies: 'Normaal niet aanpassen. Origineel: 4s.',
+    systeem: 'Veiligheidsparameter voor noodstop situaties.',
+    tijdlijn: ''
+  },
+  'Photocell offset': {
+    wat: 'Positiecorrectie voor de fotocel die de perforatie detecteert. Kalibreert de positie van de perforatie-sensor.',
+    hoger: 'Sensor detecteert perforatie later → timing verschuift.',
+    lager: 'Sensor detecteert perforatie eerder.',
+    advies: 'Niet aanpassen tenzij perforatie consistent op verkeerde positie gedetecteerd wordt. Origineel: 1367.',
+    systeem: 'Kalibratieparameter voor perforatie-detectie. Direct gerelateerd aan wisseltiming.',
+    tijdlijn: ''
+  },
+  "Sealing bar's blow deactiv. speed": {
+    wat: 'Snelheid waaronder de luchtblazer van de sealbalk uitgeschakeld wordt. Voorkomt blazen bij lage snelheid.',
+    hoger: 'Luchtblazer wordt later uitgeschakeld → actief bij hogere snelheden.',
+    lager: 'Luchtblazer wordt eerder uitgeschakeld.',
+    advies: 'Normaal niet aanpassen. Origineel: 25 m/min.',
+    systeem: 'Veiligheidsparameter voor sealbalk luchtblazer.',
+    tijdlijn: ''
+  },
+  'Tension photocell debounce': {
+    wat: 'Dempingstijd voor de spanning-fotocel. Voorkomt valse detecties door trillingen of flikkering van het fotocelsignaal.',
+    hoger: 'Meer demping → minder valse alarmen maar trager detectie.',
+    lager: 'Snellere detectie → risico op valse alarmen door trillingen.',
+    advies: 'Valse fotocelalarm? Verhogen. Origineel: 50ms.',
+    systeem: 'Signaalfilter voor spanning-fotocel. Niet gerelateerd aan productie-timing.',
+    tijdlijn: ''
+  },
+  'Duration of dancing roller ch.pres.': {
+    wat: 'Duur van de dancer-roldruk tijdens de wisselcyclus. Bepaalt hoe lang de dancer extra druk uitoefent bij de wissel.',
+    hoger: 'Langere drukperiode → meer stabiliteit tijdens wissel maar langzamere cyclus.',
+    lager: 'Kortere drukperiode → snellere cyclus maar minder stabiliteit.',
+    advies: 'Wissel instabiel? Verhogen. Origineel: 2000ms.',
+    systeem: 'Werkt samen met Dancing roll relieving speed voor dancer-gedrag tijdens wissel.',
+    tijdlijn: ''
+  },
+  "Material's Stop Speed": {
+    wat: 'Snelheid waarbinnen de materiaalmotor stopt na een stopcommando. Langzame eindsnelheid voor soepele stop.',
+    hoger: 'Motor stopt op hogere snelheid → soepelere overgang maar meer doorloop.',
+    lager: 'Motor stopt op lagere snelheid → abruptere stop.',
+    advies: 'Normaal niet aanpassen. Origineel: 8 m/min.',
+    systeem: 'Eindsnelheid parameter voor gecontroleerde stop.',
+    tijdlijn: ''
+  },
+  "Material's moving time at Stop": {
+    wat: 'Tijd dat de materiaalmotor nog beweegt na een stopcommando. Uitlooptijd voor gecontroleerde stop.',
+    hoger: 'Langere uitloop → soepelere stop maar meer folie-doorloop.',
+    lager: 'Kortere uitloop → abruptere stop.',
+    advies: 'Normaal niet aanpassen. Origineel: 100ms.',
+    systeem: 'Uitlooptimer na stopcommando.',
+    tijdlijn: ''
+  }
+
+};
+
+function toonParamUitleg(naam) {
+  var uitleg = PARAM_UITLEG[naam];
+  var overlay = document.getElementById('param-uitleg-overlay');
+  var box = document.getElementById('param-uitleg-box');
+  if(!overlay || !box) return;
+
+  var html = '<div style="font-size:9px;color:#f59e0b;letter-spacing:3px;text-transform:uppercase;margin-bottom:6px;">Parameter Uitleg</div>';
+  html += '<div style="font-weight:700;font-size:18px;color:#e5e7eb;margin-bottom:16px;line-height:1.3;">'+naam+'</div>';
+
+  if(uitleg) {
+    html += '<div style="display:flex;flex-direction:column;gap:10px;">';
+
+    html += '<div style="background:#070a10;border:1px solid #1a2540;border-left:3px solid #60a5fa;border-radius:4px;padding:10px 12px;">';
+    html += '<div style="font-size:9px;color:#60a5fa;letter-spacing:2px;margin-bottom:4px;">WAT DOET DEZE PARAMETER?</div>';
+    html += '<div style="font-size:13px;color:#e5e7eb;line-height:1.6;">'+uitleg.wat+'</div></div>';
+
+    html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">';
+    html += '<div style="background:#070a10;border:1px solid rgba(52,211,153,0.3);border-radius:4px;padding:10px 12px;">';
+    html += '<div style="font-size:9px;color:#34d399;letter-spacing:2px;margin-bottom:4px;">&#8593; HOGER</div>';
+    html += '<div style="font-size:12px;color:#9ca3af;line-height:1.5;">'+uitleg.hoger+'</div></div>';
+    html += '<div style="background:#070a10;border:1px solid rgba(239,68,68,0.3);border-radius:4px;padding:10px 12px;">';
+    html += '<div style="font-size:9px;color:#ef4444;letter-spacing:2px;margin-bottom:4px;">&#8595; LAGER</div>';
+    html += '<div style="font-size:12px;color:#9ca3af;line-height:1.5;">'+uitleg.lager+'</div></div>';
+    html += '</div>';
+
+    html += '<div style="background:#070a10;border:1px solid rgba(245,158,11,0.3);border-radius:4px;padding:10px 12px;">';
+    html += '<div style="font-size:9px;color:#f59e0b;letter-spacing:2px;margin-bottom:4px;">&#128161; ADVIES</div>';
+    html += '<div style="font-size:13px;color:#fcd34d;line-height:1.6;">'+uitleg.advies+'</div></div>';
+
+    if(uitleg.tijdlijn) {
+      html += '<div style="background:#070a10;border:1px solid rgba(167,139,250,0.3);border-radius:4px;padding:10px 12px;">';
+      html += '<div style="font-size:9px;color:#a78bfa;letter-spacing:2px;margin-bottom:4px;">&#9201; TIJDLIJN</div>';
+      html += '<div style="font-size:11px;color:#a78bfa;line-height:1.7;">'+uitleg.tijdlijn+'</div></div>';
+    }
+
+    html += '<div style="background:#070a10;border:1px solid #1a2540;border-radius:4px;padding:8px 12px;">';
+    html += '<div style="font-size:9px;color:#6b7280;letter-spacing:2px;margin-bottom:4px;">SYSTEEM</div>';
+    html += '<div style="font-size:11px;color:#6b7280;line-height:1.5;">'+uitleg.systeem+'</div></div>';
+
+    html += '</div>';
+  } else {
+    html += '<div style="font-size:13px;color:#6b7280;">Nog geen uitleg beschikbaar voor deze parameter.</div>';
+  }
+
+  box.innerHTML = html;
+  overlay.style.display = 'flex';
+}
+
+function sluitParamUitleg() {
+  var overlay = document.getElementById('param-uitleg-overlay');
+  if(overlay) overlay.style.display = 'none';
+}
+
+// ── AANGEPASTE PARAMETERS ────────────────────────────────────────────
+var AANGEPAST_PROBLEMEN = {
+  'p1': {
+    naam: 'Wisselt niet goed',
+    params: [
+      {id:'p1_offset1',     label:'Rewinder offset 1',           origineel:'10750 mm'},
+      {id:'p1_offset2',     label:'Rewinder offset 2',           origineel:'10550 mm'},
+      {id:'p1_advance',     label:'Rolls change advance',        origineel:'400 ms'},
+      {id:'p1_matspeed',    label:'Material speed at change',    origineel:'80 m/min'},
+      {id:'p1_matspeed75',  label:'Mat. speed diam. <75mm',      origineel:'82 m/min'},
+      {id:'p1_blow_low',    label:'Blow advance at low speed',   origineel:'100 ms'},
+      {id:'p1_blow_high',   label:'Blow advance at high speed',  origineel:'100 ms'},
+      {id:'p1_pressor',     label:'Pressor roll advance',        origineel:'4000 ms'}
+    ]
+  },
+  'p2': {
+    naam: 'Folie te strak wisselzone',
+    params: [
+      {id:'p2_matspeed',    label:'Material speed at change',    origineel:'80 m/min'},
+      {id:'p2_matspeed75',  label:'Mat. speed diam. <75mm',      origineel:'82 m/min'},
+      {id:'p2_loop_max',    label:'Material loop max tension',   origineel:'180%'},
+      {id:'p2_loop_run',    label:'Material loop Kp at running', origineel:'70'},
+      {id:'p2_loop_ramp',   label:'Material loop Kp on ramp',   origineel:'120'},
+      {id:'p2_releasing',   label:"Material's Releasing",       origineel:'6 mm'},
+      {id:'p2_blow_low',    label:'Blow advance at low speed',   origineel:'100 ms'},
+      {id:'p2_blow_high',   label:'Blow advance at high speed',  origineel:'100 ms'}
+    ]
+  }
+};
+
+function renderAangepastProbleem(pid) {
+  var prob = AANGEPAST_PROBLEMEN[pid];
+  if(!prob) return;
+  var el = document.getElementById(pid+'-rijen');
+  if(!el) return;
+  var opgeslagen = {};
+  try { opgeslagen = JSON.parse(localStorage.getItem('aangepast_'+pid)||'{}'); } catch(e){}
+  var html = '';
+  prob.params.forEach(function(p) {
+    var val = opgeslagen[p.id] || '';
+    var borderClr = val ? '#facc15' : '#1a2540';
+    var textClr = val ? '#fcd34d' : '#9ca3af';
+    html += '<div style="display:grid;grid-template-columns:1fr 80px 80px;gap:4px;align-items:center;padding:8px 0;border-bottom:1px solid #1a2540;">';
+    html += '<div style="font-size:11px;color:#9ca3af;">'+p.label+'</div>';
+    html += '<div style="font-size:12px;color:#6b7280;text-align:center;">'+p.origineel+'</div>';
+    html += '<input id="'+p.id+'" type="text" value="'+val+'" placeholder="-"';
+    html += ' style="background:#070a10;border:1px solid '+borderClr+';border-radius:4px;';
+    html += 'color:'+textClr+';font-size:12px;padding:6px 4px;text-align:center;width:100%;outline:none;">';
+    html += '</div>';
+  });
+  el.innerHTML = html;
+}
+
+function slaAangepastOp(pid) {
+  var prob = AANGEPAST_PROBLEMEN[pid];
+  if(!prob) return;
+  var data = {};
+  prob.params.forEach(function(p) {
+    var el = document.getElementById(p.id);
+    if(el && el.value.trim()) data[p.id] = el.value.trim();
+  });
+  localStorage.setItem('aangepast_'+pid, JSON.stringify(data));
+  toast('Opgeslagen!');
+  renderAangepastProbleem(pid);
+}
+
+function resetAangepast(pid) {
+  localStorage.removeItem('aangepast_'+pid);
+  toast('Reset naar origineel');
+  renderAangepastProbleem(pid);
+}
+
+function toggleSectie(bodyId, chevId) {
+  var body = document.getElementById(bodyId);
+  var chev = document.getElementById(chevId);
+  if(!body) return;
+  var open = body.style.display !== 'none';
+  body.style.display = open ? 'none' : 'block';
+  if(chev) chev.textContent = open ? '\u203a' : '\u2039';
+  // Init aangepaste parameters als ze geopend worden
+  if(!open) {
+    if(bodyId === 'p1-body') renderAangepastProbleem('p1');
+    if(bodyId === 'p2-body') renderAangepastProbleem('p2');
+  }
+}
+
 function toggleMachineInfo() {
   var sectie = document.getElementById('machine-info-sectie');
   var chev = document.getElementById('machine-info-chev');
@@ -1535,10 +2378,14 @@ checkLogin();
 
 ```
 <!-- HISTORY -->
-<div class="form-card" style="border-top-color:#ef4444;">
-  <div class="form-card-title" style="color:#ef4444;">&#128203; History</div>
-  <div style="font-size:11px;color:#6b7280;margin-bottom:16px;">Versie overzicht van alle updates</div>
-
+<div class="form-card" style="border-top-color:#ef4444;cursor:pointer;" onclick="toggleSectie('history-body','history-chev')">
+  <div style="display:flex;align-items:center;justify-content:space-between;">
+    <div class="form-card-title" style="color:#ef4444;margin-bottom:0;">&#128203; History</div>
+    <span id="history-chev" style="color:#ef4444;font-size:20px;">&#8250;</span>
+  </div>
+  <div style="font-size:11px;color:#6b7280;margin-top:6px;">Versie overzicht van alle updates</div>
+</div>
+<div id="history-body" style="display:none;margin-top:-8px;background:#0f1520;border:1px solid #1a2540;border-top:none;border-radius:0 0 4px 4px;padding:16px;">
   <div style="display:flex;flex-direction:column;gap:0;">
 
     <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #1a2540;">
@@ -1634,56 +2481,56 @@ checkLogin();
   <div class="form-card" style="border-top-color:#f59e0b;">
     <div class="form-card-title" style="color:#f59e0b;">&#128260; RA Rolls Change Parameters</div>
 
-    <div style="font-size:10px;color:#60a5fa;letter-spacing:1px;margin:8px 0 6px;">ROLLS CHANGE 1</div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin:8px 0 6px;"><span style="font-size:10px;color:#60a5fa;letter-spacing:1px;">ROLLS CHANGE 1</span><span style="font-size:9px;background:rgba(96,165,250,0.1);border:1px solid rgba(96,165,250,0.3);color:#60a5fa;padding:2px 8px;border-radius:3px;">ORIGINELE SETTINGS</span></div>
     <div style="display:flex;flex-direction:column;gap:0;">
       <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Rewinder offset</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">10750 mm</span></div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Rolls change advance</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">800 ms</span></div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Material speed at change</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">80 m/min</span></div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Mat. speed at change diam. &lt;75mm</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">82 m/min</span></div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Blow advance at low speed</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">100 ms</span></div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Blow advance at high speed</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">100 ms</span></div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;"><span style="font-size:11px;color:#9ca3af;">Pressor roll advance</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">4000 ms</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;text-decoration:underline;text-decoration-style:dotted;cursor:pointer;" onclick="toonParamUitleg('Rolls change advance')">Rolls change advance &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">800 ms</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;text-decoration:underline;text-decoration-style:dotted;cursor:pointer;" onclick="toonParamUitleg('Material speed at change')">Material speed at change &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">80 m/min</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;text-decoration:underline;text-decoration-style:dotted;cursor:pointer;" onclick="toonParamUitleg('Mat. speed at change diam. <75mm')">Mat. speed at change diam. &lt;75mm &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">82 m/min</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;text-decoration:underline;text-decoration-style:dotted;cursor:pointer;" onclick="toonParamUitleg('Blow advance at low speed')">Blow advance at low speed &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">100 ms</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;text-decoration:underline;text-decoration-style:dotted;cursor:pointer;" onclick="toonParamUitleg('Blow advance at high speed')">Blow advance at high speed &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">100 ms</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;"><span style="font-size:11px;color:#9ca3af;text-decoration:underline;text-decoration-style:dotted;cursor:pointer;" onclick="toonParamUitleg('Pressor roll advance')">Pressor roll advance &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">4000 ms</span></div>
     </div>
 
-    <div style="font-size:10px;color:#60a5fa;letter-spacing:1px;margin:14px 0 6px;">ROLLS CHANGE 2</div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin:14px 0 6px;"><span style="font-size:10px;color:#60a5fa;letter-spacing:1px;">ROLLS CHANGE 2</span><span style="font-size:9px;background:rgba(96,165,250,0.1);border:1px solid rgba(96,165,250,0.3);color:#60a5fa;padding:2px 8px;border-radius:3px;">ORIGINELE SETTINGS</span></div>
     <div style="display:flex;flex-direction:column;gap:0;">
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Rewinder offset 1</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">10750 mm</span></div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Rewinder offset 2</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">10550 mm</span></div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Rolls change advance</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">400 ms</span></div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Material speed at change</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">80 m/min</span></div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Mat. speed at change diam. &lt;75mm</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">82 m/min</span></div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Blow advance at low speed</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">100 ms</span></div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Blow advance at high speed</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">100 ms</span></div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Pressor roll advance</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">4000 ms</span></div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Cores diameter increment</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">0 mm</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;text-decoration:underline;text-decoration-style:dotted;cursor:pointer;" onclick="toonParamUitleg('Rewinder offset 1')">Rewinder offset 1 &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">10750 mm</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;text-decoration:underline;text-decoration-style:dotted;cursor:pointer;" onclick="toonParamUitleg('Rewinder offset 2')">Rewinder offset 2 &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">10550 mm</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;text-decoration:underline;text-decoration-style:dotted;cursor:pointer;" onclick="toonParamUitleg('Rolls change advance')">Rolls change advance &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">400 ms</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;text-decoration:underline;text-decoration-style:dotted;cursor:pointer;" onclick="toonParamUitleg('Material speed at change')">Material speed at change &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">80 m/min</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;text-decoration:underline;text-decoration-style:dotted;cursor:pointer;" onclick="toonParamUitleg('Mat. speed at change diam. <75mm')">Mat. speed at change diam. &lt;75mm &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">82 m/min</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;text-decoration:underline;text-decoration-style:dotted;cursor:pointer;" onclick="toonParamUitleg('Blow advance at low speed')">Blow advance at low speed &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">100 ms</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;text-decoration:underline;text-decoration-style:dotted;cursor:pointer;" onclick="toonParamUitleg('Blow advance at high speed')">Blow advance at high speed &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">100 ms</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;text-decoration:underline;text-decoration-style:dotted;cursor:pointer;" onclick="toonParamUitleg('Pressor roll advance')">Pressor roll advance &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">4000 ms</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;text-decoration:underline;text-decoration-style:dotted;cursor:pointer;" onclick="toonParamUitleg('Cores diameter increment')">Cores diameter increment &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">0 mm</span></div>
       <div style="display:flex;justify-content:space-between;padding:8px 0;"><span style="font-size:11px;color:#9ca3af;">Advance 2&deg; break EV</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">60 ms</span></div>
     </div>
   </div>
 
   <!-- RA REWINDERS -->
   <div class="form-card" style="border-top-color:#a78bfa;">
-    <div class="form-card-title" style="color:#a78bfa;">&#127897;&#65039; RA Rewinders Parameters</div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid #1a2540;"><span style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#a78bfa;">&#127897;&#65039; RA Rewinders Parameters</span><span style="font-size:9px;background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.3);color:#a78bfa;padding:2px 8px;border-radius:3px;">ORIGINELE SETTINGS</span></div>
     <div style="display:flex;flex-direction:column;gap:0;">
       <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Max roll's diameter</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">350 mm</span></div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">V DAC max rewinder</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">9000 mV</span></div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Max speed rewinder</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">2400 rpm</span></div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Danc.roll.work posit.</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">5000 mV</span></div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Matertens.speed</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">500 rpm</span></div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Roll's ch.sp.low</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">150 rpm</span></div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Roll's ch.sp.high</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">30 m/min</span></div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Inversion length</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">65 m/min</span></div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Inversion speed</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">200 mm</span></div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Break stop Timer</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">300 rpm</span></div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Reduction numerator</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">2000 ms</span></div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Reduction denomination</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">1600</span></div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Dancing roll. relieving speed</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">400</span></div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Tail recuperat. deceleration time</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">10 m/min</span></div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Blower timer</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">2000 ms</span></div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Kp Dancing roll.</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">2000 ms</span></div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Kff Material</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">5</span></div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Time cycle</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">100%</span></div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">T.out danc.roll.zero</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">36 s</span></div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;"><span style="font-size:11px;color:#9ca3af;">Offset static charger</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">30000 ms</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;text-decoration:underline;text-decoration-style:dotted;cursor:pointer;" onclick="toonParamUitleg('V DAC max rewinder')">V DAC max rewinder &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">9000 mV</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;text-decoration:underline;text-decoration-style:dotted;cursor:pointer;" onclick="toonParamUitleg('Max speed rewinder')">Max speed rewinder &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">2400 rpm</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;text-decoration:underline;text-decoration-style:dotted;cursor:pointer;" onclick="toonParamUitleg('Danc.roll.work posit.')">Danc.roll.work posit. &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">5000 mV</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;text-decoration:underline;text-decoration-style:dotted;cursor:pointer;" onclick="toonParamUitleg('Matertens.speed')">Matertens.speed &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">500 rpm</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;text-decoration:underline;text-decoration-style:dotted;cursor:pointer;" onclick="toonParamUitleg('Roll's ch.sp.low')">Roll's ch.sp.low &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">150 rpm</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;text-decoration:underline;text-decoration-style:dotted;cursor:pointer;" onclick="toonParamUitleg('Roll's ch.sp.high')">Roll's ch.sp.high &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">30 m/min</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;text-decoration:underline;text-decoration-style:dotted;cursor:pointer;" onclick="toonParamUitleg('Inversion length')">Inversion length &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">65 m/min</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;text-decoration:underline;text-decoration-style:dotted;cursor:pointer;" onclick="toonParamUitleg('Inversion speed')">Inversion speed &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">200 mm</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;text-decoration:underline;text-decoration-style:dotted;cursor:pointer;" onclick="toonParamUitleg('Break stop Timer')">Break stop Timer &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">300 rpm</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;text-decoration:underline;text-decoration-style:dotted;cursor:pointer;" onclick="toonParamUitleg('Reduction numerator')">Reduction numerator &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">2000 ms</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;text-decoration:underline;text-decoration-style:dotted;cursor:pointer;" onclick="toonParamUitleg('Reduction denomination')">Reduction denomination &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">1600</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;text-decoration:underline;text-decoration-style:dotted;cursor:pointer;" onclick="toonParamUitleg('Dancing roll. relieving speed')">Dancing roll. relieving speed &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">400</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;text-decoration:underline;text-decoration-style:dotted;cursor:pointer;" onclick="toonParamUitleg('Tail recuperat. deceleration time')">Tail recuperat. deceleration time &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">10 m/min</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;text-decoration:underline;text-decoration-style:dotted;cursor:pointer;" onclick="toonParamUitleg('Blower timer')">Blower timer &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">2000 ms</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;text-decoration:underline;text-decoration-style:dotted;cursor:pointer;" onclick="toonParamUitleg('Kp Dancing roll.')">Kp Dancing roll. &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">2000 ms</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;text-decoration:underline;text-decoration-style:dotted;cursor:pointer;" onclick="toonParamUitleg('Kff Material')">Kff Material &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">5</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;text-decoration:underline;text-decoration-style:dotted;cursor:pointer;" onclick="toonParamUitleg('Time cycle')">Time cycle &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">100%</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;text-decoration:underline;text-decoration-style:dotted;cursor:pointer;" onclick="toonParamUitleg('T.out danc.roll.zero')">T.out danc.roll.zero &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">36 s</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;"><span style="font-size:11px;color:#9ca3af;text-decoration:underline;text-decoration-style:dotted;cursor:pointer;" onclick="toonParamUitleg('Offset static charger')">Offset static charger &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">30000 ms</span></div>
     </div>
   </div>
 
@@ -1691,25 +2538,25 @@ checkLogin();
   <div class="form-card" style="border-top-color:#60a5fa;">
     <div class="form-card-title" style="color:#60a5fa;">&#128260; Shuttle's Motor &amp; Material Loop</div>
 
-    <div style="font-size:10px;color:#60a5fa;letter-spacing:1px;margin:4px 0 6px;">SHUTTLE MOTOR</div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin:4px 0 6px;"><span style="font-size:10px;color:#60a5fa;letter-spacing:1px;">SHUTTLE MOTOR</span><span style="font-size:9px;background:rgba(96,165,250,0.1);border:1px solid rgba(96,165,250,0.3);color:#60a5fa;padding:2px 8px;border-radius:3px;">ORIGINELE SETTINGS</span></div>
     <div style="display:flex;flex-direction:column;gap:0;">
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">bit / meter shuttle motor</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">62056 bit</span></div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">kp shuttle</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">2500</span></div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Shuttle's Motor Max. Speed</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">2500 rpm</span></div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Shuttle's Motor Max. Acceler.</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">30 ms</span></div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Shuttle 0 position</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">150 mm</span></div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Shuttle's Maximum Run</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">285 mm</span></div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;"><span style="font-size:11px;color:#9ca3af;">Shuttle's performances</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">89%</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;text-decoration:underline;text-decoration-style:dotted;cursor:pointer;" onclick="toonParamUitleg('bit / meter shuttle motor')">bit / meter shuttle motor &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">62056 bit</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;text-decoration:underline;text-decoration-style:dotted;cursor:pointer;" onclick="toonParamUitleg('kp shuttle')">kp shuttle &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">2500</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;text-decoration:underline;text-decoration-style:dotted;cursor:pointer;" onclick="toonParamUitleg('Shuttle's Motor Max. Speed')">Shuttle's Motor Max. Speed &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">2500 rpm</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;text-decoration:underline;text-decoration-style:dotted;cursor:pointer;" onclick="toonParamUitleg('Shuttle's Motor Max. Acceler.')">Shuttle's Motor Max. Acceler. &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">30 ms</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;text-decoration:underline;text-decoration-style:dotted;cursor:pointer;" onclick="toonParamUitleg('Shuttle 0 position')">Shuttle 0 position &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">150 mm</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;text-decoration:underline;text-decoration-style:dotted;cursor:pointer;" onclick="toonParamUitleg('Shuttle's Maximum Run')">Shuttle's Maximum Run &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">285 mm</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;"><span style="font-size:11px;color:#9ca3af;text-decoration:underline;text-decoration-style:dotted;cursor:pointer;" onclick="toonParamUitleg('Shuttle's performances')">Shuttle's performances &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">89%</span></div>
     </div>
 
-    <div style="font-size:10px;color:#60a5fa;letter-spacing:1px;margin:14px 0 6px;">MATERIAL LOOP</div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin:14px 0 6px;"><span style="font-size:10px;color:#60a5fa;letter-spacing:1px;">MATERIAL LOOP</span><span style="font-size:9px;background:rgba(96,165,250,0.1);border:1px solid rgba(96,165,250,0.3);color:#60a5fa;padding:2px 8px;border-radius:3px;">ORIGINELE SETTINGS</span></div>
     <div style="display:flex;flex-direction:column;gap:0;">
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Material loop</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">80</span></div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Material loop max tension</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">180%</span></div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Material loop initial tension</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">0</span></div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Material loop Kp on ramp</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">120</span></div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Material loop Kp at running</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">70</span></div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Material's Releasing</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">6 mm</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;text-decoration:underline;text-decoration-style:dotted;cursor:pointer;" onclick="toonParamUitleg('Material loop')">Material loop &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">80</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;text-decoration:underline;text-decoration-style:dotted;cursor:pointer;" onclick="toonParamUitleg('Material loop max tension')">Material loop max tension &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">180%</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;text-decoration:underline;text-decoration-style:dotted;cursor:pointer;" onclick="toonParamUitleg('Material loop initial tension')">Material loop initial tension &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">0</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;text-decoration:underline;text-decoration-style:dotted;cursor:pointer;" onclick="toonParamUitleg('Material loop Kp on ramp')">Material loop Kp on ramp &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">120</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;text-decoration:underline;text-decoration-style:dotted;cursor:pointer;" onclick="toonParamUitleg('Material loop Kp at running')">Material loop Kp at running &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">70</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;text-decoration:underline;text-decoration-style:dotted;cursor:pointer;" onclick="toonParamUitleg('Material's Releasing')">Material's Releasing &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">6 mm</span></div>
       <div style="display:flex;justify-content:space-between;padding:8px 0;"><span style="font-size:11px;color:#9ca3af;">Loop integral time</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">1000 ms</span></div>
     </div>
   </div>
@@ -1718,35 +2565,39 @@ checkLogin();
   <div class="form-card" style="border-top-color:#34d399;">
     <div class="form-card-title" style="color:#34d399;">&#9881;&#65039; Material &amp; Feeder Motors</div>
 
-    <div style="font-size:10px;color:#34d399;letter-spacing:1px;margin:4px 0 6px;">PARAMETERS MATERIAL AND FEEDER MOTORS</div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin:4px 0 6px;"><span style="font-size:10px;color:#34d399;letter-spacing:1px;">MATERIAL &amp; FEEDER MOTORS</span><span style="font-size:9px;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.3);color:#34d399;padding:2px 8px;border-radius:3px;">ORIGINELE SETTINGS</span></div>
     <div style="display:flex;flex-direction:column;gap:0;">
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">bit / meter material</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">12299 bit</span></div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">kp Material</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">300</span></div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">kp Feeder</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">300</span></div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Material's Maximum Speed</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">180 m/t</span></div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Material's acceleration</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">15 s</span></div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Material's deceleration</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">15 s</span></div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Material's fast deceleration</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">4 s</span></div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Photocell offset</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">1367</span></div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;"><span style="font-size:11px;color:#9ca3af;">Sealing bar's blow deactiv. speed</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">25 m/min</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;text-decoration:underline;text-decoration-style:dotted;cursor:pointer;" onclick="toonParamUitleg('bit / meter material')">bit / meter material &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">12299 bit</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;text-decoration:underline;text-decoration-style:dotted;cursor:pointer;" onclick="toonParamUitleg('kp Material')">kp Material &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">300</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;text-decoration:underline;text-decoration-style:dotted;cursor:pointer;" onclick="toonParamUitleg('kp Feeder')">kp Feeder &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">300</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;text-decoration:underline;text-decoration-style:dotted;cursor:pointer;" onclick="toonParamUitleg('Material's Maximum Speed')">Material's Maximum Speed &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">180 m/t</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;text-decoration:underline;text-decoration-style:dotted;cursor:pointer;" onclick="toonParamUitleg('Material's acceleration')">Material's acceleration &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">15 s</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;text-decoration:underline;text-decoration-style:dotted;cursor:pointer;" onclick="toonParamUitleg('Material's deceleration')">Material's deceleration &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">15 s</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;text-decoration:underline;text-decoration-style:dotted;cursor:pointer;" onclick="toonParamUitleg('Material's fast deceleration')">Material's fast deceleration &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">4 s</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;text-decoration:underline;text-decoration-style:dotted;cursor:pointer;" onclick="toonParamUitleg('Photocell offset')">Photocell offset &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">1367</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;"><span style="font-size:11px;color:#9ca3af;text-decoration:underline;text-decoration-style:dotted;cursor:pointer;" onclick="toonParamUitleg('Sealing bar's blow deactiv. speed')">Sealing bar's blow deactiv. speed &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">25 m/min</span></div>
     </div>
 
-    <div style="font-size:10px;color:#34d399;letter-spacing:1px;margin:14px 0 6px;">PARAMETERS MATERIAL AND FEEDER MOTORS (2)</div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin:14px 0 6px;"><span style="font-size:10px;color:#34d399;letter-spacing:1px;">MATERIAL &amp; FEEDER MOTORS (2)</span><span style="font-size:9px;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.3);color:#34d399;padding:2px 8px;border-radius:3px;">ORIGINELE SETTINGS</span></div>
     <div style="display:flex;flex-direction:column;gap:0;">
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Tension photocell debounce</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">50 ms</span></div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Duration of dancing roller ch.pres.</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">2000 ms</span></div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Material's Stop Speed</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">8 m/min</span></div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;"><span style="font-size:11px;color:#9ca3af;">Material's moving time at Stop</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">100 ms</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;text-decoration:underline;text-decoration-style:dotted;cursor:pointer;" onclick="toonParamUitleg('Tension photocell debounce')">Tension photocell debounce &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">50 ms</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;text-decoration:underline;text-decoration-style:dotted;cursor:pointer;" onclick="toonParamUitleg('Duration of dancing roller ch.pres.')">Duration of dancing roller ch.pres. &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">2000 ms</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;text-decoration:underline;text-decoration-style:dotted;cursor:pointer;" onclick="toonParamUitleg('Material's Stop Speed')">Material's Stop Speed &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">8 m/min</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;"><span style="font-size:11px;color:#9ca3af;text-decoration:underline;text-decoration-style:dotted;cursor:pointer;" onclick="toonParamUitleg('Material's moving time at Stop')">Material's moving time at Stop &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">100 ms</span></div>
     </div>
   </div>
 
 </div>
 
 <!-- INFO -->
-<div class="form-card" style="border-top-color:#60a5fa;margin-top:4px;">
-  <div class="form-card-title" style="color:#60a5fa;">&#128161; Info</div>
-  <div style="font-size:11px;color:#6b7280;margin-bottom:16px;">Alle features van de app</div>
-
+<div class="form-card" style="border-top-color:#60a5fa;margin-top:4px;cursor:pointer;" onclick="toggleSectie('info-body','info-chev')">
+  <div style="display:flex;align-items:center;justify-content:space-between;">
+    <div class="form-card-title" style="color:#60a5fa;margin-bottom:0;">&#128161; App Features</div>
+    <span id="info-chev" style="color:#60a5fa;font-size:20px;">&#8250;</span>
+  </div>
+  <div style="font-size:11px;color:#6b7280;margin-top:6px;">Alle features van de app</div>
+</div>
+<div id="info-body" style="display:none;margin-top:-8px;background:#0f1520;border:1px solid #1a2540;border-top:none;border-radius:0 0 4px 4px;padding:16px;">
   <div style="display:flex;flex-direction:column;gap:12px;">
 
     <div style="background:#070a10;border:1px solid #1a2540;border-left:3px solid #f59e0b;border-radius:4px;padding:12px 14px;">
@@ -1787,6 +2638,62 @@ checkLogin();
   </div>
 </div>
 
+<!-- AANGEPASTE PARAMETERS -->
+<div class="form-card" style="border-top-color:#facc15;margin-top:4px;cursor:pointer;" onclick="toggleSectie('aangepast-body','aangepast-chev')">
+  <div style="display:flex;align-items:center;justify-content:space-between;">
+    <div class="form-card-title" style="color:#facc15;margin-bottom:0;">&#9888;&#65039; Aangepaste Parameters</div>
+    <span id="aangepast-chev" style="color:#facc15;font-size:20px;">&#8250;</span>
+  </div>
+  <div style="font-size:11px;color:#6b7280;margin-top:6px;">Parameters aanpassen per probleem</div>
+</div>
+<div id="aangepast-body" style="display:none;margin-top:-8px;background:#0f1520;border:1px solid #1a2540;border-top:none;border-radius:0 0 4px 4px;padding:16px;">
+
+  <!-- PROBLEEM 1: Wisselt niet goed -->
+  <div style="background:#0a0d14;border:1px solid #1a2540;border-left:3px solid #ef4444;border-radius:4px;margin-bottom:12px;overflow:hidden;">
+    <div style="padding:12px 14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;" onclick="toggleSectie('p1-body','p1-chev')">
+      <div>
+        <div style="font-size:10px;color:#ef4444;letter-spacing:2px;text-transform:uppercase;">Probleem 1</div>
+        <div style="font-weight:700;font-size:16px;color:#e5e7eb;margin-top:2px;">Wisselt niet goed</div>
+      </div>
+      <span id="p1-chev" style="color:#9ca3af;font-size:20px;">&#8250;</span>
+    </div>
+    <div id="p1-body" style="display:none;padding:0 14px 14px;border-top:1px solid #1a2540;">
+      <div style="font-size:10px;color:#6b7280;margin:10px 0 8px;line-height:1.6;">Pas onderstaande parameters aan. De originele waarde staat links -- vul rechts de nieuwe waarde in.</div>
+      <div style="display:grid;grid-template-columns:1fr 80px 80px;gap:4px;margin-bottom:6px;">
+        <div style="font-size:9px;color:#6b7280;letter-spacing:1px;">PARAMETER</div>
+        <div style="font-size:9px;color:#6b7280;letter-spacing:1px;text-align:center;">ORIGINEEL</div>
+        <div style="font-size:9px;color:#facc15;letter-spacing:1px;text-align:center;">GEWIJZIGD</div>
+      </div>
+      <div id="p1-rijen"></div>
+      <button onclick="slaAangepastOp('p1')" style="width:100%;background:#ef4444;color:#fff;border:none;border-radius:4px;font-family:'Courier New',Courier,monospace;font-weight:700;font-size:14px;letter-spacing:1px;padding:12px;cursor:pointer;margin-top:12px;">Opslaan</button>
+      <button onclick="resetAangepast('p1')" style="width:100%;background:transparent;border:1px solid #1a2540;color:#6b7280;font-family:'Courier New',Courier,monospace;font-size:12px;padding:10px;cursor:pointer;margin-top:6px;border-radius:4px;">Reset naar origineel</button>
+    </div>
+  </div>
+
+  <!-- PROBLEEM 2: Folie te strak wisselzone -->
+  <div style="background:#0a0d14;border:1px solid #1a2540;border-left:3px solid #f59e0b;border-radius:4px;margin-bottom:12px;overflow:hidden;">
+    <div style="padding:12px 14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;" onclick="toggleSectie('p2-body','p2-chev')">
+      <div>
+        <div style="font-size:10px;color:#f59e0b;letter-spacing:2px;text-transform:uppercase;">Probleem 2</div>
+        <div style="font-weight:700;font-size:16px;color:#e5e7eb;margin-top:2px;">Folie te strak wisselzone</div>
+      </div>
+      <span id="p2-chev" style="color:#9ca3af;font-size:20px;">&#8250;</span>
+    </div>
+    <div id="p2-body" style="display:none;padding:0 14px 14px;border-top:1px solid #1a2540;">
+      <div style="font-size:10px;color:#6b7280;margin:10px 0 8px;line-height:1.6;">Pas onderstaande parameters aan. De originele waarde staat links -- vul rechts de nieuwe waarde in.</div>
+      <div style="display:grid;grid-template-columns:1fr 80px 80px;gap:4px;margin-bottom:6px;">
+        <div style="font-size:9px;color:#6b7280;letter-spacing:1px;">PARAMETER</div>
+        <div style="font-size:9px;color:#6b7280;letter-spacing:1px;text-align:center;">ORIGINEEL</div>
+        <div style="font-size:9px;color:#facc15;letter-spacing:1px;text-align:center;">GEWIJZIGD</div>
+      </div>
+      <div id="p2-rijen"></div>
+      <button onclick="slaAangepastOp('p2')" style="width:100%;background:#f59e0b;color:#000;border:none;border-radius:4px;font-family:'Courier New',Courier,monospace;font-weight:700;font-size:14px;letter-spacing:1px;padding:12px;cursor:pointer;margin-top:12px;">Opslaan</button>
+      <button onclick="resetAangepast('p2')" style="width:100%;background:transparent;border:1px solid #1a2540;color:#6b7280;font-family:'Courier New',Courier,monospace;font-size:12px;padding:10px;cursor:pointer;margin-top:6px;border-radius:4px;">Reset naar origineel</button>
+    </div>
+  </div>
+
+</div>
+
 <button class="bottom-back-btn" onclick="go('s-home')">&#8249; Terug naar Home</button>
 ```
 
@@ -1816,6 +2723,15 @@ checkLogin();
     </div>
     <button class="invul-ok" onclick="invulOk()">OK &#10003;</button>
     <button class="invul-annuleer" onclick="invulSluit()">Annuleer</button>
+  </div>
+</div>
+
+<!-- PARAMETER UITLEG OVERLAY -->
+
+<div id="param-uitleg-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:9500;align-items:flex-end;justify-content:center;padding:0;">
+  <div style="background:#0f1520;border-top:3px solid #f59e0b;width:100%;max-width:480px;border-radius:14px 14px 0 0;padding:24px 20px 40px;max-height:85vh;overflow-y:auto;">
+    <div id="param-uitleg-box"></div>
+    <button onclick="sluitParamUitleg()" style="width:100%;background:transparent;border:1px solid #1a2540;border-radius:8px;color:#6b7280;font-family:'Courier New',Courier,monospace;font-size:14px;padding:14px;cursor:pointer;margin-top:16px;">Sluiten</button>
   </div>
 </div>
 
