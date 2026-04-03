@@ -173,7 +173,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
         </div>
         <button onclick="terugNaarStap1()" style="width:100%;background:transparent;border:1px solid #1a2540;border-radius:4px;color:#6b7280;font-family:'Courier New',Courier,monospace;font-size:13px;padding:10px;cursor:pointer;margin-top:10px;">&#8249; Terug</button>
       </div>
-      <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v13.4 &#8212; 2026-03-27</div>
+      <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v13.5 &#8212; 2026-03-27</div>
     </div>
   </div>
 </div>
@@ -277,7 +277,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
         <label>Max hoogte beperking</label>
         <button id="btn-maxhoogte" onclick="toggleMaxHoogte()"
           style="width:100%;background:#141d2e;border:2px solid #1a2540;border-radius:6px;color:#9ca3af;font-family:'Courier New',Courier,monospace;font-size:15px;font-weight:700;padding:14px;cursor:pointer;text-align:left;display:flex;align-items:center;gap:12px;">
-          <span id="maxhoogte-icon">&#9744;</span>
+          <span id="maxhoogte-icon">☐</span>
           <span>Max 1200mm incl. pallet</span>
           <span style="margin-left:auto;font-size:11px;color:#6b7280;">standaard 1700mm</span>
         </button>
@@ -306,15 +306,14 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
         <label>Gewicht per 100 meter (kg)</label>
         <input id="f-gew100m" type="number" placeholder="auto" class="veld-leeg" readonly onclick="openInvul(this)"
           style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:20px;padding:14px;outline:none;text-align:center;cursor:pointer;">
+        <button onclick="resetVeld('f-gew100m')" style="width:100%;margin-top:6px;background:#141d2e;border:1px solid #1a2540;border-radius:4px;color:#9ca3af;font-family:'Courier New',Courier,monospace;font-size:13px;padding:8px;cursor:pointer;">&#8635; Automatisch (wissen)</button>
         <div style="font-size:10px;color:#6b7280;margin-top:4px;">Leeg = automatisch berekend &bull; Invullen = eigen waarde</div>
       </div>
       <div class="field">
         <label>Huidjes lengte override (mm)</label>
         <input id="f-huidje" type="number" placeholder="automatisch" class="veld-leeg" readonly onclick="openInvul(this)"
           style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:20px;padding:14px;outline:none;text-align:center;cursor:pointer;">
-        <div style="display:flex;gap:8px;margin-top:6px;">
-          <button onclick="resetHuidje()" style="flex:1;background:#141d2e;border:1px solid #1a2540;border-radius:4px;color:#9ca3af;font-family:'Courier New',Courier,monospace;font-size:13px;padding:10px;cursor:pointer;">Automatisch</button>
-        </div>
+        <button onclick="resetVeld('f-huidje')" style="width:100%;margin-top:6px;background:#141d2e;border:1px solid #1a2540;border-radius:4px;color:#9ca3af;font-family:'Courier New',Courier,monospace;font-size:13px;padding:8px;cursor:pointer;">&#8635; Automatisch (wissen)</button>
         <div style="font-size:10px;color:#6b7280;margin-top:4px;">Leeg = automatisch berekend</div>
       </div>
       <div id="order-resultaten" style="display:none;margin-top:12px;background:#070a10;border:1px solid rgba(167,139,250,.4);border-radius:6px;padding:14px;">
@@ -644,7 +643,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 'use strict';
 var FB_URL = 'https://amutec-tsa-ra-1640-default-rtdb.europe-west1.firebasedatabase.app';
 var APP_PW = 'tsa1600';
-var APP_VERSION = '13.4';
+var APP_VERSION = '13.5';
 
 var OPERATORS_CONFIG = {
   'Dirk':   { pin: '007', admin: true  },
@@ -1451,9 +1450,12 @@ function invulWis(){
 function invulSnel(val){_invulWaarde=String(val);document.getElementById('invul-waarde').textContent=_invulWaarde;}
 function invulOk(){
   if(!_invulEl||!_invulWaarde){invulSluit();return;}
-  // Reset check voor rpp/werk velden
-  if(['f-order-rpp','f-werk-rpp','f-werk-huidje'].indexOf(_invulEl.id)>=0&&(!_invulWaarde||parseFloat(_invulWaarde)<=0)){
+  // Reset check -- 0 = leeg/automatisch voor deze velden
+  var resetVelden = ['f-order-rpp','f-werk-rpp','f-werk-huidje','f-huidje','f-gew100m'];
+  if(resetVelden.indexOf(_invulEl.id)>=0&&(!_invulWaarde||parseFloat(_invulWaarde)<=0)){
     _invulEl.value='';_invulEl.classList.remove('veld-definitief','veld-benadering');_invulEl.classList.add('veld-leeg');
+    if(_invulEl.id==='f-huidje') _invulEl.placeholder='automatisch';
+    if(_invulEl.id==='f-gew100m') _invulEl.placeholder='auto';
     invulSluit();try{berekenOrder();}catch(e){}return;
   }
   _invulEl.value=_invulWaarde;_invulEl.classList.remove('veld-benadering','veld-leeg');_invulEl.classList.add('veld-definitief');_invulEl.readOnly=true;
@@ -2441,11 +2443,24 @@ function invulOkOverride() {
     invulSluit();
     if(mode === 'pc') pcBereken();
     if(mode === 'calc') calcUpdate();
-    _invulPcEl = null;
-    _invulPcWaarde = '';
+    _invulPcEl = null; _invulPcWaarde = '';
   } else {
     invulOk();
   }
+}
+
+// Reset veld naar leeg/automatisch
+function resetVeld(id) {
+  var el = document.getElementById(id);
+  if(!el) return;
+  el.value = '';
+  el.classList.remove('veld-definitief','veld-benadering');
+  el.classList.add('veld-leeg');
+  if(id === 'f-gew100m') { el.placeholder = 'auto'; }
+  if(id === 'f-huidje')  { el.placeholder = 'automatisch'; }
+  if(id === 'f-order-rpp') { el.placeholder = 'auto'; }
+  if(id === 'f-order-stuks') { el.placeholder = '0'; }
+  try { berekenOrder(); } catch(e) {}
 }
 
 function resetHuidje() {
