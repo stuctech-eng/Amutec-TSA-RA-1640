@@ -173,7 +173,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
         </div>
         <button onclick="terugNaarStap1()" style="width:100%;background:transparent;border:1px solid #1a2540;border-radius:4px;color:#6b7280;font-family:'Courier New',Courier,monospace;font-size:13px;padding:10px;cursor:pointer;margin-top:10px;">&#8249; Terug</button>
       </div>
-      <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v13.3 &#8212; 2026-03-27</div>
+      <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v13.4 &#8212; 2026-03-27</div>
     </div>
   </div>
 </div>
@@ -309,9 +309,13 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
         <div style="font-size:10px;color:#6b7280;margin-top:4px;">Leeg = automatisch berekend &bull; Invullen = eigen waarde</div>
       </div>
       <div class="field">
-        <label>Huidjes lengte override (mm) -- leeg = automatisch</label>
-        <input id="f-huidje" type="number" placeholder="0" value="0" class="veld-leeg" readonly onclick="openInvul(this)"
+        <label>Huidjes lengte override (mm)</label>
+        <input id="f-huidje" type="number" placeholder="automatisch" class="veld-leeg" readonly onclick="openInvul(this)"
           style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:20px;padding:14px;outline:none;text-align:center;cursor:pointer;">
+        <div style="display:flex;gap:8px;margin-top:6px;">
+          <button onclick="resetHuidje()" style="flex:1;background:#141d2e;border:1px solid #1a2540;border-radius:4px;color:#9ca3af;font-family:'Courier New',Courier,monospace;font-size:13px;padding:10px;cursor:pointer;">Automatisch</button>
+        </div>
+        <div style="font-size:10px;color:#6b7280;margin-top:4px;">Leeg = automatisch berekend</div>
       </div>
       <div id="order-resultaten" style="display:none;margin-top:12px;background:#070a10;border:1px solid rgba(167,139,250,.4);border-radius:6px;padding:14px;">
         <div style="font-size:9px;color:#a78bfa;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;">Berekening</div>
@@ -495,12 +499,12 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
         </div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px;">
-        <div class="field"><label>Roldiameter (mm)</label><input id="pc-rolD" type="number" placeholder="auto" inputmode="decimal" oninput="pcBereken()" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:20px;padding:12px;text-align:center;outline:none;"></div>
-        <div class="field"><label>Zakken op rol</label><input id="pc-zakrol" type="number" placeholder="250" inputmode="decimal" oninput="pcBereken()" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:20px;padding:12px;text-align:center;outline:none;"></div>
-        <div class="field"><label>Zaklengte (mm)</label><input id="pc-lengte" type="number" placeholder="1900" inputmode="decimal" oninput="pcBereken()" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:20px;padding:12px;text-align:center;outline:none;"></div>
-        <div class="field"><label>Folie dikte (mm)</label><input id="pc-dikte" type="number" placeholder="0.015" inputmode="decimal" step="0.001" oninput="pcBereken()" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:20px;padding:12px;text-align:center;outline:none;"></div>
-        <div class="field"><label>Koker (mm)</label><input id="pc-koker" type="number" placeholder="90" inputmode="decimal" oninput="pcBereken()" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:20px;padding:12px;text-align:center;outline:none;"></div>
-        <div class="field"><label>Aantal rollen</label><input id="pc-rollen" type="number" placeholder="950" inputmode="decimal" oninput="pcBereken()" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:20px;padding:12px;text-align:center;outline:none;"></div>
+        <div class="field"><label>Roldiameter (mm)</label><input id="pc-rolD" type="number" placeholder="auto" readonly inputmode="none" onclick="openInvulPc(this,'Roldiameter (mm)',[150,175,200,213,225,250,300])" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:20px;padding:12px;text-align:center;outline:none;cursor:pointer;"></div>
+        <div class="field"><label>Zakken op rol</label><input id="pc-zakrol" type="number" placeholder="250" readonly inputmode="none" onclick="openInvulPc(this,'Zakken op rol',[100,150,200,250,500,750,1000])" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:20px;padding:12px;text-align:center;outline:none;cursor:pointer;"></div>
+        <div class="field"><label>Zaklengte (mm)</label><input id="pc-lengte" type="number" placeholder="1900" readonly inputmode="none" onclick="openInvulPc(this,'Zaklengte (mm)',[300,400,500,600,800,1000,1200,1500,1900,2000,3000])" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:20px;padding:12px;text-align:center;outline:none;cursor:pointer;"></div>
+        <div class="field"><label>Folie dikte (mm)</label><input id="pc-dikte" type="number" placeholder="0.015" readonly inputmode="none" onclick="openInvulPc(this,'Folie dikte (mm)',[0.015,0.02,0.025,0.03,0.04,0.05,0.06,0.08,0.1])" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:20px;padding:12px;text-align:center;outline:none;cursor:pointer;"></div>
+        <div class="field"><label>Koker (mm)</label><input id="pc-koker" type="number" placeholder="90" readonly inputmode="none" onclick="openInvulPc(this,'Koker (mm)',[76,90,100,150,200])" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:20px;padding:12px;text-align:center;outline:none;cursor:pointer;"></div>
+        <div class="field"><label>Aantal rollen</label><input id="pc-rollen" type="number" placeholder="950" readonly inputmode="none" onclick="openInvulPc(this,'Aantal rollen',[100,250,500,750,950,1000,1500,2000])" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:20px;padding:12px;text-align:center;outline:none;cursor:pointer;"></div>
       </div>
     </div>
     <div id="pc-resultaat" style="display:none;">
@@ -602,12 +606,12 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
     <div class="form-card" style="border-top-color:#60a5fa;">
       <div class="form-card-title" style="color:#60a5fa;">Invoer</div>
       <div class="grid2">
-        <div class="field"><label>Zaklengte (mm)</label><input id="c-lengte" type="number" placeholder="600" oninput="calcUpdate()"></div>
-        <div class="field"><label>Zakken/rol</label><input id="c-zakrol" type="number" placeholder="5000" oninput="calcUpdate()"></div>
+        <div class="field"><label>Zaklengte (mm)</label><input id="c-lengte" type="number" placeholder="600" readonly inputmode="none" onclick="openInvulCalc(this,'Zaklengte (mm)',[300,400,500,600,800,1000,1200,1500,1900,2000,3000])" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:20px;padding:12px;text-align:center;outline:none;cursor:pointer;"></div>
+        <div class="field"><label>Zakken/rol</label><input id="c-zakrol" type="number" placeholder="250" readonly inputmode="none" onclick="openInvulCalc(this,'Zakken op rol',[100,150,200,250,500,750,1000])" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:20px;padding:12px;text-align:center;outline:none;cursor:pointer;"></div>
       </div>
       <div class="grid2">
-        <div class="field"><label>Foliedikte (mm)</label><input id="c-dikte" type="number" placeholder="0.03" step="0.001" oninput="calcUpdate()"></div>
-        <div class="field"><label>Kerndiameter (mm)</label><input id="c-kern" type="number" placeholder="76" oninput="calcUpdate()"></div>
+        <div class="field"><label>Foliedikte (mm)</label><input id="c-dikte" type="number" placeholder="0.015" readonly inputmode="none" onclick="openInvulCalc(this,'Foliedikte (mm)',[0.015,0.02,0.025,0.03,0.04,0.05,0.06,0.08,0.1])" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:20px;padding:12px;text-align:center;outline:none;cursor:pointer;"></div>
+        <div class="field"><label>Kerndiameter (mm)</label><input id="c-kern" type="number" placeholder="90" readonly inputmode="none" onclick="openInvulCalc(this,'Kerndiameter (mm)',[76,90,100,150,200])" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:20px;padding:12px;text-align:center;outline:none;cursor:pointer;"></div>
       </div>
     </div>
     <div class="slabel">Offset Berekening</div>
@@ -640,7 +644,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 'use strict';
 var FB_URL = 'https://amutec-tsa-ra-1640-default-rtdb.europe-west1.firebasedatabase.app';
 var APP_PW = 'tsa1600';
-var APP_VERSION = '13.3';
+var APP_VERSION = '13.4';
 
 var OPERATORS_CONFIG = {
   'Dirk':   { pin: '007', admin: true  },
@@ -1425,8 +1429,25 @@ function openInvul(el){
   document.getElementById('invul-overlay').style.display='flex';
 }
 function invulSluit(){document.getElementById('invul-overlay').style.display='none';_invulEl=null;_invulWaarde='';}
-function invulCijfer(c){if(c==='.'&&_invulWaarde.indexOf('.')>=0)return;if(_invulWaarde==='0'&&c!=='.')_invulWaarde=c;else _invulWaarde+=c;document.getElementById('invul-waarde').textContent=_invulWaarde;}
-function invulWis(){_invulWaarde=_invulWaarde.slice(0,-1);document.getElementById('invul-waarde').textContent=_invulWaarde||'0';}
+function invulCijfer(c){
+  var mode = document.getElementById('invul-overlay').getAttribute('data-mode');
+  if(mode==='pc'||mode==='calc'){
+    if(c==='.'&&_invulPcWaarde.indexOf('.')>=0)return;
+    if(_invulPcWaarde==='0'&&c!=='.')_invulPcWaarde=c;else _invulPcWaarde+=c;
+    document.getElementById('invul-waarde').textContent=_invulPcWaarde;
+  } else {
+    if(c==='.'&&_invulWaarde.indexOf('.')>=0)return;if(_invulWaarde==='0'&&c!=='.')_invulWaarde=c;else _invulWaarde+=c;document.getElementById('invul-waarde').textContent=_invulWaarde;
+  }
+}
+function invulWis(){
+  var mode = document.getElementById('invul-overlay').getAttribute('data-mode');
+  if(mode==='pc'||mode==='calc'){
+    _invulPcWaarde=_invulPcWaarde.slice(0,-1);
+    document.getElementById('invul-waarde').textContent=_invulPcWaarde||'0';
+  } else {
+    _invulWaarde=_invulWaarde.slice(0,-1);document.getElementById('invul-waarde').textContent=_invulWaarde||'0';
+  }
+}
 function invulSnel(val){_invulWaarde=String(val);document.getElementById('invul-waarde').textContent=_invulWaarde;}
 function invulOk(){
   if(!_invulEl||!_invulWaarde){invulSluit();return;}
@@ -2356,6 +2377,87 @@ function toggleSectie(bodyId, chevId) {
   }
 }
 
+// ── PALLET CONFIG & CALCULATOR INVUL ─────────────────────────────────
+var _invulPcEl = null;
+var _invulPcWaarde = '';
+
+function openInvulPc(el, label, snel) {
+  _invulPcEl = el;
+  _invulPcWaarde = el.value ? String(el.value) : '';
+  document.getElementById('invul-label').textContent = label;
+  var disp = document.getElementById('invul-waarde');
+  disp.className = 'invul-waarde';
+  disp.classList.add(el.classList.contains('veld-definitief') ? 'groen' : 'geel');
+  disp.textContent = _invulPcWaarde || '0';
+  var snelHtml = '';
+  if(snel && snel.length) {
+    snel.forEach(function(v){ snelHtml += '<div class="invul-snel-btn" onclick="invulPcSnel('+v+')">'+v+'</div>'; });
+  }
+  document.getElementById('invul-snel').innerHTML = snelHtml;
+  // Override OK button
+  document.getElementById('invul-overlay').style.display = 'flex';
+  document.getElementById('invul-overlay').setAttribute('data-mode','pc');
+}
+
+function openInvulCalc(el, label, snel) {
+  _invulPcEl = el;
+  _invulPcWaarde = el.value ? String(el.value) : '';
+  document.getElementById('invul-label').textContent = label;
+  var disp = document.getElementById('invul-waarde');
+  disp.className = 'invul-waarde';
+  disp.classList.add(el.classList.contains('veld-definitief') ? 'groen' : 'geel');
+  disp.textContent = _invulPcWaarde || '0';
+  var snelHtml = '';
+  if(snel && snel.length) {
+    snel.forEach(function(v){ snelHtml += '<div class="invul-snel-btn" onclick="invulPcSnel('+v+')">'+v+'</div>'; });
+  }
+  document.getElementById('invul-snel').innerHTML = snelHtml;
+  document.getElementById('invul-overlay').style.display = 'flex';
+  document.getElementById('invul-overlay').setAttribute('data-mode','calc');
+}
+
+function invulPcSnel(val) {
+  var mode = document.getElementById('invul-overlay').getAttribute('data-mode');
+  if(mode === 'pc' || mode === 'calc') {
+    _invulPcWaarde = String(val);
+    document.getElementById('invul-waarde').textContent = _invulPcWaarde;
+  } else {
+    invulSnel(val);
+  }
+}
+
+// Override invulOk to handle pc/calc mode
+var _origInvulOk = null;
+function invulOkOverride() {
+  var mode = document.getElementById('invul-overlay').getAttribute('data-mode');
+  if((mode === 'pc' || mode === 'calc') && _invulPcEl) {
+    var waarde = document.getElementById('invul-waarde').textContent;
+    if(!waarde || waarde === '0') { invulSluit(); return; }
+    _invulPcEl.value = waarde;
+    _invulPcEl.classList.remove('veld-leeg','veld-benadering');
+    _invulPcEl.classList.add('veld-definitief');
+    _invulPcEl.readOnly = true;
+    document.getElementById('invul-overlay').removeAttribute('data-mode');
+    invulSluit();
+    if(mode === 'pc') pcBereken();
+    if(mode === 'calc') calcUpdate();
+    _invulPcEl = null;
+    _invulPcWaarde = '';
+  } else {
+    invulOk();
+  }
+}
+
+function resetHuidje() {
+  var el = document.getElementById('f-huidje');
+  if(el) {
+    el.value = '';
+    el.classList.remove('veld-definitief','veld-benadering');
+    el.classList.add('veld-leeg');
+  }
+  try { berekenOrder(); } catch(e) {}
+}
+
 function toggleMachineInfo() {
   var sectie = document.getElementById('machine-info-sectie');
   var chev = document.getElementById('machine-info-chev');
@@ -2721,7 +2823,7 @@ checkLogin();
       <div class="invul-nr" onclick="invulCijfer('0')">0</div>
       <div class="invul-nr" onclick="invulWis()" style="color:#ef4444;">&#9003;</div>
     </div>
-    <button class="invul-ok" onclick="invulOk()">OK &#10003;</button>
+    <button class="invul-ok" onclick="invulOkOverride()">OK &#10003;</button>
     <button class="invul-annuleer" onclick="invulSluit()">Annuleer</button>
   </div>
 </div>
