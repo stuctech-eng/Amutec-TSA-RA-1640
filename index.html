@@ -173,7 +173,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
         </div>
         <button onclick="terugNaarStap1()" style="width:100%;background:transparent;border:1px solid #1a2540;border-radius:4px;color:#6b7280;font-family:'Courier New',Courier,monospace;font-size:13px;padding:10px;cursor:pointer;margin-top:10px;">&#8249; Terug</button>
       </div>
-      <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v12.4 &#8212; 2026-03-27</div>
+      <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v12.7 &#8212; 2026-03-27</div>
     </div>
   </div>
 </div>
@@ -214,10 +214,10 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
           <div style="flex:1;"><div style="font-weight:700;font-size:22px;letter-spacing:2px;text-transform:uppercase;color:#e5e7eb;">Pallet Config</div><div style="font-size:12px;color:#9ca3af;margin-top:3px;">Stapeling, maten, huidjes berekenen</div></div>
           <div style="font-size:26px;color:#34d399;">&#8250;</div>
         </button>
-        <button onclick="go('s-gids')" style="flex:1;background:#0f1520;border:none;border-bottom:1px solid #1a2540;border-left:5px solid #f59e0b;display:flex;align-items:center;gap:16px;padding:0 20px;cursor:pointer;text-align:left;width:100%;min-height:80px;">
-          <div style="width:52px;height:52px;background:#0a0d14;border:1px solid #1a2540;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;">&#128218;</div>
-          <div style="flex:1;"><div style="font-weight:700;font-size:22px;letter-spacing:2px;text-transform:uppercase;color:#f59e0b;">App Gids</div><div style="font-size:12px;color:#9ca3af;margin-top:3px;">Functies, berekeningen, handleiding</div></div>
-          <div style="font-size:26px;color:#f59e0b;">&#8250;</div>
+        <button onclick="go('s-admin')" style="flex:1;background:#0f1520;border:none;border-bottom:1px solid #1a2540;border-left:5px solid #ef4444;display:flex;align-items:center;gap:16px;padding:0 20px;cursor:pointer;text-align:left;width:100%;min-height:80px;">
+          <div style="width:52px;height:52px;background:#0a0d14;border:1px solid #1a2540;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;">&#9881;&#65039;</div>
+          <div style="flex:1;"><div style="font-weight:700;font-size:22px;letter-spacing:2px;text-transform:uppercase;color:#ef4444;">Admin</div><div style="font-size:12px;color:#9ca3af;margin-top:3px;">History, info &amp; app beheer</div></div>
+          <div style="font-size:26px;color:#ef4444;">&#8250;</div>
         </button>
       </div>
     </div>
@@ -640,7 +640,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 'use strict';
 var FB_URL = 'https://amutec-tsa-ra-1640-default-rtdb.europe-west1.firebasedatabase.app';
 var APP_PW = 'tsa1600';
-var APP_VERSION = '12.4';
+var APP_VERSION = '12.7';
 
 var OPERATORS_CONFIG = {
   'Dirk':   { pin: '007', admin: true  },
@@ -666,13 +666,8 @@ var PALLETS = {
   'blok':       {naam:'Blokpallet',    b:1000, l:1200}
 };
 
-var OFFSET_DATA = [
-  {lengte:80,offset:10850},{lengte:110,offset:10950},{lengte:115,offset:10850},
-  {lengte:200,offset:10850},{lengte:400,offset:10850},{lengte:1000,offset:10950},
-  {lengte:1200,offset:10750},{lengte:1500,offset:10950},{lengte:1530,offset:10650},
-  {lengte:1600,offset:10750},{lengte:1800,offset:10975},{lengte:1900,offset:10550},
-  {lengte:2800,offset:10759},{lengte:3000,offset:10975},{lengte:3500,offset:11000}
-];
+// Schone lei -- alleen leerdata uit recepten wordt gebruikt
+var OFFSET_DATA = [];
 var MECH_BASIS = 10750;
 
 var _gekozenPallet = 'euro';
@@ -877,18 +872,24 @@ function berekenFormuleOffset(lengte){
   return MECH_BASIS+correctie;
 }
 function berekenOffset(lengte){
-  if(!lengte)return 0;
-  var formuleOffset=berekenFormuleOffset(lengte);
-  if(window._leerdataOffset&&window._leerdataOffset.length>=3){
-    var afwijkingen=[];
-    for(var i=0;i<window._leerdataOffset.length;i++){afwijkingen.push(window._leerdataOffset[i].offset-berekenFormuleOffset(window._leerdataOffset[i].lengte));}
-    var gSom=0,gTot=0;
-    for(var j=0;j<window._leerdataOffset.length;j++){var gw=1/(Math.abs(window._leerdataOffset[j].lengte-lengte)+1);gSom+=afwijkingen[j]*gw;gTot+=gw;}
-    return formuleOffset+Math.round(gSom/gTot);
+  if(!lengte) return 0;
+  // Basis altijd 10750 (gemeten op de machine tijdens productie)
+  var basis = MECH_BASIS; // 10750
+  // Leerdata correctie: gewogen gemiddelde afwijking van de basis
+  if(window._leerdataOffset && window._leerdataOffset.length >= 1) {
+    var gSom=0, gTot=0;
+    for(var i=0;i<window._leerdataOffset.length;i++){
+      var ld = window._leerdataOffset[i];
+      var afwijking = ld.offset - MECH_BASIS;
+      var gewicht = 1 / (Math.abs(ld.lengte - lengte) + 1);
+      gSom += afwijking * gewicht;
+      gTot += gewicht;
+    }
+    return basis + Math.round(gSom / gTot);
   }
-  return Math.round((formuleOffset+interpoleerOffset(OFFSET_DATA,lengte))/2);
+  return basis; // geen leerdata: altijd 10750
 }
-function berekenOffset2(o1){return o1?Math.round(o1/2):0;}
+function berekenOffset2(o1){return o1?o1-200:0;} // altijd 200mm lager
 function laadLeerdataOffset(){
   fbLoad('/recepten',function(lijst){
     var ld=[];
@@ -919,7 +920,7 @@ function calcUpdate(){
     var lower=sorted[0],upper=sorted[sorted.length-1];
     for(var i=0;i<sorted.length;i++){if(sorted[i].lengte<=l)lower=sorted[i];if(sorted[i].lengte>=l){upper=sorted[i];break;}}
     var info=document.getElementById('calc-dataset-info');
-    if(info){info.style.display='block';info.textContent=lower.lengte===l?'Exacte match: '+l+'mm -> '+lower.offset:'Interpolatie: '+lower.lengte+'mm ('+lower.offset+') tot '+upper.lengte+'mm ('+upper.offset+')';}
+    if(info){info.style.display='block';info.textContent='Basis: 10750mm' + (window._leerdataOffset&&window._leerdataOffset.length>0?' + leerdata ('+window._leerdataOffset.length+' punten)':'') + ' -- Offset 2 = Offset 1 - 200mm';}
   }
 }
 
@@ -1511,8 +1512,286 @@ checkVoorUpdate();
 setInterval(checkVoorUpdate,5*60*1000);
 
 window.addEventListener('unhandledrejection',function(e){e.preventDefault();});
+
+function toggleMachineInfo() {
+  var sectie = document.getElementById('machine-info-sectie');
+  var chev = document.getElementById('machine-info-chev');
+  if(!sectie) return;
+  var open = sectie.style.display !== 'none';
+  sectie.style.display = open ? 'none' : 'block';
+  chev.textContent = open ? '\u203a' : '\u2039';
+}
 checkLogin();
 </script>
+
+<!-- ADMIN -->
+
+<div class="screen" id="s-admin">
+  <div class="topbar">
+    <button class="back-btn" onclick="go('s-home')">&#8249;</button>
+    <div class="topbar-title">Admin</div>
+  </div>
+  <div class="content">
+
+```
+<!-- HISTORY -->
+<div class="form-card" style="border-top-color:#ef4444;">
+  <div class="form-card-title" style="color:#ef4444;">&#128203; History</div>
+  <div style="font-size:11px;color:#6b7280;margin-bottom:16px;">Versie overzicht van alle updates</div>
+
+  <div style="display:flex;flex-direction:column;gap:0;">
+
+    <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #1a2540;">
+      <div style="font-size:11px;color:#f59e0b;min-width:48px;font-weight:700;">v12.5</div>
+      <div style="flex:1;font-size:12px;color:#9ca3af;line-height:1.6;">Schone lei offset berekening. Basis 10750mm (gemeten op machine). Offset 2 = Offset 1 - 200mm. Leerdata via werkelijke offsets uit recepten.</div>
+    </div>
+
+    <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #1a2540;">
+      <div style="font-size:11px;color:#f59e0b;min-width:48px;font-weight:700;">v12.4</div>
+      <div style="flex:1;font-size:12px;color:#9ca3af;line-height:1.6;">MECH_BASIS aangepast van 10280 naar 10750mm op basis van werkelijke meting tijdens productie.</div>
+    </div>
+
+    <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #1a2540;">
+      <div style="font-size:11px;color:#f59e0b;min-width:48px;font-weight:700;">v12.3</div>
+      <div style="flex:1;font-size:12px;color:#9ca3af;line-height:1.6;">Volledige rebuild na corrupte HTML. Backticks verwijderd. Admin knoppen (Pallet Config + App Gids) alleen voor Dirk. Terug knop onderaan bij alle schermen. Auto-refresh via version.json + manifest.json.</div>
+    </div>
+
+    <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #1a2540;">
+      <div style="font-size:11px;color:#f59e0b;min-width:48px;font-weight:700;">v12.0</div>
+      <div style="flex:1;font-size:12px;color:#9ca3af;line-height:1.6;">Admin knoppen correct in home scherm geplaatst. Pallet Config en App Gids knoppen zichtbaar.</div>
+    </div>
+
+    <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #1a2540;">
+      <div style="font-size:11px;color:#f59e0b;min-width:48px;font-weight:700;">v11.6</div>
+      <div style="flex:1;font-size:12px;color:#9ca3af;line-height:1.6;">Pallet Configuratie scherm toegevoegd met visuele stapeling. App Gids met volledige documentatie. Admin functies alleen voor Dirk.</div>
+    </div>
+
+    <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #1a2540;">
+      <div style="font-size:11px;color:#f59e0b;min-width:48px;font-weight:700;">v11.3</div>
+      <div style="flex:1;font-size:12px;color:#9ca3af;line-height:1.6;">Piramide stapeling correct ge&iuml;mplementeerd in berekenOrder (5-4-5-4). Huidjes formule: rijA &times; rolD + 50mm. Windingsfactor voor dunne folie. Max stapelhoogte 1700mm incl. pallet.</div>
+    </div>
+
+    <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #1a2540;">
+      <div style="font-size:11px;color:#f59e0b;min-width:48px;font-weight:700;">v11.1</div>
+      <div style="flex:1;font-size:12px;color:#9ca3af;line-height:1.6;">Windingsfactor toegevoegd aan roldiameter formule. Math.round voor rijen op pallet. Huidje overlap 50mm. Verificatie: 36 rollen/pallet, 26 pallets, 1150mm huidje voor recept 0519.</div>
+    </div>
+
+    <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #1a2540;">
+      <div style="font-size:11px;color:#f59e0b;min-width:48px;font-weight:700;">v10.9</div>
+      <div style="flex:1;font-size:12px;color:#9ca3af;line-height:1.6;">Dubbele functies verwijderd (berekenOrder, initSwipe). Check script toegevoegd voor automatische verificatie bij elke update.</div>
+    </div>
+
+    <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #1a2540;">
+      <div style="font-size:11px;color:#f59e0b;min-width:48px;font-weight:700;">v10.4</div>
+      <div style="flex:1;font-size:12px;color:#9ca3af;line-height:1.6;">Klantnummer sortering met leading zeros. Klantnaam autocomplete dropdown. Koker veld via invulscherm.</div>
+    </div>
+
+    <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #1a2540;">
+      <div style="font-size:11px;color:#f59e0b;min-width:48px;font-weight:700;">v10.2</div>
+      <div style="flex:1;font-size:12px;color:#9ca3af;line-height:1.6;">Kleine icoontjes (&#9998; bewerken, &#10005; verwijderen) direct naast elk recept in de lijst.</div>
+    </div>
+
+    <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #1a2540;">
+      <div style="font-size:11px;color:#f59e0b;min-width:48px;font-weight:700;">v9.9</div>
+      <div style="flex:1;font-size:12px;color:#9ca3af;line-height:1.6;">Lang indrukken vervangen door directe icoontjes. Piramide berekening eerste versie. Detail view herberekening.</div>
+    </div>
+
+    <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #1a2540;">
+      <div style="font-size:11px;color:#f59e0b;min-width:48px;font-weight:700;">v9.5</div>
+      <div style="flex:1;font-size:12px;color:#9ca3af;line-height:1.6;">Werkelijke pallet &amp; huidje data velden toegevoegd (leerdata). Gewicht vervangen door hoogte als bepalend voor stapeling.</div>
+    </div>
+
+    <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #1a2540;">
+      <div style="font-size:11px;color:#f59e0b;min-width:48px;font-weight:700;">v9.3</div>
+      <div style="flex:1;font-size:12px;color:#9ca3af;line-height:1.6;">Breedte, lengte, dikte, koker via groot invulscherm. iOS toetsenbord onderdrukt. Klantnummer groot invulscherm.</div>
+    </div>
+
+    <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #1a2540;">
+      <div style="font-size:11px;color:#f59e0b;min-width:48px;font-weight:700;">v9.0</div>
+      <div style="flex:1;font-size:12px;color:#9ca3af;line-height:1.6;">Staand stapelen tot breedte 500mm. Rollen per pallet (klant vereiste) veld. Annuleer terug naar receptenboek. Nieuw recept altijd leeg.</div>
+    </div>
+
+    <div style="display:flex;gap:12px;padding:12px 0;">
+      <div style="font-size:11px;color:#f59e0b;min-width:48px;font-weight:700;">v8.8</div>
+      <div style="flex:1;font-size:12px;color:#9ca3af;line-height:1.6;">Eerste stabiele versie. Firebase opslag, operator login, receptenboek, order calculator, offset berekening, probleemoplossing navigator.</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- MACHINE INFO knop -->
+<div class="form-card" style="border-top-color:#34d399;margin-top:4px;cursor:pointer;" onclick="toggleMachineInfo()">
+  <div style="display:flex;align-items:center;justify-content:space-between;">
+    <div class="form-card-title" style="color:#34d399;margin-bottom:0;">&#9881;&#65039; Machine Info</div>
+    <span id="machine-info-chev" style="color:#34d399;font-size:20px;">&#8250;</span>
+  </div>
+  <div style="font-size:11px;color:#6b7280;margin-top:6px;">AMUTEC TSA-RA 1640 parameters</div>
+</div>
+
+<div id="machine-info-sectie" style="display:none;">
+
+  <!-- RA ROLLS CHANGE -->
+  <div class="form-card" style="border-top-color:#f59e0b;">
+    <div class="form-card-title" style="color:#f59e0b;">&#128260; RA Rolls Change Parameters</div>
+
+    <div style="font-size:10px;color:#60a5fa;letter-spacing:1px;margin:8px 0 6px;">ROLLS CHANGE 1</div>
+    <div style="display:flex;flex-direction:column;gap:0;">
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Rewinder offset</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">10750 mm</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Rolls change advance</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">800 ms</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Material speed at change</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">80 m/min</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Mat. speed at change diam. &lt;75mm</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">82 m/min</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Blow advance at low speed</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">100 ms</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Blow advance at high speed</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">100 ms</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;"><span style="font-size:11px;color:#9ca3af;">Pressor roll advance</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">4000 ms</span></div>
+    </div>
+
+    <div style="font-size:10px;color:#60a5fa;letter-spacing:1px;margin:14px 0 6px;">ROLLS CHANGE 2</div>
+    <div style="display:flex;flex-direction:column;gap:0;">
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Rewinder offset 1</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">10750 mm</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Rewinder offset 2</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">10550 mm</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Rolls change advance</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">400 ms</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Material speed at change</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">80 m/min</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Mat. speed at change diam. &lt;75mm</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">82 m/min</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Blow advance at low speed</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">100 ms</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Blow advance at high speed</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">100 ms</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Pressor roll advance</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">4000 ms</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Cores diameter increment</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">0 mm</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;"><span style="font-size:11px;color:#9ca3af;">Advance 2&deg; break EV</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">60 ms</span></div>
+    </div>
+  </div>
+
+  <!-- RA REWINDERS -->
+  <div class="form-card" style="border-top-color:#a78bfa;">
+    <div class="form-card-title" style="color:#a78bfa;">&#127897;&#65039; RA Rewinders Parameters</div>
+    <div style="display:flex;flex-direction:column;gap:0;">
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Max roll's diameter</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">350 mm</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">V DAC max rewinder</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">9000 mV</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Max speed rewinder</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">2400 rpm</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Danc.roll.work posit.</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">5000 mV</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Matertens.speed</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">500 rpm</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Roll's ch.sp.low</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">150 rpm</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Roll's ch.sp.high</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">30 m/min</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Inversion length</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">65 m/min</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Inversion speed</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">200 mm</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Break stop Timer</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">300 rpm</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Reduction numerator</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">2000 ms</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Reduction denomination</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">1600</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Dancing roll. relieving speed</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">400</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Tail recuperat. deceleration time</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">10 m/min</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Blower timer</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">2000 ms</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Kp Dancing roll.</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">2000 ms</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Kff Material</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">5</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Time cycle</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">100%</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">T.out danc.roll.zero</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">36 s</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;"><span style="font-size:11px;color:#9ca3af;">Offset static charger</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">30000 ms</span></div>
+    </div>
+  </div>
+
+  <!-- SHUTTLE MOTOR & MATERIAL LOOP -->
+  <div class="form-card" style="border-top-color:#60a5fa;">
+    <div class="form-card-title" style="color:#60a5fa;">&#128260; Shuttle's Motor &amp; Material Loop</div>
+
+    <div style="font-size:10px;color:#60a5fa;letter-spacing:1px;margin:4px 0 6px;">SHUTTLE MOTOR</div>
+    <div style="display:flex;flex-direction:column;gap:0;">
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">bit / meter shuttle motor</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">62056 bit</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">kp shuttle</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">2500</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Shuttle's Motor Max. Speed</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">2500 rpm</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Shuttle's Motor Max. Acceler.</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">30 ms</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Shuttle 0 position</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">150 mm</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Shuttle's Maximum Run</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">285 mm</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;"><span style="font-size:11px;color:#9ca3af;">Shuttle's performances</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">89%</span></div>
+    </div>
+
+    <div style="font-size:10px;color:#60a5fa;letter-spacing:1px;margin:14px 0 6px;">MATERIAL LOOP</div>
+    <div style="display:flex;flex-direction:column;gap:0;">
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Material loop</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">80</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Material loop max tension</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">180%</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Material loop initial tension</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">0</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Material loop Kp on ramp</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">120</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Material loop Kp at running</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">70</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Material's Releasing</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">6 mm</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;"><span style="font-size:11px;color:#9ca3af;">Loop integral time</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">1000 ms</span></div>
+    </div>
+  </div>
+
+  <!-- MATERIAL & FEEDER MOTORS -->
+  <div class="form-card" style="border-top-color:#34d399;">
+    <div class="form-card-title" style="color:#34d399;">&#9881;&#65039; Material &amp; Feeder Motors</div>
+
+    <div style="font-size:10px;color:#34d399;letter-spacing:1px;margin:4px 0 6px;">PARAMETERS MATERIAL AND FEEDER MOTORS</div>
+    <div style="display:flex;flex-direction:column;gap:0;">
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">bit / meter material</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">12299 bit</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">kp Material</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">300</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">kp Feeder</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">300</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Material's Maximum Speed</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">180 m/t</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Material's acceleration</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">15 s</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Material's deceleration</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">15 s</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Material's fast deceleration</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">4 s</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Photocell offset</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">1367</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;"><span style="font-size:11px;color:#9ca3af;">Sealing bar's blow deactiv. speed</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">25 m/min</span></div>
+    </div>
+
+    <div style="font-size:10px;color:#34d399;letter-spacing:1px;margin:14px 0 6px;">PARAMETERS MATERIAL AND FEEDER MOTORS (2)</div>
+    <div style="display:flex;flex-direction:column;gap:0;">
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Tension photocell debounce</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">50 ms</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Duration of dancing roller ch.pres.</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">2000 ms</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Material's Stop Speed</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">8 m/min</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;"><span style="font-size:11px;color:#9ca3af;">Material's moving time at Stop</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">100 ms</span></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- INFO -->
+<div class="form-card" style="border-top-color:#60a5fa;margin-top:4px;">
+  <div class="form-card-title" style="color:#60a5fa;">&#128161; Info</div>
+  <div style="font-size:11px;color:#6b7280;margin-bottom:16px;">Alle features van de app</div>
+
+  <div style="display:flex;flex-direction:column;gap:12px;">
+
+    <div style="background:#070a10;border:1px solid #1a2540;border-left:3px solid #f59e0b;border-radius:4px;padding:12px 14px;">
+      <div style="font-size:10px;color:#f59e0b;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">Recepten</div>
+      <div style="font-size:12px;color:#9ca3af;line-height:1.8;">Opslaan, bewerken en verwijderen &bull; Gesorteerd op klantnummer &bull; Zoeken op klant of materiaal &bull; Klantnaam autocomplete &bull; Groepen per klant &bull; Versienummer per recept &bull; Bewerken &#9998; en verwijderen &#10005; via icoontjes</div>
+    </div>
+
+    <div style="background:#070a10;border:1px solid #1a2540;border-left:3px solid #a78bfa;border-radius:4px;padding:12px 14px;">
+      <div style="font-size:10px;color:#a78bfa;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">Order Calculator</div>
+      <div style="font-size:12px;color:#9ca3af;line-height:1.8;">Te leveren &rarr; rollen &rarr; pallets &bull; Piramide stapeling (5-4-5-4) &bull; Euro pallet 800mm / Blokpallet 1000mm &bull; Max hoogte 1700mm of 1200mm &bull; Klant vereiste rollen per pallet &bull; Huidjes berekening &bull; Gewicht per rol &bull; Folie verbruik</div>
+    </div>
+
+    <div style="background:#070a10;border:1px solid #1a2540;border-left:3px solid #34d399;border-radius:4px;padding:12px 14px;">
+      <div style="font-size:10px;color:#34d399;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">Pallet Configuratie</div>
+      <div style="font-size:12px;color:#9ca3af;line-height:1.8;">Live berekening &bull; Keuze Euro / Blok &bull; Keuze stapelpatroon (4-3 / 5-4 / 6-5 / auto) &bull; Keuze max hoogte &bull; Visuele stapelweergave (&#128992;&#128994;) &bull; Roldiameter of parameters invoeren</div>
+    </div>
+
+    <div style="background:#070a10;border:1px solid #1a2540;border-left:3px solid #60a5fa;border-radius:4px;padding:12px 14px;">
+      <div style="font-size:10px;color:#60a5fa;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">Offset &amp; Calculator</div>
+      <div style="font-size:12px;color:#9ca3af;line-height:1.8;">Basis 10750mm (gemeten tijdens productie) &bull; Offset 2 = Offset 1 - 200mm &bull; Leerdata systeem: past zich aan via werkelijke offsets &bull; Roldiameter berekening &bull; Folie verbruik</div>
+    </div>
+
+    <div style="background:#070a10;border:1px solid #1a2540;border-left:3px solid #f59e0b;border-radius:4px;padding:12px 14px;">
+      <div style="font-size:10px;color:#f59e0b;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">Operators &amp; Beveiliging</div>
+      <div style="font-size:12px;color:#9ca3af;line-height:1.8;">App wachtwoord &bull; Pincode per operator &bull; Dirk (007) &mdash; Admin &bull; Casper (100) &mdash; Operator &bull; Verwijder pincode: 007 &bull; Admin ziet extra functies</div>
+    </div>
+
+    <div style="background:#070a10;border:1px solid #1a2540;border-left:3px solid #ef4444;border-radius:4px;padding:12px 14px;">
+      <div style="font-size:10px;color:#ef4444;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">Probleemoplossing</div>
+      <div style="font-size:12px;color:#9ca3af;line-height:1.8;">6 categorie&euml;n &bull; Rolwissel &bull; Seal problemen &bull; Niprollen &bull; Plooien &bull; Uitsparing (incl. AVI methode) &bull; Static charger &bull; Per probleem: oorzaak + oplossing</div>
+    </div>
+
+    <div style="background:#070a10;border:1px solid #1a2540;border-left:3px solid #6b7280;border-radius:4px;padding:12px 14px;">
+      <div style="font-size:10px;color:#6b7280;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">Technisch</div>
+      <div style="font-size:12px;color:#9ca3af;line-height:1.8;">Firebase Realtime Database &bull; GitHub Pages &bull; Auto-update via version.json &bull; PWA manifest &bull; Leerdata offset systeem &bull; Windingsfactor dunne folie</div>
+    </div>
+
+  </div>
+</div>
+
+<button class="bottom-back-btn" onclick="go('s-home')">&#8249; Terug naar Home</button>
+```
+
+  </div>
+</div>
 
 <!-- INVUL MODAL -->
 
