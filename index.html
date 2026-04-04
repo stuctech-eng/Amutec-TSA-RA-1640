@@ -173,7 +173,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
         </div>
         <button onclick="terugNaarStap1()" style="width:100%;background:transparent;border:1px solid #1a2540;border-radius:4px;color:#6b7280;font-family:'Courier New',Courier,monospace;font-size:13px;padding:10px;cursor:pointer;margin-top:10px;">&#8249; Terug</button>
       </div>
-      <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v13.5 &#8212; 2026-03-27</div>
+      <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v13.7 &#8212; 2026-03-27</div>
     </div>
   </div>
 </div>
@@ -498,9 +498,10 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
         </div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px;">
+        <div class="field"><label>Zakbreedte (mm)</label><input id="pc-breedte" type="number" placeholder="400" readonly inputmode="none" onclick="openInvulPc(this,'Zakbreedte (mm)',[200,300,400,470,500,600,800,1000,1200,1600])" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:20px;padding:12px;text-align:center;outline:none;cursor:pointer;"></div>
+        <div class="field"><label>Zaklengte (mm)</label><input id="pc-lengte" type="number" placeholder="1900" readonly inputmode="none" onclick="openInvulPc(this,'Zaklengte (mm)',[300,400,500,600,800,1000,1200,1500,1900,2000,3000])" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:20px;padding:12px;text-align:center;outline:none;cursor:pointer;"></div>
         <div class="field"><label>Roldiameter (mm)</label><input id="pc-rolD" type="number" placeholder="auto" readonly inputmode="none" onclick="openInvulPc(this,'Roldiameter (mm)',[150,175,200,213,225,250,300])" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:20px;padding:12px;text-align:center;outline:none;cursor:pointer;"></div>
         <div class="field"><label>Zakken op rol</label><input id="pc-zakrol" type="number" placeholder="250" readonly inputmode="none" onclick="openInvulPc(this,'Zakken op rol',[100,150,200,250,500,750,1000])" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:20px;padding:12px;text-align:center;outline:none;cursor:pointer;"></div>
-        <div class="field"><label>Zaklengte (mm)</label><input id="pc-lengte" type="number" placeholder="1900" readonly inputmode="none" onclick="openInvulPc(this,'Zaklengte (mm)',[300,400,500,600,800,1000,1200,1500,1900,2000,3000])" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:20px;padding:12px;text-align:center;outline:none;cursor:pointer;"></div>
         <div class="field"><label>Folie dikte (mm)</label><input id="pc-dikte" type="number" placeholder="0.015" readonly inputmode="none" onclick="openInvulPc(this,'Folie dikte (mm)',[0.015,0.02,0.025,0.03,0.04,0.05,0.06,0.08,0.1])" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:20px;padding:12px;text-align:center;outline:none;cursor:pointer;"></div>
         <div class="field"><label>Koker (mm)</label><input id="pc-koker" type="number" placeholder="90" readonly inputmode="none" onclick="openInvulPc(this,'Koker (mm)',[76,90,100,150,200])" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:20px;padding:12px;text-align:center;outline:none;cursor:pointer;"></div>
         <div class="field"><label>Aantal rollen</label><input id="pc-rollen" type="number" placeholder="950" readonly inputmode="none" onclick="openInvulPc(this,'Aantal rollen',[100,250,500,750,950,1000,1500,2000])" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:20px;padding:12px;text-align:center;outline:none;cursor:pointer;"></div>
@@ -643,7 +644,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 'use strict';
 var FB_URL = 'https://amutec-tsa-ra-1640-default-rtdb.europe-west1.firebasedatabase.app';
 var APP_PW = 'tsa1600';
-var APP_VERSION = '13.5';
+var APP_VERSION = '13.7';
 
 var OPERATORS_CONFIG = {
   'Dirk':   { pin: '007', admin: true  },
@@ -1224,6 +1225,44 @@ function openDetail(key){
     var mat=MATERIALEN[r.materiaal]||{};
     var dtEl=document.getElementById('detail-title');if(dtEl)dtEl.textContent=(r.klantnr||'')+' - '+(r.prodtype||'');
     function row(lbl,val){if(!val&&val!==0)return '';return '<div class="info-row"><div class="ir-lbl">'+lbl+'</div><div class="ir-val">'+val+'</div></div>';}
+    // Stapelvisualisatie berekening
+    var stapelVisHtml = (function(){
+      var breedte2=parseFloat(r.breedte)||0;
+      var lengte2=parseFloat(r.lengte)||0;
+      var dikte2=parseFloat(r.dikte)||0;
+      var koker2=parseFloat(r.koker)||90;
+      var zakrol2=parseFloat(r.order_zakrol)>0?parseFloat(r.order_zakrol):parseFloat(r.zakrol)||0;
+      if(!zakrol2||!breedte2||!lengte2||!dikte2) return '';
+      var wf2=Math.max(1.0,2.5-dikte2*30);
+      var rolD2=Math.round(Math.sqrt((koker2/2)*(koker2/2)+(zakrol2*lengte2*dikte2*2*wf2)/Math.PI)*2);
+      var maxH2=(r.order_maxhoogte==='1'||r.order_maxhoogte===1)?1050:1550;
+      var palB2={'blok':1000}[r.order_pallet]||800;
+      var staand2=breedte2<=500;
+      var html3='<div class="slabel">Stapelvisualisatie</div>';
+      html3+='<div style="background:#0f1520;border:1px solid #a78bfa;border-radius:6px;padding:16px;margin-bottom:12px;text-align:center;">';
+      html3+='<div style="font-size:10px;color:#a78bfa;letter-spacing:2px;margin-bottom:12px;">Roldiameter: '+rolD2+'mm · '+(staand2?'Staand':'Liggend')+'</div>';
+      if(staand2){
+        html3+='<div style="font-size:28px;letter-spacing:4px;">&#128260;&#128260;&#128260;<br>&#128260;&#128260;&#128260;</div>';
+        html3+='<div style="font-size:10px;color:#9ca3af;margin-top:8px;">Staand · 2 lagen</div>';
+      } else {
+        var rijA2=Math.max(1,Math.round(palB2/rolD2));
+        var rijB2=Math.max(1,rijA2-1);
+        var maxLagen2=1;
+        for(var nl2=2;nl2<=20;nl2++){if(rolD2+(nl2-1)*rolD2*0.866<=maxH2)maxLagen2=nl2;else break;}
+        var visual2='';
+        for(var lag2=maxLagen2;lag2>=1;lag2--){
+          var rijv2=(lag2%2===1)?rijA2:rijB2;
+          var kleurL2=(lag2%2===1)?'&#128992;':'&#128994;';
+          for(var ri2=0;ri2<rijv2;ri2++) visual2+=kleurL2;
+          if(lag2>1) visual2+='<br>';
+        }
+        html3+='<div style="font-size:20px;line-height:1.8;letter-spacing:3px;">'+visual2+'</div>';
+        html3+='<div style="font-size:10px;color:#9ca3af;margin-top:8px;">'+maxLagen2+' lagen · '+rijA2+'-'+rijB2+' patroon</div>';
+      }
+      html3+='</div>';
+      return html3;
+    })();
+
     var o1=r.offset1_werke?parseFloat(r.offset1_werke):berekenOffset(parseFloat(r.lengte)||0);
     var o2=Math.round(o1/2);var werkelijk=!!r.offset1_werke;
     var kleur1=werkelijk?'#34d399':'#60a5fa';
