@@ -173,7 +173,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
         </div>
         <button onclick="terugNaarStap1()" style="width:100%;background:transparent;border:1px solid #1a2540;border-radius:4px;color:#6b7280;font-family:'Courier New',Courier,monospace;font-size:13px;padding:10px;cursor:pointer;margin-top:10px;">&#8249; Terug</button>
       </div>
-      <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v13.7 &#8212; 2026-03-27</div>
+      <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v13.8 &#8212; 2026-03-27</div>
     </div>
   </div>
 </div>
@@ -644,7 +644,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 'use strict';
 var FB_URL = 'https://amutec-tsa-ra-1640-default-rtdb.europe-west1.firebasedatabase.app';
 var APP_PW = 'tsa1600';
-var APP_VERSION = '13.7';
+var APP_VERSION = '13.8';
 
 var OPERATORS_CONFIG = {
   'Dirk':   { pin: '007', admin: true  },
@@ -1048,6 +1048,7 @@ function berekenOrder(){
   }
   var totaleFolieMeter=aantalRollen*rolLengte;
   var huidjeLengte=0,aantalHuidjes=0,huidjesTotaalM=0;
+  // Huidjes ALLEEN bij liggend stapelen
   if(!staand&&lagen>1){
     var huidjeRuw=rollenPerRijCalc*rolDiameter+50;
     var hMaten=[700,750,800,850,900,950,1000,1050,1100,1150,1200,1250,1300,1350,1400];
@@ -1242,8 +1243,19 @@ function openDetail(key){
       html3+='<div style="background:#0f1520;border:1px solid #a78bfa;border-radius:6px;padding:16px;margin-bottom:12px;text-align:center;">';
       html3+='<div style="font-size:10px;color:#a78bfa;letter-spacing:2px;margin-bottom:12px;">Roldiameter: '+rolD2+'mm · '+(staand2?'Staand':'Liggend')+'</div>';
       if(staand2){
-        html3+='<div style="font-size:28px;letter-spacing:4px;">&#128260;&#128260;&#128260;<br>&#128260;&#128260;&#128260;</div>';
-        html3+='<div style="font-size:10px;color:#9ca3af;margin-top:8px;">Staand · 2 lagen</div>';
+        // Staand piramide
+        var rijAS2=Math.max(1,Math.round(palB2/rolD2));
+        var rijBS2=Math.max(1,rijAS2-1);
+        var laagHS2=breedte2;
+        var maxLS2=Math.max(1,Math.floor(maxH2/laagHS2));
+        var vis2='';
+        for(var ls2=maxLS2;ls2>=1;ls2--){
+          var rv2=(ls2%2===1)?rijAS2:rijBS2;
+          for(var ri3=0;ri3<rv2;ri3++) vis2+='&#128260;';
+          if(ls2>1) vis2+='<br>';
+        }
+        html3+='<div style="font-size:20px;line-height:1.8;letter-spacing:3px;">'+vis2+'</div>';
+        html3+='<div style="font-size:10px;color:#9ca3af;margin-top:8px;">Staand · '+maxLS2+' lagen · '+rijAS2+'-'+rijBS2+' piramide · geen huidjes</div>';
       } else {
         var rijA2=Math.max(1,Math.round(palB2/rolD2));
         var rijB2=Math.max(1,rijA2-1);
@@ -1326,6 +1338,7 @@ function openDetail(key){
       '<div style="display:flex;gap:16px;margin-bottom:8px;"><div class="temp-card"><div class="temp-lbl">BOVEN</div><div style="font-size:34px;font-weight:700;color:#fcd34d;text-align:center;">'+(r.temp_boven||'-')+'</div><div class="temp-unit">C</div></div><div style="font-size:20px;color:#9ca3af;align-self:center;">|</div><div class="temp-card"><div class="temp-lbl">ONDER</div><div style="font-size:34px;font-weight:700;color:#fcd34d;text-align:center;">'+(r.temp_onder||'-')+'</div><div class="temp-unit">C</div></div></div>'+
       (r.notities?'<div class="slabel">Notities</div><div class="info-block"><div style="padding:12px 14px;font-size:13px;color:#9ca3af;line-height:1.6;">'+r.notities+'</div></div>':'')+
       orderHtml+
+      stapelVisHtml+
       '<button class="btn btn-amber" style="margin-top:8px;" onclick="bewerkRecept(\''+key+'\')">Bewerken</button>';
     go('s-detail');
   });
