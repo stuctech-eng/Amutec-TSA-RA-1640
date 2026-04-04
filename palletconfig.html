@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+<meta name="theme-color" content="#070a10">
+<title>TSA Pallet Config</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{min-height:100%;background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:17px;overscroll-behavior:none;}
+.topbar{background:#0f1520;border-bottom:2px solid #f59e0b;height:56px;display:flex;align-items:center;padding:0 16px;gap:12px;position:sticky;top:0;z-index:100;}
+.back-btn{background:none;border:1px solid #1a2540;border-radius:4px;color:#f59e0b;font-size:22px;cursor:pointer;padding:4px 10px;line-height:1;}
+.topbar-title{font-weight:700;font-size:16px;letter-spacing:2px;text-transform:uppercase;color:#e5e7eb;flex:1;}
+.content{overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px 14px 80px;}
+.form-card{background:#0f1520;border:1px solid #1a2540;border-top:2px solid #f59e0b;border-radius:4px;padding:16px;margin-bottom:12px;}
+.form-card-title{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#f59e0b;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid #1a2540;}
+.field{margin-bottom:12px;}
+.field:last-child{margin-bottom:0;}
+.field label{display:block;font-size:9px;color:#9ca3af;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;}
+.veld-leeg{background:rgba(245,158,11,0.08)!important;border-color:rgba(245,158,11,0.6)!important;color:#fcd34d!important}
+.veld-definitief{background:rgba(52,211,153,0.08)!important;border-color:rgba(52,211,153,0.6)!important;color:#6ee7b7!important}
+.bottom-back-btn{width:100%;background:#0f1520;border:none;border-top:1px solid #1a2540;color:#9ca3af;font-family:'Courier New',Courier,monospace;font-size:14px;letter-spacing:1px;padding:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;position:sticky;bottom:0;z-index:50;}
+.bottom-back-btn:active{background:#141d2e;}
+.invul-overlay{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:9100;display:none;align-items:flex-end;justify-content:center;}
+.invul-box{background:#0f1520;border-top:3px solid #f59e0b;width:100%;max-width:480px;padding:24px 20px 36px;border-radius:12px 12px 0 0;}
+.invul-label{font-size:10px;color:#9ca3af;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;}
+.invul-waarde{font-size:52px;font-weight:700;color:#e5e7eb;text-align:center;margin-bottom:16px;min-height:64px;letter-spacing:2px;background:#070a10;border:2px solid #1a2540;border-radius:8px;padding:12px;}
+.invul-waarde.geel{border-color:rgba(245,158,11,0.6);color:#fcd34d;}
+.invul-waarde.groen{border-color:rgba(52,211,153,0.6);color:#6ee7b7;}
+.invul-snel{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
+.invul-snel-btn{background:#141d2e;border:1px solid #1a2540;border-radius:6px;color:#9ca3af;font-family:'Courier New',Courier,monospace;font-size:14px;font-weight:700;padding:10px 16px;cursor:pointer;flex:1;min-width:60px;text-align:center;}
+.invul-snel-btn:active{background:#f59e0b;color:#000;}
+.invul-nrs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:8px;}
+.invul-nr{background:#141d2e;border:1px solid #1a2540;border-radius:8px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:26px;font-weight:700;padding:18px 0;cursor:pointer;text-align:center;}
+.invul-nr:active{background:#f59e0b;color:#000;}
+.invul-ok{width:100%;background:#34d399;color:#000;border:none;border-radius:8px;font-family:'Courier New',Courier,monospace;font-weight:700;font-size:18px;letter-spacing:2px;padding:16px;cursor:pointer;margin-top:4px;}
+.invul-annuleer{width:100%;background:transparent;border:1px solid #1a2540;border-radius:8px;color:#6b7280;font-family:'Courier New',Courier,monospace;font-size:13px;padding:12px;cursor:pointer;margin-top:8px;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <button class="back-btn" onclick="window.location.href='index.html'">&#8249;</button>
+  <div class="topbar-title">Pallet Configuratie</div>
+</div>
+
+<div class="content">
+
+  <div style="display:flex;gap:8px;margin-bottom:16px;">
+    <button id="tab-config" onclick="toonTab('config')" style="flex:1;padding:12px;border-radius:6px;border:2px solid #34d399;background:rgba(52,211,153,0.15);color:#34d399;font-family:'Courier New',monospace;font-size:13px;font-weight:700;cursor:pointer;">&#128230; Config</button>
+    <button id="tab-uitleg" onclick="toonTab('uitleg')" style="flex:1;padding:12px;border-radius:6px;border:2px solid #1a2540;background:#0f1520;color:#9ca3af;font-family:'Courier New',monospace;font-size:13px;font-weight:700;cursor:pointer;">&#128218; Uitleg</button>
+  </div>
+
+  <div id="sectie-config">
+    <div class="form-card" style="border-top-color:#34d399;">
+      <div class="form-card-title" style="color:#34d399;">&#9881;&#65039; Parameters</div>
+      <div class="field">
+        <label>Pallet type</label>
+        <div style="display:flex;gap:8px;">
+          <button id="pc-btn-euro" onclick="pcKiesPallet('euro')" style="flex:1;padding:12px;border-radius:6px;border:2px solid #34d399;background:rgba(52,211,153,0.15);color:#34d399;font-family:'Courier New',monospace;font-size:13px;font-weight:700;cursor:pointer;">EURO<br><span style="font-size:11px;color:#9ca3af;">800&#215;1200mm</span></button>
+          <button id="pc-btn-blok" onclick="pcKiesPallet('blok')" style="flex:1;padding:12px;border-radius:6px;border:2px solid #1a2540;background:#0f1520;color:#9ca3af;font-family:'Courier New',monospace;font-size:13px;font-weight:700;cursor:pointer;">BLOK<br><span style="font-size:11px;color:#6b7280;">1000&#215;1200mm</span></button>
+        </div>
+      </div>
+      <div class="field">
+        <label>Max stapelhoogte</label>
+        <div style="display:flex;gap:8px;">
+          <button id="pc-btn-h1700" onclick="pcKiesHoogte(1550)" style="flex:1;padding:12px;border-radius:6px;border:2px solid #34d399;background:rgba(52,211,153,0.15);color:#34d399;font-family:'Courier New',monospace;font-size:13px;font-weight:700;cursor:pointer;">1700mm<br><span style="font-size:11px;color:#9ca3af;">incl. pallet</span></button>
+          <button id="pc-btn-h1200" onclick="pcKiesHoogte(1050)" style="flex:1;padding:12px;border-radius:6px;border:2px solid #1a2540;background:#0f1520;color:#9ca3af;font-family:'Courier New',monospace;font-size:13px;font-weight:700;cursor:pointer;">1200mm<br><span style="font-size:11px;color:#6b7280;">incl. pallet</span></button>
+        </div>
+      </div>
+      <div class="field">
+        <label>Stapelpatroon</label>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button id="pc-pat-auto" onclick="pcKiesPatroon('auto')" style="flex:1;padding:10px;border-radius:6px;border:2px solid #34d399;background:rgba(52,211,153,0.15);color:#34d399;font-family:'Courier New',monospace;font-size:13px;font-weight:700;cursor:pointer;">AUTO</button>
+          <button id="pc-pat-43" onclick="pcKiesPatroon('43')" style="flex:1;padding:10px;border-radius:6px;border:2px solid #1a2540;background:#0f1520;color:#9ca3af;font-family:'Courier New',monospace;font-size:13px;cursor:pointer;">4-3</button>
+          <button id="pc-pat-54" onclick="pcKiesPatroon('54')" style="flex:1;padding:10px;border-radius:6px;border:2px solid #1a2540;background:#0f1520;color:#9ca3af;font-family:'Courier New',monospace;font-size:13px;cursor:pointer;">5-4</button>
+          <button id="pc-pat-65" onclick="pcKiesPatroon('65')" style="flex:1;padding:10px;border-radius:6px;border:2px solid #1a2540;background:#0f1520;color:#9ca3af;font-family:'Courier New',monospace;font-size:13px;cursor:pointer;">6-5</button>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px;">
+        <div class="field"><label>Zakbreedte (mm)</label><input id="pc-breedte" type="number" placeholder="400" readonly inputmode="none" onclick="openInvul(this,'Zakbreedte (mm)',[200,300,400,470,500,600,800,1000,1200,1600])" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:20px;padding:12px;text-align:center;outline:none;cursor:pointer;"></div>
+        <div class="field"><label>Zaklengte (mm)</label><input id="pc-lengte" type="number" placeholder="1900" readonly inputmode="none" onclick="openInvul(this,'Zaklengte (mm)',[300,400,500,600,800,1000,1200,1500,1900,2000,3000])" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:20px;padding:12px;text-align:center;outline:none;cursor:pointer;"></div>
+        <div class="field"><label>Roldiameter (mm)</label><input id="pc-rolD" type="number" placeholder="auto" readonly inputmode="none" onclick="openInvul(this,'Roldiameter (mm)',[150,175,200,213,225,250,300])" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:20px;padding:12px;text-align:center;outline:none;cursor:pointer;"></div>
+        <div class="field"><label>Zakken op rol</label><input id="pc-zakrol" type="number" placeholder="250" readonly inputmode="none" onclick="openInvul(this,'Zakken op rol',[100,150,200,250,500,750,1000])" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:20px;padding:12px;text-align:center;outline:none;cursor:pointer;"></div>
+        <div class="field"><label>Folie dikte (mm)</label><input id="pc-dikte" type="number" placeholder="0.015" readonly inputmode="none" onclick="openInvul(this,'Folie dikte (mm)',[0.015,0.02,0.025,0.03,0.04,0.05,0.06,0.08,0.1])" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:20px;padding:12px;text-align:center;outline:none;cursor:pointer;"></div>
+        <div class="field"><label>Koker (mm)</label><input id="pc-koker" type="number" placeholder="90" readonly inputmode="none" onclick="openInvul(this,'Koker (mm)',[76,90,100,150,200])" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:20px;padding:12px;text-align:center;outline:none;cursor:pointer;"></div>
+        <div class="field"><label>Aantal rollen</label><input id="pc-rollen" type="number" placeholder="950" readonly inputmode="none" onclick="openInvul(this,'Aantal rollen',[100,250,500,750,950,1000,1500,2000])" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:20px;padding:12px;text-align:center;outline:none;cursor:pointer;"></div>
+      </div>
+    </div>
+    <div id="pc-resultaat" style="display:none;">
+      <div class="form-card" style="border-top-color:#f59e0b;">
+        <div class="form-card-title" style="color:#f59e0b;">&#128230; Resultaat</div>
+        <div id="pc-output"></div>
+      </div>
+      <div class="form-card" style="border-top-color:#a78bfa;">
+        <div class="form-card-title" style="color:#a78bfa;">&#128064; Stapelvisualisatie</div>
+        <div id="pc-visual" style="text-align:center;font-size:22px;line-height:1.6;letter-spacing:4px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="sectie-uitleg" style="display:none;">
+    <div class="form-card" style="border-top-color:#f59e0b;">
+      <div class="form-card-title" style="color:#f59e0b;">&#128230; Pallet Stapeling</div>
+      <div style="font-size:13px;color:#9ca3af;line-height:1.8;">
+        <span style="color:#f59e0b;font-weight:700;">Breedte &gt;500mm</span> &rarr; Liggend stapelen<br>
+        <span style="color:#60a5fa;font-weight:700;">Breedte &le;500mm</span> &rarr; Staand stapelen
+      </div>
+    </div>
+    <div style="background:#f59e0b;color:#000;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;padding:10px 16px;border-radius:6px;margin-bottom:12px;text-align:center;">&#128992; LIGGEND STAPELEN &mdash; Breedte &gt;500mm</div>
+    <div style="background:#0f1520;border:1px solid #1a2540;border-radius:6px;padding:14px;margin-bottom:16px;font-size:13px;color:#9ca3af;line-height:1.9;">
+      Rollen liggen op hun zijkant &bull; Piramide patroon<br>
+      Laag 1 = meer rollen &bull; Laag 2 = 1 rol minder<br>
+      <span style="color:#f59e0b;font-weight:700;">Huidjes nodig om de oneven lagen</span>
+    </div>
+    <div class="form-card" style="border-top-color:#f59e0b;">
+      <div class="form-card-title" style="color:#f59e0b;">Liggend &mdash; 4-3 patroon (~200mm)</div>
+      <div style="background:#070a10;border:1px solid #1a2540;border-radius:8px;padding:16px;">
+        <div style="font-size:11px;color:#6b7280;margin-bottom:6px;text-align:center;">&#8593; TOP</div>
+        <div style="display:flex;justify-content:center;gap:8px;margin-bottom:2px;">
+          <div style="width:44px;height:44px;border-radius:50%;background:rgba(245,158,11,0.5);border:2px solid #f59e0b;display:flex;align-items:center;justify-content:center;color:#fcd34d;">&#128992;</div>
+          <div style="width:44px;height:44px;border-radius:50%;background:rgba(245,158,11,0.5);border:2px solid #f59e0b;display:flex;align-items:center;justify-content:center;color:#fcd34d;">&#128992;</div>
+          <div style="width:44px;height:44px;border-radius:50%;background:rgba(245,158,11,0.5);border:2px solid #f59e0b;display:flex;align-items:center;justify-content:center;color:#fcd34d;">&#128992;</div>
+        </div>
+        <div style="font-size:10px;color:#f59e0b;text-align:center;margin-bottom:4px;">Laag 4 &mdash; 3 rollen</div>
+        <div style="display:flex;justify-content:center;gap:4px;margin-bottom:2px;margin-top:-8px;">
+          <div style="width:44px;height:44px;border-radius:50%;background:#f59e0b;display:flex;align-items:center;justify-content:center;color:#000;">&#128992;</div>
+          <div style="width:44px;height:44px;border-radius:50%;background:#f59e0b;display:flex;align-items:center;justify-content:center;color:#000;">&#128992;</div>
+          <div style="width:44px;height:44px;border-radius:50%;background:#f59e0b;display:flex;align-items:center;justify-content:center;color:#000;">&#128992;</div>
+          <div style="width:44px;height:44px;border-radius:50%;background:#f59e0b;display:flex;align-items:center;justify-content:center;color:#000;">&#128992;</div>
+        </div>
+        <div style="font-size:10px;color:#f59e0b;text-align:center;margin-bottom:4px;">Laag 3 &mdash; 4 rollen</div>
+        <div style="display:flex;justify-content:center;gap:8px;margin-bottom:2px;margin-top:-8px;">
+          <div style="width:44px;height:44px;border-radius:50%;background:rgba(245,158,11,0.5);border:2px solid #f59e0b;display:flex;align-items:center;justify-content:center;color:#fcd34d;">&#128992;</div>
+          <div style="width:44px;height:44px;border-radius:50%;background:rgba(245,158,11,0.5);border:2px solid #f59e0b;display:flex;align-items:center;justify-content:center;color:#fcd34d;">&#128992;</div>
+          <div style="width:44px;height:44px;border-radius:50%;background:rgba(245,158,11,0.5);border:2px solid #f59e0b;display:flex;align-items:center;justify-content:center;color:#fcd34d;">&#128992;</div>
+        </div>
+        <div style="font-size:10px;color:#f59e0b;text-align:center;margin-bottom:4px;">Laag 2 &mdash; 3 rollen</div>
+        <div style="display:flex;justify-content:center;gap:4px;margin-top:-8px;">
+          <div style="width:44px;height:44px;border-radius:50%;background:#f59e0b;display:flex;align-items:center;justify-content:center;color:#000;">&#128992;</div>
+          <div style="width:44px;height:44px;border-radius:50%;background:#f59e0b;display:flex;align-items:center;justify-content:center;color:#000;">&#128992;</div>
+          <div style="width:44px;height:44px;border-radius:50%;background:#f59e0b;display:flex;align-items:center;justify-content:center;color:#000;">&#128992;</div>
+          <div style="width:44px;height:44px;border-radius:50%;background:#f59e0b;display:flex;align-items:center;justify-content:center;color:#000;">&#128992;</div>
+        </div>
+        <div style="font-size:10px;color:#f59e0b;text-align:center;margin-top:4px;">Laag 1 &mdash; 4 rollen (bodem)</div>
+        <div style="background:#3d2800;border:1px solid #6b4c11;border-radius:4px;padding:6px;text-align:center;margin-top:8px;"><span style="font-size:11px;color:#fcd34d;">PALLET 150mm</span></div>
+      </div>
+      <div style="background:#070a10;border:1px solid #1a2540;border-radius:4px;padding:12px;margin-top:12px;font-size:13px;color:#9ca3af;line-height:2;">
+        4 lagen &bull; Patroon 4-3-4-3 &bull; Totaal: 2&times;(4+3) = <span style="color:#f59e0b;font-weight:700;">14 rollen</span><br>
+        Huidje om laag 1 en 3 &rarr; <span style="color:#34d399;font-weight:700;">nodig</span>
+      </div>
+    </div>
+    <div style="background:#60a5fa;color:#000;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;padding:10px 16px;border-radius:6px;margin-bottom:12px;margin-top:8px;text-align:center;">&#128260; STAAND STAPELEN &mdash; Breedte &le;500mm</div>
+    <div style="background:#0f1520;border:1px solid #1a2540;border-radius:6px;padding:14px;margin-bottom:16px;font-size:13px;color:#9ca3af;line-height:1.9;">
+      Rollen staan rechtop &bull; Hoogte per laag = zakbreedte<br>
+      <span style="color:#60a5fa;font-weight:700;">Geen huidjes nodig bij staand stapelen</span>
+    </div>
+    <div class="form-card" style="border-top-color:#60a5fa;">
+      <div class="form-card-title" style="color:#60a5fa;">Patronen overzicht</div>
+      <div style="background:#070a10;border:1px solid #60a5fa;border-radius:6px;padding:14px;">
+        <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;font-size:13px;"><span style="color:#60a5fa;font-weight:700;">4-3 patroon</span><span>Roldia. &le;200mm</span></div>
+        <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;font-size:13px;"><span style="color:#60a5fa;font-weight:700;">5-4 patroon</span><span>Roldia. ~160mm</span></div>
+        <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;font-size:13px;"><span style="color:#60a5fa;font-weight:700;">6-5 patroon</span><span>Roldia. ~133mm</span></div>
+        <div style="display:flex;justify-content:space-between;padding:8px 0;font-size:13px;"><span style="color:#ef4444;font-weight:700;">Dia. &gt;266mm</span><span style="color:#ef4444;">Niet stabiel &#10005;</span></div>
+      </div>
+    </div>
+  </div>
+
+  <button class="bottom-back-btn" onclick="window.location.href='index.html'">&#8249; Terug naar Home</button>
+</div>
+
+<div id="invul-overlay" class="invul-overlay">
+  <div class="invul-box">
+    <div class="invul-label" id="invul-label">Waarde</div>
+    <div class="invul-waarde geel" id="invul-waarde">0</div>
+    <div class="invul-snel" id="invul-snel"></div>
+    <div class="invul-nrs">
+      <div class="invul-nr" onclick="invulCijfer('7')">7</div>
+      <div class="invul-nr" onclick="invulCijfer('8')">8</div>
+      <div class="invul-nr" onclick="invulCijfer('9')">9</div>
+      <div class="invul-nr" onclick="invulCijfer('4')">4</div>
+      <div class="invul-nr" onclick="invulCijfer('5')">5</div>
+      <div class="invul-nr" onclick="invulCijfer('6')">6</div>
+      <div class="invul-nr" onclick="invulCijfer('1')">1</div>
+      <div class="invul-nr" onclick="invulCijfer('2')">2</div>
+      <div class="invul-nr" onclick="invulCijfer('3')">3</div>
+      <div class="invul-nr" onclick="invulCijfer('.')">.</div>
+      <div class="invul-nr" onclick="invulCijfer('0')">0</div>
+      <div class="invul-nr" onclick="invulWis()" style="color:#ef4444;">&#9003;</div>
+    </div>
+    <button class="invul-ok" onclick="invulOk()">OK &#10003;</button>
+    <button class="invul-annuleer" onclick="invulSluit()">Annuleer</button>
+  </div>
+</div>
+
+<script>
+'use strict';
+var _pcPallet='euro', _pcMaxH=1550, _pcPatroon='auto';
+var _invulEl=null, _invulWaarde='';
+
+function toonTab(tab) {
+  document.getElementById('sectie-config').style.display = tab==='config' ? 'block' : 'none';
+  document.getElementById('sectie-uitleg').style.display = tab==='uitleg' ? 'block' : 'none';
+  var btnC = document.getElementById('tab-config');
+  var btnU = document.getElementById('tab-uitleg');
+  if(tab==='config') {
+    btnC.style.borderColor='#34d399'; btnC.style.background='rgba(52,211,153,0.15)'; btnC.style.color='#34d399';
+    btnU.style.borderColor='#1a2540'; btnU.style.background='#0f1520'; btnU.style.color='#9ca3af';
+  } else {
+    btnU.style.borderColor='#34d399'; btnU.style.background='rgba(52,211,153,0.15)'; btnU.style.color='#34d399';
+    btnC.style.borderColor='#1a2540'; btnC.style.background='#0f1520'; btnC.style.color='#9ca3af';
+  }
+}
+
+function pcKiesPallet(type) {
+  _pcPallet=type;
+  ['euro','blok'].forEach(function(t){
+    var btn=document.getElementById('pc-btn-'+t);if(!btn)return;
+    if(t===type){btn.style.borderColor='#34d399';btn.style.background='rgba(52,211,153,0.15)';btn.style.color='#34d399';}
+    else{btn.style.borderColor='#1a2540';btn.style.background='#0f1520';btn.style.color='#9ca3af';}
+  });
+  pcBereken();
+}
+
+function pcKiesHoogte(h) {
+  _pcMaxH=h;
+  var isH=h===1550;
+  var b1=document.getElementById('pc-btn-h1700'); var b2=document.getElementById('pc-btn-h1200');
+  if(b1){b1.style.borderColor=isH?'#34d399':'#1a2540';b1.style.background=isH?'rgba(52,211,153,0.15)':'#0f1520';b1.style.color=isH?'#34d399':'#9ca3af';}
+  if(b2){b2.style.borderColor=!isH?'#34d399':'#1a2540';b2.style.background=!isH?'rgba(52,211,153,0.15)':'#0f1520';b2.style.color=!isH?'#34d399':'#9ca3af';}
+  pcBereken();
+}
+
+function pcKiesPatroon(pat) {
+  _pcPatroon=pat;
+  ['auto','43','54','65'].forEach(function(p){
+    var btn=document.getElementById('pc-pat-'+p);if(!btn)return;
+    if(p===pat){btn.style.borderColor='#34d399';btn.style.background='rgba(52,211,153,0.15)';btn.style.color='#34d399';}
+    else{btn.style.borderColor='#1a2540';btn.style.background='#0f1520';btn.style.color='#9ca3af';}
+  });
+  pcBereken();
+}
+
+function pcBereken() {
+  var palletB=_pcPallet==='blok'?1000:800;
+  var palletNaam=_pcPallet==='blok'?'Blokpallet 1000mm':'Euro pallet 800mm';
+  var rolDInput=parseFloat(document.getElementById('pc-rolD').value)||0;
+  var zakrol=parseFloat(document.getElementById('pc-zakrol').value)||0;
+  var lengte=parseFloat(document.getElementById('pc-lengte').value)||0;
+  var dikte=parseFloat(document.getElementById('pc-dikte').value)||0;
+  var koker=parseFloat(document.getElementById('pc-koker').value)||90;
+  var aantalRollen=parseFloat(document.getElementById('pc-rollen').value)||0;
+  var rolD=rolDInput;
+  if(!rolD&&zakrol&&lengte&&dikte){
+    var wf=Math.max(1.0,2.5-dikte*30);
+    rolD=Math.round(Math.sqrt((koker/2)*(koker/2)+(zakrol*lengte*dikte*2*wf)/Math.PI)*2);
+  }
+  if(!rolD){document.getElementById('pc-resultaat').style.display='none';return;}
+  var rijA,rijB;
+  if(_pcPatroon==='43'){rijA=4;rijB=3;}
+  else if(_pcPatroon==='54'){rijA=5;rijB=4;}
+  else if(_pcPatroon==='65'){rijA=6;rijB=5;}
+  else{rijA=Math.max(1,Math.round(palletB/rolD));rijB=Math.max(1,rijA-1);}
+  var maxLagen=1;
+  for(var nl=2;nl<=20;nl++){if(rolD+(nl-1)*rolD*0.866<=_pcMaxH)maxLagen=nl;else break;}
+  var paren=Math.floor(maxLagen/2);var extra=maxLagen%2;var rpp=paren*(rijA+rijB)+extra*rijA;
+  var stapelHoogte=Math.round(rolD+(maxLagen-1)*rolD*0.866);
+  var pallets=0,losRollen=0,rppToon=rpp;
+  if(aantalRollen>0){
+    var volP=Math.floor(aantalRollen/rpp);var rest=aantalRollen%rpp;
+    if(rest===0)pallets=volP;
+    else if(rest<=4){pallets=volP;losRollen=rest;}
+    else if(volP>0&&rest<=volP){pallets=volP;rppToon=rpp+1;}
+    else pallets=volP+1;
+    if(pallets===0)pallets=1;
+  }
+  var huidjeRuw=rijA*rolD+50;
+  var hMaten=[700,750,800,850,900,950,1000,1050,1100,1150,1200,1250,1300,1350,1400];
+  var huidje=hMaten[hMaten.length-1];
+  for(var hi=0;hi<hMaten.length;hi++){if(hMaten[hi]>=huidjeRuw){huidje=hMaten[hi];break;}}
+  var aantalHuidjes=pallets>0?Math.floor(maxLagen/2)*pallets:0;
+  function rr(lbl,val,kleur){return '<div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #1a2540;"><div style="color:#9ca3af;font-size:12px;letter-spacing:1px;">'+lbl+'</div><div style="color:'+(kleur||'#e5e7eb')+';font-size:18px;font-weight:700;">'+val+'</div></div>';}
+  var html=rr('PALLET',palletNaam)+rr('ROLDIAMETER',rolD+'mm','#60a5fa')+rr('RIJEN LAAG 1',rijA+' rollen','#34d399')+rr('RIJEN LAAG 2',rijB+' rollen','#34d399')+rr('PATROON',rijA+'-'+rijB+' piramide')+rr('AANTAL LAGEN',maxLagen+' lagen','#a78bfa')+rr('STAPELHOOGTE',stapelHoogte+'mm')+rr('ROLLEN PER PALLET',rppToon+' rollen','#f59e0b');
+  if(aantalRollen>0)html+=rr('AANTAL PALLETS',pallets+' pallets','#f59e0b');
+  if(losRollen>0)html+=rr('LOS OP PALLET',losRollen+' rollen','#9ca3af');
+  html+=rr('HUIDJE LENGTE',huidje+'mm','#34d399');
+  if(aantalRollen>0)html+=rr('AANTAL HUIDJES',aantalHuidjes+' stuks');
+  document.getElementById('pc-output').innerHTML=html;
+  var visual='';
+  for(var lag=maxLagen;lag>=1;lag--){
+    var rijv=(lag%2===1)?rijA:rijB;
+    var kleurL=(lag%2===1)?'&#128992;':'&#128994;';
+    for(var ri=0;ri<rijv;ri++) visual+=kleurL;
+    if(lag>1) visual+='<br>';
+  }
+  document.getElementById('pc-visual').innerHTML=visual;
+  document.getElementById('pc-resultaat').style.display='block';
+}
+
+function openInvul(el, label, snel) {
+  _invulEl=el;
+  _invulWaarde=el.value?String(el.value):'';
+  document.getElementById('invul-label').textContent=label;
+  var disp=document.getElementById('invul-waarde');
+  disp.className='invul-waarde '+(el.classList.contains('veld-definitief')?'groen':'geel');
+  disp.textContent=_invulWaarde||'0';
+  var snelHtml='';
+  if(snel&&snel.length){snel.forEach(function(v){snelHtml+='<div class="invul-snel-btn" onclick="invulSnel('+v+')">'+v+'</div>';});}
+  document.getElementById('invul-snel').innerHTML=snelHtml;
+  document.getElementById('invul-overlay').style.display='flex';
+}
+
+function invulSluit(){document.getElementById('invul-overlay').style.display='none';_invulEl=null;_invulWaarde='';}
+function invulCijfer(c){
+  if(c==='.'&&_invulWaarde.indexOf('.')>=0)return;
+  if(_invulWaarde==='0'&&c!=='.')_invulWaarde=c;else _invulWaarde+=c;
+  document.getElementById('invul-waarde').textContent=_invulWaarde;
+}
+function invulWis(){
+  _invulWaarde=_invulWaarde.slice(0,-1);
+  document.getElementById('invul-waarde').textContent=_invulWaarde||'0';
+}
+function invulSnel(val){
+  _invulWaarde=String(val);
+  document.getElementById('invul-waarde').textContent=_invulWaarde;
+}
+function invulOk(){
+  if(!_invulEl||!_invulWaarde){invulSluit();return;}
+  _invulEl.value=_invulWaarde;
+  _invulEl.classList.remove('veld-leeg');
+  _invulEl.classList.add('veld-definitief');
+  invulSluit();
+  pcBereken();
+}
+</script>
+</body>
+</html>
