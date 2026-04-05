@@ -256,6 +256,49 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
     Geen huidjes nodig bij staand stapelen.
   </div>
 
+  <div class="label">Pallethoogte berekening</div>
+  <div class="formule">
+    Pallet zelf = 150mm (vast)<br><br>
+    <b>Liggend:</b><br>
+    stapelHoogte = rolD + (lagen&minus;1) &times; rolD &times; 0.866<br>
+    totaal = stapelHoogte + 150mm<br><br>
+    <b>Staand:</b><br>
+    stapelHoogte = lagen &times; zakbreedte<br>
+    totaal = stapelHoogte + 150mm
+  </div>
+  <div style="background:#070a10;border:1px solid #1a2540;border-radius:6px;overflow:hidden;margin-bottom:12px;">
+    <div class="rij" style="padding:12px 14px;">
+      <span style="font-size:15px;color:#e5e7eb;">Standaard max</span>
+      <span class="badge badge-geel">1700mm incl. pallet</span>
+    </div>
+    <div class="rij" style="padding:12px 14px;">
+      <span style="font-size:15px;color:#e5e7eb;">Beperkt max</span>
+      <span class="badge badge-blauw">1200mm incl. pallet</span>
+    </div>
+    <div class="rij" style="padding:12px 14px;">
+      <span style="font-size:15px;color:#e5e7eb;">Pallet zelf</span>
+      <span style="font-size:15px;color:#e5e7eb;font-weight:700;">150mm</span>
+    </div>
+    <div class="rij" style="padding:12px 14px;">
+      <span style="font-size:15px;color:#e5e7eb;">Stapelruimte standaard</span>
+      <span style="font-size:15px;color:#34d399;font-weight:700;">1550mm</span>
+    </div>
+    <div class="rij" style="padding:12px 14px;">
+      <span style="font-size:15px;color:#e5e7eb;">Stapelruimte beperkt</span>
+      <span style="font-size:15px;color:#60a5fa;font-weight:700;">1050mm</span>
+    </div>
+  </div>
+  <div class="uitleg-blok">
+    <b>Voorbeeld liggend:</b><br>
+    rolD = 200mm &bull; 4 lagen<br>
+    stapelHoogte = 200 + 3 &times; 200 &times; 0.866 = 200 + 520 = <b>720mm</b><br>
+    totaal incl. pallet = 720 + 150 = <b>870mm ✓</b><br><br>
+    <b>Voorbeeld staand:</b><br>
+    breedte = 400mm &bull; 2 lagen<br>
+    stapelHoogte = 2 &times; 400 = <b>800mm</b><br>
+    totaal incl. pallet = 800 + 150 = <b>950mm ✓</b>
+  </div>
+
   <div class="label">Zigzag patroon</div>
   <div style="background:#070a10;border:1px solid #1a2540;border-radius:8px;padding:14px;margin-bottom:12px;">
     <div style="display:flex;gap:6px;margin-bottom:4px;align-items:center;">
@@ -273,6 +316,171 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
       <div style="width:42px;height:42px;border-radius:50%;background:rgba(96,165,250,0.4);border:2px solid #60a5fa;display:flex;align-items:center;justify-content:center;font-size:18px;">&#128260;</div>
     </div>
     <div style="font-size:14px;color:#e5e7eb;margin-top:10px;">L + R = 4+4 = <span style="color:#60a5fa;font-weight:700;">8 rollen/laag</span> &bull; 2 lagen = <span style="color:#34d399;font-weight:700;">16 rollen</span></div>
+  </div>
+
+  <!-- ALLE VISUELE VARIANTEN -->
+  <div class="label">Alle stapelvarianten visueel</div>
+
+  <!-- LIGGEND 4-3 -->
+  <div style="background:#070a10;border:1px solid #f59e0b;border-radius:8px;padding:16px;margin-bottom:16px;">
+    <div style="font-size:13px;color:#f59e0b;font-weight:700;letter-spacing:1px;margin-bottom:12px;">&#128992; Liggend &mdash; 4-3 patroon (dia ~200mm)</div>
+    <div style="font-size:12px;color:#6b7280;margin-bottom:10px;">&#8593; TOP</div>
+    <!-- Laag 4: 3 rollen -->
+    <div style="font-size:11px;color:#9ca3af;margin-bottom:2px;">Laag 4 &mdash; 3 rollen</div>
+    <div style="display:flex;justify-content:center;gap:6px;margin-bottom:2px;">
+      <div style="width:44px;height:44px;border-radius:50%;background:rgba(245,158,11,0.4);border:2px solid #f59e0b;display:flex;align-items:center;justify-content:center;font-size:18px;">&#128992;</div>
+      <div style="width:44px;height:44px;border-radius:50%;background:rgba(245,158,11,0.4);border:2px solid #f59e0b;display:flex;align-items:center;justify-content:center;font-size:18px;">&#128992;</div>
+      <div style="width:44px;height:44px;border-radius:50%;background:rgba(245,158,11,0.4);border:2px solid #f59e0b;display:flex;align-items:center;justify-content:center;font-size:18px;">&#128992;</div>
+    </div>
+    <!-- Laag 3: 4 rollen -->
+    <div style="font-size:11px;color:#9ca3af;margin-bottom:2px;margin-top:4px;">Laag 3 &mdash; 4 rollen</div>
+    <div style="display:flex;justify-content:center;gap:4px;margin-bottom:2px;">
+      <div style="width:44px;height:44px;border-radius:50%;background:#f59e0b;display:flex;align-items:center;justify-content:center;font-size:18px;">&#128992;</div>
+      <div style="width:44px;height:44px;border-radius:50%;background:#f59e0b;display:flex;align-items:center;justify-content:center;font-size:18px;">&#128992;</div>
+      <div style="width:44px;height:44px;border-radius:50%;background:#f59e0b;display:flex;align-items:center;justify-content:center;font-size:18px;">&#128992;</div>
+      <div style="width:44px;height:44px;border-radius:50%;background:#f59e0b;display:flex;align-items:center;justify-content:center;font-size:18px;">&#128992;</div>
+    </div>
+    <!-- Laag 2: 3 rollen -->
+    <div style="font-size:11px;color:#9ca3af;margin-bottom:2px;margin-top:4px;">Laag 2 &mdash; 3 rollen</div>
+    <div style="display:flex;justify-content:center;gap:6px;margin-bottom:2px;">
+      <div style="width:44px;height:44px;border-radius:50%;background:rgba(245,158,11,0.4);border:2px solid #f59e0b;display:flex;align-items:center;justify-content:center;font-size:18px;">&#128992;</div>
+      <div style="width:44px;height:44px;border-radius:50%;background:rgba(245,158,11,0.4);border:2px solid #f59e0b;display:flex;align-items:center;justify-content:center;font-size:18px;">&#128992;</div>
+      <div style="width:44px;height:44px;border-radius:50%;background:rgba(245,158,11,0.4);border:2px solid #f59e0b;display:flex;align-items:center;justify-content:center;font-size:18px;">&#128992;</div>
+    </div>
+    <!-- Laag 1: 4 rollen -->
+    <div style="font-size:11px;color:#9ca3af;margin-bottom:2px;margin-top:4px;">Laag 1 &mdash; 4 rollen (bodem)</div>
+    <div style="display:flex;justify-content:center;gap:4px;margin-bottom:8px;">
+      <div style="width:44px;height:44px;border-radius:50%;background:#f59e0b;display:flex;align-items:center;justify-content:center;font-size:18px;">&#128992;</div>
+      <div style="width:44px;height:44px;border-radius:50%;background:#f59e0b;display:flex;align-items:center;justify-content:center;font-size:18px;">&#128992;</div>
+      <div style="width:44px;height:44px;border-radius:50%;background:#f59e0b;display:flex;align-items:center;justify-content:center;font-size:18px;">&#128992;</div>
+      <div style="width:44px;height:44px;border-radius:50%;background:#f59e0b;display:flex;align-items:center;justify-content:center;font-size:18px;">&#128992;</div>
+    </div>
+    <div style="background:#3d2800;border:1px solid #6b4c11;border-radius:4px;padding:6px;text-align:center;"><span style="font-size:13px;color:#fcd34d;font-weight:700;">PALLET 150mm</span></div>
+    <div style="font-size:14px;color:#e5e7eb;margin-top:10px;text-align:center;">4 lagen &bull; patroon 4-3-4-3 &bull; totaal <span style="color:#f59e0b;font-weight:700;">14 rollen</span></div>
+    <div style="font-size:13px;color:#34d399;margin-top:4px;text-align:center;">Huidje om laag 1 en 3</div>
+  </div>
+
+  <!-- LIGGEND 5-4 -->
+  <div style="background:#070a10;border:1px solid #f59e0b;border-radius:8px;padding:16px;margin-bottom:16px;">
+    <div style="font-size:13px;color:#f59e0b;font-weight:700;letter-spacing:1px;margin-bottom:12px;">&#128992; Liggend &mdash; 5-4 patroon (dia ~160mm)</div>
+    <div style="font-size:12px;color:#6b7280;margin-bottom:10px;">&#8593; TOP</div>
+    <div style="font-size:11px;color:#9ca3af;margin-bottom:2px;">Laag 4 &mdash; 4 rollen</div>
+    <div style="display:flex;justify-content:center;gap:4px;margin-bottom:2px;">
+      <div style="width:40px;height:40px;border-radius:50%;background:rgba(245,158,11,0.4);border:2px solid #f59e0b;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128992;</div>
+      <div style="width:40px;height:40px;border-radius:50%;background:rgba(245,158,11,0.4);border:2px solid #f59e0b;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128992;</div>
+      <div style="width:40px;height:40px;border-radius:50%;background:rgba(245,158,11,0.4);border:2px solid #f59e0b;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128992;</div>
+      <div style="width:40px;height:40px;border-radius:50%;background:rgba(245,158,11,0.4);border:2px solid #f59e0b;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128992;</div>
+    </div>
+    <div style="font-size:11px;color:#9ca3af;margin-bottom:2px;margin-top:4px;">Laag 3 &mdash; 5 rollen</div>
+    <div style="display:flex;justify-content:center;gap:3px;margin-bottom:2px;">
+      <div style="width:40px;height:40px;border-radius:50%;background:#f59e0b;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128992;</div>
+      <div style="width:40px;height:40px;border-radius:50%;background:#f59e0b;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128992;</div>
+      <div style="width:40px;height:40px;border-radius:50%;background:#f59e0b;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128992;</div>
+      <div style="width:40px;height:40px;border-radius:50%;background:#f59e0b;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128992;</div>
+      <div style="width:40px;height:40px;border-radius:50%;background:#f59e0b;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128992;</div>
+    </div>
+    <div style="font-size:11px;color:#9ca3af;margin-bottom:2px;margin-top:4px;">Laag 2 &mdash; 4 rollen</div>
+    <div style="display:flex;justify-content:center;gap:4px;margin-bottom:2px;">
+      <div style="width:40px;height:40px;border-radius:50%;background:rgba(245,158,11,0.4);border:2px solid #f59e0b;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128992;</div>
+      <div style="width:40px;height:40px;border-radius:50%;background:rgba(245,158,11,0.4);border:2px solid #f59e0b;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128992;</div>
+      <div style="width:40px;height:40px;border-radius:50%;background:rgba(245,158,11,0.4);border:2px solid #f59e0b;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128992;</div>
+      <div style="width:40px;height:40px;border-radius:50%;background:rgba(245,158,11,0.4);border:2px solid #f59e0b;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128992;</div>
+    </div>
+    <div style="font-size:11px;color:#9ca3af;margin-bottom:2px;margin-top:4px;">Laag 1 &mdash; 5 rollen (bodem)</div>
+    <div style="display:flex;justify-content:center;gap:3px;margin-bottom:8px;">
+      <div style="width:40px;height:40px;border-radius:50%;background:#f59e0b;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128992;</div>
+      <div style="width:40px;height:40px;border-radius:50%;background:#f59e0b;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128992;</div>
+      <div style="width:40px;height:40px;border-radius:50%;background:#f59e0b;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128992;</div>
+      <div style="width:40px;height:40px;border-radius:50%;background:#f59e0b;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128992;</div>
+      <div style="width:40px;height:40px;border-radius:50%;background:#f59e0b;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128992;</div>
+    </div>
+    <div style="background:#3d2800;border:1px solid #6b4c11;border-radius:4px;padding:6px;text-align:center;"><span style="font-size:13px;color:#fcd34d;font-weight:700;">PALLET 150mm</span></div>
+    <div style="font-size:14px;color:#e5e7eb;margin-top:10px;text-align:center;">4 lagen &bull; patroon 5-4-5-4 &bull; totaal <span style="color:#f59e0b;font-weight:700;">18 rollen</span></div>
+    <div style="font-size:13px;color:#34d399;margin-top:4px;text-align:center;">Huidje om laag 1 en 3</div>
+  </div>
+
+  <!-- STAAND 4-3-4 -->
+  <div style="background:#070a10;border:1px solid #60a5fa;border-radius:8px;padding:16px;margin-bottom:16px;">
+    <div style="font-size:13px;color:#60a5fa;font-weight:700;letter-spacing:1px;margin-bottom:12px;">&#128260; Staand &mdash; 4-3-4 piramide (dia &le;200mm)</div>
+    <div style="font-size:12px;color:#6b7280;margin-bottom:10px;">&#8593; TOP &mdash; Laag 2</div>
+    <div style="display:flex;justify-content:center;gap:4px;margin-bottom:2px;">
+      <div style="width:42px;height:42px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:17px;">&#128260;</div>
+      <div style="width:42px;height:42px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:17px;">&#128260;</div>
+      <div style="width:42px;height:42px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:17px;">&#128260;</div>
+      <div style="width:42px;height:42px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:17px;">&#128260;</div>
+    </div>
+    <div style="display:flex;justify-content:center;gap:4px;margin-bottom:2px;margin-left:21px;">
+      <div style="width:42px;height:42px;border-radius:50%;background:rgba(96,165,250,0.4);border:2px solid #60a5fa;display:flex;align-items:center;justify-content:center;font-size:17px;">&#128260;</div>
+      <div style="width:42px;height:42px;border-radius:50%;background:rgba(96,165,250,0.4);border:2px solid #60a5fa;display:flex;align-items:center;justify-content:center;font-size:17px;">&#128260;</div>
+      <div style="width:42px;height:42px;border-radius:50%;background:rgba(96,165,250,0.4);border:2px solid #60a5fa;display:flex;align-items:center;justify-content:center;font-size:17px;">&#128260;</div>
+    </div>
+    <div style="display:flex;justify-content:center;gap:4px;margin-bottom:8px;">
+      <div style="width:42px;height:42px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:17px;">&#128260;</div>
+      <div style="width:42px;height:42px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:17px;">&#128260;</div>
+      <div style="width:42px;height:42px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:17px;">&#128260;</div>
+      <div style="width:42px;height:42px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:17px;">&#128260;</div>
+    </div>
+    <div style="border-top:2px dashed #1a2540;margin:8px 0;"></div>
+    <div style="font-size:12px;color:#6b7280;margin-bottom:6px;">Laag 1 (bodem)</div>
+    <div style="display:flex;justify-content:center;gap:4px;margin-bottom:2px;">
+      <div style="width:42px;height:42px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:17px;">&#128260;</div>
+      <div style="width:42px;height:42px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:17px;">&#128260;</div>
+      <div style="width:42px;height:42px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:17px;">&#128260;</div>
+      <div style="width:42px;height:42px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:17px;">&#128260;</div>
+    </div>
+    <div style="display:flex;justify-content:center;gap:4px;margin-bottom:2px;margin-left:21px;">
+      <div style="width:42px;height:42px;border-radius:50%;background:rgba(96,165,250,0.4);border:2px solid #60a5fa;display:flex;align-items:center;justify-content:center;font-size:17px;">&#128260;</div>
+      <div style="width:42px;height:42px;border-radius:50%;background:rgba(96,165,250,0.4);border:2px solid #60a5fa;display:flex;align-items:center;justify-content:center;font-size:17px;">&#128260;</div>
+      <div style="width:42px;height:42px;border-radius:50%;background:rgba(96,165,250,0.4);border:2px solid #60a5fa;display:flex;align-items:center;justify-content:center;font-size:17px;">&#128260;</div>
+    </div>
+    <div style="display:flex;justify-content:center;gap:4px;margin-bottom:8px;">
+      <div style="width:42px;height:42px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:17px;">&#128260;</div>
+      <div style="width:42px;height:42px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:17px;">&#128260;</div>
+      <div style="width:42px;height:42px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:17px;">&#128260;</div>
+      <div style="width:42px;height:42px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:17px;">&#128260;</div>
+    </div>
+    <div style="background:#3d2800;border:1px solid #6b4c11;border-radius:4px;padding:6px;text-align:center;"><span style="font-size:13px;color:#fcd34d;font-weight:700;">PALLET 150mm</span></div>
+    <div style="font-size:14px;color:#e5e7eb;margin-top:10px;text-align:center;">2 lagen &bull; 11 rollen/laag &bull; totaal <span style="color:#60a5fa;font-weight:700;">22 rollen</span></div>
+    <div style="font-size:13px;color:#6b7280;margin-top:4px;text-align:center;">Geen huidjes nodig</div>
+  </div>
+
+  <!-- STAAND ZIGZAG -->
+  <div style="background:#070a10;border:1px solid #60a5fa;border-radius:8px;padding:16px;margin-bottom:16px;">
+    <div style="font-size:13px;color:#60a5fa;font-weight:700;letter-spacing:1px;margin-bottom:12px;">&#128260; Staand &mdash; Zigzag 2 rijen (dia 201-266mm)</div>
+    <div style="font-size:12px;color:#6b7280;margin-bottom:10px;">&#8593; TOP &mdash; Laag 2</div>
+    <div style="display:flex;gap:6px;margin-bottom:4px;align-items:center;">
+      <div style="font-size:15px;color:#60a5fa;width:24px;text-align:center;font-weight:700;">L</div>
+      <div style="width:42px;height:42px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:17px;">&#128260;</div>
+      <div style="width:42px;height:42px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:17px;">&#128260;</div>
+      <div style="width:42px;height:42px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:17px;">&#128260;</div>
+      <div style="width:42px;height:42px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:17px;">&#128260;</div>
+    </div>
+    <div style="display:flex;gap:6px;margin-left:22px;margin-bottom:8px;align-items:center;">
+      <div style="font-size:15px;color:#93c5fd;width:24px;text-align:center;font-weight:700;">R</div>
+      <div style="width:42px;height:42px;border-radius:50%;background:rgba(96,165,250,0.4);border:2px solid #60a5fa;display:flex;align-items:center;justify-content:center;font-size:17px;">&#128260;</div>
+      <div style="width:42px;height:42px;border-radius:50%;background:rgba(96,165,250,0.4);border:2px solid #60a5fa;display:flex;align-items:center;justify-content:center;font-size:17px;">&#128260;</div>
+      <div style="width:42px;height:42px;border-radius:50%;background:rgba(96,165,250,0.4);border:2px solid #60a5fa;display:flex;align-items:center;justify-content:center;font-size:17px;">&#128260;</div>
+      <div style="width:42px;height:42px;border-radius:50%;background:rgba(96,165,250,0.4);border:2px solid #60a5fa;display:flex;align-items:center;justify-content:center;font-size:17px;">&#128260;</div>
+    </div>
+    <div style="border-top:2px dashed #1a2540;margin:8px 0;"></div>
+    <div style="font-size:12px;color:#6b7280;margin-bottom:6px;">Laag 1 (bodem)</div>
+    <div style="display:flex;gap:6px;margin-bottom:4px;align-items:center;">
+      <div style="font-size:15px;color:#60a5fa;width:24px;text-align:center;font-weight:700;">L</div>
+      <div style="width:42px;height:42px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:17px;">&#128260;</div>
+      <div style="width:42px;height:42px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:17px;">&#128260;</div>
+      <div style="width:42px;height:42px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:17px;">&#128260;</div>
+      <div style="width:42px;height:42px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:17px;">&#128260;</div>
+    </div>
+    <div style="display:flex;gap:6px;margin-left:22px;margin-bottom:8px;align-items:center;">
+      <div style="font-size:15px;color:#93c5fd;width:24px;text-align:center;font-weight:700;">R</div>
+      <div style="width:42px;height:42px;border-radius:50%;background:rgba(96,165,250,0.4);border:2px solid #60a5fa;display:flex;align-items:center;justify-content:center;font-size:17px;">&#128260;</div>
+      <div style="width:42px;height:42px;border-radius:50%;background:rgba(96,165,250,0.4);border:2px solid #60a5fa;display:flex;align-items:center;justify-content:center;font-size:17px;">&#128260;</div>
+      <div style="width:42px;height:42px;border-radius:50%;background:rgba(96,165,250,0.4);border:2px solid #60a5fa;display:flex;align-items:center;justify-content:center;font-size:17px;">&#128260;</div>
+      <div style="width:42px;height:42px;border-radius:50%;background:rgba(96,165,250,0.4);border:2px solid #60a5fa;display:flex;align-items:center;justify-content:center;font-size:17px;">&#128260;</div>
+    </div>
+    <div style="background:#3d2800;border:1px solid #6b4c11;border-radius:4px;padding:6px;text-align:center;"><span style="font-size:13px;color:#fcd34d;font-weight:700;">PALLET 150mm</span></div>
+    <div style="font-size:14px;color:#e5e7eb;margin-top:10px;text-align:center;">2 lagen &bull; 8 rollen/laag &bull; totaal <span style="color:#60a5fa;font-weight:700;">16 rollen</span></div>
+    <div style="font-size:13px;color:#6b7280;margin-top:4px;text-align:center;">Geen huidjes nodig</div>
   </div>
 </div>
 ```
