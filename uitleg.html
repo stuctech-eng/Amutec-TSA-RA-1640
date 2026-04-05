@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#070a10">
+<title>TSA Uitleg Berekeningen</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{height:100%}
+body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospace;min-height:100%;overscroll-behavior:none;font-size:17px}
+.topbar{background:#0f1520;border-bottom:2px solid #f59e0b;height:56px;display:flex;align-items:center;padding:0 16px;gap:12px;position:sticky;top:0;z-index:100;}
+.back-btn{background:none;border:1px solid #1a2540;border-radius:4px;color:#f59e0b;font-size:22px;cursor:pointer;padding:4px 10px;line-height:1}
+.topbar-title{font-weight:700;font-size:16px;letter-spacing:2px;text-transform:uppercase;color:#e5e7eb;flex:1}
+.content{overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px 14px 80px}
+.form-card{background:#0f1520;border:1px solid #1a2540;border-top:2px solid #f59e0b;border-radius:4px;padding:16px;margin-bottom:12px}
+.form-card-title{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#f59e0b;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid #1a2540}
+.bottom-back-btn{width:100%;background:#0f1520;border:none;border-top:1px solid #1a2540;color:#9ca3af;font-family:'Courier New',Courier,monospace;font-size:14px;letter-spacing:1px;padding:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;position:sticky;bottom:0;z-index:50;}
+.bottom-back-btn:active{background:#141d2e;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <button class="back-btn" onclick="history.back()">&#8249;</button>
+  <div class="topbar-title">Uitleg Berekeningen</div>
+</div>
+
+<div class="content">
+
+  <!-- INTRO -->
+
+  <div class="form-card" style="border-top-color:#f59e0b;">
+    <div class="form-card-title" style="color:#f59e0b;">&#128230; Pallet Stapeling</div>
+    <div style="font-size:13px;color:#9ca3af;line-height:1.8;">
+      <span style="color:#f59e0b;font-weight:700;">Breedte &gt;500mm</span> &rarr; Liggend stapelen<br>
+      <span style="color:#60a5fa;font-weight:700;">Breedte &le;500mm</span> &rarr; Staand stapelen
+    </div>
+  </div>
+
+  <!-- LIGGEND STAPELEN -->
+
+  <div style="background:#f59e0b;color:#000;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;padding:10px 16px;border-radius:6px;margin-bottom:12px;text-align:center;">
+    &#128992; LIGGEND STAPELEN &mdash; Breedte &gt;500mm
+  </div>
+
+  <div style="background:#0f1520;border:1px solid #1a2540;border-radius:6px;padding:14px;margin-bottom:16px;font-size:13px;color:#9ca3af;line-height:1.9;">
+    Rollen liggen op hun zijkant &bull; Piramide patroon<br>
+    Laag 1 = meer rollen &bull; Laag 2 = 1 rol minder (verspringt)<br>
+    <span style="color:#f59e0b;font-weight:700;">Huidjes nodig om de oneven lagen (1e, 3e, 5e...)</span>
+  </div>
+
+  <!-- LIGGEND 4-3 patroon -->
+
+  <div class="form-card" style="border-top-color:#f59e0b;">
+    <div class="form-card-title" style="color:#f59e0b;">Liggend &mdash; 4-3 patroon (roldiameter ~200mm)</div>
+    <div style="font-size:12px;color:#6b7280;margin-bottom:16px;">800mm &divide; 200mm = 4 rollen &bull; Laag 2 = 3 rollen (verspringt)</div>
+    <div style="background:#070a10;border:1px solid #1a2540;border-radius:8px;padding:16px;">
+      <div style="font-size:11px;color:#6b7280;margin-bottom:6px;text-align:center;">&#8593; TOP</div>
+      <div style="display:flex;justify-content:center;gap:8px;margin-bottom:2px;">
+        <div style="width:44px;height:44px;border-radius:50%;background:rgba(245,158,11,0.5);border:2px solid #f59e0b;display:flex;align-items:center;justify-content:center;font-size:18px;">&#128992;</div>
+        <div style="width:44px;height:44px;border-radius:50%;background:rgba(245,158,11,0.5);border:2px solid #f59e0b;display:flex;align-items:center;justify-content:center;font-size:18px;">&#128992;</div>
+        <div style="width:44px;height:44px;border-radius:50%;background:rgba(245,158,11,0.5);border:2px solid #f59e0b;display:flex;align-items:center;justify-content:center;font-size:18px;">&#128992;</div>
+      </div>
+      <div style="font-size:10px;color:#f59e0b;text-align:center;margin-bottom:4px;">Laag 4 &mdash; 3 rollen</div>
+      <div style="display:flex;justify-content:center;gap:4px;margin-bottom:2px;margin-top:-8px;">
+        <div style="width:44px;height:44px;border-radius:50%;background:#f59e0b;display:flex;align-items:center;justify-content:center;font-size:18px;color:#000;">&#128992;</div>
+        <div style="width:44px;height:44px;border-radius:50%;background:#f59e0b;display:flex;align-items:center;justify-content:center;font-size:18px;color:#000;">&#128992;</div>
+        <div style="width:44px;height:44px;border-radius:50%;background:#f59e0b;display:flex;align-items:center;justify-content:center;font-size:18px;color:#000;">&#128992;</div>
+        <div style="width:44px;height:44px;border-radius:50%;background:#f59e0b;display:flex;align-items:center;justify-content:center;font-size:18px;color:#000;">&#128992;</div>
+      </div>
+      <div style="font-size:10px;color:#f59e0b;text-align:center;margin-bottom:4px;">Laag 3 &mdash; 4 rollen</div>
+      <div style="display:flex;justify-content:center;gap:8px;margin-bottom:2px;margin-top:-8px;">
+        <div style="width:44px;height:44px;border-radius:50%;background:rgba(245,158,11,0.5);border:2px solid #f59e0b;display:flex;align-items:center;justify-content:center;font-size:18px;">&#128992;</div>
+        <div style="width:44px;height:44px;border-radius:50%;background:rgba(245,158,11,0.5);border:2px solid #f59e0b;display:flex;align-items:center;justify-content:center;font-size:18px;">&#128992;</div>
+        <div style="width:44px;height:44px;border-radius:50%;background:rgba(245,158,11,0.5);border:2px solid #f59e0b;display:flex;align-items:center;justify-content:center;font-size:18px;">&#128992;</div>
+      </div>
+      <div style="font-size:10px;color:#f59e0b;text-align:center;margin-bottom:4px;">Laag 2 &mdash; 3 rollen</div>
+      <div style="display:flex;justify-content:center;gap:4px;margin-top:-8px;">
+        <div style="width:44px;height:44px;border-radius:50%;background:#f59e0b;display:flex;align-items:center;justify-content:center;font-size:18px;color:#000;">&#128992;</div>
+        <div style="width:44px;height:44px;border-radius:50%;background:#f59e0b;display:flex;align-items:center;justify-content:center;font-size:18px;color:#000;">&#128992;</div>
+        <div style="width:44px;height:44px;border-radius:50%;background:#f59e0b;display:flex;align-items:center;justify-content:center;font-size:18px;color:#000;">&#128992;</div>
+        <div style="width:44px;height:44px;border-radius:50%;background:#f59e0b;display:flex;align-items:center;justify-content:center;font-size:18px;color:#000;">&#128992;</div>
+      </div>
+      <div style="font-size:10px;color:#f59e0b;text-align:center;margin-top:4px;">Laag 1 &mdash; 4 rollen (bodem op pallet)</div>
+      <div style="font-size:11px;color:#6b7280;margin-top:8px;text-align:center;">&#8595; PALLET</div>
+      <div style="background:#3d2800;border:1px solid #6b4c11;border-radius:4px;padding:6px;text-align:center;margin-top:4px;">
+        <span style="font-size:11px;color:#fcd34d;">PALLET 150mm</span>
+      </div>
+    </div>
+    <div style="background:#070a10;border:1px solid #1a2540;border-radius:4px;padding:12px 14px;margin-top:12px;font-size:13px;color:#9ca3af;line-height:2;">
+      4 lagen &bull; Patroon: 4-3-4-3<br>
+      Totaal: 2&times;(4+3) = <span style="color:#f59e0b;font-weight:700;">14 rollen</span><br>
+      Huidje: om laag 1 en 3 &rarr; <span style="color:#34d399;font-weight:700;">nodig</span>
+    </div>
+  </div>
+
+  <!-- LIGGEND andere patronen -->
+
+  <div class="form-card" style="border-top-color:#f59e0b;">
+    <div class="form-card-title" style="color:#f59e0b;">Liggend &mdash; Andere patronen</div>
+    <div style="background:#070a10;border:1px solid #1a2540;border-radius:6px;padding:14px;font-size:13px;color:#9ca3af;line-height:2.2;">
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid #1a2540;padding-bottom:8px;margin-bottom:8px;">
+        <span style="color:#f59e0b;font-weight:700;">4-3 patroon</span><span>Roldia. &le;200mm &bull; 800&divide;200=4</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid #1a2540;padding-bottom:8px;margin-bottom:8px;">
+        <span style="color:#f59e0b;font-weight:700;">5-4 patroon</span><span>Roldia. ~160mm &bull; 800&divide;160=5</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;">
+        <span style="color:#f59e0b;font-weight:700;">6-5 patroon</span><span>Roldia. ~133mm &bull; 800&divide;133=6</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- STAAND STAPELEN -->
+
+  <div style="background:#60a5fa;color:#000;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;padding:10px 16px;border-radius:6px;margin-bottom:12px;margin-top:8px;text-align:center;">
+    &#128260; STAAND STAPELEN &mdash; Breedte &le;500mm
+  </div>
+
+  <div style="background:#0f1520;border:1px solid #1a2540;border-radius:6px;padding:14px;margin-bottom:16px;font-size:13px;color:#9ca3af;line-height:1.9;">
+    Rollen staan rechtop &bull; Max 2 lagen hoog<br>
+    Hoogte per laag = zakbreedte (bv. 500mm)<br>
+    2 lagen + pallet: 500+500+150 = <span style="color:#34d399;font-weight:700;">1150mm &#10003;</span><br>
+    <span style="color:#60a5fa;font-weight:700;">Geen huidjes nodig bij staand stapelen</span>
+  </div>
+
+  <!-- STAAND patroon 4-3-4 -->
+
+  <div class="form-card" style="border-top-color:#60a5fa;">
+    <div class="form-card-title" style="color:#60a5fa;">Staand &mdash; 4-3-4 piramide (&le;200mm dia)</div>
+    <div style="font-size:12px;color:#6b7280;margin-bottom:16px;">Rollen staan rechtop &bull; Piramide per laag &bull; 2 lagen op pallet</div>
+    <div style="background:#070a10;border:1px solid #1a2540;border-radius:8px;padding:16px;">
+      <div style="font-size:11px;color:#6b7280;margin-bottom:8px;text-align:center;">&#8593; LAAG 2 (TOP)</div>
+      <div style="display:flex;justify-content:center;gap:4px;margin-bottom:2px;">
+        <div style="width:40px;height:40px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
+        <div style="width:40px;height:40px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
+        <div style="width:40px;height:40px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
+        <div style="width:40px;height:40px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
+      </div>
+      <div style="display:flex;justify-content:center;gap:4px;margin-bottom:2px;margin-left:20px;">
+        <div style="width:40px;height:40px;border-radius:50%;background:rgba(96,165,250,0.5);border:2px solid #60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
+        <div style="width:40px;height:40px;border-radius:50%;background:rgba(96,165,250,0.5);border:2px solid #60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
+        <div style="width:40px;height:40px;border-radius:50%;background:rgba(96,165,250,0.5);border:2px solid #60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
+      </div>
+      <div style="display:flex;justify-content:center;gap:4px;">
+        <div style="width:40px;height:40px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
+        <div style="width:40px;height:40px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
+        <div style="width:40px;height:40px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
+        <div style="width:40px;height:40px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
+      </div>
+      <div style="border-top:2px dashed #1a2540;margin:12px 0;"></div>
+      <div style="font-size:11px;color:#6b7280;text-align:center;margin-bottom:8px;">LAAG 1 (BODEM)</div>
+      <div style="display:flex;justify-content:center;gap:4px;margin-bottom:2px;">
+        <div style="width:40px;height:40px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
+        <div style="width:40px;height:40px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
+        <div style="width:40px;height:40px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
+        <div style="width:40px;height:40px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
+      </div>
+      <div style="display:flex;justify-content:center;gap:4px;margin-bottom:2px;margin-left:20px;">
+        <div style="width:40px;height:40px;border-radius:50%;background:rgba(96,165,250,0.5);border:2px solid #60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
+        <div style="width:40px;height:40px;border-radius:50%;background:rgba(96,165,250,0.5);border:2px solid #60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
+        <div style="width:40px;height:40px;border-radius:50%;background:rgba(96,165,250,0.5);border:2px solid #60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
+      </div>
+      <div style="display:flex;justify-content:center;gap:4px;">
+        <div style="width:40px;height:40px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
+        <div style="width:40px;height:40px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
+        <div style="width:40px;height:40px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
+        <div style="width:40px;height:40px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
+      </div>
+      <div style="background:#3d2800;border:1px solid #6b4c11;border-radius:4px;padding:6px;text-align:center;margin-top:12px;">
+        <span style="font-size:11px;color:#fcd34d;">PALLET 150mm</span>
+      </div>
+    </div>
+    <div style="background:#070a10;border:1px solid #1a2540;border-radius:4px;padding:12px 14px;margin-top:12px;font-size:13px;color:#9ca3af;line-height:2;">
+      Per laag: 4+3+4 = <span style="color:#60a5fa;font-weight:700;">11 rollen</span><br>
+      2 lagen: 11&times;2 = <span style="color:#34d399;font-weight:700;">22 rollen totaal</span><br>
+      Hoogte: 500+500+150 = <span style="color:#34d399;font-weight:700;">1150mm &#10003;</span>
+    </div>
+  </div>
+
+  <!-- HUIDJES UITLEG -->
+
+  <div class="form-card" style="border-top-color:#34d399;">
+    <div class="form-card-title" style="color:#34d399;">&#128462; Huidjes Berekening</div>
+    <div style="font-size:13px;color:#9ca3af;line-height:2;">
+      <div style="margin-bottom:8px;"><span style="color:#34d399;font-weight:700;">Wanneer nodig?</span><br>Alleen bij liggend stapelen &bull; Niet bij staand</div>
+      <div style="margin-bottom:8px;"><span style="color:#34d399;font-weight:700;">Om welke lagen?</span><br>Oneven lagen: laag 1, 3, 5...</div>
+      <div style="margin-bottom:8px;"><span style="color:#34d399;font-weight:700;">Lengte formule:</span><br>rijA &times; rolD + 50mm &rarr; afgerond op 50mm<br>bv. 4 rollen &times; 200mm + 50 = 850mm</div>
+      <div><span style="color:#34d399;font-weight:700;">Aantal huidjes:</span><br>Aantal oneven lagen &times; aantal pallets</div>
+    </div>
+  </div>
+
+  <!-- OFFSET UITLEG -->
+
+  <div class="form-card" style="border-top-color:#60a5fa;">
+    <div class="form-card-title" style="color:#60a5fa;">&#9881; Offset Berekening</div>
+    <div style="font-size:13px;color:#9ca3af;line-height:2;">
+      <div style="margin-bottom:8px;"><span style="color:#60a5fa;font-weight:700;">Basis:</span> 10750mm (gemeten tijdens productie)</div>
+      <div style="margin-bottom:8px;"><span style="color:#60a5fa;font-weight:700;">Offset 2:</span> altijd Offset 1 - 200mm</div>
+      <div style="margin-bottom:8px;"><span style="color:#60a5fa;font-weight:700;">Leerdata:</span> vul werkelijke offset in &rarr; app past aan</div>
+      <div><span style="color:#60a5fa;font-weight:700;">Kleur indicatie:</span><br>
+        <span style="color:#93c5fd;">&#9632; Blauw</span> = berekende schatting<br>
+        <span style="color:#6ee7b7;">&#9632; Groen</span> = werkelijk ingevuld
+      </div>
+    </div>
+  </div>
+
+  <!-- ROLDIAMETER UITLEG -->
+
+  <div class="form-card" style="border-top-color:#a78bfa;">
+    <div class="form-card-title" style="color:#a78bfa;">&#128260; Roldiameter Berekening</div>
+    <div style="font-size:13px;color:#9ca3af;line-height:2;">
+      <div style="margin-bottom:8px;"><span style="color:#a78bfa;font-weight:700;">Formule:</span><br>&radic;(koker&sup2; + zakrol &times; lengte &times; dikte &times; windingsfactor) &times; 2</div>
+      <div style="margin-bottom:8px;"><span style="color:#a78bfa;font-weight:700;">Windingsfactor:</span><br>Dunne folie pakt meer lucht mee tussen lagen<br>Factor = max(1.0, 2.5 - dikte &times; 30)</div>
+      <div><span style="color:#a78bfa;font-weight:700;">Invloed op:</span><br>Rollen per pallet &bull; Huidjelengte &bull; Stapelhoogte</div>
+    </div>
+  </div>
+
+<button class="bottom-back-btn" onclick="history.back()">‹ Terug</button>
+
+</div>
+</body>
+</html>
