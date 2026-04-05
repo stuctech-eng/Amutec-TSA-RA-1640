@@ -58,12 +58,44 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 
   <!-- UITLEG BEREKENINGEN -->
 
-  <div class="form-card" style="border-top-color:#a78bfa;margin-top:4px;cursor:pointer;" onclick="window.location.href='uitleg.html'">
+  <div class="form-card" style="border-top-color:#a78bfa;margin-top:4px;cursor:pointer;" onclick="toggleSectie('uitleg-stapel-body','uitleg-stapel-chev')">
     <div style="display:flex;align-items:center;justify-content:space-between;">
       <div class="form-card-title" style="color:#a78bfa;margin-bottom:0;">&#128230; Uitleg Berekeningen</div>
-      <span style="color:#a78bfa;font-size:20px;">&#8250;</span>
+      <span id="uitleg-stapel-chev" style="color:#a78bfa;font-size:20px;">&#8250;</span>
     </div>
     <div style="font-size:11px;color:#6b7280;margin-top:6px;">Pallet stapeling visueel uitgelegd</div>
+  </div>
+  <div id="uitleg-stapel-body" style="display:none;margin-top:-8px;background:#0f1520;border:1px solid #1a2540;border-top:none;border-radius:0 0 4px 4px;padding:16px;">
+    <div style="font-size:10px;color:#60a5fa;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;">Staand &mdash; Dia &le;200mm &mdash; 4-3-4 piramide</div>
+    <div style="background:#070a10;border:1px solid #1a2540;border-radius:8px;padding:12px;margin-bottom:14px;text-align:center;">
+      <div style="font-size:20px;line-height:1.8;letter-spacing:3px;">&#128260;&#128260;&#128260;&#128260;<br>&#9675;&#9675;&#9675;<br>&#128260;&#128260;&#128260;&#128260;</div>
+      <div style="font-size:11px;color:#9ca3af;margin-top:6px;">Per laag: 4+3+4 = <span style="color:#60a5fa;font-weight:700;">11 rollen</span> &bull; 2 lagen = <span style="color:#34d399;font-weight:700;">22 rollen</span></div>
+    </div>
+    <div style="font-size:10px;color:#60a5fa;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;">Staand &mdash; Dia 201-266mm &mdash; Zigzag 2 rijen</div>
+    <div style="background:#070a10;border:1px solid #1a2540;border-radius:8px;padding:12px;margin-bottom:14px;">
+      <div style="display:flex;gap:4px;margin-bottom:3px;">
+        <div style="font-size:11px;color:#60a5fa;width:22px;line-height:36px;text-align:center;font-weight:700;">L</div>
+        <div style="width:36px;height:36px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:14px;">&#128260;</div>
+        <div style="width:36px;height:36px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:14px;">&#128260;</div>
+        <div style="width:36px;height:36px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:14px;">&#128260;</div>
+        <div style="width:36px;height:36px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:14px;">&#128260;</div>
+      </div>
+      <div style="display:flex;gap:4px;margin-left:20px;margin-bottom:8px;">
+        <div style="font-size:11px;color:#93c5fd;width:22px;line-height:36px;text-align:center;font-weight:700;">R</div>
+        <div style="width:36px;height:36px;border-radius:50%;background:rgba(96,165,250,0.5);border:2px solid #60a5fa;display:flex;align-items:center;justify-content:center;font-size:14px;">&#128260;</div>
+        <div style="width:36px;height:36px;border-radius:50%;background:rgba(96,165,250,0.5);border:2px solid #60a5fa;display:flex;align-items:center;justify-content:center;font-size:14px;">&#128260;</div>
+        <div style="width:36px;height:36px;border-radius:50%;background:rgba(96,165,250,0.5);border:2px solid #60a5fa;display:flex;align-items:center;justify-content:center;font-size:14px;">&#128260;</div>
+        <div style="width:36px;height:36px;border-radius:50%;background:rgba(96,165,250,0.5);border:2px solid #60a5fa;display:flex;align-items:center;justify-content:center;font-size:14px;">&#128260;</div>
+      </div>
+      <div style="font-size:11px;color:#9ca3af;text-align:center;">L+R = 4+4 = <span style="color:#60a5fa;font-weight:700;">8 rollen/laag</span> &bull; 2 lagen = <span style="color:#34d399;font-weight:700;">16 rollen</span></div>
+    </div>
+    <div style="background:#070a10;border:1px solid #60a5fa;border-radius:6px;padding:12px;margin-bottom:12px;">
+      <div style="font-size:9px;color:#60a5fa;letter-spacing:2px;margin-bottom:8px;">WANNEER WELK PATROON?</div>
+      <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #1a2540;font-size:12px;"><span style="color:#60a5fa;">Dia. &le;200mm</span><span>4-3-4 piramide</span></div>
+      <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #1a2540;font-size:12px;"><span style="color:#60a5fa;">Dia. 201-266mm</span><span>Zigzag 2 rijen</span></div>
+      <div style="display:flex;justify-content:space-between;padding:6px 0;font-size:12px;"><span style="color:#ef4444;">Dia. &gt;266mm</span><span style="color:#ef4444;">Niet stabiel &#10005;</span></div>
+    </div>
+    <button onclick="window.location.href='uitleg.html'" style="width:100%;background:transparent;border:1px solid #a78bfa;border-radius:4px;color:#a78bfa;font-family:'Courier New',Courier,monospace;font-size:13px;padding:12px;cursor:pointer;">Volledige uitleg &#8250;</button>
   </div>
 
   <!-- MACHINE INFO -->
