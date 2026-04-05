@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#070a10">
+<title>TSA Berekeningen</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{height:100%}
+body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospace;min-height:100%;overscroll-behavior:none;font-size:17px}
+.topbar{background:#0f1520;border-bottom:2px solid #f59e0b;height:56px;display:flex;align-items:center;padding:0 16px;gap:12px;position:sticky;top:0;z-index:100;}
+.back-btn{background:none;border:1px solid #1a2540;border-radius:4px;color:#f59e0b;font-size:22px;cursor:pointer;padding:4px 10px;line-height:1}
+.topbar-title{font-weight:700;font-size:16px;letter-spacing:2px;text-transform:uppercase;color:#e5e7eb;flex:1}
+.content{overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px 14px 80px}
+.sectie{background:#0f1520;border:1px solid #1a2540;border-radius:4px;margin-bottom:12px;overflow:hidden;}
+.sectie-hdr{display:flex;align-items:center;justify-content:space-between;padding:16px;cursor:pointer;border-top:3px solid #f59e0b;}
+.sectie-hdr:active{background:#141d2e;}
+.sectie-titel{font-size:16px;font-weight:700;letter-spacing:1px;color:#e5e7eb;}
+.sectie-sub{font-size:12px;color:#6b7280;margin-top:3px;}
+.sectie-chev{font-size:22px;color:#f59e0b;flex-shrink:0;}
+.sectie-body{display:none;padding:16px;border-top:1px solid #1a2540;}
+.sectie-body.open{display:block;}
+.label{font-size:11px;color:#f59e0b;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;margin-top:16px;}
+.label:first-child{margin-top:0;}
+.formule{background:#070a10;border:1px solid #60a5fa;border-radius:6px;padding:14px;margin-bottom:12px;font-size:15px;color:#93c5fd;line-height:1.8;word-break:break-word;}
+.uitleg-blok{background:#070a10;border:1px solid #1a2540;border-radius:6px;padding:14px;margin-bottom:12px;font-size:15px;color:#e5e7eb;line-height:1.9;}
+.uitleg-blok b{color:#f59e0b;}
+.rij{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #1a2540;font-size:15px;}
+.rij:last-child{border-bottom:none;}
+.rij-lbl{color:#9ca3af;}
+.rij-val{color:#e5e7eb;font-weight:700;}
+.badge{display:inline-block;font-size:11px;padding:3px 10px;border-radius:3px;font-weight:700;letter-spacing:1px;}
+.badge-blauw{background:rgba(96,165,250,0.15);border:1px solid #60a5fa;color:#60a5fa;}
+.badge-groen{background:rgba(52,211,153,0.15);border:1px solid #34d399;color:#34d399;}
+.badge-geel{background:rgba(245,158,11,0.15);border:1px solid #f59e0b;color:#f59e0b;}
+.badge-rood{background:rgba(239,68,68,0.15);border:1px solid #ef4444;color:#ef4444;}
+.bottom-back-btn{width:100%;background:#0f1520;border:none;border-top:1px solid #1a2540;color:#9ca3af;font-family:'Courier New',Courier,monospace;font-size:14px;letter-spacing:1px;padding:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;position:sticky;bottom:0;z-index:50;}
+.bottom-back-btn:active{background:#141d2e;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <button class="back-btn" onclick="history.back()">&#8249;</button>
+  <div class="topbar-title">Berekeningen</div>
+</div>
+
+<div class="content">
+
+  <div style="font-size:14px;color:#6b7280;margin-bottom:16px;line-height:1.7;">Uitleg van alle berekeningen die de app gebruikt. Klik op een categorie om te openen.</div>
+
+  <!-- ROLDIAMETER -->
+
+  <div class="sectie">
+    <div class="sectie-hdr" style="border-top-color:#60a5fa;" onclick="toggleSectie('s-rolD')">
+      <div>
+        <div class="sectie-titel">&#128260; Roldiameter</div>
+        <div class="sectie-sub">Hoe groot wordt de rol?</div>
+      </div>
+      <div class="sectie-chev" id="chev-s-rolD" style="color:#60a5fa;">&#8250;</div>
+    </div>
+    <div class="sectie-body" id="s-rolD">
+      <div class="label">Formule</div>
+      <div class="formule">
+        rolD = &radic;( koker&sup2; + zakrol &times; lengte &times; dikte &times; 2 &times; wf ) &times; 2
+      </div>
+      <div class="label">Windingsfactor (wf)</div>
+      <div class="formule">
+        wf = max( 1.0 , 2.5 &minus; dikte &times; 30 )
+      </div>
+      <div class="uitleg-blok">
+        <b>Waarom een windingsfactor?</b><br>
+        Dunne folie pakt lucht mee tussen de wikkellagen. Hierdoor wordt de rol groter dan puur de materiaaldikte zou verwachten.<br><br>
+        <b>Voorbeeld:</b><br>
+        Dikte 0.015mm → wf = max(1.0, 2.5 - 0.015×30) = max(1.0, 2.05) = <b>2.05</b><br>
+        Dikte 0.05mm → wf = max(1.0, 2.5 - 0.05×30) = max(1.0, 1.0) = <b>1.0</b>
+      </div>
+      <div class="label">Invoer</div>
+      <div style="background:#070a10;border:1px solid #1a2540;border-radius:6px;overflow:hidden;margin-bottom:12px;">
+        <div class="rij" style="padding:10px 14px;"><span class="rij-lbl">koker</span><span class="rij-val">diameter koker in mm (bv. 90)</span></div>
+        <div class="rij" style="padding:10px 14px;"><span class="rij-lbl">zakrol</span><span class="rij-val">zakken per rol (bv. 250)</span></div>
+        <div class="rij" style="padding:10px 14px;"><span class="rij-lbl">lengte</span><span class="rij-val">zaklengte in mm (bv. 600)</span></div>
+        <div class="rij" style="padding:10px 14px;"><span class="rij-lbl">dikte</span><span class="rij-val">foliedikte in mm (bv. 0.03)</span></div>
+      </div>
+      <div class="uitleg-blok">
+        <b>Invloed op:</b><br>
+        Rollen per pallet &bull; Huidje lengte &bull; Stapelhoogte &bull; Offset schatting
+      </div>
+    </div>
+  </div>
+
+  <!-- OFFSET -->
+
+  <div class="sectie">
+    <div class="sectie-hdr" style="border-top-color:#f59e0b;" onclick="toggleSectie('s-offset')">
+      <div>
+        <div class="sectie-titel">&#9881; Offset Berekening</div>
+        <div class="sectie-sub">Rolwisselmoment instellen</div>
+      </div>
+      <div class="sectie-chev" id="chev-s-offset" style="color:#f59e0b;">&#8250;</div>
+    </div>
+    <div class="sectie-body" id="s-offset">
+      <div class="label">Basis</div>
+      <div class="formule">
+        Offset 1 = 10750mm (machinebasis)<br>
+        Offset 2 = Offset 1 &minus; 200mm
+      </div>
+      <div class="uitleg-blok">
+        <b>Wat is de offset?</b><br>
+        De offset bepaalt het exacte moment waarop de slagarmen slaan bij een rolwissel. Hoe langer de offset, hoe later de armen slaan.<br><br>
+        <b>Basis 10750mm</b> is gemeten tijdens productie als startpunt. Vanaf hier fijnafstellen.
+      </div>
+      <div class="label">Leerdata systeem</div>
+      <div class="uitleg-blok">
+        De app slaat werkelijke offsets op uit recepten. Bij een nieuwe berekening kijkt de app naar eerdere recepten met vergelijkbare zaklengtes en past de schatting aan.<br><br>
+        <b>Gewogen gemiddelde:</b> Recepten met een zaklengte dichter bij de huidige lengte wegen zwaarder mee.
+      </div>
+      <div class="label">Kleur indicatie</div>
+      <div style="background:#070a10;border:1px solid #1a2540;border-radius:6px;overflow:hidden;margin-bottom:12px;">
+        <div class="rij" style="padding:12px 14px;">
+          <span class="rij-lbl">Blauw</span>
+          <span class="badge badge-blauw">BEREKEND</span>
+        </div>
+        <div class="rij" style="padding:12px 14px;">
+          <span class="rij-lbl">Groen</span>
+          <span class="badge badge-groen">WERKELIJK</span>
+        </div>
+      </div>
+      <div class="uitleg-blok">
+        <b>Blauw</b> = schatting op basis van 10750mm + leerdata<br>
+        <b>Groen</b> = werkelijke offset die jij hebt ingevuld -- betrouwbaarder
+      </div>
+      <div class="label">Fijnafstellen</div>
+      <div class="uitleg-blok">
+        <b>Maantjes vóór perforatie?</b> → Offset verhogen (+50-100mm)<br>
+        <b>Maantjes voorbij perforatie?</b> → Offset verlagen (-50-100mm)<br><br>
+        Altijd in stappen van 50mm. Testen op lage snelheid.
+      </div>
+    </div>
+  </div>
+
+  <!-- HUIDJE LENGTE -->
+
+  <div class="sectie">
+    <div class="sectie-hdr" style="border-top-color:#34d399;" onclick="toggleSectie('s-huidje')">
+      <div>
+        <div class="sectie-titel">&#128462; Huidje Lengte</div>
+        <div class="sectie-sub">Folie om de onderste laag</div>
+      </div>
+      <div class="sectie-chev" id="chev-s-huidje" style="color:#34d399;">&#8250;</div>
+    </div>
+    <div class="sectie-body" id="s-huidje">
+      <div class="label">Formule</div>
+      <div class="formule">
+        huidjeRuw = rijA &times; rolD + 50mm<br>
+        → afronden op dichtstbijzijnde standaard maat
+      </div>
+      <div class="label">Standaard maten (mm)</div>
+      <div style="background:#070a10;border:1px solid #1a2540;border-radius:6px;padding:14px;margin-bottom:12px;">
+        <div style="display:flex;flex-wrap:wrap;gap:8px;">
+          <span style="font-size:14px;color:#34d399;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.3);border-radius:4px;padding:4px 10px;">700</span>
+          <span style="font-size:14px;color:#34d399;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.3);border-radius:4px;padding:4px 10px;">750</span>
+          <span style="font-size:14px;color:#34d399;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.3);border-radius:4px;padding:4px 10px;">800</span>
+          <span style="font-size:14px;color:#34d399;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.3);border-radius:4px;padding:4px 10px;">850</span>
+          <span style="font-size:14px;color:#34d399;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.3);border-radius:4px;padding:4px 10px;">900</span>
+          <span style="font-size:14px;color:#34d399;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.3);border-radius:4px;padding:4px 10px;">950</span>
+          <span style="font-size:14px;color:#34d399;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.3);border-radius:4px;padding:4px 10px;">1000</span>
+          <span style="font-size:14px;color:#34d399;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.3);border-radius:4px;padding:4px 10px;">1050</span>
+          <span style="font-size:14px;color:#34d399;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.3);border-radius:4px;padding:4px 10px;">1100</span>
+          <span style="font-size:14px;color:#34d399;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.3);border-radius:4px;padding:4px 10px;">1150</span>
+          <span style="font-size:14px;color:#34d399;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.3);border-radius:4px;padding:4px 10px;">1200</span>
+          <span style="font-size:14px;color:#34d399;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.3);border-radius:4px;padding:4px 10px;">1250</span>
+          <span style="font-size:14px;color:#34d399;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.3);border-radius:4px;padding:4px 10px;">1300</span>
+          <span style="font-size:14px;color:#34d399;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.3);border-radius:4px;padding:4px 10px;">1350</span>
+          <span style="font-size:14px;color:#34d399;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.3);border-radius:4px;padding:4px 10px;">1400</span>
+        </div>
+      </div>
+      <div class="uitleg-blok">
+        <b>Voorbeeld:</b><br>
+        rijA = 4 rollen &bull; rolD = 200mm<br>
+        huidjeRuw = 4 &times; 200 + 50 = 850mm<br>
+        → standaard maat: <b>850mm</b><br><br>
+        <b>Wanneer nodig?</b><br>
+        Alleen bij <b>liggend stapelen</b>. Nooit bij staand.
+      </div>
+      <div class="label">Aantal huidjes</div>
+      <div class="uitleg-blok">
+        Huidje gaat om de <b>oneven lagen</b> (laag 1, 3, 5...)<br>
+        Aantal = &lfloor;lagen / 2&rfloor; &times; aantal pallets
+      </div>
+    </div>
+  </div>
+
+  <!-- STAPELING -->
+
+  <div class="sectie">
+    <div class="sectie-hdr" style="border-top-color:#a78bfa;" onclick="toggleSectie('s-stapeling')">
+      <div>
+        <div class="sectie-titel">&#128230; Stapeling</div>
+        <div class="sectie-sub">Liggend, staand of zigzag</div>
+      </div>
+      <div class="sectie-chev" id="chev-s-stapeling" style="color:#a78bfa;">&#8250;</div>
+    </div>
+    <div class="sectie-body" id="s-stapeling">
+      <div class="label">Wanneer welke methode?</div>
+      <div style="background:#070a10;border:1px solid #1a2540;border-radius:6px;overflow:hidden;margin-bottom:12px;">
+        <div class="rij" style="padding:12px 14px;">
+          <span style="font-size:15px;color:#f59e0b;font-weight:700;">Breedte &gt;500mm</span>
+          <span class="badge badge-geel">LIGGEND</span>
+        </div>
+        <div class="rij" style="padding:12px 14px;">
+          <span style="font-size:15px;color:#60a5fa;font-weight:700;">Breedte &le;500mm</span>
+          <span class="badge badge-blauw">STAAND</span>
+        </div>
+      </div>
+
+```
+  <div class="label">Liggend -- Piramide patroon</div>
+  <div class="uitleg-blok">
+    Rollen liggen op zijkant.<br>
+    rijA = round( palletbreedte / rolD )<br>
+    rijB = rijA &minus; 1<br><br>
+    Lagen: zolang rolD + (lagen-1) &times; rolD &times; 0.866 &le; maxHoogte<br><br>
+    <b>Huidjes nodig om oneven lagen.</b>
+  </div>
+
+  <div class="label">Staand -- Wanneer welk patroon?</div>
+  <div style="background:#070a10;border:1px solid #1a2540;border-radius:6px;overflow:hidden;margin-bottom:12px;">
+    <div class="rij" style="padding:12px 14px;">
+      <span style="font-size:15px;color:#60a5fa;font-weight:700;">Dia. &le;200mm</span>
+      <span style="font-size:14px;color:#e5e7eb;">4-3-4 piramide &bull; 11/laag</span>
+    </div>
+    <div class="rij" style="padding:12px 14px;">
+      <span style="font-size:15px;color:#60a5fa;font-weight:700;">Dia. 201-266mm</span>
+      <span style="font-size:14px;color:#e5e7eb;">Zigzag 2 rijen &bull; 8/laag</span>
+    </div>
+    <div class="rij" style="padding:12px 14px;">
+      <span style="font-size:15px;color:#ef4444;font-weight:700;">Dia. &gt;266mm</span>
+      <span class="badge badge-rood">NIET STABIEL</span>
+    </div>
+  </div>
+
+  <div class="label">Staand -- Hoogte berekening</div>
+  <div class="formule">
+    laagHoogte = zakbreedte (mm)<br>
+    maxLagen = &lfloor; maxStapelHoogte / laagHoogte &rfloor;<br>
+    maxLagen = min( maxLagen, 2 )
+  </div>
+  <div class="uitleg-blok">
+    <b>Voorbeeld:</b><br>
+    Breedte 400mm &bull; Max hoogte 1550mm<br>
+    maxLagen = &lfloor;1550 / 400&rfloor; = 3 → maar max 2 &rarr; <b>2 lagen</b><br><br>
+    Geen huidjes nodig bij staand stapelen.
+  </div>
+
+  <div class="label">Zigzag patroon</div>
+  <div style="background:#070a10;border:1px solid #1a2540;border-radius:8px;padding:14px;margin-bottom:12px;">
+    <div style="display:flex;gap:6px;margin-bottom:4px;align-items:center;">
+      <div style="font-size:15px;color:#60a5fa;width:28px;text-align:center;font-weight:700;">L</div>
+      <div style="width:42px;height:42px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:18px;">&#128260;</div>
+      <div style="width:42px;height:42px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:18px;">&#128260;</div>
+      <div style="width:42px;height:42px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:18px;">&#128260;</div>
+      <div style="width:42px;height:42px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:18px;">&#128260;</div>
+    </div>
+    <div style="display:flex;gap:6px;margin-left:24px;align-items:center;">
+      <div style="font-size:15px;color:#93c5fd;width:28px;text-align:center;font-weight:700;">R</div>
+      <div style="width:42px;height:42px;border-radius:50%;background:rgba(96,165,250,0.4);border:2px solid #60a5fa;display:flex;align-items:center;justify-content:center;font-size:18px;">&#128260;</div>
+      <div style="width:42px;height:42px;border-radius:50%;background:rgba(96,165,250,0.4);border:2px solid #60a5fa;display:flex;align-items:center;justify-content:center;font-size:18px;">&#128260;</div>
+      <div style="width:42px;height:42px;border-radius:50%;background:rgba(96,165,250,0.4);border:2px solid #60a5fa;display:flex;align-items:center;justify-content:center;font-size:18px;">&#128260;</div>
+      <div style="width:42px;height:42px;border-radius:50%;background:rgba(96,165,250,0.4);border:2px solid #60a5fa;display:flex;align-items:center;justify-content:center;font-size:18px;">&#128260;</div>
+    </div>
+    <div style="font-size:14px;color:#e5e7eb;margin-top:10px;">L + R = 4+4 = <span style="color:#60a5fa;font-weight:700;">8 rollen/laag</span> &bull; 2 lagen = <span style="color:#34d399;font-weight:700;">16 rollen</span></div>
+  </div>
+</div>
+```
+
+  </div>
+
+  <!-- GEWICHT -->
+
+  <div class="sectie">
+    <div class="sectie-hdr" style="border-top-color:#fb923c;" onclick="toggleSectie('s-gewicht')">
+      <div>
+        <div class="sectie-titel">&#9878; Gewicht Berekening</div>
+        <div class="sectie-sub">Gewicht per rol en totaal</div>
+      </div>
+      <div class="sectie-chev" id="chev-s-gewicht" style="color:#fb923c;">&#8250;</div>
+    </div>
+    <div class="sectie-body" id="s-gewicht">
+      <div class="label">Formule</div>
+      <div class="formule">
+        volume = (breedte/1000) &times; rolLengte &times; (dikte/1000) &times; 2<br>
+        gewicht = volume &times; soortelijkGewicht
+      </div>
+      <div class="label">Soortelijk gewicht per materiaal</div>
+      <div style="background:#070a10;border:1px solid #1a2540;border-radius:6px;overflow:hidden;margin-bottom:12px;">
+        <div class="rij" style="padding:10px 14px;"><span class="rij-lbl">LDPE</span><span class="rij-val">920 kg/m³</span></div>
+        <div class="rij" style="padding:10px 14px;"><span class="rij-lbl">MDPE</span><span class="rij-val">935 kg/m³</span></div>
+        <div class="rij" style="padding:10px 14px;"><span class="rij-lbl">Recycle Mix</span><span class="rij-val">950 kg/m³</span></div>
+        <div class="rij" style="padding:10px 14px;"><span class="rij-lbl">Recycle PE-LD</span><span class="rij-val">930 kg/m³</span></div>
+      </div>
+      <div class="uitleg-blok">
+        <b>Voorbeeld:</b><br>
+        Breedte 400mm &bull; Lengte 600mm &bull; Dikte 0.03mm &bull; 250 zakken/rol &bull; LDPE<br>
+        rolLengte = 250 &times; 600 / 1000 = 150m<br>
+        volume = 0.4 &times; 150 &times; 0.00003 &times; 2 = 0.0036 m³<br>
+        gewicht = 0.0036 &times; 920 = <b>3.3 kg</b>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEALTIJD & SNELHEID -->
+
+  <div class="sectie">
+    <div class="sectie-hdr" style="border-top-color:#ef4444;" onclick="toggleSectie('s-seal')">
+      <div>
+        <div class="sectie-titel">&#9632; Sealtijd &amp; Snelheid</div>
+        <div class="sectie-sub">Advieswaarden per materiaal</div>
+      </div>
+      <div class="sectie-chev" id="chev-s-seal" style="color:#ef4444;">&#8250;</div>
+    </div>
+    <div class="sectie-body" id="s-seal">
+      <div class="label">Formule sealtijd</div>
+      <div class="formule">
+        sealtijd = dikte &times; 5000 &times; materiaalFactor (ms)
+      </div>
+      <div class="label">Formule snelheid</div>
+      <div class="formule">
+        snelheid = 200 &times; snelheidsFactor (m/min)
+      </div>
+      <div class="label">Factoren per materiaal</div>
+      <div style="background:#070a10;border:1px solid #1a2540;border-radius:6px;overflow:hidden;margin-bottom:12px;">
+        <div class="rij" style="padding:10px 14px;"><span class="rij-lbl">LDPE</span><span class="rij-val">seal ×1.0 &bull; snel ×1.0</span></div>
+        <div class="rij" style="padding:10px 14px;"><span class="rij-lbl">MDPE</span><span class="rij-val">seal ×1.05 &bull; snel ×0.98</span></div>
+        <div class="rij" style="padding:10px 14px;"><span class="rij-lbl">Recycle Mix</span><span class="rij-val">seal ×1.30 &bull; snel ×0.70</span></div>
+        <div class="rij" style="padding:10px 14px;"><span class="rij-lbl">Recycle PE-LD</span><span class="rij-val">seal ×1.20 &bull; snel ×0.80</span></div>
+      </div>
+      <div class="uitleg-blok">
+        Dit zijn <b>advieswaarden</b> -- altijd aanpassen op basis van werkelijke productie.<br><br>
+        Waarden worden blauw getoond (berekend). Zodra je zelf invult worden ze groen (werkelijk).
+      </div>
+    </div>
+  </div>
+
+<button class="bottom-back-btn" onclick="history.back()">‹ Terug</button>
+
+</div>
+
+<script>
+function toggleSectie(id){
+  var body=document.getElementById(id);
+  var chev=document.getElementById('chev-'+id);
+  if(!body)return;
+  var open=body.classList.contains('open');
+  body.classList.toggle('open',!open);
+  if(chev)chev.textContent=open?'\u203a':'\u2039';
+}
+</script>
+
+</body>
+</html>
