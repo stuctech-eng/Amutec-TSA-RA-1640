@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="nl">
 <head>
 <meta charset="UTF-8">
@@ -51,6 +52,8 @@ html,body{min-height:100%;background:#070a10;color:#e5e7eb;font-family:'Courier 
     <button id="tab-uitleg" onclick="toonTab('uitleg')" style="flex:1;padding:12px;border-radius:6px;border:2px solid #1a2540;background:#0f1520;color:#9ca3af;font-family:'Courier New',monospace;font-size:13px;font-weight:700;cursor:pointer;">&#128218; Uitleg</button>
   </div>
 
+  <!-- CONFIG TAB -->
+
   <div id="sectie-config">
     <div class="form-card" style="border-top-color:#34d399;">
       <div class="form-card-title" style="color:#34d399;">&#9881;&#65039; Parameters</div>
@@ -69,7 +72,7 @@ html,body{min-height:100%;background:#070a10;color:#e5e7eb;font-family:'Courier 
         </div>
       </div>
       <div class="field">
-        <label>Stapelpatroon</label>
+        <label>Stapelpatroon (liggend)</label>
         <div style="display:flex;gap:8px;flex-wrap:wrap;">
           <button id="pc-pat-auto" onclick="pcKiesPatroon('auto')" style="flex:1;padding:10px;border-radius:6px;border:2px solid #34d399;background:rgba(52,211,153,0.15);color:#34d399;font-family:'Courier New',monospace;font-size:13px;font-weight:700;cursor:pointer;">AUTO</button>
           <button id="pc-pat-43" onclick="pcKiesPatroon('43')" style="flex:1;padding:10px;border-radius:6px;border:2px solid #1a2540;background:#0f1520;color:#9ca3af;font-family:'Courier New',monospace;font-size:13px;cursor:pointer;">4-3</button>
@@ -87,86 +90,197 @@ html,body{min-height:100%;background:#070a10;color:#e5e7eb;font-family:'Courier 
         <div class="field"><label>Aantal rollen</label><input id="pc-rollen" type="number" placeholder="950" readonly inputmode="none" onclick="openInvul(this,'Aantal rollen',[100,250,500,750,950,1000,1500,2000])" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:20px;padding:12px;text-align:center;outline:none;cursor:pointer;"></div>
       </div>
     </div>
-    <div id="pc-resultaat" style="display:none;">
-      <div class="form-card" style="border-top-color:#f59e0b;">
-        <div class="form-card-title" style="color:#f59e0b;">&#128230; Resultaat</div>
-        <div id="pc-output"></div>
-      </div>
-      <div class="form-card" style="border-top-color:#a78bfa;">
-        <div class="form-card-title" style="color:#a78bfa;">&#128064; Stapelvisualisatie</div>
-        <div id="pc-visual" style="text-align:center;font-size:22px;line-height:1.6;letter-spacing:4px;"></div>
-      </div>
-    </div>
+
+```
+<div id="pc-resultaat" style="display:none;">
+  <div class="form-card" style="border-top-color:#f59e0b;">
+    <div class="form-card-title" style="color:#f59e0b;">&#128230; Resultaat</div>
+    <div id="pc-output"></div>
   </div>
+  <div class="form-card" style="border-top-color:#a78bfa;">
+    <div class="form-card-title" style="color:#a78bfa;">&#128064; Stapelvisualisatie</div>
+    <div id="pc-visual" style="text-align:center;font-size:22px;line-height:1.6;letter-spacing:4px;"></div>
+  </div>
+</div>
+```
+
+  </div>
+
+  <!-- UITLEG TAB -->
 
   <div id="sectie-uitleg" style="display:none;">
-    <div class="form-card" style="border-top-color:#f59e0b;">
-      <div class="form-card-title" style="color:#f59e0b;">&#128230; Pallet Stapeling</div>
-      <div style="font-size:13px;color:#9ca3af;line-height:1.8;">
-        <span style="color:#f59e0b;font-weight:700;">Breedte &gt;500mm</span> &rarr; Liggend stapelen<br>
-        <span style="color:#60a5fa;font-weight:700;">Breedte &le;500mm</span> &rarr; Staand stapelen
-      </div>
+
+```
+<div class="form-card" style="border-top-color:#f59e0b;">
+  <div class="form-card-title" style="color:#f59e0b;">&#128230; Wanneer welk patroon?</div>
+  <div style="font-size:13px;color:#9ca3af;line-height:1.8;">
+    <span style="color:#f59e0b;font-weight:700;">Breedte &gt;500mm</span> &rarr; Liggend stapelen<br>
+    <span style="color:#60a5fa;font-weight:700;">Breedte &le;500mm</span> &rarr; Staand stapelen
+  </div>
+</div>
+
+<!-- LIGGEND -->
+<div style="background:#f59e0b;color:#000;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;padding:10px 16px;border-radius:6px;margin-bottom:12px;text-align:center;">&#128992; LIGGEND STAPELEN &mdash; Breedte &gt;500mm</div>
+
+<div style="background:#0f1520;border:1px solid #1a2540;border-radius:6px;padding:14px;margin-bottom:16px;font-size:13px;color:#9ca3af;line-height:1.9;">
+  Rollen liggen op hun zijkant &bull; Piramide patroon<br>
+  Laag 1 = meer rollen &bull; Laag 2 = 1 rol minder<br>
+  <span style="color:#f59e0b;font-weight:700;">Huidjes nodig om de oneven lagen</span>
+</div>
+
+<div class="form-card" style="border-top-color:#f59e0b;">
+  <div class="form-card-title" style="color:#f59e0b;">Liggend &mdash; 4-3 patroon (~200mm dia)</div>
+  <div style="background:#070a10;border:1px solid #1a2540;border-radius:8px;padding:16px;">
+    <div style="font-size:11px;color:#6b7280;margin-bottom:6px;text-align:center;">&#8593; TOP</div>
+    <div style="display:flex;justify-content:center;gap:8px;margin-bottom:2px;">
+      <div style="width:44px;height:44px;border-radius:50%;background:rgba(245,158,11,0.5);border:2px solid #f59e0b;display:flex;align-items:center;justify-content:center;color:#fcd34d;">&#128992;</div>
+      <div style="width:44px;height:44px;border-radius:50%;background:rgba(245,158,11,0.5);border:2px solid #f59e0b;display:flex;align-items:center;justify-content:center;color:#fcd34d;">&#128992;</div>
+      <div style="width:44px;height:44px;border-radius:50%;background:rgba(245,158,11,0.5);border:2px solid #f59e0b;display:flex;align-items:center;justify-content:center;color:#fcd34d;">&#128992;</div>
     </div>
-    <div style="background:#f59e0b;color:#000;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;padding:10px 16px;border-radius:6px;margin-bottom:12px;text-align:center;">&#128992; LIGGEND STAPELEN &mdash; Breedte &gt;500mm</div>
-    <div style="background:#0f1520;border:1px solid #1a2540;border-radius:6px;padding:14px;margin-bottom:16px;font-size:13px;color:#9ca3af;line-height:1.9;">
-      Rollen liggen op hun zijkant &bull; Piramide patroon<br>
-      Laag 1 = meer rollen &bull; Laag 2 = 1 rol minder<br>
-      <span style="color:#f59e0b;font-weight:700;">Huidjes nodig om de oneven lagen</span>
+    <div style="font-size:10px;color:#f59e0b;text-align:center;margin-bottom:4px;">Laag 4 &mdash; 3 rollen</div>
+    <div style="display:flex;justify-content:center;gap:4px;margin-bottom:2px;margin-top:-8px;">
+      <div style="width:44px;height:44px;border-radius:50%;background:#f59e0b;display:flex;align-items:center;justify-content:center;color:#000;">&#128992;</div>
+      <div style="width:44px;height:44px;border-radius:50%;background:#f59e0b;display:flex;align-items:center;justify-content:center;color:#000;">&#128992;</div>
+      <div style="width:44px;height:44px;border-radius:50%;background:#f59e0b;display:flex;align-items:center;justify-content:center;color:#000;">&#128992;</div>
+      <div style="width:44px;height:44px;border-radius:50%;background:#f59e0b;display:flex;align-items:center;justify-content:center;color:#000;">&#128992;</div>
     </div>
-    <div class="form-card" style="border-top-color:#f59e0b;">
-      <div class="form-card-title" style="color:#f59e0b;">Liggend &mdash; 4-3 patroon (~200mm)</div>
-      <div style="background:#070a10;border:1px solid #1a2540;border-radius:8px;padding:16px;">
-        <div style="font-size:11px;color:#6b7280;margin-bottom:6px;text-align:center;">&#8593; TOP</div>
-        <div style="display:flex;justify-content:center;gap:8px;margin-bottom:2px;">
-          <div style="width:44px;height:44px;border-radius:50%;background:rgba(245,158,11,0.5);border:2px solid #f59e0b;display:flex;align-items:center;justify-content:center;color:#fcd34d;">&#128992;</div>
-          <div style="width:44px;height:44px;border-radius:50%;background:rgba(245,158,11,0.5);border:2px solid #f59e0b;display:flex;align-items:center;justify-content:center;color:#fcd34d;">&#128992;</div>
-          <div style="width:44px;height:44px;border-radius:50%;background:rgba(245,158,11,0.5);border:2px solid #f59e0b;display:flex;align-items:center;justify-content:center;color:#fcd34d;">&#128992;</div>
-        </div>
-        <div style="font-size:10px;color:#f59e0b;text-align:center;margin-bottom:4px;">Laag 4 &mdash; 3 rollen</div>
-        <div style="display:flex;justify-content:center;gap:4px;margin-bottom:2px;margin-top:-8px;">
-          <div style="width:44px;height:44px;border-radius:50%;background:#f59e0b;display:flex;align-items:center;justify-content:center;color:#000;">&#128992;</div>
-          <div style="width:44px;height:44px;border-radius:50%;background:#f59e0b;display:flex;align-items:center;justify-content:center;color:#000;">&#128992;</div>
-          <div style="width:44px;height:44px;border-radius:50%;background:#f59e0b;display:flex;align-items:center;justify-content:center;color:#000;">&#128992;</div>
-          <div style="width:44px;height:44px;border-radius:50%;background:#f59e0b;display:flex;align-items:center;justify-content:center;color:#000;">&#128992;</div>
-        </div>
-        <div style="font-size:10px;color:#f59e0b;text-align:center;margin-bottom:4px;">Laag 3 &mdash; 4 rollen</div>
-        <div style="display:flex;justify-content:center;gap:8px;margin-bottom:2px;margin-top:-8px;">
-          <div style="width:44px;height:44px;border-radius:50%;background:rgba(245,158,11,0.5);border:2px solid #f59e0b;display:flex;align-items:center;justify-content:center;color:#fcd34d;">&#128992;</div>
-          <div style="width:44px;height:44px;border-radius:50%;background:rgba(245,158,11,0.5);border:2px solid #f59e0b;display:flex;align-items:center;justify-content:center;color:#fcd34d;">&#128992;</div>
-          <div style="width:44px;height:44px;border-radius:50%;background:rgba(245,158,11,0.5);border:2px solid #f59e0b;display:flex;align-items:center;justify-content:center;color:#fcd34d;">&#128992;</div>
-        </div>
-        <div style="font-size:10px;color:#f59e0b;text-align:center;margin-bottom:4px;">Laag 2 &mdash; 3 rollen</div>
-        <div style="display:flex;justify-content:center;gap:4px;margin-top:-8px;">
-          <div style="width:44px;height:44px;border-radius:50%;background:#f59e0b;display:flex;align-items:center;justify-content:center;color:#000;">&#128992;</div>
-          <div style="width:44px;height:44px;border-radius:50%;background:#f59e0b;display:flex;align-items:center;justify-content:center;color:#000;">&#128992;</div>
-          <div style="width:44px;height:44px;border-radius:50%;background:#f59e0b;display:flex;align-items:center;justify-content:center;color:#000;">&#128992;</div>
-          <div style="width:44px;height:44px;border-radius:50%;background:#f59e0b;display:flex;align-items:center;justify-content:center;color:#000;">&#128992;</div>
-        </div>
-        <div style="font-size:10px;color:#f59e0b;text-align:center;margin-top:4px;">Laag 1 &mdash; 4 rollen (bodem)</div>
-        <div style="background:#3d2800;border:1px solid #6b4c11;border-radius:4px;padding:6px;text-align:center;margin-top:8px;"><span style="font-size:11px;color:#fcd34d;">PALLET 150mm</span></div>
-      </div>
-      <div style="background:#070a10;border:1px solid #1a2540;border-radius:4px;padding:12px;margin-top:12px;font-size:13px;color:#9ca3af;line-height:2;">
-        4 lagen &bull; Patroon 4-3-4-3 &bull; Totaal: 2&times;(4+3) = <span style="color:#f59e0b;font-weight:700;">14 rollen</span><br>
-        Huidje om laag 1 en 3 &rarr; <span style="color:#34d399;font-weight:700;">nodig</span>
-      </div>
+    <div style="font-size:10px;color:#f59e0b;text-align:center;margin-bottom:4px;">Laag 3 &mdash; 4 rollen</div>
+    <div style="display:flex;justify-content:center;gap:8px;margin-bottom:2px;margin-top:-8px;">
+      <div style="width:44px;height:44px;border-radius:50%;background:rgba(245,158,11,0.5);border:2px solid #f59e0b;display:flex;align-items:center;justify-content:center;color:#fcd34d;">&#128992;</div>
+      <div style="width:44px;height:44px;border-radius:50%;background:rgba(245,158,11,0.5);border:2px solid #f59e0b;display:flex;align-items:center;justify-content:center;color:#fcd34d;">&#128992;</div>
+      <div style="width:44px;height:44px;border-radius:50%;background:rgba(245,158,11,0.5);border:2px solid #f59e0b;display:flex;align-items:center;justify-content:center;color:#fcd34d;">&#128992;</div>
     </div>
-    <div style="background:#60a5fa;color:#000;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;padding:10px 16px;border-radius:6px;margin-bottom:12px;margin-top:8px;text-align:center;">&#128260; STAAND STAPELEN &mdash; Breedte &le;500mm</div>
-    <div style="background:#0f1520;border:1px solid #1a2540;border-radius:6px;padding:14px;margin-bottom:16px;font-size:13px;color:#9ca3af;line-height:1.9;">
-      Rollen staan rechtop &bull; Hoogte per laag = zakbreedte<br>
-      <span style="color:#60a5fa;font-weight:700;">Geen huidjes nodig bij staand stapelen</span>
+    <div style="font-size:10px;color:#f59e0b;text-align:center;margin-bottom:4px;">Laag 2 &mdash; 3 rollen</div>
+    <div style="display:flex;justify-content:center;gap:4px;margin-top:-8px;">
+      <div style="width:44px;height:44px;border-radius:50%;background:#f59e0b;display:flex;align-items:center;justify-content:center;color:#000;">&#128992;</div>
+      <div style="width:44px;height:44px;border-radius:50%;background:#f59e0b;display:flex;align-items:center;justify-content:center;color:#000;">&#128992;</div>
+      <div style="width:44px;height:44px;border-radius:50%;background:#f59e0b;display:flex;align-items:center;justify-content:center;color:#000;">&#128992;</div>
+      <div style="width:44px;height:44px;border-radius:50%;background:#f59e0b;display:flex;align-items:center;justify-content:center;color:#000;">&#128992;</div>
     </div>
-    <div class="form-card" style="border-top-color:#60a5fa;">
-      <div class="form-card-title" style="color:#60a5fa;">Patronen overzicht</div>
-      <div style="background:#070a10;border:1px solid #60a5fa;border-radius:6px;padding:14px;">
-        <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;font-size:13px;"><span style="color:#60a5fa;font-weight:700;">4-3 patroon</span><span>Roldia. &le;200mm</span></div>
-        <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;font-size:13px;"><span style="color:#60a5fa;font-weight:700;">5-4 patroon</span><span>Roldia. ~160mm</span></div>
-        <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;font-size:13px;"><span style="color:#60a5fa;font-weight:700;">6-5 patroon</span><span>Roldia. ~133mm</span></div>
-        <div style="display:flex;justify-content:space-between;padding:8px 0;font-size:13px;"><span style="color:#ef4444;font-weight:700;">Dia. &gt;266mm</span><span style="color:#ef4444;">Niet stabiel &#10005;</span></div>
-      </div>
+    <div style="font-size:10px;color:#f59e0b;text-align:center;margin-top:4px;">Laag 1 &mdash; 4 rollen (bodem)</div>
+    <div style="background:#3d2800;border:1px solid #6b4c11;border-radius:4px;padding:6px;text-align:center;margin-top:8px;"><span style="font-size:11px;color:#fcd34d;">PALLET 150mm</span></div>
+  </div>
+  <div style="background:#070a10;border:1px solid #1a2540;border-radius:4px;padding:12px;margin-top:12px;font-size:13px;color:#9ca3af;line-height:2;">
+    4 lagen &bull; Patroon 4-3-4-3 &bull; Totaal: 2&times;(4+3) = <span style="color:#f59e0b;font-weight:700;">14 rollen</span><br>
+    Huidje om laag 1 en 3 &rarr; <span style="color:#34d399;font-weight:700;">nodig</span>
+  </div>
+</div>
+
+<!-- STAAND -->
+<div style="background:#60a5fa;color:#000;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;padding:10px 16px;border-radius:6px;margin-bottom:12px;margin-top:8px;text-align:center;">&#128260; STAAND STAPELEN &mdash; Breedte &le;500mm</div>
+
+<div style="background:#0f1520;border:1px solid #1a2540;border-radius:6px;padding:14px;margin-bottom:12px;font-size:13px;color:#9ca3af;line-height:1.9;">
+  Rollen staan rechtop &bull; Hoogte per laag = zakbreedte<br>
+  <span style="color:#60a5fa;font-weight:700;">Geen huidjes nodig bij staand stapelen</span>
+</div>
+
+<!-- STAAND: 4-3-4 piramide -->
+<div class="form-card" style="border-top-color:#60a5fa;">
+  <div class="form-card-title" style="color:#60a5fa;">Staand &mdash; 4-3-4 piramide (dia &le;200mm)</div>
+  <div style="background:#070a10;border:1px solid #1a2540;border-radius:8px;padding:16px;">
+    <div style="font-size:11px;color:#6b7280;margin-bottom:6px;text-align:center;">&#8593; LAAG 2 (TOP)</div>
+    <div style="display:flex;justify-content:center;gap:4px;margin-bottom:2px;">
+      <div style="width:40px;height:40px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
+      <div style="width:40px;height:40px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
+      <div style="width:40px;height:40px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
+      <div style="width:40px;height:40px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
     </div>
+    <div style="display:flex;justify-content:center;gap:4px;margin-bottom:2px;margin-left:20px;">
+      <div style="width:40px;height:40px;border-radius:50%;background:rgba(96,165,250,0.5);border:2px solid #60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
+      <div style="width:40px;height:40px;border-radius:50%;background:rgba(96,165,250,0.5);border:2px solid #60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
+      <div style="width:40px;height:40px;border-radius:50%;background:rgba(96,165,250,0.5);border:2px solid #60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
+    </div>
+    <div style="display:flex;justify-content:center;gap:4px;">
+      <div style="width:40px;height:40px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
+      <div style="width:40px;height:40px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
+      <div style="width:40px;height:40px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
+      <div style="width:40px;height:40px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
+    </div>
+    <div style="border-top:2px dashed #1a2540;margin:10px 0;"></div>
+    <div style="font-size:11px;color:#6b7280;text-align:center;margin-bottom:6px;">LAAG 1 (BODEM)</div>
+    <div style="display:flex;justify-content:center;gap:4px;margin-bottom:2px;">
+      <div style="width:40px;height:40px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
+      <div style="width:40px;height:40px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
+      <div style="width:40px;height:40px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
+      <div style="width:40px;height:40px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
+    </div>
+    <div style="display:flex;justify-content:center;gap:4px;margin-bottom:2px;margin-left:20px;">
+      <div style="width:40px;height:40px;border-radius:50%;background:rgba(96,165,250,0.5);border:2px solid #60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
+      <div style="width:40px;height:40px;border-radius:50%;background:rgba(96,165,250,0.5);border:2px solid #60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
+      <div style="width:40px;height:40px;border-radius:50%;background:rgba(96,165,250,0.5);border:2px solid #60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
+    </div>
+    <div style="display:flex;justify-content:center;gap:4px;">
+      <div style="width:40px;height:40px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
+      <div style="width:40px;height:40px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
+      <div style="width:40px;height:40px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
+      <div style="width:40px;height:40px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
+    </div>
+    <div style="background:#3d2800;border:1px solid #6b4c11;border-radius:4px;padding:6px;text-align:center;margin-top:10px;"><span style="font-size:11px;color:#fcd34d;">PALLET 150mm</span></div>
+  </div>
+  <div style="background:#070a10;border:1px solid #1a2540;border-radius:4px;padding:12px;margin-top:12px;font-size:13px;color:#9ca3af;line-height:2;">
+    Per laag: 4+3+4 = <span style="color:#60a5fa;font-weight:700;">11 rollen</span> &bull;
+    2 lagen = <span style="color:#34d399;font-weight:700;">22 rollen</span>
+  </div>
+</div>
+
+<!-- STAAND: zigzag -->
+<div class="form-card" style="border-top-color:#60a5fa;">
+  <div class="form-card-title" style="color:#60a5fa;">Staand &mdash; 2 Rijen Zigzag (dia 201&ndash;266mm)</div>
+  <div style="font-size:12px;color:#6b7280;margin-bottom:12px;">Rechter rij verschoven &bull; 4+4 = 8 per laag &bull; 2 lagen = 16 rollen</div>
+  <div style="background:#070a10;border:1px solid #1a2540;border-radius:8px;padding:16px;">
+    <div style="font-size:11px;color:#6b7280;margin-bottom:8px;text-align:center;">&#8593; LAAG 2 (TOP)</div>
+    <div style="display:flex;gap:4px;margin-bottom:3px;">
+      <div style="font-size:11px;color:#60a5fa;width:22px;line-height:40px;text-align:center;font-weight:700;">L</div>
+      <div style="width:40px;height:40px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
+      <div style="width:40px;height:40px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
+      <div style="width:40px;height:40px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
+      <div style="width:40px;height:40px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
+    </div>
+    <div style="display:flex;gap:4px;margin-left:20px;margin-bottom:3px;">
+      <div style="font-size:11px;color:#93c5fd;width:22px;line-height:40px;text-align:center;font-weight:700;">R</div>
+      <div style="width:40px;height:40px;border-radius:50%;background:rgba(96,165,250,0.5);border:2px solid #60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
+      <div style="width:40px;height:40px;border-radius:50%;background:rgba(96,165,250,0.5);border:2px solid #60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
+      <div style="width:40px;height:40px;border-radius:50%;background:rgba(96,165,250,0.5);border:2px solid #60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
+      <div style="width:40px;height:40px;border-radius:50%;background:rgba(96,165,250,0.5);border:2px solid #60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
+    </div>
+    <div style="border-top:2px dashed #1a2540;margin:10px 0;"></div>
+    <div style="font-size:11px;color:#6b7280;text-align:center;margin-bottom:8px;">LAAG 1 (BODEM)</div>
+    <div style="display:flex;gap:4px;margin-bottom:3px;">
+      <div style="font-size:11px;color:#60a5fa;width:22px;line-height:40px;text-align:center;font-weight:700;">L</div>
+      <div style="width:40px;height:40px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
+      <div style="width:40px;height:40px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
+      <div style="width:40px;height:40px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
+      <div style="width:40px;height:40px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
+    </div>
+    <div style="display:flex;gap:4px;margin-left:20px;">
+      <div style="font-size:11px;color:#93c5fd;width:22px;line-height:40px;text-align:center;font-weight:700;">R</div>
+      <div style="width:40px;height:40px;border-radius:50%;background:rgba(96,165,250,0.5);border:2px solid #60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
+      <div style="width:40px;height:40px;border-radius:50%;background:rgba(96,165,250,0.5);border:2px solid #60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
+      <div style="width:40px;height:40px;border-radius:50%;background:rgba(96,165,250,0.5);border:2px solid #60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
+      <div style="width:40px;height:40px;border-radius:50%;background:rgba(96,165,250,0.5);border:2px solid #60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
+    </div>
+    <div style="background:#3d2800;border:1px solid #6b4c11;border-radius:4px;padding:6px;text-align:center;margin-top:10px;"><span style="font-size:11px;color:#fcd34d;">PALLET 150mm</span></div>
+  </div>
+  <div style="background:#070a10;border:1px solid #1a2540;border-radius:4px;padding:12px;margin-top:12px;font-size:13px;color:#9ca3af;line-height:2;">
+    L+R per laag = 4+4 = <span style="color:#60a5fa;font-weight:700;">8 rollen</span> &bull;
+    2 lagen = <span style="color:#34d399;font-weight:700;">16 rollen</span><br>
+    Max diameter: <span style="color:#60a5fa;font-weight:700;">266mm</span> &bull; Geen huidjes nodig
+  </div>
+</div>
+
+<!-- PATRONEN OVERZICHT -->
+<div style="background:#070a10;border:1px solid #60a5fa;border-radius:6px;padding:14px;margin-bottom:12px;">
+  <div style="font-size:11px;color:#60a5fa;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;">Wanneer welk staand patroon?</div>
+  <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;font-size:13px;"><span style="color:#60a5fa;font-weight:700;">Dia. &le;200mm</span><span style="color:#e5e7eb;">4-3-4 piramide (11/laag)</span></div>
+  <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;font-size:13px;"><span style="color:#60a5fa;font-weight:700;">Dia. 201-266mm</span><span style="color:#e5e7eb;">Zigzag 2 rijen (8/laag)</span></div>
+  <div style="display:flex;justify-content:space-between;padding:8px 0;font-size:13px;"><span style="color:#ef4444;font-weight:700;">Dia. &gt;266mm</span><span style="color:#ef4444;">Niet stabiel &#10005;</span></div>
+</div>
+```
+
   </div>
 
-  <button class="bottom-back-btn" onclick="window.location.href='index.html'">&#8249; Terug naar Home</button>
+<button class="bottom-back-btn" onclick="window.location.href='index.html'">‹ Terug naar Home</button>
+
 </div>
 
 <div id="invul-overlay" class="invul-overlay">
@@ -201,18 +315,17 @@ var _invulEl=null, _invulWaarde='';
 function toonTab(tab) {
   document.getElementById('sectie-config').style.display = tab==='config' ? 'block' : 'none';
   document.getElementById('sectie-uitleg').style.display = tab==='uitleg' ? 'block' : 'none';
-  var btnC = document.getElementById('tab-config');
-  var btnU = document.getElementById('tab-uitleg');
-  if(tab==='config') {
-    btnC.style.borderColor='#34d399'; btnC.style.background='rgba(52,211,153,0.15)'; btnC.style.color='#34d399';
-    btnU.style.borderColor='#1a2540'; btnU.style.background='#0f1520'; btnU.style.color='#9ca3af';
+  var btnC=document.getElementById('tab-config'), btnU=document.getElementById('tab-uitleg');
+  if(tab==='config'){
+    btnC.style.borderColor='#34d399';btnC.style.background='rgba(52,211,153,0.15)';btnC.style.color='#34d399';
+    btnU.style.borderColor='#1a2540';btnU.style.background='#0f1520';btnU.style.color='#9ca3af';
   } else {
-    btnU.style.borderColor='#34d399'; btnU.style.background='rgba(52,211,153,0.15)'; btnU.style.color='#34d399';
-    btnC.style.borderColor='#1a2540'; btnC.style.background='#0f1520'; btnC.style.color='#9ca3af';
+    btnU.style.borderColor='#34d399';btnU.style.background='rgba(52,211,153,0.15)';btnU.style.color='#34d399';
+    btnC.style.borderColor='#1a2540';btnC.style.background='#0f1520';btnC.style.color='#9ca3af';
   }
 }
 
-function pcKiesPallet(type) {
+function pcKiesPallet(type){
   _pcPallet=type;
   ['euro','blok'].forEach(function(t){
     var btn=document.getElementById('pc-btn-'+t);if(!btn)return;
@@ -222,16 +335,16 @@ function pcKiesPallet(type) {
   pcBereken();
 }
 
-function pcKiesHoogte(h) {
+function pcKiesHoogte(h){
   _pcMaxH=h;
   var isH=h===1550;
-  var b1=document.getElementById('pc-btn-h1700'); var b2=document.getElementById('pc-btn-h1200');
+  var b1=document.getElementById('pc-btn-h1700'),b2=document.getElementById('pc-btn-h1200');
   if(b1){b1.style.borderColor=isH?'#34d399':'#1a2540';b1.style.background=isH?'rgba(52,211,153,0.15)':'#0f1520';b1.style.color=isH?'#34d399':'#9ca3af';}
   if(b2){b2.style.borderColor=!isH?'#34d399':'#1a2540';b2.style.background=!isH?'rgba(52,211,153,0.15)':'#0f1520';b2.style.color=!isH?'#34d399':'#9ca3af';}
   pcBereken();
 }
 
-function pcKiesPatroon(pat) {
+function pcKiesPatroon(pat){
   _pcPatroon=pat;
   ['auto','43','54','65'].forEach(function(p){
     var btn=document.getElementById('pc-pat-'+p);if(!btn)return;
@@ -241,65 +354,172 @@ function pcKiesPatroon(pat) {
   pcBereken();
 }
 
-function pcBereken() {
+function pcBereken(){
   var palletB=_pcPallet==='blok'?1000:800;
   var palletNaam=_pcPallet==='blok'?'Blokpallet 1000mm':'Euro pallet 800mm';
+  var breedte=parseFloat(document.getElementById('pc-breedte').value)||0;
   var rolDInput=parseFloat(document.getElementById('pc-rolD').value)||0;
   var zakrol=parseFloat(document.getElementById('pc-zakrol').value)||0;
   var lengte=parseFloat(document.getElementById('pc-lengte').value)||0;
   var dikte=parseFloat(document.getElementById('pc-dikte').value)||0;
   var koker=parseFloat(document.getElementById('pc-koker').value)||90;
   var aantalRollen=parseFloat(document.getElementById('pc-rollen').value)||0;
+
   var rolD=rolDInput;
   if(!rolD&&zakrol&&lengte&&dikte){
     var wf=Math.max(1.0,2.5-dikte*30);
     rolD=Math.round(Math.sqrt((koker/2)*(koker/2)+(zakrol*lengte*dikte*2*wf)/Math.PI)*2);
   }
   if(!rolD){document.getElementById('pc-resultaat').style.display='none';return;}
-  var rijA,rijB;
-  if(_pcPatroon==='43'){rijA=4;rijB=3;}
-  else if(_pcPatroon==='54'){rijA=5;rijB=4;}
-  else if(_pcPatroon==='65'){rijA=6;rijB=5;}
-  else{rijA=Math.max(1,Math.round(palletB/rolD));rijB=Math.max(1,rijA-1);}
-  var maxLagen=1;
-  for(var nl=2;nl<=20;nl++){if(rolD+(nl-1)*rolD*0.866<=_pcMaxH)maxLagen=nl;else break;}
-  var paren=Math.floor(maxLagen/2);var extra=maxLagen%2;var rpp=paren*(rijA+rijB)+extra*rijA;
-  var stapelHoogte=Math.round(rolD+(maxLagen-1)*rolD*0.866);
-  var pallets=0,losRollen=0,rppToon=rpp;
-  if(aantalRollen>0){
-    var volP=Math.floor(aantalRollen/rpp);var rest=aantalRollen%rpp;
-    if(rest===0)pallets=volP;
-    else if(rest<=4){pallets=volP;losRollen=rest;}
-    else if(volP>0&&rest<=volP){pallets=volP;rppToon=rpp+1;}
-    else pallets=volP+1;
-    if(pallets===0)pallets=1;
-  }
-  var huidjeRuw=rijA*rolD+50;
-  var hMaten=[700,750,800,850,900,950,1000,1050,1100,1150,1200,1250,1300,1350,1400];
-  var huidje=hMaten[hMaten.length-1];
-  for(var hi=0;hi<hMaten.length;hi++){if(hMaten[hi]>=huidjeRuw){huidje=hMaten[hi];break;}}
-  var aantalHuidjes=pallets>0?Math.floor(maxLagen/2)*pallets:0;
+
+  var staand = breedte>0 && breedte<=500;
+  var html='', visual='', rpp=0, stapelHoogte=0, maxLagen=0, patroonLabel='';
+
   function rr(lbl,val,kleur){return '<div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #1a2540;"><div style="color:#9ca3af;font-size:12px;letter-spacing:1px;">'+lbl+'</div><div style="color:'+(kleur||'#e5e7eb')+';font-size:18px;font-weight:700;">'+val+'</div></div>';}
-  var html=rr('PALLET',palletNaam)+rr('ROLDIAMETER',rolD+'mm','#60a5fa')+rr('RIJEN LAAG 1',rijA+' rollen','#34d399')+rr('RIJEN LAAG 2',rijB+' rollen','#34d399')+rr('PATROON',rijA+'-'+rijB+' piramide')+rr('AANTAL LAGEN',maxLagen+' lagen','#a78bfa')+rr('STAPELHOOGTE',stapelHoogte+'mm')+rr('ROLLEN PER PALLET',rppToon+' rollen','#f59e0b');
-  if(aantalRollen>0)html+=rr('AANTAL PALLETS',pallets+' pallets','#f59e0b');
-  if(losRollen>0)html+=rr('LOS OP PALLET',losRollen+' rollen','#9ca3af');
-  html+=rr('HUIDJE LENGTE',huidje+'mm','#34d399');
-  if(aantalRollen>0)html+=rr('AANTAL HUIDJES',aantalHuidjes+' stuks');
-  document.getElementById('pc-output').innerHTML=html;
-  var visual='';
-  for(var lag=maxLagen;lag>=1;lag--){
-    var rijv=(lag%2===1)?rijA:rijB;
-    var kleurL=(lag%2===1)?'&#128992;':'&#128994;';
-    for(var ri=0;ri<rijv;ri++) visual+=kleurL;
-    if(lag>1) visual+='<br>';
+
+  if(staand){
+    // STAAND STAPELEN
+    var laagHoogte = breedte; // hoogte per laag = zakbreedte
+    maxLagen = Math.max(1, Math.floor(_pcMaxH / laagHoogte));
+    maxLagen = Math.min(maxLagen, 2); // max 2 lagen staand
+
+    var rollenPerLaag, zigzag=false;
+
+    if(rolD <= 200){
+      // 4-3-4 piramide per laag
+      var rijA = Math.max(1, Math.round(palletB / rolD));
+      var rijB = Math.max(1, rijA - 1);
+      rollenPerLaag = rijA + rijB + rijA; // 4+3+4 = 11
+      patroonLabel = rijA+'-'+rijB+'-'+rijA+' piramide';
+      stapelHoogte = Math.round(maxLagen * laagHoogte);
+
+      html += rr('STAPELWIJZE','Staand piramide','#60a5fa');
+      html += rr('PATROON', patroonLabel, '#60a5fa');
+      html += rr('ROLLEN PER LAAG', rollenPerLaag+' rollen', '#34d399');
+
+      // visualisatie: piramide per laag
+      visual = '';
+      for(var lg=maxLagen;lg>=1;lg--){
+        for(var ri=0;ri<rijA;ri++) visual+='&#128260;';
+        visual+='<br>';
+        for(var ri2=0;ri2<rijB;ri2++) visual+='&#9675;'; // midden rij iets anders tonen
+        visual+='<br>';
+        for(var ri3=0;ri3<rijA;ri3++) visual+='&#128260;';
+        if(lg>1) visual+='<br><span style="font-size:12px;color:#1a2540;">&#9135;</span><br>';
+      }
+
+    } else if(rolD <= 266){
+      // ZIGZAG: 2 rijen verschoven
+      zigzag = true;
+      var rijLinks = Math.max(1, Math.round(palletB / rolD));
+      var rijRechts = rijLinks; // zelfde aantal, verschoven
+      rollenPerLaag = rijLinks + rijRechts;
+      patroonLabel = 'Zigzag 2 rijen ('+rijLinks+'+'+rijRechts+')';
+      stapelHoogte = Math.round(maxLagen * laagHoogte);
+
+      html += rr('STAPELWIJZE','Staand zigzag','#60a5fa');
+      html += rr('PATROON', patroonLabel, '#60a5fa');
+      html += rr('ROLLEN PER LAAG', rollenPerLaag+' rollen', '#34d399');
+
+      // visualisatie: zigzag
+      visual = '';
+      for(var lg2=maxLagen;lg2>=1;lg2--){
+        for(var r1=0;r1<rijLinks;r1++) visual+='&#128260;';
+        visual+='<br>';
+        visual+='&nbsp;&nbsp;';
+        for(var r2=0;r2<rijRechts;r2++) visual+='&#128260;';
+        if(lg2>1) visual+='<br><span style="font-size:12px;color:#1a2540;">&#9135;</span><br>';
+      }
+
+    } else {
+      // Te groot voor staand
+      html += rr('STAPELWIJZE','Staand - dia te groot!','#ef4444');
+      html += rr('ADVIES','Liggend stapelen','#f59e0b');
+      document.getElementById('pc-output').innerHTML = html;
+      document.getElementById('pc-visual').innerHTML = '<div style="color:#ef4444;font-size:14px;">Diameter >266mm &mdash; niet stabiel staand</div>';
+      document.getElementById('pc-resultaat').style.display = 'block';
+      return;
+    }
+
+    rpp = rollenPerLaag * maxLagen;
+
+    html = rr('PALLET', palletNaam) +
+           rr('ROLDIAMETER', rolD+'mm', '#60a5fa') +
+           rr('STAPELWIJZE', zigzag ? 'Staand zigzag' : 'Staand piramide', '#60a5fa') +
+           rr('PATROON', patroonLabel, '#60a5fa') +
+           rr('ROLLEN PER LAAG', rollenPerLaag+' rollen', '#34d399') +
+           rr('AANTAL LAGEN', maxLagen+' lagen', '#a78bfa') +
+           rr('STAPELHOOGTE', stapelHoogte+'mm') +
+           rr('ROLLEN PER PALLET', rpp+' rollen', '#f59e0b');
+
+    if(aantalRollen>0){
+      var pallets=Math.ceil(aantalRollen/rpp);
+      var los=aantalRollen%rpp;
+      html += rr('AANTAL PALLETS', pallets+' pallets', '#f59e0b');
+      if(los>0) html += rr('LOS OP PALLET', los+' rollen', '#9ca3af');
+    }
+    html += rr('HUIDJES', 'Niet nodig bij staand', '#6b7280');
+
+  } else {
+    // LIGGEND STAPELEN (originele logica)
+    var rijA2, rijB2;
+    if(_pcPatroon==='43'){rijA2=4;rijB2=3;}
+    else if(_pcPatroon==='54'){rijA2=5;rijB2=4;}
+    else if(_pcPatroon==='65'){rijA2=6;rijB2=5;}
+    else{rijA2=Math.max(1,Math.round(palletB/rolD));rijB2=Math.max(1,rijA2-1);}
+
+    maxLagen=1;
+    for(var nl=2;nl<=20;nl++){if(rolD+(nl-1)*rolD*0.866<=_pcMaxH)maxLagen=nl;else break;}
+    var paren=Math.floor(maxLagen/2),extra=maxLagen%2;
+    rpp=paren*(rijA2+rijB2)+extra*rijA2;
+    stapelHoogte=Math.round(rolD+(maxLagen-1)*rolD*0.866);
+
+    var pallets2=0,losRollen=0,rppToon=rpp;
+    if(aantalRollen>0){
+      var volP=Math.floor(aantalRollen/rpp),rest=aantalRollen%rpp;
+      if(rest===0)pallets2=volP;
+      else if(rest<=4){pallets2=volP;losRollen=rest;}
+      else if(volP>0&&rest<=volP){pallets2=volP;rppToon=rpp+1;}
+      else pallets2=volP+1;
+      if(pallets2===0)pallets2=1;
+    }
+
+    var huidjeRuw=rijA2*rolD+50;
+    var hMaten=[700,750,800,850,900,950,1000,1050,1100,1150,1200,1250,1300,1350,1400];
+    var huidje=hMaten[hMaten.length-1];
+    for(var hi=0;hi<hMaten.length;hi++){if(hMaten[hi]>=huidjeRuw){huidje=hMaten[hi];break;}}
+    var aantalHuidjes=pallets2>0?Math.floor(maxLagen/2)*pallets2:0;
+
+    html = rr('PALLET',palletNaam)+
+           rr('ROLDIAMETER',rolD+'mm','#60a5fa')+
+           rr('STAPELWIJZE','Liggend piramide','#f59e0b')+
+           rr('RIJEN LAAG 1',rijA2+' rollen','#34d399')+
+           rr('RIJEN LAAG 2',rijB2+' rollen','#34d399')+
+           rr('PATROON',rijA2+'-'+rijB2+' piramide')+
+           rr('AANTAL LAGEN',maxLagen+' lagen','#a78bfa')+
+           rr('STAPELHOOGTE',stapelHoogte+'mm')+
+           rr('ROLLEN PER PALLET',rppToon+' rollen','#f59e0b');
+    if(aantalRollen>0)html+=rr('AANTAL PALLETS',pallets2+' pallets','#f59e0b');
+    if(losRollen>0)html+=rr('LOS OP PALLET',losRollen+' rollen','#9ca3af');
+    html+=rr('HUIDJE LENGTE',huidje+'mm','#34d399');
+    if(aantalRollen>0)html+=rr('AANTAL HUIDJES',aantalHuidjes+' stuks');
+
+    visual='';
+    for(var lag=maxLagen;lag>=1;lag--){
+      var rijv=(lag%2===1)?rijA2:rijB2;
+      var kleurL=(lag%2===1)?'&#128992;':'&#128994;';
+      for(var ri4=0;ri4<rijv;ri4++) visual+=kleurL;
+      if(lag>1) visual+='<br>';
+    }
   }
+
+  document.getElementById('pc-output').innerHTML=html;
   document.getElementById('pc-visual').innerHTML=visual;
   document.getElementById('pc-resultaat').style.display='block';
 }
 
-function openInvul(el, label, snel) {
-  _invulEl=el;
-  _invulWaarde=el.value?String(el.value):'';
+function openInvul(el,label,snel){
+  _invulEl=el;_invulWaarde=el.value?String(el.value):'';
   document.getElementById('invul-label').textContent=label;
   var disp=document.getElementById('invul-waarde');
   disp.className='invul-waarde '+(el.classList.contains('veld-definitief')?'groen':'geel');
@@ -309,29 +529,22 @@ function openInvul(el, label, snel) {
   document.getElementById('invul-snel').innerHTML=snelHtml;
   document.getElementById('invul-overlay').style.display='flex';
 }
-
 function invulSluit(){document.getElementById('invul-overlay').style.display='none';_invulEl=null;_invulWaarde='';}
 function invulCijfer(c){
   if(c==='.'&&_invulWaarde.indexOf('.')>=0)return;
   if(_invulWaarde==='0'&&c!=='.')_invulWaarde=c;else _invulWaarde+=c;
   document.getElementById('invul-waarde').textContent=_invulWaarde;
 }
-function invulWis(){
-  _invulWaarde=_invulWaarde.slice(0,-1);
-  document.getElementById('invul-waarde').textContent=_invulWaarde||'0';
-}
-function invulSnel(val){
-  _invulWaarde=String(val);
-  document.getElementById('invul-waarde').textContent=_invulWaarde;
-}
+function invulWis(){_invulWaarde=_invulWaarde.slice(0,-1);document.getElementById('invul-waarde').textContent=_invulWaarde||'0';}
+function invulSnel(val){_invulWaarde=String(val);document.getElementById('invul-waarde').textContent=_invulWaarde;}
 function invulOk(){
   if(!_invulEl||!_invulWaarde){invulSluit();return;}
   _invulEl.value=_invulWaarde;
-  _invulEl.classList.remove('veld-leeg');
-  _invulEl.classList.add('veld-definitief');
+  _invulEl.classList.remove('veld-leeg');_invulEl.classList.add('veld-definitief');
   invulSluit();
   pcBereken();
 }
 </script>
+
 </body>
 </html>
