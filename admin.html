@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#070a10">
+<title>TSA Admin</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{height:100%}
+body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospace;min-height:100%;overscroll-behavior:none;font-size:17px}
+.topbar{background:#0f1520;border-bottom:2px solid #f59e0b;height:56px;display:flex;align-items:center;padding:0 16px;gap:12px;position:sticky;top:0;z-index:100;}
+.back-btn{background:none;border:1px solid #1a2540;border-radius:4px;color:#f59e0b;font-size:22px;cursor:pointer;padding:4px 10px;line-height:1}
+.topbar-title{font-weight:700;font-size:16px;letter-spacing:2px;text-transform:uppercase;color:#e5e7eb;flex:1}
+.content{overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px 14px 80px}
+.form-card{background:#0f1520;border:1px solid #1a2540;border-top:2px solid #f59e0b;border-radius:4px;padding:16px;margin-bottom:12px}
+.form-card-title{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#f59e0b;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid #1a2540}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(10px);background:#34d399;color:#000;font-weight:700;font-size:14px;letter-spacing:1px;padding:12px 24px;border-radius:4px;opacity:0;transition:all .2s;pointer-events:none;z-index:9999;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.err{background:#ef4444;color:#fff}
+.bottom-back-btn{width:100%;background:#0f1520;border:none;border-top:1px solid #1a2540;color:#9ca3af;font-family:'Courier New',Courier,monospace;font-size:14px;letter-spacing:1px;padding:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;position:sticky;bottom:0;z-index:50;}
+.bottom-back-btn:active{background:#141d2e;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <button class="back-btn" onclick="history.back()">&#8249;</button>
+  <div class="topbar-title">Admin</div>
+</div>
+
+<div class="content">
+
+  <!-- HISTORY -->
+
+  <div class="form-card" style="border-top-color:#ef4444;cursor:pointer;" onclick="toggleSectie('history-body','history-chev')">
+    <div style="display:flex;align-items:center;justify-content:space-between;">
+      <div class="form-card-title" style="color:#ef4444;margin-bottom:0;">&#128203; History</div>
+      <span id="history-chev" style="color:#ef4444;font-size:20px;">&#8250;</span>
+    </div>
+    <div style="font-size:11px;color:#6b7280;margin-top:6px;">Versie overzicht van alle updates</div>
+  </div>
+  <div id="history-body" style="display:none;margin-top:-8px;background:#0f1520;border:1px solid #1a2540;border-top:none;border-radius:0 0 4px 4px;padding:16px;">
+    <div style="display:flex;flex-direction:column;gap:0;">
+      <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #1a2540;"><div style="font-size:11px;color:#f59e0b;min-width:48px;font-weight:700;">v14.5</div><div style="flex:1;font-size:12px;color:#9ca3af;line-height:1.6;">Admin als aparte admin.html. HTML nesting fixes Machine Info sectie.</div></div>
+      <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #1a2540;"><div style="font-size:11px;color:#f59e0b;min-width:48px;font-weight:700;">v14.4</div><div style="flex:1;font-size:12px;color:#9ca3af;line-height:1.6;">Vorige stabiele versie.</div></div>
+      <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #1a2540;"><div style="font-size:11px;color:#f59e0b;min-width:48px;font-weight:700;">v12.5</div><div style="flex:1;font-size:12px;color:#9ca3af;line-height:1.6;">Schone lei offset berekening. Basis 10750mm. Offset 2 = Offset 1 - 200mm.</div></div>
+      <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #1a2540;"><div style="font-size:11px;color:#f59e0b;min-width:48px;font-weight:700;">v12.4</div><div style="flex:1;font-size:12px;color:#9ca3af;line-height:1.6;">MECH_BASIS 10280 → 10750mm op basis van werkelijke meting.</div></div>
+      <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #1a2540;"><div style="font-size:11px;color:#f59e0b;min-width:48px;font-weight:700;">v12.3</div><div style="flex:1;font-size:12px;color:#9ca3af;line-height:1.6;">Volledige rebuild na corrupte HTML. Admin alleen voor Dirk.</div></div>
+      <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #1a2540;"><div style="font-size:11px;color:#f59e0b;min-width:48px;font-weight:700;">v11.6</div><div style="flex:1;font-size:12px;color:#9ca3af;line-height:1.6;">Pallet Config toegevoegd met visuele stapeling.</div></div>
+      <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #1a2540;"><div style="font-size:11px;color:#f59e0b;min-width:48px;font-weight:700;">v11.3</div><div style="flex:1;font-size:12px;color:#9ca3af;line-height:1.6;">Piramide stapeling (5-4-5-4). Huidjes: rijA x rolD + 50mm.</div></div>
+      <div style="display:flex;gap:12px;padding:12px 0;"><div style="font-size:11px;color:#f59e0b;min-width:48px;font-weight:700;">v8.8</div><div style="flex:1;font-size:12px;color:#9ca3af;line-height:1.6;">Eerste stabiele versie. Firebase, login, receptenboek, calculator.</div></div>
+    </div>
+  </div>
+
+  <!-- UITLEG BEREKENINGEN -->
+
+  <div class="form-card" style="border-top-color:#a78bfa;margin-top:4px;cursor:pointer;" onclick="window.location.href='uitleg.html'">
+    <div style="display:flex;align-items:center;justify-content:space-between;">
+      <div class="form-card-title" style="color:#a78bfa;margin-bottom:0;">&#128230; Uitleg Berekeningen</div>
+      <span style="color:#a78bfa;font-size:20px;">&#8250;</span>
+    </div>
+    <div style="font-size:11px;color:#6b7280;margin-top:6px;">Pallet stapeling visueel uitgelegd</div>
+  </div>
+
+  <!-- MACHINE INFO -->
+
+  <div class="form-card" style="border-top-color:#34d399;margin-top:4px;cursor:pointer;" onclick="toggleMachineInfo()">
+    <div style="display:flex;align-items:center;justify-content:space-between;">
+      <div class="form-card-title" style="color:#34d399;margin-bottom:0;">&#9881;&#65039; Machine Info</div>
+      <span id="machine-info-chev" style="color:#34d399;font-size:20px;">&#8250;</span>
+    </div>
+    <div style="font-size:11px;color:#6b7280;margin-top:6px;">AMUTEC TSA-RA 1640 parameters</div>
+  </div>
+
+  <div id="machine-info-sectie" style="display:none;">
+
+```
+<!-- RA ROLLS CHANGE -->
+<div class="form-card" style="border-top-color:#f59e0b;cursor:pointer;" onclick="toggleSectie('mi-rc-body','mi-rc-chev')">
+  <div style="display:flex;align-items:center;justify-content:space-between;">
+    <div class="form-card-title" style="color:#f59e0b;margin-bottom:0;">&#128260; RA Rolls Change Parameters</div>
+    <span id="mi-rc-chev" style="color:#f59e0b;font-size:20px;">&#8250;</span>
+  </div>
+</div>
+<div id="mi-rc-body" style="display:none;background:#0f1520;border:1px solid #1a2540;border-top:none;border-radius:0 0 4px 4px;padding:16px;margin-bottom:12px;">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin:8px 0 6px;"><span style="font-size:10px;color:#60a5fa;letter-spacing:1px;">ROLLS CHANGE 1</span><span style="font-size:9px;background:rgba(96,165,250,0.1);border:1px solid rgba(96,165,250,0.3);color:#60a5fa;padding:2px 8px;border-radius:3px;">ORIGINELE SETTINGS</span></div>
+  <div style="display:flex;flex-direction:column;">
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Rewinder offset</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">10750 mm</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;" onclick="toonParamUitleg('Rolls change advance')">Rolls change advance &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">800 ms</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;" onclick="toonParamUitleg('Material speed at change')">Material speed at change &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">80 m/min</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;" onclick="toonParamUitleg('Mat. speed at change diam. <75mm')">Mat. speed diam. &lt;75mm &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">82 m/min</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;" onclick="toonParamUitleg('Blow advance at low speed')">Blow advance at low speed &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">100 ms</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;" onclick="toonParamUitleg('Blow advance at high speed')">Blow advance at high speed &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">100 ms</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;"><span style="font-size:11px;color:#9ca3af;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;" onclick="toonParamUitleg('Pressor roll advance')">Pressor roll advance &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">4000 ms</span></div>
+  </div>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin:14px 0 6px;"><span style="font-size:10px;color:#60a5fa;letter-spacing:1px;">ROLLS CHANGE 2</span><span style="font-size:9px;background:rgba(96,165,250,0.1);border:1px solid rgba(96,165,250,0.3);color:#60a5fa;padding:2px 8px;border-radius:3px;">ORIGINELE SETTINGS</span></div>
+  <div style="display:flex;flex-direction:column;">
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;" onclick="toonParamUitleg('Rewinder offset 1')">Rewinder offset 1 &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">10750 mm</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;" onclick="toonParamUitleg('Rewinder offset 2')">Rewinder offset 2 &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">10550 mm</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;" onclick="toonParamUitleg('Rolls change advance')">Rolls change advance &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">400 ms</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;" onclick="toonParamUitleg('Material speed at change')">Material speed at change &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">80 m/min</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;" onclick="toonParamUitleg('Mat. speed at change diam. <75mm')">Mat. speed diam. &lt;75mm &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">82 m/min</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;" onclick="toonParamUitleg('Blow advance at low speed')">Blow advance at low speed &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">100 ms</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;" onclick="toonParamUitleg('Blow advance at high speed')">Blow advance at high speed &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">100 ms</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;" onclick="toonParamUitleg('Pressor roll advance')">Pressor roll advance &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">4000 ms</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;" onclick="toonParamUitleg('Cores diameter increment')">Cores diameter increment &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">0 mm</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;"><span style="font-size:11px;color:#9ca3af;">Advance 2&deg; break EV</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">60 ms</span></div>
+  </div>
+</div>
+
+<!-- RA REWINDERS -->
+<div class="form-card" style="border-top-color:#a78bfa;cursor:pointer;" onclick="toggleSectie('mi-rew-body','mi-rew-chev')">
+  <div style="display:flex;align-items:center;justify-content:space-between;">
+    <div class="form-card-title" style="color:#a78bfa;margin-bottom:0;">&#127897;&#65039; RA Rewinders Parameters</div>
+    <span id="mi-rew-chev" style="color:#a78bfa;font-size:20px;">&#8250;</span>
+  </div>
+</div>
+<div id="mi-rew-body" style="display:none;background:#0f1520;border:1px solid #1a2540;border-top:none;border-radius:0 0 4px 4px;padding:16px;margin-bottom:12px;">
+  <div style="display:flex;justify-content:flex-end;margin-bottom:10px;"><span style="font-size:9px;background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.3);color:#a78bfa;padding:2px 8px;border-radius:3px;">ORIGINELE SETTINGS</span></div>
+  <div style="display:flex;flex-direction:column;">
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;">Max roll's diameter</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">350 mm</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;" onclick="toonParamUitleg('V DAC max rewinder')">V DAC max rewinder &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">9000 mV</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;" onclick="toonParamUitleg('Max speed rewinder')">Max speed rewinder &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">2400 rpm</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;" onclick="toonParamUitleg('Danc.roll.work posit.')">Danc.roll.work posit. &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">5000 mV</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;" onclick="toonParamUitleg('Matertens.speed')">Matertens.speed &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">500 rpm</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;" onclick="toonParamUitleg('Rolls change advance')">Roll's ch.sp.low &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">150 rpm</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;" onclick="toonParamUitleg('Rolls change advance')">Roll's ch.sp.high &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">30 m/min</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;" onclick="toonParamUitleg('Inversion length')">Inversion length &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">200 mm</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;" onclick="toonParamUitleg('Inversion speed')">Inversion speed &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">300 rpm</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;" onclick="toonParamUitleg('Break stop Timer')">Break stop Timer &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">2000 ms</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;" onclick="toonParamUitleg('Reduction numerator')">Reduction numerator &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">1600</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;" onclick="toonParamUitleg('Reduction denomination')">Reduction denomination &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">400</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;" onclick="toonParamUitleg('Dancing roll. relieving speed')">Dancing roll. relieving speed &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">10 m/min</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;" onclick="toonParamUitleg('Tail recuperat. deceleration time')">Tail recuperat. deceleration time &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">2000 ms</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;" onclick="toonParamUitleg('Blower timer')">Blower timer &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">2000 ms</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;" onclick="toonParamUitleg('Kp Dancing roll.')">Kp Dancing roll. &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">5</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;" onclick="toonParamUitleg('Kff Material')">Kff Material &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">100%</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;" onclick="toonParamUitleg('Time cycle')">Time cycle &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">36 s</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;" onclick="toonParamUitleg('T.out danc.roll.zero')">T.out danc.roll.zero &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">30000 ms</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;"><span style="font-size:11px;color:#9ca3af;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;" onclick="toonParamUitleg('Offset static charger')">Offset static charger &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">5310 mm</span></div>
+  </div>
+</div>
+
+<!-- SHUTTLE MOTOR & MATERIAL LOOP -->
+<div class="form-card" style="border-top-color:#60a5fa;cursor:pointer;" onclick="toggleSectie('mi-sh-body','mi-sh-chev')">
+  <div style="display:flex;align-items:center;justify-content:space-between;">
+    <div class="form-card-title" style="color:#60a5fa;margin-bottom:0;">&#128260; Shuttle's Motor &amp; Material Loop</div>
+    <span id="mi-sh-chev" style="color:#60a5fa;font-size:20px;">&#8250;</span>
+  </div>
+</div>
+<div id="mi-sh-body" style="display:none;background:#0f1520;border:1px solid #1a2540;border-top:none;border-radius:0 0 4px 4px;padding:16px;margin-bottom:12px;">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin:4px 0 6px;"><span style="font-size:10px;color:#60a5fa;letter-spacing:1px;">SHUTTLE MOTOR</span><span style="font-size:9px;background:rgba(96,165,250,0.1);border:1px solid rgba(96,165,250,0.3);color:#60a5fa;padding:2px 8px;border-radius:3px;">ORIGINELE SETTINGS</span></div>
+  <div style="display:flex;flex-direction:column;">
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;" onclick="toonParamUitleg('bit / meter shuttle motor')">bit / meter shuttle motor &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">62056 bit</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;" onclick="toonParamUitleg('kp shuttle')">kp shuttle &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">2500</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;" onclick="toonParamUitleg('Shuttle\'s Motor Max. Speed')">Shuttle's Motor Max. Speed &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">2500 rpm</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;" onclick="toonParamUitleg('Shuttle\'s Motor Max. Acceler.')">Shuttle's Motor Max. Acceler. &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">30 ms</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;" onclick="toonParamUitleg('Shuttle 0 position')">Shuttle 0 position &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">150 mm</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;" onclick="toonParamUitleg('Shuttle\'s Maximum Run')">Shuttle's Maximum Run &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">285 mm</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;"><span style="font-size:11px;color:#9ca3af;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;" onclick="toonParamUitleg('Shuttle\'s performances')">Shuttle's performances &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">89%</span></div>
+  </div>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin:14px 0 6px;"><span style="font-size:10px;color:#60a5fa;letter-spacing:1px;">MATERIAL LOOP</span><span style="font-size:9px;background:rgba(96,165,250,0.1);border:1px solid rgba(96,165,250,0.3);color:#60a5fa;padding:2px 8px;border-radius:3px;">ORIGINELE SETTINGS</span></div>
+  <div style="display:flex;flex-direction:column;">
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;" onclick="toonParamUitleg('Material loop')">Material loop &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">80</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;" onclick="toonParamUitleg('Material loop max tension')">Material loop max tension &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">180%</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;" onclick="toonParamUitleg('Material loop initial tension')">Material loop initial tension &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">0</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;" onclick="toonParamUitleg('Material loop Kp on ramp')">Material loop Kp on ramp &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">120</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;" onclick="toonParamUitleg('Material loop Kp at running')">Material loop Kp at running &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">70</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;" onclick="toonParamUitleg('Material\'s Releasing')">Material's Releasing &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">6 mm</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;"><span style="font-size:11px;color:#9ca3af;">Loop integral time</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">1000 ms</span></div>
+  </div>
+</div>
+
+<!-- MATERIAL & FEEDER MOTORS -->
+<div class="form-card" style="border-top-color:#34d399;cursor:pointer;" onclick="toggleSectie('mi-mf-body','mi-mf-chev')">
+  <div style="display:flex;align-items:center;justify-content:space-between;">
+    <div class="form-card-title" style="color:#34d399;margin-bottom:0;">&#9881;&#65039; Material &amp; Feeder Motors</div>
+    <span id="mi-mf-chev" style="color:#34d399;font-size:20px;">&#8250;</span>
+  </div>
+</div>
+<div id="mi-mf-body" style="display:none;background:#0f1520;border:1px solid #1a2540;border-top:none;border-radius:0 0 4px 4px;padding:16px;margin-bottom:12px;">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin:4px 0 6px;"><span style="font-size:10px;color:#34d399;letter-spacing:1px;">MATERIAL &amp; FEEDER MOTORS</span><span style="font-size:9px;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.3);color:#34d399;padding:2px 8px;border-radius:3px;">ORIGINELE SETTINGS</span></div>
+  <div style="display:flex;flex-direction:column;">
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;" onclick="toonParamUitleg('bit / meter material')">bit / meter material &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">12299 bit</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;" onclick="toonParamUitleg('kp Material')">kp Material &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">300</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;" onclick="toonParamUitleg('kp Feeder')">kp Feeder &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">300</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;" onclick="toonParamUitleg('Material\'s Maximum Speed')">Material's Maximum Speed &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">180 m/min</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;" onclick="toonParamUitleg('Material\'s acceleration')">Material's acceleration &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">15 s</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;" onclick="toonParamUitleg('Material\'s deceleration')">Material's deceleration &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">15 s</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;" onclick="toonParamUitleg('Material\'s fast deceleration')">Material's fast deceleration &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">4 s</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;" onclick="toonParamUitleg('Photocell offset')">Photocell offset &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">1367</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;" onclick="toonParamUitleg('Sealing bar\'s blow deactiv. speed')">Sealing bar's blow deactiv. speed &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">25 m/min</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;" onclick="toonParamUitleg('Tension photocell debounce')">Tension photocell debounce &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">50 ms</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;" onclick="toonParamUitleg('Duration of dancing roller ch.pres.')">Duration of dancing roller ch.pres. &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">2000 ms</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="font-size:11px;color:#9ca3af;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;" onclick="toonParamUitleg('Material\'s Stop Speed')">Material's Stop Speed &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">8 m/min</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;"><span style="font-size:11px;color:#9ca3af;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;" onclick="toonParamUitleg('Material\'s moving time at Stop')">Material's moving time at Stop &#128712;</span><span style="font-size:13px;color:#e5e7eb;font-weight:700;">100 ms</span></div>
+  </div>
+</div>
+```
+
+  </div><!-- einde machine-info-sectie -->
+
+  <!-- APP FEATURES -->
+
+  <div class="form-card" style="border-top-color:#60a5fa;margin-top:4px;cursor:pointer;" onclick="toggleSectie('info-body','info-chev')">
+    <div style="display:flex;align-items:center;justify-content:space-between;">
+      <div class="form-card-title" style="color:#60a5fa;margin-bottom:0;">&#128161; App Features</div>
+      <span id="info-chev" style="color:#60a5fa;font-size:20px;">&#8250;</span>
+    </div>
+    <div style="font-size:11px;color:#6b7280;margin-top:6px;">Alle features van de app</div>
+  </div>
+  <div id="info-body" style="display:none;margin-top:-8px;background:#0f1520;border:1px solid #1a2540;border-top:none;border-radius:0 0 4px 4px;padding:16px;">
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div style="background:#070a10;border:1px solid #1a2540;border-left:3px solid #f59e0b;border-radius:4px;padding:12px 14px;"><div style="font-size:10px;color:#f59e0b;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">Recepten</div><div style="font-size:12px;color:#9ca3af;line-height:1.8;">Opslaan, bewerken en verwijderen &bull; Zoeken &bull; Klantnaam autocomplete &bull; Groepen per klant</div></div>
+      <div style="background:#070a10;border:1px solid #1a2540;border-left:3px solid #a78bfa;border-radius:4px;padding:12px 14px;"><div style="font-size:10px;color:#a78bfa;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">Order Calculator</div><div style="font-size:12px;color:#9ca3af;line-height:1.8;">Te leveren &rarr; rollen &rarr; pallets &bull; Piramide stapeling &bull; Huidjes berekening</div></div>
+      <div style="background:#070a10;border:1px solid #1a2540;border-left:3px solid #60a5fa;border-radius:4px;padding:12px 14px;"><div style="font-size:10px;color:#60a5fa;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">Offset &amp; Calculator</div><div style="font-size:12px;color:#9ca3af;line-height:1.8;">Basis 10750mm &bull; Offset 2 = Offset 1 - 200mm &bull; Leerdata systeem</div></div>
+      <div style="background:#070a10;border:1px solid #1a2540;border-left:3px solid #ef4444;border-radius:4px;padding:12px 14px;"><div style="font-size:10px;color:#ef4444;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">Probleemoplossing</div><div style="font-size:12px;color:#9ca3af;line-height:1.8;">8 categorie&euml;n &bull; Oorzaak + oplossing &bull; Parameter uitleg per instelling</div></div>
+      <div style="background:#070a10;border:1px solid #1a2540;border-left:3px solid #6b7280;border-radius:4px;padding:12px 14px;"><div style="font-size:10px;color:#6b7280;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">Technisch</div><div style="font-size:12px;color:#9ca3af;line-height:1.8;">Firebase &bull; GitHub Pages &bull; Auto-update via version.json &bull; PWA</div></div>
+    </div>
+  </div>
+
+  <!-- AANGEPASTE PARAMETERS -->
+
+  <div class="form-card" style="border-top-color:#facc15;margin-top:4px;cursor:pointer;" onclick="toggleSectie('aangepast-body','aangepast-chev')">
+    <div style="display:flex;align-items:center;justify-content:space-between;">
+      <div class="form-card-title" style="color:#facc15;margin-bottom:0;">&#9888;&#65039; Aangepaste Parameters</div>
+      <span id="aangepast-chev" style="color:#facc15;font-size:20px;">&#8250;</span>
+    </div>
+    <div style="font-size:11px;color:#6b7280;margin-top:6px;">Parameters aanpassen per probleem</div>
+  </div>
+  <div id="aangepast-body" style="display:none;margin-top:-8px;background:#0f1520;border:1px solid #1a2540;border-top:none;border-radius:0 0 4px 4px;padding:16px;">
+    <div style="background:#0a0d14;border:1px solid #1a2540;border-left:3px solid #ef4444;border-radius:4px;margin-bottom:12px;overflow:hidden;">
+      <div style="padding:12px 14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;" onclick="toggleSectie('p1-body','p1-chev')">
+        <div><div style="font-size:10px;color:#ef4444;letter-spacing:2px;text-transform:uppercase;">Probleem 1</div><div style="font-weight:700;font-size:16px;color:#e5e7eb;margin-top:2px;">Wisselt niet goed</div></div>
+        <span id="p1-chev" style="color:#9ca3af;font-size:20px;">&#8250;</span>
+      </div>
+      <div id="p1-body" style="display:none;padding:0 14px 14px;border-top:1px solid #1a2540;">
+        <div style="display:grid;grid-template-columns:1fr 80px 80px;gap:4px;margin:10px 0 6px;"><div style="font-size:9px;color:#6b7280;">PARAMETER</div><div style="font-size:9px;color:#6b7280;text-align:center;">ORIGINEEL</div><div style="font-size:9px;color:#facc15;text-align:center;">GEWIJZIGD</div></div>
+        <div id="p1-rijen"></div>
+        <button onclick="slaAangepastOp('p1')" style="width:100%;background:#ef4444;color:#fff;border:none;border-radius:4px;font-family:'Courier New',Courier,monospace;font-weight:700;font-size:14px;padding:12px;cursor:pointer;margin-top:12px;">Opslaan</button>
+        <button onclick="resetAangepast('p1')" style="width:100%;background:transparent;border:1px solid #1a2540;color:#6b7280;font-family:'Courier New',Courier,monospace;font-size:12px;padding:10px;cursor:pointer;margin-top:6px;border-radius:4px;">Reset naar origineel</button>
+      </div>
+    </div>
+    <div style="background:#0a0d14;border:1px solid #1a2540;border-left:3px solid #f59e0b;border-radius:4px;margin-bottom:12px;overflow:hidden;">
+      <div style="padding:12px 14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;" onclick="toggleSectie('p2-body','p2-chev')">
+        <div><div style="font-size:10px;color:#f59e0b;letter-spacing:2px;text-transform:uppercase;">Probleem 2</div><div style="font-weight:700;font-size:16px;color:#e5e7eb;margin-top:2px;">Folie te strak wisselzone</div></div>
+        <span id="p2-chev" style="color:#9ca3af;font-size:20px;">&#8250;</span>
+      </div>
+      <div id="p2-body" style="display:none;padding:0 14px 14px;border-top:1px solid #1a2540;">
+        <div style="display:grid;grid-template-columns:1fr 80px 80px;gap:4px;margin:10px 0 6px;"><div style="font-size:9px;color:#6b7280;">PARAMETER</div><div style="font-size:9px;color:#6b7280;text-align:center;">ORIGINEEL</div><div style="font-size:9px;color:#facc15;text-align:center;">GEWIJZIGD</div></div>
+        <div id="p2-rijen"></div>
+        <button onclick="slaAangepastOp('p2')" style="width:100%;background:#f59e0b;color:#000;border:none;border-radius:4px;font-family:'Courier New',Courier,monospace;font-weight:700;font-size:14px;padding:12px;cursor:pointer;margin-top:12px;">Opslaan</button>
+        <button onclick="resetAangepast('p2')" style="width:100%;background:transparent;border:1px solid #1a2540;color:#6b7280;font-family:'Courier New',Courier,monospace;font-size:12px;padding:10px;cursor:pointer;margin-top:6px;border-radius:4px;">Reset naar origineel</button>
+      </div>
+    </div>
+  </div>
+
+<button class="bottom-back-btn" onclick="history.back()">‹ Terug naar Home</button>
+
+</div>
+
+<!-- PARAMETER UITLEG OVERLAY -->
+
+<div id="param-uitleg-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:9500;align-items:flex-end;justify-content:center;">
+  <div style="background:#0f1520;border-top:3px solid #f59e0b;width:100%;max-width:480px;border-radius:14px 14px 0 0;padding:24px 20px 40px;max-height:85vh;overflow-y:auto;">
+    <div id="param-uitleg-box"></div>
+    <button onclick="sluitParamUitleg()" style="width:100%;background:transparent;border:1px solid #1a2540;border-radius:8px;color:#6b7280;font-family:'Courier New',Courier,monospace;font-size:14px;padding:14px;cursor:pointer;margin-top:16px;">Sluiten</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+'use strict';
+
+function toast(msg,err){var t=document.getElementById('toast');t.textContent=msg;t.className='toast show'+(err?' err':'');clearTimeout(t._t);t._t=setTimeout(function(){t.classList.remove('show');},2400);}
+
+function toggleSectie(bodyId,chevId){var body=document.getElementById(bodyId);var chev=document.getElementById(chevId);if(!body)return;var open=body.style.display!=='none';body.style.display=open?'none':'block';if(chev)chev.textContent=open?'\u203a':'\u2039';if(!open){if(bodyId==='p1-body')renderAangepastProbleem('p1');if(bodyId==='p2-body')renderAangepastProbleem('p2');}}
+
+function toggleMachineInfo(){var sectie=document.getElementById('machine-info-sectie');var chev=document.getElementById('machine-info-chev');if(!sectie)return;var open=sectie.style.display!=='none';sectie.style.display=open?'none':'block';chev.textContent=open?'\u203a':'\u2039';}
+
+var PARAM_UITLEG={
+  'Rolls change advance':{wat:'Wachttijd in ms na "rol vol". Bepaalt wanneer drukarm en slagarmen komen.',hoger:'Langere vrijloop (flap). Folie kan wabberen.',lager:'Schonere wissel. MINIMUM 100ms.',advies:'Start 200ms, dan 100ms. NOOIT 0ms. RC1: 800ms / RC2: 400ms.',systeem:'Belangrijkste parameter voor vrijloop.',tijdlijn:'Rol vol → timer → drukarm → slagarmen → lucht → drukarm houdt vast'},
+  'Rewinder offset 1':{wat:'Compenseert folie zodat maantjes precies op perforatie slaan. Basis 10750mm.',hoger:'Armen later → maantjes voorbij perforatie.',lager:'Armen eerder → maantjes voor perforatie.',advies:'Voor? +50-100mm. Voorbij? Verlagen. Standaard 10750mm.',systeem:'Bepaalt slagmoment. Ms-params eerst, dan offset fijnafstelling.',tijdlijn:'Basis 10750mm + 200-400mm aanpassing'},
+  'Rewinder offset 2':{wat:'Zelfde als Offset 1, tweede wisselmoment. Basis 10550mm.',hoger:'Armen later.',lager:'Armen eerder.',advies:'OF Offset 1 OF Offset 2. Stappen 50-100mm.',systeem:'Onafhankelijk van Offset 1.',tijdlijn:''},
+  'Pressor roll advance':{wat:'Hoe lang drukarm folie vasthoudt. Drukarm beweegt EERSTE.',hoger:'Langer vasthouden.',lager:'Eerder loslaten. Min 1500ms.',advies:'1500-2000ms. Drukarm moet BOEM vallen. Origineel 4000ms.',systeem:'Tension Break: drukarm fixeert → perforatie knapt.',tijdlijn:'Rolls change advance → drukarm → slagarmen → lucht → omhoog'},
+  'V DAC max rewinder':{wat:'Maximale trekkracht rewinder. Hoger = harder trekken.',hoger:'Strakker maar scheurrisk.',lager:'Soepeler maar rollen kunnen telescoperen.',advies:'Scheurt? Verlagen. Te los? Verhogen. 8000-9000mV.',systeem:'Sterkste invloed foliespanning.',tijdlijn:''},
+  'Material loop':{wat:'Hoofdspanning folie. Primaire referentie.',hoger:'Strakker → uitrekken seals.',lager:'Soepeler → instabiel.',advies:'Te strak? 80→60-70. Origineel 80.',systeem:'Basis spanningsregeling. Rewinder + Material Loop samen.',tijdlijn:''},
+  'Kff Material':{wat:'Feedforward factor spanning. Proactieve correctie.',hoger:'Agressiever.',lager:'Rustiger maar trager.',advies:'70-80% ideaal. Origineel 100%.',systeem:'Met V DAC en Time cycle.',tijdlijn:''},
+  'Time cycle':{wat:'Cyclustijd spanningsregeling.',hoger:'Langzamer maar stabieler.',lager:'Sneller maar oscillatierisico.',advies:'10-20s voor responsievere regeling. Origineel 36s.',systeem:'Cruciaal voor stabiliteit.',tijdlijn:''},
+  'Danc.roll.work posit.':{wat:'Setpoint dancer in mV.',hoger:'Unwinder sneller → meer slack.',lager:'Minder slack.',advies:'3700-4000mV voor meer slack. Origineel 5000mV.',systeem:'Dancer = foliebuffer.',tijdlijn:''},
+  'Material loop Kp at running':{wat:'Regelgevoeligheid tijdens productie.',hoger:'Sneller maar oscillatierisico.',lager:'Rustiger.',advies:'Te strak bij wissel? 50-60. Origineel 70.',systeem:'PID regeling.',tijdlijn:''},
+  'Material loop max tension':{wat:'Max spanning materiaalloop %.',hoger:'Strakker maar scheurrisk.',lager:'Soepeler → lussen.',advies:'Te strak? 150%. Origineel 180%.',systeem:'Bovengrens spanningsregeling.',tijdlijn:''},
+  'Mat. speed at change diam. <75mm':{wat:'Snelheid als spoel <75mm dia.',hoger:'Strakker → Tension Break beter.',lager:'Slapper → weglopen.',advies:'90 m/min start. Rimpelt? 95. Origineel 82.',systeem:'Tension Break principe.',tijdlijn:''},
+  'Material speed at change':{wat:'Snelheid tijdens wissel normale spoel.',hoger:'Strakker maar scheurrisk.',lager:'Rustiger maar slap.',advies:'80 m/min standaard. Werk eerst met <75mm.',systeem:'Met <75mm parameter.',tijdlijn:''},
+  'Blow advance at low speed':{wat:'Luchtstoot timing lage snelheid.',hoger:'Lucht eerder.',lager:'Lucht later → flap ontsnapt.',advies:'300-600ms. Origineel 100ms.',systeem:'Lucht + mechanische klap samen.',tijdlijn:'Armen slaan → lucht → flap om koker'},
+  'Blow advance at high speed':{wat:'Luchtstoot timing hoge snelheid.',hoger:'Lucht eerder.',lager:'Te laat → flap niet omgevouwen.',advies:'Start 600ms. Origineel 100ms.',systeem:'Bij lage Rolls change advance kritisch.',tijdlijn:''},
+  'Dancing roll. relieving speed':{wat:'Extra unwinder snelheid op wisselmoment.',hoger:'Meer slack.',lager:'Kleinere buffer.',advies:'20 m/min voor meer slack. Origineel 10.',systeem:'Alleen actief op wisselmoment.',tijdlijn:''},
+  'Kp Dancing roll.':{wat:'Regelgevoeligheid dancer.',hoger:'Sneller maar trillen.',lager:'Langzamer maar stabiel.',advies:'Niet aanpassen tenzij onstabiel. Origineel 5.',systeem:'PID dancer.',tijdlijn:''},
+  'Max speed rewinder':{wat:'Max rotatiesnelheid rewinder.',hoger:'Spanningspieken.',lager:'Soepeler.',advies:'Origineel 2400rpm.',systeem:'Veiligheidsgrens.',tijdlijn:''},
+  'Matertens.speed':{wat:'Snelheid spanningsregelloop.',hoger:'Onstabiel.',lager:'Soepeler.',advies:'Origineel 500rpm.',systeem:'Spanningsregelloop.',tijdlijn:''},
+  'Inversion length':{wat:'Correctie-afstand inversie.',hoger:'Soepeler.',lager:'Scherper.',advies:'Origineel 200mm.',systeem:'Indirect wisselstabiliteit.',tijdlijn:''},
+  'Inversion speed':{wat:'Snelheid inversiefase.',hoger:'Spanningspieken.',lager:'Soepeler.',advies:'Origineel 300rpm.',systeem:'Met Inversion length.',tijdlijn:''},
+  'Break stop Timer':{wat:'Vertraging na breuk.',hoger:'Rustiger.',lager:'Sneller maar abrupt.',advies:'Origineel 2000ms.',systeem:'Veiligheidstimer.',tijdlijn:''},
+  'Reduction numerator':{wat:'Tandwielverhouding. KALIBRATIE.',hoger:'NIET AANPASSEN.',lager:'NIET AANPASSEN.',advies:'NIET AANPASSEN. Origineel 1600.',systeem:'Kalibratie 1600/400=4.',tijdlijn:''},
+  'Reduction denomination':{wat:'Tandwielverhouding noemer. KALIBRATIE.',hoger:'NIET AANPASSEN.',lager:'NIET AANPASSEN.',advies:'NIET AANPASSEN. Origineel 400.',systeem:'Kalibratie.',tijdlijn:''},
+  'Tail recuperat. deceleration time':{wat:'Vertraging na staartafhandeling.',hoger:'Soepelere stop.',lager:'Agressiever.',advies:'Origineel 2000ms.',systeem:'Stabiliseert na wissel.',tijdlijn:''},
+  'Blower timer':{wat:'Duur luchtstoot.',hoger:'Folie beter om koker.',lager:'Kortere stoot.',advies:'Origineel 2000ms.',systeem:'Met Blow advance.',tijdlijn:''},
+  'T.out danc.roll.zero':{wat:'Timeout dancer nulpositie.',hoger:'Minder valse alarmen.',lager:'Snellere detectie.',advies:'Origineel 30000ms.',systeem:'Veiligheid dancer.',tijdlijn:''},
+  'Offset static charger':{wat:'Positie statische eliminatie.',hoger:'Later.',lager:'Eerder.',advies:'Origineel 5310mm.',systeem:'Los van spanning en wisseltiming.',tijdlijn:''},
+  'bit / meter shuttle motor':{wat:'Encoder resolutie shuttle. KALIBRATIE.',hoger:'NIET AANPASSEN.',lager:'NIET AANPASSEN.',advies:'NIET AANPASSEN. Origineel 62056.',systeem:'Kalibratie shuttle.',tijdlijn:''},
+  'kp shuttle':{wat:'Versterking shuttle positie.',hoger:'Oscillatierisico.',lager:'Soepeler.',advies:'Origineel 2500.',systeem:'PID shuttle.',tijdlijn:''},
+  "Shuttle's Motor Max. Speed":{wat:'Max snelheid shuttle.',hoger:'Mechanische schokken.',lager:'Soepeler.',advies:'Origineel 2500rpm.',systeem:'Gesynchroniseerd met offset.',tijdlijn:''},
+  "Shuttle's Motor Max. Acceler.":{wat:'Acceleratietijd shuttle.',hoger:'Soepelere start.',lager:'Agressiever.',advies:'Origineel 30ms.',systeem:'Balans snelheid/stabiliteit.',tijdlijn:''},
+  "Shuttle 0 position":{wat:'Home positie shuttle. KALIBRATIE.',hoger:'NIET AANPASSEN.',lager:'NIET AANPASSEN.',advies:'NIET AANPASSEN. Origineel 150mm.',systeem:'Kalibratie.',tijdlijn:''},
+  "Shuttle's Maximum Run":{wat:'Max slag shuttle. Veiligheidslimiet.',hoger:'NIET AANPASSEN.',lager:'NIET AANPASSEN.',advies:'NIET AANPASSEN. Origineel 285mm.',systeem:'= fysieke machine.',tijdlijn:''},
+  "Shuttle's performances":{wat:'Schaalfactor shuttle gedrag.',hoger:'Sneller.',lager:'Soepeler.',advies:'Te agressief? 89%→75%. Origineel 89%.',systeem:'Masterregelaar shuttle.',tijdlijn:''},
+  'Material loop initial tension':{wat:'Startspanning opstarten.',hoger:'Stabielere start.',lager:'Rustigere aanloop.',advies:'Normaal 0. Origineel 0.',systeem:'Alleen bij opstarten.',tijdlijn:''},
+  "Material's Releasing":{wat:'Folie vrijgegeven tijdens correctie.',hoger:'Meer slack.',lager:'Strakker.',advies:'Te strak? 6→8-10mm. Origineel 6.',systeem:'Fijnafstemming na Material Loop.',tijdlijn:''},
+  'loop integral time':{wat:'Integraalterm PID spanning.',hoger:'Langzamer maar minder oscillatie.',lager:'Sneller maar over-correctie.',advies:'Oscilleert? 2000-4000ms. Origineel 1000.',systeem:'Stabiliteitsparameter.',tijdlijn:''},
+  'Cores diameter increment':{wat:'Extra kokerdiameter wikkelberekening. Alleen START wikkelen.',hoger:'Zachter starten.',lager:'Directere koppelrespons.',advies:'Normaal 0mm. Koker strak? +5-10mm.',systeem:'ALLEEN start-van-rol.',tijdlijn:''},
+  'bit / meter material':{wat:'Encoder resolutie folie. KALIBRATIE.',hoger:'NIET AANPASSEN.',lager:'NIET AANPASSEN.',advies:'NIET AANPASSEN. Origineel 12299.',systeem:'Kalibratie folie.',tijdlijn:''},
+  'kp Material':{wat:'Versterking materiaalmotor.',hoger:'Oscillatierisico.',lager:'Soepeler.',advies:'Origineel 300.',systeem:'PID materiaalmotor.',tijdlijn:''},
+  'kp Feeder':{wat:'Versterking feeder.',hoger:'Oscillatierisico.',lager:'Soepeler.',advies:'Origineel 300.',systeem:'Feeder + materiaalmotor in balans.',tijdlijn:''},
+  "Material's Maximum Speed":{wat:'Max transportsnelheid folie.',hoger:'Hogere productie maar slijtage.',lager:'Veiliger.',advies:'Niet aanpassen. Origineel 180.',systeem:'Veiligheidslimiet.',tijdlijn:''},
+  "Material's acceleration":{wat:'Acceleratietijd materiaalmotor.',hoger:'Soepelere aanloop.',lager:'Spanningspieken.',advies:'Origineel 15s.',systeem:'Met deceleration.',tijdlijn:''},
+  "Material's deceleration":{wat:'Remtijd materiaalmotor.',hoger:'Soepelere stop.',lager:'Spanningspieken.',advies:'Origineel 15s.',systeem:'Met acceleration.',tijdlijn:''},
+  "Material's fast deceleration":{wat:'Noodstop vertraging.',hoger:'Langzamere noodstop.',lager:'Snellere noodstop.',advies:'Origineel 4s.',systeem:'Veiligheid noodstop.',tijdlijn:''},
+  'Photocell offset':{wat:'Positiecorrectie perforatie-sensor.',hoger:'Later detecteren.',lager:'Eerder detecteren.',advies:'Origineel 1367.',systeem:'Kalibratie perforatie.',tijdlijn:''},
+  "Sealing bar's blow deactiv. speed":{wat:'Snelheid sealbalk luchtblazer uitschakelt.',hoger:'Later uitschakelen.',lager:'Eerder.',advies:'Origineel 25 m/min.',systeem:'Veiligheid sealbalk.',tijdlijn:''},
+  'Tension photocell debounce':{wat:'Dempingstijd spanning-fotocel.',hoger:'Minder valse alarmen.',lager:'Snellere detectie.',advies:'Origineel 50ms.',systeem:'Signaalfilter.',tijdlijn:''},
+  'Duration of dancing roller ch.pres.':{wat:'Duur dancer-druk tijdens wissel.',hoger:'Meer stabiliteit.',lager:'Snellere cyclus.',advies:'Origineel 2000ms.',systeem:'Met Dancing roll relieving speed.',tijdlijn:''},
+  "Material's Stop Speed":{wat:'Eindsnelheid materiaalmotor bij stop.',hoger:'Soepelere overgang.',lager:'Abrupter.',advies:'Origineel 8 m/min.',systeem:'Gecontroleerde stop.',tijdlijn:''},
+  "Material's moving time at Stop":{wat:'Uitlooptijd na stopcommando.',hoger:'Soepelere stop.',lager:'Abrupter.',advies:'Origineel 100ms.',systeem:'Uitlooptimer.',tijdlijn:''}
+};
+
+function toonParamUitleg(naam){
+  var u=PARAM_UITLEG[naam];
+  var overlay=document.getElementById('param-uitleg-overlay');
+  var box=document.getElementById('param-uitleg-box');
+  if(!overlay||!box)return;
+  var html='<div style="font-size:9px;color:#f59e0b;letter-spacing:3px;text-transform:uppercase;margin-bottom:6px;">Parameter Uitleg</div>';
+  html+='<div style="font-weight:700;font-size:18px;color:#e5e7eb;margin-bottom:16px;">'+naam+'</div>';
+  if(u){
+    html+='<div style="display:flex;flex-direction:column;gap:10px;">';
+    html+='<div style="background:#070a10;border:1px solid #1a2540;border-left:3px solid #60a5fa;border-radius:4px;padding:10px 12px;"><div style="font-size:9px;color:#60a5fa;margin-bottom:4px;">WAT DOET DEZE PARAMETER?</div><div style="font-size:13px;color:#e5e7eb;line-height:1.6;">'+u.wat+'</div></div>';
+    html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">';
+    html+='<div style="background:#070a10;border:1px solid rgba(52,211,153,0.3);border-radius:4px;padding:10px 12px;"><div style="font-size:9px;color:#34d399;margin-bottom:4px;">&#8593; HOGER</div><div style="font-size:12px;color:#9ca3af;line-height:1.5;">'+u.hoger+'</div></div>';
+    html+='<div style="background:#070a10;border:1px solid rgba(239,68,68,0.3);border-radius:4px;padding:10px 12px;"><div style="font-size:9px;color:#ef4444;margin-bottom:4px;">&#8595; LAGER</div><div style="font-size:12px;color:#9ca3af;line-height:1.5;">'+u.lager+'</div></div>';
+    html+='</div>';
+    html+='<div style="background:#070a10;border:1px solid rgba(245,158,11,0.3);border-radius:4px;padding:10px 12px;"><div style="font-size:9px;color:#f59e0b;margin-bottom:4px;">&#128161; ADVIES</div><div style="font-size:13px;color:#fcd34d;line-height:1.6;">'+u.advies+'</div></div>';
+    if(u.tijdlijn){html+='<div style="background:#070a10;border:1px solid rgba(167,139,250,0.3);border-radius:4px;padding:10px 12px;"><div style="font-size:9px;color:#a78bfa;margin-bottom:4px;">&#9201; TIJDLIJN</div><div style="font-size:11px;color:#a78bfa;line-height:1.7;">'+u.tijdlijn+'</div></div>';}
+    html+='<div style="background:#070a10;border:1px solid #1a2540;border-radius:4px;padding:8px 12px;"><div style="font-size:9px;color:#6b7280;margin-bottom:4px;">SYSTEEM</div><div style="font-size:11px;color:#6b7280;line-height:1.5;">'+u.systeem+'</div></div>';
+    html+='</div>';
+  } else {
+    html+='<div style="font-size:13px;color:#6b7280;">Nog geen uitleg beschikbaar.</div>';
+  }
+  box.innerHTML=html;
+  overlay.style.display='flex';
+}
+
+function sluitParamUitleg(){document.getElementById('param-uitleg-overlay').style.display='none';}
+
+var AANGEPAST_PROBLEMEN={
+  'p1':{naam:'Wisselt niet goed',params:[
+    {id:'p1_offset1',label:'Rewinder offset 1',origineel:'10750 mm'},
+    {id:'p1_offset2',label:'Rewinder offset 2',origineel:'10550 mm'},
+    {id:'p1_advance',label:'Rolls change advance',origineel:'400 ms'},
+    {id:'p1_matspeed',label:'Material speed at change',origineel:'80 m/min'},
+    {id:'p1_matspeed75',label:'Mat. speed diam. <75mm',origineel:'82 m/min'},
+    {id:'p1_blow_low',label:'Blow advance at low speed',origineel:'100 ms'},
+    {id:'p1_blow_high',label:'Blow advance at high speed',origineel:'100 ms'},
+    {id:'p1_pressor',label:'Pressor roll advance',origineel:'4000 ms'}
+  ]},
+  'p2':{naam:'Folie te strak wisselzone',params:[
+    {id:'p2_matspeed',label:'Material speed at change',origineel:'80 m/min'},
+    {id:'p2_matspeed75',label:'Mat. speed diam. <75mm',origineel:'82 m/min'},
+    {id:'p2_loop_max',label:'Material loop max tension',origineel:'180%'},
+    {id:'p2_loop_run',label:'Material loop Kp at running',origineel:'70'},
+    {id:'p2_loop_ramp',label:'Material loop Kp on ramp',origineel:'120'},
+    {id:'p2_releasing',label:"Material's Releasing",origineel:'6 mm'},
+    {id:'p2_blow_low',label:'Blow advance at low speed',origineel:'100 ms'},
+    {id:'p2_blow_high',label:'Blow advance at high speed',origineel:'100 ms'}
+  ]}
+};
+
+function renderAangepastProbleem(pid){
+  var prob=AANGEPAST_PROBLEMEN[pid];if(!prob)return;
+  var el=document.getElementById(pid+'-rijen');if(!el)return;
+  var opgeslagen={};try{opgeslagen=JSON.parse(localStorage.getItem('aangepast_'+pid)||'{}');}catch(e){}
+  var html='';
+  prob.params.forEach(function(p){
+    var val=opgeslagen[p.id]||'';
+    var bc=val?'#facc15':'#1a2540';var tc=val?'#fcd34d':'#9ca3af';
+    html+='<div style="display:grid;grid-template-columns:1fr 80px 80px;gap:4px;align-items:center;padding:8px 0;border-bottom:1px solid #1a2540;">';
+    html+='<div style="font-size:11px;color:#9ca3af;">'+p.label+'</div>';
+    html+='<div style="font-size:12px;color:#6b7280;text-align:center;">'+p.origineel+'</div>';
+    html+='<input id="'+p.id+'" type="text" value="'+val+'" placeholder="-" style="background:#070a10;border:1px solid '+bc+';border-radius:4px;color:'+tc+';font-size:12px;padding:6px 4px;text-align:center;width:100%;outline:none;">';
+    html+='</div>';
+  });
+  el.innerHTML=html;
+}
+
+function slaAangepastOp(pid){
+  var prob=AANGEPAST_PROBLEMEN[pid];if(!prob)return;
+  var data={};
+  prob.params.forEach(function(p){var el=document.getElementById(p.id);if(el&&el.value.trim())data[p.id]=el.value.trim();});
+  localStorage.setItem('aangepast_'+pid,JSON.stringify(data));
+  toast('Opgeslagen!');renderAangepastProbleem(pid);
+}
+
+function resetAangepast(pid){localStorage.removeItem('aangepast_'+pid);toast('Reset naar origineel');renderAangepastProbleem(pid);}
+</script>
+
+</body>
+</html>
