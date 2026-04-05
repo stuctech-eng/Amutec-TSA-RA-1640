@@ -197,13 +197,13 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
         <div style="flex:1;"><div style="font-weight:700;font-size:22px;letter-spacing:2px;text-transform:uppercase;color:#e5e7eb;">Problemen</div><div style="font-size:12px;color:#9ca3af;margin-top:3px;">Oorzaak &amp; oplossing per probleem</div></div>
         <div style="font-size:26px;color:#34d399;">&#8250;</div>
       </button>
-      <button onclick="go('s-calculator')" style="flex:1;background:#0f1520;border:none;border-bottom:1px solid #1a2540;border-left:5px solid #60a5fa;display:flex;align-items:center;gap:16px;padding:0 20px;cursor:pointer;text-align:left;width:100%;min-height:80px;">
-        <div style="width:52px;height:52px;background:#0a0d14;border:1px solid #1a2540;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;">&#9881;</div>
-        <div style="flex:1;"><div style="font-weight:700;font-size:22px;letter-spacing:2px;text-transform:uppercase;color:#e5e7eb;">Calculator</div><div style="font-size:12px;color:#9ca3af;margin-top:3px;">Offset, rolwissel, roldiameter</div></div>
-        <div style="font-size:26px;color:#60a5fa;">&#8250;</div>
-      </button>
       <!-- Admin knoppen - alleen voor Dirk -->
       <div id="admin-knoppen" style="display:none;flex-direction:column;">
+        <button onclick="go('s-calculator')" style="flex:1;background:#0f1520;border:none;border-bottom:1px solid #1a2540;border-left:5px solid #60a5fa;display:flex;align-items:center;gap:16px;padding:0 20px;cursor:pointer;text-align:left;width:100%;min-height:80px;">
+          <div style="width:52px;height:52px;background:#0a0d14;border:1px solid #1a2540;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;">&#9881;</div>
+          <div style="flex:1;"><div style="font-weight:700;font-size:22px;letter-spacing:2px;text-transform:uppercase;color:#e5e7eb;">Calculator Offset</div><div style="font-size:12px;color:#9ca3af;margin-top:3px;">Offset, rolwissel, roldiameter</div></div>
+          <div style="font-size:26px;color:#60a5fa;">&#8250;</div>
+        </button>
         <button onclick="window.location.href='palletconfig.html'" style="flex:1;background:#0f1520;border:none;border-bottom:1px solid #1a2540;border-left:5px solid #34d399;display:flex;align-items:center;gap:16px;padding:0 20px;cursor:pointer;text-align:left;width:100%;min-height:80px;">
           <div style="width:52px;height:52px;background:#0a0d14;border:1px solid #1a2540;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;">&#128230;</div>
           <div style="flex:1;"><div style="font-weight:700;font-size:22px;letter-spacing:2px;text-transform:uppercase;color:#e5e7eb;">Pallet Config</div><div style="font-size:12px;color:#9ca3af;margin-top:3px;">Stapeling, maten, huidjes berekenen</div></div>
@@ -225,7 +225,6 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
   <nav class="bottom-nav">
     <button class="bnav-btn" onclick="go('s-recepten')"><span class="bnav-icon">&#128203;</span><span class="bnav-label">Recepten</span></button>
     <button class="bnav-btn" onclick="go('s-flow')"><span class="bnav-icon">&#128295;</span><span class="bnav-label">Problemen</span></button>
-    <button class="bnav-btn" onclick="go('s-calculator')"><span class="bnav-icon">&#9881;</span><span class="bnav-label">Calc</span></button>
   </nav>
 </div>
 
@@ -466,7 +465,8 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 <div class="screen" id="s-calculator">
   <div class="topbar">
     <button class="back-btn" onclick="go('s-home')">&#8249;</button>
-    <div class="topbar-title">Calculator</div>
+    <div class="topbar-title">Calculator Offset</div>
+    <button class="topbar-btn" onclick="window.location.href='berekeningen.html'" style="font-size:12px;padding:8px 10px;">&#128202; Uitleg</button>
   </div>
   <div class="content">
     <div class="form-card" style="border-top-color:#60a5fa;">
