@@ -595,9 +595,16 @@ function bevestigPin(){
 function initFirebaseOperators(){
   fbGet('/operators',function(data){
     if(!data){
-      // Eerste keer - schrijf defaults
       fbPut('/operators/dirk',{naam:'Dirk',pin:'007',admin:true},function(){});
       fbPut('/operators/casper',{naam:'Casper',pin:'100',admin:false},function(){});
+    } else {
+      var heeftCasper=false;
+      Object.keys(data).forEach(function(k){
+        if(data[k]&&data[k].naam==='Casper') heeftCasper=true;
+      });
+      if(!heeftCasper){
+        fbPut('/operators/casper',{naam:'Casper',pin:'100',admin:false},function(){});
+      }
     }
   });
   fbGet('/instellingen/app_wachtwoord',function(pw){
