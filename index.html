@@ -564,34 +564,51 @@ var APP_PW = APP_PW_FALLBACK;
 var _offlineModus = false;
 
 function laadOperatorsConfig(cb) {
-  fetch(FB_URL + '/instellingen.json')
+  // Laad beide parallel, wacht op beide
+  var pwKlaar = false, opKlaar = false;
+  function checkKlaar(){ if(pwKlaar && opKlaar && cb) cb(); }
+
+  // Wachtwoord
+  fetch(FB_URL + '/instellingen/app_wachtwoord.json')
     .then(function(r){return r.json();})
     .then(function(data){
-      if(data && data.app_wachtwoord) APP_PW = data.app_wachtwoord;
-      else APP_PW = APP_PW_FALLBACK;
+      APP_PW = (data && typeof data === 'string') ? data : APP_PW_FALLBACK;
+      pwKlaar = true; checkKlaar();
     })
-    .catch(function(){});
+    .catch(function(){ APP_PW = APP_PW_FALLBACK; pwKlaar = true; checkKlaar(); });
+
+  // Operators
   fetch(FB_URL + '/operators.json')
     .then(function(r){return r.json();})
     .then(function(data){
-      if(data && Object.keys(data).length > 0) {
+      if(data && typeof data === 'object' && Object.keys(data).length > 0) {
         OPERATORS_CONFIG = {};
         Object.keys(data).forEach(function(k){
           var op = data[k];
-          OPERATORS_CONFIG[op.naam] = { pin: op.pin, admin: !!op.admin };
+          if(op && op.naam && op.pin) {
+            OPERATORS_CONFIG[op.naam] = { pin: String(op.pin), admin: !!op.admin };
+          }
         });
         _offlineModus = false;
       } else {
+        // Nog geen operators in Firebase -- gebruik fallback EN schrijf defaults
         OPERATORS_CONFIG = Object.assign({}, OPERATORS_FALLBACK);
+        schrijfDefaultOperators();
       }
-      if(cb) cb();
+      opKlaar = true; checkKlaar();
     })
     .catch(function(){
       _offlineModus = true;
       OPERATORS_CONFIG = Object.assign({}, OPERATORS_FALLBACK);
       APP_PW = APP_PW_FALLBACK;
-      if(cb) cb();
+      opKlaar = true; pwKlaar = true; checkKlaar();
     });
+}
+
+function schrijfDefaultOperators(){
+  fetch(FB_URL+'/operators/dirk.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({naam:'Dirk',pin:'007',admin:true})}).catch(function(){});
+  fetch(FB_URL+'/operators/casper.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({naam:'Casper',pin:'100',admin:false})}).catch(function(){});
+  fetch(FB_URL+'/instellingen/app_wachtwoord.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify('tsa1600')}).catch(function(){});
 }
 var _huidigeOperator = null;
 var _geselecteerdeOperator = null;
@@ -1480,7 +1497,7 @@ function invulOkOverride(){
 }
 
 function resetVeld(id){
-  var el=document.getElementById(id);if(!el)
+  var el=document.getElementById(id);if(!el)return;
   el.value='';el.classList.remove('veld-definitief','veld-benadering');el.classList.add('veld-leeg');
   if(id==='f-gew100m')el.placeholder='auto';
   if(id==='f-huidje')el.placeholder='automatisch';
