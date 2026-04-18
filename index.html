@@ -564,20 +564,23 @@ var APP_PW = APP_PW_FALLBACK;
 var _offlineModus = false;
 
 function laadOperatorsConfig(cb) {
-  // Laad beide parallel, wacht op beide
+  // Gebruik altijd eerst de fallback zodat login direct werkt
+  OPERATORS_CONFIG = Object.assign({}, OPERATORS_FALLBACK);
+  APP_PW = APP_PW_FALLBACK;
+
   var pwKlaar = false, opKlaar = false;
   function checkKlaar(){ if(pwKlaar && opKlaar && cb) cb(); }
 
-  // Wachtwoord
+  // Wachtwoord uit Firebase
   fetch(FB_URL + '/instellingen/app_wachtwoord.json')
     .then(function(r){return r.json();})
     .then(function(data){
-      APP_PW = (data && typeof data === 'string') ? data : APP_PW_FALLBACK;
+      if(data && typeof data === 'string' && data.length > 0) APP_PW = data;
       pwKlaar = true; checkKlaar();
     })
-    .catch(function(){ APP_PW = APP_PW_FALLBACK; pwKlaar = true; checkKlaar(); });
+    .catch(function(){ pwKlaar = true; checkKlaar(); });
 
-  // Operators
+  // Operators uit Firebase
   fetch(FB_URL + '/operators.json')
     .then(function(r){return r.json();})
     .then(function(data){
@@ -591,17 +594,14 @@ function laadOperatorsConfig(cb) {
         });
         _offlineModus = false;
       } else {
-        // Nog geen operators in Firebase -- gebruik fallback EN schrijf defaults
-        OPERATORS_CONFIG = Object.assign({}, OPERATORS_FALLBACK);
+        // Leeg -- schrijf defaults naar Firebase
         schrijfDefaultOperators();
       }
       opKlaar = true; checkKlaar();
     })
     .catch(function(){
       _offlineModus = true;
-      OPERATORS_CONFIG = Object.assign({}, OPERATORS_FALLBACK);
-      APP_PW = APP_PW_FALLBACK;
-      opKlaar = true; pwKlaar = true; checkKlaar();
+      opKlaar = true; checkKlaar();
     });
 }
 
