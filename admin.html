@@ -356,6 +356,21 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 
 <div class="toast" id="toast"></div>
 
+<!-- PIN MODAL -->
+
+<div id="pin-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:9000;align-items:center;justify-content:center;padding:24px;">
+  <div style="background:#0f1520;border:1px solid #1a2540;border-top:2px solid #ef4444;border-radius:6px;padding:28px 24px;width:100%;max-width:300px;">
+    <div style="font-size:12px;color:#ef4444;letter-spacing:3px;text-transform:uppercase;margin-bottom:6px;">Beveiligd</div>
+    <div style="font-weight:700;font-size:18px;color:#e5e7eb;margin-bottom:4px;">Pincode vereist</div>
+    <div style="font-size:14px;color:#6b7280;margin-bottom:20px;">Voer de admin pincode in</div>
+    <input id="pin-input" type="password" inputmode="numeric" maxlength="6" placeholder="&middot; &middot; &middot;" onkeydown="if(event.key==='Enter')bevestigPin()"
+      style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:28px;padding:14px;outline:none;text-align:center;letter-spacing:8px;margin-bottom:8px;">
+    <div id="pin-err" style="display:none;color:#ef4444;font-size:13px;letter-spacing:1px;text-align:center;margin-bottom:10px;">VERKEERDE PINCODE</div>
+    <button onclick="bevestigPin()" style="width:100%;background:#ef4444;color:#fff;border:none;border-radius:4px;font-family:'Courier New',Courier,monospace;font-weight:700;font-size:15px;letter-spacing:2px;padding:14px;cursor:pointer;margin-bottom:10px;">BEVESTIGEN</button>
+    <button onclick="sluitPinModal()" style="width:100%;background:transparent;color:#6b7280;border:1px solid #1a2540;border-radius:4px;font-family:'Courier New',Courier,monospace;font-size:13px;padding:12px;cursor:pointer;">Annuleer</button>
+  </div>
+</div>
+
 <script>
 var FB_URL='https://amutec-tsa-ra-1640-default-rtdb.europe-west1.firebasedatabase.app';
 var _fbCategorie='Bug';
