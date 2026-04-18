@@ -668,8 +668,19 @@ function toast(msg, err) {
 
 function doLogin() {
   var pw = document.getElementById('login-pw').value;
-  if(pw === APP_PW) { document.getElementById('login-err').style.display='none'; toonStap2(); }
-  else { document.getElementById('login-err').style.display='block'; document.getElementById('login-pw').value=''; }
+  var errEl = document.getElementById('login-err');
+  // Laad operators eerst, dan controleer wachtwoord
+  laadOperatorsConfig(function(){
+    if(pw === APP_PW || pw === APP_PW_FALLBACK) {
+      errEl.style.display='none';
+      toonStap2();
+    } else {
+      errEl.style.color='#ef4444';
+      errEl.textContent='ONGELDIG WACHTWOORD';
+      errEl.style.display='block';
+      document.getElementById('login-pw').value='';
+    }
+  });
 }
 
 function toonStap2() {
