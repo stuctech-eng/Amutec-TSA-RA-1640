@@ -168,7 +168,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
         </div>
         <button onclick="terugNaarStap1()" style="width:100%;background:transparent;border:1px solid #1a2540;border-radius:4px;color:#6b7280;font-family:'Courier New',Courier,monospace;font-size:13px;padding:10px;cursor:pointer;margin-top:10px;">&#8249; Terug</button>
       </div>
-      <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v14.8 &#8212; 2026-04-18</div>
+      <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v14.9 &#8212; 2026-04-18</div>
     </div>
   </div>
 </div>
@@ -550,7 +550,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 <script>
 'use strict';
 var FB_URL = 'https://amutec-tsa-ra-1640-default-rtdb.europe-west1.firebasedatabase.app';
-var APP_VERSION = '14.8';
+var APP_VERSION = '14.9';
 
 // Hardcoded fallback
 var OPERATORS_FALLBACK = {
@@ -686,18 +686,40 @@ function toast(msg, err) {
 function doLogin() {
   var pw = document.getElementById('login-pw').value;
   var errEl = document.getElementById('login-err');
-  // Laad operators eerst, dan controleer wachtwoord
-  laadOperatorsConfig(function(){
-    if(pw === APP_PW || pw === APP_PW_FALLBACK) {
-      errEl.style.display='none';
-      toonStap2();
-    } else {
-      errEl.style.color='#ef4444';
-      errEl.textContent='ONGELDIG WACHTWOORD';
-      errEl.style.display='block';
-      document.getElementById('login-pw').value='';
-    }
-  });
+  // Check eerst met fallback wachtwoord
+  if(pw !== APP_PW && pw !== APP_PW_FALLBACK) {
+    errEl.style.color='#ef4444';
+    errEl.textContent='ONGELDIG WACHTWOORD';
+    errEl.style.display='block';
+    document.getElementById('login-pw').value='';
+    return;
+  }
+  // Wachtwoord klopt - toon stap 2 direct met huidige operators (fallback)
+  errEl.style.display='none';
+  toonStap2();
+  // Laad Firebase op achtergrond en herrender knoppen als er meer operators zijn
+  fetch(FB_URL + '/operators.json')
+    .then(function(r){return r.json();})
+    .then(function(data){
+      if(data && typeof data === 'object' && Object.keys(data).length > 0) {
+        OPERATORS_CONFIG = {};
+        Object.keys(data).forEach(function(k){
+          var op = data[k];
+          if(op && op.naam && op.pin) {
+            OPERATORS_CONFIG[op.naam] = { pin: String(op.pin), admin: !!op.admin };
+          }
+        });
+        // Herrender knoppen met Firebase operators
+        var html='';
+        Object.keys(OPERATORS_CONFIG).forEach(function(naam){
+          html+='<button onclick="kiesOperatorLogin(\''+naam+'\')" id="opbtn-'+naam+'" style="width:100%;background:#0f1520;border:2px solid #1a2540;border-radius:6px;color:#e5e7eb;font-family:monospace;font-weight:700;font-size:20px;letter-spacing:2px;padding:16px;cursor:pointer;text-align:left;display:flex;align-items:center;gap:12px;"><span style="font-size:24px;">&#128100;</span>'+naam+'</button>';
+        });
+        document.getElementById('operator-knoppen').innerHTML=html;
+      } else {
+        schrijfDefaultOperators();
+      }
+    })
+    .catch(function(){});
 }
 
 function toonStap2() {
