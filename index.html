@@ -168,7 +168,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
         </div>
         <button onclick="terugNaarStap1()" style="width:100%;background:transparent;border:1px solid #1a2540;border-radius:4px;color:#6b7280;font-family:'Courier New',Courier,monospace;font-size:13px;padding:10px;cursor:pointer;margin-top:10px;">&#8249; Terug</button>
       </div>
-      <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v14.9 &#8212; 2026-04-18</div>
+      <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v15.0 &#8212; 2026-04-18</div>
     </div>
   </div>
 </div>
@@ -550,7 +550,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 <script>
 'use strict';
 var FB_URL = 'https://amutec-tsa-ra-1640-default-rtdb.europe-west1.firebasedatabase.app';
-var APP_VERSION = '14.9';
+var APP_VERSION = '15.0';
 
 // Hardcoded fallback
 var OPERATORS_FALLBACK = {
@@ -1403,8 +1403,8 @@ function toggleFlowStep(i){var body=document.getElementById('fb-'+i);var chev=do
 function toggleFlowProb(id){document.getElementById(id).classList.toggle('open');}
 
 function checkVoorUpdate(){
-  var pad = window.location.pathname.replace(/\/[^\/]*$/, '/') + 'version.json';
-  fetch(pad+'?t='+Date.now()).then(function(r){return r.json();}).then(function(data){
+  var basis = window.location.href.split('?')[0].replace(/[^\/]*$/, '');
+  fetch(basis+'version.json?t='+Date.now()).then(function(r){return r.json();}).then(function(data){
     if(data.version&&data.version!==APP_VERSION){
       if('caches'in window)caches.keys().then(function(names){names.forEach(function(name){caches.delete(name);});});
       setTimeout(function(){window.location.reload(true);},500);
