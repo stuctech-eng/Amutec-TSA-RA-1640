@@ -889,10 +889,10 @@ function berekenOrder(){
   var rollenPerRijCalc=1,lagen=1,rollenPerPallet=1;
   if(staand){
     var lagenStaand=Math.max(1,Math.floor(maxStapelHoogte/lengte));
-    lagen=lagenStaand; rollenPerRijCalc=Math.round(pallet.b/rolDiameter)||1;
+    lagen=lagenStaand; rollenPerRijCalc=Math.floor(pallet.b/rolDiameter)||1;
     rollenPerPallet=Math.max(1,rollenPerRijCalc*Math.max(1,Math.floor(pallet.l/rolDiameter))*lagenStaand);
   } else {
-    var rijA=Math.max(1,Math.round(pallet.b/rolDiameter));
+    var rijA=Math.max(1,Math.floor(pallet.b/rolDiameter));
     var rijB=Math.max(1,rijA-1);
     rollenPerRijCalc=rijA;
     var maxLagen=1;
@@ -1139,13 +1139,13 @@ function openDetail(key){
         var maxHD=(r.order_maxhoogte==='1'||r.order_maxhoogte===1||r.order_maxhoogte===true)?1050:1550;
         var palletD={'euro':{b:800,naam:'Euro pallet'},'euro-formaat':{b:800,naam:'Euro formaat'},'blok':{b:1000,naam:'Blokpallet'}}[r.order_pallet]||{b:800,naam:'Euro pallet'};
         var rpPallet2,lagenD2;
-        if(staandD){lagenD2=Math.max(1,Math.floor(maxHD/lengte));rpPallet2=Math.max(1,Math.round(palletD.b/rolD)*Math.max(1,Math.floor(1200/rolD))*lagenD2);}
-        else{var rijAD=Math.max(1,Math.round(palletD.b/rolD)),rijBD=Math.max(1,rijAD-1),maxLD=1;for(var nld=2;nld<=20;nld++){if(rolD+(nld-1)*rolD*0.866<=maxHD)maxLD=nld;else break;}lagenD2=maxLD;var parenD2=Math.floor(lagenD2/2),extraD2=lagenD2%2;rpPallet2=Math.max(1,parenD2*(rijAD+rijBD)+extraD2*rijAD);}
+        if(staandD){lagenD2=Math.max(1,Math.floor(maxHD/lengte));rpPallet2=Math.max(1,Math.floor(palletD.b/rolD)*Math.max(1,Math.floor(1200/rolD))*lagenD2);}
+        else{var rijAD=Math.max(1,Math.floor(palletD.b/rolD)),rijBD=Math.max(1,rijAD-1),maxLD=1;for(var nld=2;nld<=20;nld++){if(rolD+(nld-1)*rolD*0.866<=maxHD)maxLD=nld;else break;}lagenD2=maxLD;var parenD2=Math.floor(lagenD2/2),extraD2=lagenD2%2;rpPallet2=Math.max(1,parenD2*(rijAD+rijBD)+extraD2*rijAD);}
         var rppKlantD2=parseFloat(r.order_rpp)||0;if(rppKlantD2>0)rpPallet2=rppKlantD2;
         var rollen2=stuks>0?Math.ceil(stuks/zakrol):0;
         var volP2=rollen2>0?Math.floor(rollen2/rpPallet2):0,restD2=rollen2>0?rollen2%rpPallet2:0,losD2=0,pallets2=0,rpPalletToon2=rpPallet2;
         if(rollen2>0){if(restD2===0)pallets2=volP2;else if(restD2<=4){pallets2=volP2;losD2=restD2;}else if(volP2>0&&restD2<=volP2){pallets2=volP2;rpPalletToon2=rpPallet2+1;}else pallets2=volP2+1;if(pallets2===0)pallets2=1;}
-        var huidjeD=0;if(!staandD&&lagenD2>1){var hRuw2=(Math.max(1,Math.round(palletD.b/rolD)))*rolD+50,hM2=[700,750,800,850,900,950,1000,1050,1100,1150,1200,1250,1300,1350,1400];huidjeD=hM2[hM2.length-1];for(var hi3=0;hi3<hM2.length;hi3++){if(hM2[hi3]>=hRuw2){huidjeD=hM2[hi3];break;}}}
+        var huidjeD=0;if(!staandD&&lagenD2>1){var hRuw2=(Math.max(1,Math.floor(palletD.b/rolD)))*rolD+50,hM2=[700,750,800,850,900,950,1000,1050,1100,1150,1200,1250,1300,1350,1400];huidjeD=hM2[hM2.length-1];for(var hi3=0;hi3<hM2.length;hi3++){if(hM2[hi3]>=hRuw2){huidjeD=hM2[hi3];break;}}}
         orderHtml='<div class="slabel">Order Berekening</div><div class="info-block">';
         if(stuks>0)orderHtml+='<div class="info-row"><div class="ir-lbl">TE LEVEREN</div><div class="ir-val">'+stuks.toLocaleString()+' st</div></div>';
         if(rollen2>0)orderHtml+='<div class="info-row"><div class="ir-lbl">AANTAL ROLLEN</div><div class="ir-val" style="color:#a78bfa;">'+rollen2+'</div></div>';
