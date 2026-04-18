@@ -458,6 +458,7 @@ function laadOperators(){
     var html='';
     Object.keys(data).forEach(function(k){
       var op=data[k];
+      if(!op||!op.naam)return;
       html+='<div style="background:#070a10;border:1px solid #1a2540;border-radius:6px;padding:14px;margin-bottom:4px;">';
       html+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">';
       html+='<span style="font-size:16px;font-weight:700;color:#e5e7eb;">'+op.naam+'</span>';
@@ -546,6 +547,7 @@ function renderWisselLijst(){
     var html='';
     Object.keys(data).forEach(function(k){
       var op=data[k];
+      if(!op||!op.naam)return; // skip ongeldige
       if(op.naam===huidig)return; // skip huidige
       html+='<button onclick="wisselNaar(\''+op.naam+'\')" style="width:100%;background:#0f1520;border:1px solid #1a2540;border-left:4px solid #60a5fa;border-radius:4px;display:flex;align-items:center;justify-content:space-between;padding:16px;cursor:pointer;margin-bottom:4px;">';
       html+='<div><div style="font-size:16px;font-weight:700;color:#e5e7eb;">'+op.naam+'</div>';
@@ -559,9 +561,14 @@ function renderWisselLijst(){
 }
 
 function wisselNaar(naam){
-  sessionStorage.setItem('tsa_operator',naam);
-  toast('Ingelogd als '+naam);
-  setTimeout(function(){window.location.href='index.html';},800);
+  // Haal huidig wachtwoord op uit Firebase, anders fallback
+  fbGet('/instellingen/app_wachtwoord',function(pw){
+    var huidigPw = (pw && typeof pw === 'string' && pw.length > 0) ? pw : 'tsa1600';
+    sessionStorage.setItem('tsa_operator',naam);
+    sessionStorage.setItem('tsa_auth', huidigPw);
+    toast('Ingelogd als '+naam);
+    setTimeout(function(){window.location.href='index.html';},800);
+  });
 }
 
 // PIN MODAL
