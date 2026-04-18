@@ -1480,7 +1480,7 @@ function invulOkOverride(){
 }
 
 function resetVeld(id){
-  var el=document.getElementById(id);if(!el)return;
+  var el=document.getElementById(id);if(!el)
   el.value='';el.classList.remove('veld-definitief','veld-benadering');el.classList.add('veld-leeg');
   if(id==='f-gew100m')el.placeholder='auto';
   if(id==='f-huidje')el.placeholder='automatisch';
