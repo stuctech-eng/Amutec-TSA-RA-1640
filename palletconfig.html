@@ -388,7 +388,7 @@ function pcBereken(){
 
     if(rolD <= 200){
       // 4-3-4 piramide per laag
-      var rijA = Math.max(1, Math.round(palletB / rolD));
+      var rijA = Math.max(1, Math.floor(palletB / rolD));
       var rijB = Math.max(1, rijA - 1);
       rollenPerLaag = rijA + rijB + rijA; // 4+3+4 = 11
       patroonLabel = rijA+'-'+rijB+'-'+rijA+' piramide';
@@ -412,7 +412,7 @@ function pcBereken(){
     } else if(rolD <= 266){
       // ZIGZAG: 2 rijen verschoven
       zigzag = true;
-      var rijLinks = Math.max(1, Math.round(palletB / rolD));
+      var rijLinks = Math.max(1, Math.floor(palletB / rolD));
       var rijRechts = rijLinks; // zelfde aantal, verschoven
       rollenPerLaag = rijLinks + rijRechts;
       patroonLabel = 'Zigzag 2 rijen ('+rijLinks+'+'+rijRechts+')';
@@ -467,7 +467,7 @@ function pcBereken(){
     if(_pcPatroon==='43'){rijA2=4;rijB2=3;}
     else if(_pcPatroon==='54'){rijA2=5;rijB2=4;}
     else if(_pcPatroon==='65'){rijA2=6;rijB2=5;}
-    else{rijA2=Math.max(1,Math.round(palletB/rolD));rijB2=Math.max(1,rijA2-1);}
+    else{rijA2=Math.max(1,Math.floor(palletB/rolD));rijB2=Math.max(1,rijA2-1);}
 
     maxLagen=1;
     for(var nl=2;nl<=20;nl++){if(rolD+(nl-1)*rolD*0.866<=_pcMaxH)maxLagen=nl;else break;}
