@@ -168,7 +168,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
         </div>
         <button onclick="terugNaarStap1()" style="width:100%;background:transparent;border:1px solid #1a2540;border-radius:4px;color:#6b7280;font-family:'Courier New',Courier,monospace;font-size:13px;padding:10px;cursor:pointer;margin-top:10px;">&#8249; Terug</button>
       </div>
-      <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v15.5 &#8212; 2026-04-18</div>
+      <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v15.8 &#8212; 2026-04-18</div>
     </div>
   </div>
 </div>
@@ -185,6 +185,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
       <div style="margin-top:8px;font-size:11px;letter-spacing:1px;">
         <span style="color:#9ca3af;">Ingelogd: </span><span id="home-operator" style="font-weight:700;color:#34d399;">-</span>
       </div>
+      <div style="margin-top:4px;font-size:11px;color:#6b7280;letter-spacing:1px;">v<span id="home-versie"></span></div>
     </div>
     <div style="flex:1;display:flex;flex-direction:column;gap:0;padding:0;">
       <button onclick="go('s-recepten')" style="flex:1;background:#0f1520;border:none;border-bottom:1px solid #1a2540;border-left:5px solid #f59e0b;display:flex;align-items:center;gap:16px;padding:0 20px;cursor:pointer;text-align:left;width:100%;min-height:80px;">
@@ -550,7 +551,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 <script>
 'use strict';
 var FB_URL = 'https://amutec-tsa-ra-1640-default-rtdb.europe-west1.firebasedatabase.app';
-var APP_VERSION = '15.5';
+var APP_VERSION = '15.8';
 
 // Hardcoded fallback
 var OPERATORS_FALLBACK = {
@@ -802,6 +803,8 @@ function updateHomeOperator() {
   var adm=OPERATORS_CONFIG[_huidigeOperator]&&OPERATORS_CONFIG[_huidigeOperator].admin;
   el.textContent=_huidigeOperator+(adm?' -- ADMIN':'');
   el.style.color=adm?'#f59e0b':'#34d399';
+  var vEl=document.getElementById('home-versie');
+  if(vEl) vEl.textContent=APP_VERSION+' \u2014 2026-04-18';
 }
 
 function vulOperatorIn() {
@@ -1189,6 +1192,13 @@ function bevestigPin(){
   else{document.getElementById('pin-err').style.display='block';document.getElementById('pin-input').value='';}
 }
 
+function detSectie(titel,kleur,inhoud){
+  return '<div onclick="var n=this.nextElementSibling;n.style.display=n.style.display===\'none\'?\'block\':\'none\'" style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#0f1520;border:1px solid #1a2540;border-left:3px solid '+kleur+';border-radius:4px;margin-bottom:4px;cursor:pointer;">'+
+    '<span style="font-size:11px;color:'+kleur+';letter-spacing:2px;text-transform:uppercase;">'+titel+'</span>'+
+    '<span style="color:'+kleur+';font-size:20px;">\u203a</span></div>'+
+    '<div style="display:none;margin-bottom:8px;">'+inhoud+'</div>';
+}
+
 function openDetail(key){
   key=key||window._detailKey;
   fbLoad('/recepten',function(lijst){
@@ -1266,30 +1276,37 @@ function openDetail(key){
         orderHtml+='</div>';
       }
     }
-    document.getElementById('detail-content').innerHTML=
-      '<div onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display===\'none\'?\'block\':\'none\';this.querySelector(\'.det-chev\').textContent=this.nextElementSibling.style.display===\'none\'?\'\u203a\':\'\u2039\'" style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#0f1520;border:1px solid #1a2540;border-left:3px solid #9ca3af;border-radius:4px;margin-bottom:4px;cursor:pointer;">'+
-      '<span style="font-size:11px;color:#9ca3af;letter-spacing:2px;text-transform:uppercase;">Klant &amp; Product</span>'+
-      '<span class="det-chev" style="color:#9ca3af;font-size:20px;">\u203a</span></div>'+
-      '<div style="display:none;margin-bottom:8px;">'+
-      '<div class="info-block">'+row('Klantnummer',r.klantnr)+row('Klantnaam',r.klantnaam)+row('Producttype',r.prodtype)+row('Operator',r.versie)+row('Datum',r.datum)+'</div></div>'+
+    // Huidje lengte apart vak
+    var huidjeVak='';
+    if(orderHtml){
+      var huidjeMatch=orderHtml.match(/HUIDJE LENGTE<\/div><div class="ir-val">([^<]+)<\/div>/);
+      if(huidjeMatch){
+        huidjeVak='<div class="slabel" style="color:#34d399;">Huidje Lengte</div>'+
+          '<div style="background:#0f1520;border:1px solid #34d399;border-radius:4px;padding:16px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;">'+
+          '<span style="font-size:14px;color:#9ca3af;">Huidje lengte</span>'+
+          '<span style="font-size:28px;font-weight:700;color:#34d399;">'+huidjeMatch[1]+'</span></div>';
+      }
+    }
+    var orderHtmlClean=orderHtml?orderHtml.replace(/<div class="info-row"><div class="ir-lbl">HUIDJE LENGTE<\/div><div class="ir-val">[^<]+<\/div><\/div>/,''):'';
 
-      '<div onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display===\'none\'?\'block\':\'none\';this.querySelector(\'.det-chev\').textContent=this.nextElementSibling.style.display===\'none\'?\'\u203a\':\'\u2039\'" style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#0f1520;border:1px solid #1a2540;border-left:3px solid #9ca3af;border-radius:4px;margin-bottom:4px;cursor:pointer;">'+
-      '<span style="font-size:11px;color:#9ca3af;letter-spacing:2px;text-transform:uppercase;">Materiaal &amp; Afmetingen</span>'+
-      '<span class="det-chev" style="color:#9ca3af;font-size:20px;">\u203a</span></div>'+
-      '<div style="display:none;margin-bottom:8px;">'+
-      '<div class="info-block">'+row('Materiaal',mat.label||r.materiaal)+row('Breedte',r.breedte+' mm')+row('Lengte',r.lengte+' mm')+row('Dikte',r.dikte+' mm')+'</div></div>'+
-
-      '<div class="slabel">Productie Parameters</div>'+
-      '<div class="info-block">'+row('Sealtijd',r.seal+' ms')+row('Snelheid',r.snelheid+' m/min')+row('Zakken/rol',r.zakrol)+row('Koker dia',r.koker+' mm')+'</div>'+
-      '<div class="slabel">Offset Rolwissel</div>'+
-      '<div class="info-block"><div class="info-row"><div class="ir-lbl">OFFSET 1</div><div style="display:flex;align-items:center;"><div class="ir-val" style="color:'+kleur1+';">'+o1+'</div>'+bronLabel+'</div></div><div class="info-row"><div class="ir-lbl">OFFSET 2</div><div class="ir-val" style="color:'+kleur1+';">'+o2+'</div></div></div>'+
-      '<div class="slabel">Machine Instellingen</div>'+
-      '<div class="info-block">'+row('Static charger',r.static_ch)+row('Static mat (mm)',r.static_mat)+row('Cycle drukker',r.drukker?'AAN - '+(r.drukker_inst||''):'UIT')+'</div>'+
-      '<div class="slabel">Seal Temperaturen</div>'+
-      '<div style="display:flex;gap:16px;margin-bottom:8px;"><div class="temp-card"><div class="temp-lbl">BOVEN</div><div style="font-size:34px;font-weight:700;color:#fcd34d;text-align:center;">'+(r.temp_boven||'-')+'</div><div class="temp-unit">C</div></div><div style="font-size:20px;color:#9ca3af;align-self:center;">|</div><div class="temp-card"><div class="temp-lbl">ONDER</div><div style="font-size:34px;font-weight:700;color:#fcd34d;text-align:center;">'+(r.temp_onder||'-')+'</div><div class="temp-unit">C</div></div></div>'+
-      (r.notities?'<div class="slabel">Notities</div><div class="info-block"><div style="padding:12px 14px;font-size:13px;color:#9ca3af;line-height:1.6;">'+r.notities+'</div></div>':'')+
-      orderHtml+stapelVisHtml+
-      '<button class="btn btn-amber" style="margin-top:8px;" onclick="bewerkRecept(\''+key+'\')">Bewerken</button>';
+    var detHtml='';
+    detHtml+=detSectie('Klant &amp; Product','#6b7280','<div class="info-block">'+row('Klantnummer',r.klantnr)+row('Klantnaam',r.klantnaam)+row('Producttype',r.prodtype)+row('Operator',r.versie)+row('Datum',r.datum)+'</div>');
+    detHtml+=detSectie('Materiaal &amp; Afmetingen','#6b7280','<div class="info-block">'+row('Materiaal',mat.label||r.materiaal)+row('Breedte',r.breedte+' mm')+row('Lengte',r.lengte+' mm')+row('Dikte',r.dikte+' mm')+'</div>');
+    if(orderHtmlClean) detHtml+=detSectie('Order Berekening','#a78bfa',orderHtmlClean);
+        // Altijd zichtbaar
+    detHtml+='<div class="slabel">Productie Parameters</div>';
+    detHtml+='<div class="info-block">'+row('Sealtijd',r.seal+' ms')+row('Snelheid',r.snelheid+' m/min')+row('Zakken/rol',r.zakrol)+row('Koker dia',r.koker+' mm')+'</div>';
+    detHtml+='<div class="slabel">Offset Rolwissel</div>';
+    detHtml+='<div class="info-block"><div class="info-row"><div class="ir-lbl">OFFSET 1</div><div style="display:flex;align-items:center;"><div class="ir-val" style="color:'+kleur1+';">'+o1+'</div>'+bronLabel+'</div></div><div class="info-row"><div class="ir-lbl">OFFSET 2</div><div class="ir-val" style="color:'+kleur1+';">'+o2+'</div></div></div>';
+    detHtml+='<div class="slabel">Machine Instellingen</div>';
+    detHtml+='<div class="info-block">'+row('Static charger',r.static_ch)+row('Static mat (mm)',r.static_mat)+row('Cycle drukker',r.drukker?'AAN - '+(r.drukker_inst||''):'UIT')+'</div>';
+    detHtml+='<div class="slabel">Seal Temperaturen</div>';
+    detHtml+='<div style="display:flex;gap:16px;margin-bottom:8px;"><div class="temp-card"><div class="temp-lbl">BOVEN</div><div style="font-size:34px;font-weight:700;color:#fcd34d;text-align:center;">'+(r.temp_boven||'-')+'</div><div class="temp-unit">C</div></div><div style="font-size:20px;color:#9ca3af;align-self:center;">|</div><div class="temp-card"><div class="temp-lbl">ONDER</div><div style="font-size:34px;font-weight:700;color:#fcd34d;text-align:center;">'+(r.temp_onder||'-')+'</div><div class="temp-unit">C</div></div></div>';
+    if(r.notities) detHtml+='<div class="slabel">Notities</div><div class="info-block"><div style="padding:12px 14px;font-size:13px;color:#9ca3af;line-height:1.6;">'+r.notities+'</div></div>';
+    detHtml+=huidjeVak;
+    detHtml+=stapelVisHtml;
+    detHtml+='<button class="btn btn-amber" style="margin-top:8px;" onclick="bewerkRecept(\'"+key+"\')">Bewerken</button>';
+    document.getElementById('detail-content').innerHTML=detHtml;
     go('s-detail');
   });
 }
