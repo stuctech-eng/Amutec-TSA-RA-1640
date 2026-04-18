@@ -335,7 +335,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
   <div class="grid2">
     <div class="field"><label>Producttype</label>
       <select id="f-prodtype" class="veld-definitief" onchange="prodtypeChange(this.value);veldIngevuld(this);">
-        <option>Zak</option><option>Hoes</option><option>Vel</option><option>Krimpfolie</option><option>Uitsparing</option><option>Andere</option>
+        <option>Zak</option><option>Hoes</option><option>Vel</option><option>Huls</option><option>Krimpfolie</option><option>Uitsparing</option><option>Andere</option>
       </select>
     </div>
   </div>
@@ -550,13 +550,49 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 <script>
 'use strict';
 var FB_URL = 'https://amutec-tsa-ra-1640-default-rtdb.europe-west1.firebasedatabase.app';
-var APP_PW = 'tsa1600';
 var APP_VERSION = '14.5';
 
-var OPERATORS_CONFIG = {
+// Hardcoded fallback
+var OPERATORS_FALLBACK = {
   'Dirk':   { pin: '007', admin: true  },
   'Casper': { pin: '100', admin: false }
 };
+var APP_PW_FALLBACK = 'tsa1600';
+
+var OPERATORS_CONFIG = Object.assign({}, OPERATORS_FALLBACK);
+var APP_PW = APP_PW_FALLBACK;
+var _offlineModus = false;
+
+function laadOperatorsConfig(cb) {
+  fetch(FB_URL + '/instellingen.json')
+    .then(function(r){return r.json();})
+    .then(function(data){
+      if(data && data.app_wachtwoord) APP_PW = data.app_wachtwoord;
+      else APP_PW = APP_PW_FALLBACK;
+    })
+    .catch(function(){});
+  fetch(FB_URL + '/operators.json')
+    .then(function(r){return r.json();})
+    .then(function(data){
+      if(data && Object.keys(data).length > 0) {
+        OPERATORS_CONFIG = {};
+        Object.keys(data).forEach(function(k){
+          var op = data[k];
+          OPERATORS_CONFIG[op.naam] = { pin: op.pin, admin: !!op.admin };
+        });
+        _offlineModus = false;
+      } else {
+        OPERATORS_CONFIG = Object.assign({}, OPERATORS_FALLBACK);
+      }
+      if(cb) cb();
+    })
+    .catch(function(){
+      _offlineModus = true;
+      OPERATORS_CONFIG = Object.assign({}, OPERATORS_FALLBACK);
+      APP_PW = APP_PW_FALLBACK;
+      if(cb) cb();
+    });
+}
 var _huidigeOperator = null;
 var _geselecteerdeOperator = null;
 
@@ -682,12 +718,27 @@ function terugNaarStap1() {
 }
 
 function checkLogin() {
-  if(sessionStorage.getItem('tsa_auth')===APP_PW) {
-    _huidigeOperator=sessionStorage.getItem('tsa_operator')||null;
-    toonAdminFuncties(_huidigeOperator==='Dirk');
-    if(_huidigeOperator){updateHomeOperator();go('s-home');}
-    else{go('s-login');setTimeout(toonStap2,50);}
-  }
+  laadOperatorsConfig(function(){
+    if(sessionStorage.getItem('tsa_auth') === APP_PW || sessionStorage.getItem('tsa_auth') === APP_PW_FALLBACK) {
+      _huidigeOperator = sessionStorage.getItem('tsa_operator') || null;
+      // Hervalideer operator bestaat nog
+      if(_huidigeOperator && !OPERATORS_CONFIG[_huidigeOperator]) {
+        // Operator bestaat niet meer - opnieuw inloggen
+        sessionStorage.clear();
+        go('s-login');
+        return;
+      }
+      toonAdminFuncties(_huidigeOperator && OPERATORS_CONFIG[_huidigeOperator] && OPERATORS_CONFIG[_huidigeOperator].admin);
+      if(_huidigeOperator){ updateHomeOperator(); go('s-home'); }
+      else { go('s-login'); setTimeout(toonStap2, 50); }
+    } else {
+      go('s-login');
+    }
+    if(_offlineModus) {
+      var el = document.getElementById('login-err');
+      if(el) { el.textContent = 'Offline modus -- backup codes actief'; el.style.display = 'block'; el.style.color = '#f59e0b'; }
+    }
+  });
 }
 
 function updateHomeOperator() {
@@ -735,7 +786,7 @@ function toggleDrukker() {
   if(extra) extra.style.display=drukkerAan?'block':'none';
 }
 function prodtypeChange(val) {
-  try{if(val==='Vel'){var fs=document.getElementById('f-seal');if(fs)fs.value='50';var fb=document.getElementById('f-temp-boven');if(fb)fb.value='0';var fo=document.getElementById('f-temp-onder');if(fo)fo.value='0';}}catch(e){}
+  try{if(val==='Vel'||val==='Huls'){var fs=document.getElementById('f-seal');if(fs)fs.value='50';var fb=document.getElementById('f-temp-boven');if(fb)fb.value='0';var fo=document.getElementById('f-temp-onder');if(fo)fo.value='0';}}catch(e){}
 }
 
 function veldIngevuld(el) {
