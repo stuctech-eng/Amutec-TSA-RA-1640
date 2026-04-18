@@ -56,6 +56,87 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
     </div>
   </div>
 
+  <!-- FEEDBACK -->
+
+  <div class="form-card" style="border-top-color:#34d399;margin-top:4px;cursor:pointer;" onclick="toggleSectie('feedback-body','feedback-chev')">
+    <div style="display:flex;align-items:center;justify-content:space-between;">
+      <div class="form-card-title" style="color:#34d399;margin-bottom:0;">&#128172; Feedback</div>
+      <span id="feedback-chev" style="color:#34d399;font-size:20px;">&#8250;</span>
+    </div>
+    <div style="font-size:14px;color:#6b7280;margin-top:6px;">Bug &bull; Verbetering &bull; Vraag</div>
+  </div>
+  <div id="feedback-body" style="display:none;margin-top:-8px;background:#0f1520;border:1px solid #1a2540;border-top:none;border-radius:0 0 4px 4px;padding:16px;">
+    <div style="font-size:12px;color:#6b7280;margin-bottom:12px;letter-spacing:1px;">NIEUWE FEEDBACK</div>
+    <div style="display:flex;gap:8px;margin-bottom:12px;">
+      <button id="fb-cat-bug" onclick="fbKiesCategorie('Bug')" style="flex:1;padding:10px;border-radius:6px;border:2px solid #ef4444;background:rgba(239,68,68,0.15);color:#ef4444;font-family:'Courier New',monospace;font-size:14px;font-weight:700;cursor:pointer;">&#128030; Bug</button>
+      <button id="fb-cat-verb" onclick="fbKiesCategorie('Verbetering')" style="flex:1;padding:10px;border-radius:6px;border:2px solid #1a2540;background:#0f1520;color:#9ca3af;font-family:'Courier New',monospace;font-size:14px;font-weight:700;cursor:pointer;">&#128161; Verb.</button>
+      <button id="fb-cat-vraag" onclick="fbKiesCategorie('Vraag')" style="flex:1;padding:10px;border-radius:6px;border:2px solid #1a2540;background:#0f1520;color:#9ca3af;font-family:'Courier New',monospace;font-size:14px;font-weight:700;cursor:pointer;">&#10067; Vraag</button>
+    </div>
+    <textarea id="fb-tekst" rows="4" placeholder="Beschrijf hier je feedback..." style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:15px;padding:12px;outline:none;resize:vertical;margin-bottom:10px;"></textarea>
+    <button onclick="stuurFeedback()" style="width:100%;background:#34d399;color:#000;border:none;border-radius:4px;font-family:'Courier New',Courier,monospace;font-weight:700;font-size:16px;padding:14px;cursor:pointer;margin-bottom:16px;">Versturen &#10003;</button>
+    <div style="font-size:12px;color:#6b7280;margin-bottom:10px;letter-spacing:1px;">EERDERE FEEDBACK</div>
+    <div id="feedback-lijst" style="display:flex;flex-direction:column;gap:8px;">
+      <div style="font-size:14px;color:#6b7280;text-align:center;padding:12px;">Laden...</div>
+    </div>
+  </div>
+
+  <!-- OPERATORS BEHEER -->
+
+  <div class="form-card" style="border-top-color:#f59e0b;margin-top:4px;cursor:pointer;" onclick="toggleSectie('operators-body','operators-chev')">
+    <div style="display:flex;align-items:center;justify-content:space-between;">
+      <div class="form-card-title" style="color:#f59e0b;margin-bottom:0;">&#128101; Operators Beheer</div>
+      <span id="operators-chev" style="color:#f59e0b;font-size:20px;">&#8250;</span>
+    </div>
+    <div style="font-size:14px;color:#6b7280;margin-top:6px;">Pins &bull; Wachtwoord &bull; Nieuwe operator</div>
+  </div>
+  <div id="operators-body" style="display:none;margin-top:-8px;background:#0f1520;border:1px solid #1a2540;border-top:none;border-radius:0 0 4px 4px;padding:16px;">
+
+```
+<!-- APP WACHTWOORD -->
+<div style="font-size:12px;color:#f59e0b;letter-spacing:2px;margin-bottom:10px;">APP WACHTWOORD</div>
+<div style="background:#070a10;border:1px solid #1a2540;border-radius:6px;padding:14px;margin-bottom:16px;">
+  <div style="font-size:14px;color:#9ca3af;margin-bottom:8px;">Huidig wachtwoord</div>
+  <input id="op-huidig-pw" type="password" placeholder="Huidig wachtwoord" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:17px;padding:12px;outline:none;margin-bottom:8px;">
+  <div style="font-size:14px;color:#9ca3af;margin-bottom:8px;">Nieuw wachtwoord</div>
+  <input id="op-nieuw-pw" type="password" placeholder="Nieuw wachtwoord" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:17px;padding:12px;outline:none;margin-bottom:10px;">
+  <button onclick="wijzigWachtwoord()" style="width:100%;background:#f59e0b;color:#000;border:none;border-radius:4px;font-family:'Courier New',Courier,monospace;font-weight:700;font-size:15px;padding:13px;cursor:pointer;">Wachtwoord Wijzigen</button>
+</div>
+
+<!-- BESTAANDE OPERATORS -->
+<div style="font-size:12px;color:#f59e0b;letter-spacing:2px;margin-bottom:10px;">OPERATORS</div>
+<div id="operators-lijst" style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;">
+  <div style="font-size:14px;color:#6b7280;text-align:center;padding:12px;">Laden...</div>
+</div>
+
+<!-- NIEUWE OPERATOR -->
+<div style="font-size:12px;color:#34d399;letter-spacing:2px;margin-bottom:10px;">NIEUWE OPERATOR TOEVOEGEN</div>
+<div style="background:#070a10;border:1px solid #1a2540;border-radius:6px;padding:14px;">
+  <input id="op-nieuw-naam" type="text" placeholder="Naam operator" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:17px;padding:12px;outline:none;margin-bottom:8px;">
+  <input id="op-nieuw-pin" type="password" inputmode="numeric" maxlength="6" placeholder="Pincode (cijfers)" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:17px;padding:12px;outline:none;margin-bottom:8px;">
+  <div style="display:flex;gap:8px;margin-bottom:10px;align-items:center;">
+    <button id="op-admin-nee" onclick="opKiesAdmin(false)" style="flex:1;padding:10px;border-radius:6px;border:2px solid #34d399;background:rgba(52,211,153,0.15);color:#34d399;font-family:'Courier New',monospace;font-size:14px;font-weight:700;cursor:pointer;">Operator</button>
+    <button id="op-admin-ja" onclick="opKiesAdmin(true)" style="flex:1;padding:10px;border-radius:6px;border:2px solid #1a2540;background:#0f1520;color:#9ca3af;font-family:'Courier New',monospace;font-size:14px;font-weight:700;cursor:pointer;">Admin</button>
+  </div>
+  <button onclick="voegOperatorToe()" style="width:100%;background:#34d399;color:#000;border:none;border-radius:4px;font-family:'Courier New',Courier,monospace;font-weight:700;font-size:15px;padding:13px;cursor:pointer;">Toevoegen &#10003;</button>
+</div>
+```
+
+  </div>
+
+  <!-- WISSEL OPERATOR -->
+
+  <div class="form-card" style="border-top-color:#60a5fa;margin-top:4px;cursor:pointer;" onclick="toggleSectie('wissel-body','wissel-chev')">
+    <div style="display:flex;align-items:center;justify-content:space-between;">
+      <div class="form-card-title" style="color:#60a5fa;margin-bottom:0;">&#128257; Wissel Operator</div>
+      <span id="wissel-chev" style="color:#60a5fa;font-size:20px;">&#8250;</span>
+    </div>
+    <div style="font-size:14px;color:#6b7280;margin-top:6px;">Test de app als andere operator</div>
+  </div>
+  <div id="wissel-body" style="display:none;margin-top:-8px;background:#0f1520;border:1px solid #1a2540;border-top:none;border-radius:0 0 4px 4px;padding:16px;">
+    <div style="font-size:14px;color:#9ca3af;margin-bottom:12px;line-height:1.7;">Kies een operator om als die persoon in te loggen. Je gaat terug naar het home scherm met die operator zijn rechten.</div>
+    <div id="wissel-lijst" style="display:flex;flex-direction:column;gap:8px;"></div>
+  </div>
+
   <!-- UITLEG BEREKENINGEN -->
 
   <!-- BEREKENINGEN -->
@@ -275,13 +356,247 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 <div class="toast" id="toast"></div>
 
 <script>
-'use strict';
+var FB_URL='https://amutec-tsa-ra-1640-default-rtdb.europe-west1.firebasedatabase.app';
+var _fbCategorie='Bug';
+var _opNieuweAdmin=false;
+var _huidigePinWijzig=null;
+
+function fbLoad(pad,cb){fetch(FB_URL+pad+'.json').then(function(r){return r.json();}).then(function(d){if(!d){cb([]);return;}var arr=[];Object.keys(d).forEach(function(k){var o=Object.assign({},d[k]);o._key=k;arr.push(o);});cb(arr);}).catch(function(){cb([]);});}
+function fbPost(pad,obj,cb){fetch(FB_URL+pad+'.json',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(obj)}).then(function(r){return r.json();}).then(function(d){if(cb)cb(d);}).catch(function(){});}
+function fbPut(pad,obj,cb){fetch(FB_URL+pad+'.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(obj)}).then(function(){if(cb)cb();}).catch(function(){});}
+function fbDelete(pad,cb){fetch(FB_URL+pad+'.json',{method:'DELETE'}).then(function(){if(cb)cb();}).catch(function(){});}
+function fbGet(pad,cb){fetch(FB_URL+pad+'.json').then(function(r){return r.json();}).then(function(d){cb(d);}).catch(function(){cb(null);});}
 
 function toast(msg,err){var t=document.getElementById('toast');t.textContent=msg;t.className='toast show'+(err?' err':'');clearTimeout(t._t);t._t=setTimeout(function(){t.classList.remove('show');},2400);}
 
-function toggleSectie(bodyId,chevId){var body=document.getElementById(bodyId);var chev=document.getElementById(chevId);if(!body)return;var open=body.style.display!=='none';body.style.display=open?'none':'block';if(chev)chev.textContent=open?'\u203a':'\u2039';if(!open){if(bodyId==='p1-body')renderAangepastProbleem('p1');if(bodyId==='p2-body')renderAangepastProbleem('p2');}}
+function toggleSectie(bodyId,chevId){
+  var body=document.getElementById(bodyId);var chev=document.getElementById(chevId);if(!body)return;
+  var open=body.style.display!=='none';
+  body.style.display=open?'none':'block';
+  if(chev)chev.textContent=open?'\u203a':'\u2039';
+  if(!open){
+    if(bodyId==='feedback-body')laadFeedback();
+    if(bodyId==='operators-body'){laadOperators();renderWisselLijst();}
+    if(bodyId==='wissel-body')renderWisselLijst();
+    if(bodyId==='p1-body')renderAangepastProbleem('p1');
+    if(bodyId==='p2-body')renderAangepastProbleem('p2');
+  }
+}
 
 function toggleMachineInfo(){var sectie=document.getElementById('machine-info-sectie');var chev=document.getElementById('machine-info-chev');if(!sectie)return;var open=sectie.style.display!=='none';sectie.style.display=open?'none':'block';chev.textContent=open?'\u203a':'\u2039';}
+
+// FEEDBACK
+function fbKiesCategorie(cat){
+  _fbCategorie=cat;
+  var map={'Bug':'fb-cat-bug','Verbetering':'fb-cat-verb','Vraag':'fb-cat-vraag'};
+  var kleuren={'Bug':'#ef4444','Verbetering':'#f59e0b','Vraag':'#60a5fa'};
+  Object.keys(map).forEach(function(c){
+    var btn=document.getElementById(map[c]);if(!btn)return;
+    if(c===cat){btn.style.borderColor=kleuren[c];btn.style.background='rgba(96,165,250,0.1)';btn.style.color=kleuren[c];}
+    else{btn.style.borderColor='#1a2540';btn.style.background='#0f1520';btn.style.color='#9ca3af';}
+  });
+  // Fix Bug color
+  if(cat==='Bug'){document.getElementById('fb-cat-bug').style.background='rgba(239,68,68,0.15)';}
+  if(cat==='Verbetering'){document.getElementById('fb-cat-verb').style.background='rgba(245,158,11,0.15)';}
+  if(cat==='Vraag'){document.getElementById('fb-cat-vraag').style.background='rgba(96,165,250,0.15)';}
+}
+
+function stuurFeedback(){
+  var tekst=document.getElementById('fb-tekst').value.trim();
+  if(!tekst){toast('Vul eerst feedback in',true);return;}
+  var operator=sessionStorage.getItem('tsa_operator')||'Onbekend';
+  var obj={categorie:_fbCategorie,tekst:tekst,operator:operator,datum:new Date().toISOString().split('T')[0],tijd:new Date().toLocaleTimeString('nl-NL',{hour:'2-digit',minute:'2-digit'})};
+  fbPost('/feedback',obj,function(){
+    toast('Feedback verstuurd!');
+    document.getElementById('fb-tekst').value='';
+    laadFeedback();
+  });
+}
+
+function laadFeedback(){
+  var el=document.getElementById('feedback-lijst');if(!el)return;
+  el.innerHTML='<div style="font-size:14px;color:#6b7280;text-align:center;padding:12px;">Laden...</div>';
+  fbLoad('/feedback',function(lijst){
+    if(!lijst.length){el.innerHTML='<div style="font-size:14px;color:#6b7280;text-align:center;padding:12px;">Nog geen feedback.</div>';return;}
+    lijst.sort(function(a,b){return (b.datum+b.tijd).localeCompare(a.datum+a.tijd);});
+    var kleuren={'Bug':'#ef4444','Verbetering':'#f59e0b','Vraag':'#60a5fa'};
+    var html='';
+    lijst.forEach(function(fb){
+      var kleur=kleuren[fb.categorie]||'#9ca3af';
+      html+='<div style="background:#070a10;border:1px solid #1a2540;border-left:4px solid '+kleur+';border-radius:4px;padding:14px;">';
+      html+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">';
+      html+='<span style="font-size:13px;font-weight:700;color:'+kleur+';">'+fb.categorie+'</span>';
+      html+='<span style="font-size:12px;color:#6b7280;">'+fb.datum+' '+fb.tijd+' &bull; '+fb.operator+'</span>';
+      html+='</div>';
+      html+='<div style="font-size:15px;color:#e5e7eb;line-height:1.6;">'+fb.tekst+'</div>';
+      html+='<button onclick="verwijderFeedback(\''+fb._key+'\')" style="margin-top:10px;background:transparent;border:1px solid rgba(239,68,68,0.3);border-radius:4px;color:#ef4444;font-family:\'Courier New\',monospace;font-size:13px;padding:6px 12px;cursor:pointer;">Verwijderen</button>';
+      html+='</div>';
+    });
+    el.innerHTML=html;
+  });
+}
+
+function verwijderFeedback(key){
+  fbDelete('/feedback/'+key,function(){toast('Verwijderd');laadFeedback();});
+}
+
+// OPERATORS
+var _opAdminNieuw=false;
+function opKiesAdmin(isAdmin){
+  _opAdminNieuw=isAdmin;
+  var btnN=document.getElementById('op-admin-nee'),btnJ=document.getElementById('op-admin-ja');
+  if(!isAdmin){btnN.style.borderColor='#34d399';btnN.style.background='rgba(52,211,153,0.15)';btnN.style.color='#34d399';btnJ.style.borderColor='#1a2540';btnJ.style.background='#0f1520';btnJ.style.color='#9ca3af';}
+  else{btnJ.style.borderColor='#f59e0b';btnJ.style.background='rgba(245,158,11,0.15)';btnJ.style.color='#f59e0b';btnN.style.borderColor='#1a2540';btnN.style.background='#0f1520';btnN.style.color='#9ca3af';}
+}
+
+function laadOperators(){
+  var el=document.getElementById('operators-lijst');if(!el)return;
+  el.innerHTML='<div style="font-size:14px;color:#6b7280;text-align:center;padding:12px;">Laden...</div>';
+  fbGet('/operators',function(data){
+    if(!data){el.innerHTML='<div style="font-size:14px;color:#6b7280;">Geen operators gevonden.</div>';return;}
+    var html='';
+    Object.keys(data).forEach(function(k){
+      var op=data[k];
+      html+='<div style="background:#070a10;border:1px solid #1a2540;border-radius:6px;padding:14px;margin-bottom:4px;">';
+      html+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">';
+      html+='<span style="font-size:16px;font-weight:700;color:#e5e7eb;">'+op.naam+'</span>';
+      html+='<span style="font-size:12px;padding:3px 10px;border-radius:3px;'+(op.admin?'background:rgba(245,158,11,0.15);border:1px solid #f59e0b;color:#f59e0b;':'background:rgba(52,211,153,0.1);border:1px solid #34d399;color:#34d399;')+'">'+( op.admin?'ADMIN':'OPERATOR')+'</span>';
+      html+='</div>';
+      html+='<div style="font-size:14px;color:#9ca3af;margin-bottom:10px;">Pin: <span style="color:#e5e7eb;letter-spacing:3px;">'+op.pin+'</span></div>';
+      html+='<div style="display:flex;gap:8px;">';
+      html+='<button onclick="toonPinWijzig(\''+k+'\',\''+op.naam+'\')" style="flex:1;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.4);border-radius:4px;color:#f59e0b;font-family:\'Courier New\',monospace;font-size:14px;padding:10px;cursor:pointer;">Pin wijzigen</button>';
+      if(op.naam!=='Dirk'){
+        html+='<button onclick="verwijderOperator(\''+k+'\',\''+op.naam+'\')" style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.4);border-radius:4px;color:#ef4444;font-family:\'Courier New\',monospace;font-size:14px;padding:10px 14px;cursor:pointer;">&#10005;</button>';
+      }
+      html+='</div>';
+      html+='<div id="pin-wijzig-'+k+'" style="display:none;margin-top:10px;">';
+      html+='<input id="pin-nieuw-'+k+'" type="password" inputmode="numeric" maxlength="6" placeholder="Nieuwe pin" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:\'Courier New\',Courier,monospace;font-size:17px;padding:12px;outline:none;margin-bottom:8px;">';
+      html+='<button onclick="slaaPinOp(\''+k+'\')" style="width:100%;background:#34d399;color:#000;border:none;border-radius:4px;font-family:\'Courier New\',monospace;font-weight:700;font-size:15px;padding:12px;cursor:pointer;">Opslaan</button>';
+      html+='</div>';
+      html+='</div>';
+    });
+    el.innerHTML=html;
+  });
+}
+
+function toonPinWijzig(key,naam){
+  var el=document.getElementById('pin-wijzig-'+key);
+  if(el)el.style.display=el.style.display==='none'?'block':'none';
+}
+
+function slaaPinOp(key){
+  var el=document.getElementById('pin-nieuw-'+key);
+  if(!el||!el.value.trim()){toast('Vul een pin in',true);return;}
+  fbGet('/operators/'+key,function(op){
+    if(!op){toast('Operator niet gevonden',true);return;}
+    op.pin=el.value.trim();
+    fbPut('/operators/'+key,op,function(){
+      toast('Pin opgeslagen!');
+      laadOperators();
+    });
+  });
+}
+
+function verwijderOperator(key,naam){
+  window._delOpKey=key;window._delOpNaam=naam;
+  toonPinModal(function(){
+    fbDelete('/operators/'+window._delOpKey,function(){
+      toast(window._delOpNaam+' verwijderd');
+      laadOperators();renderWisselLijst();
+    });
+  });
+}
+
+function voegOperatorToe(){
+  var naam=document.getElementById('op-nieuw-naam').value.trim();
+  var pin=document.getElementById('op-nieuw-pin').value.trim();
+  if(!naam||!pin){toast('Naam en pin zijn verplicht',true);return;}
+  var key=naam.toLowerCase().replace(/[^a-z0-9]/g,'');
+  var obj={naam:naam,pin:pin,admin:_opAdminNieuw};
+  fbPut('/operators/'+key,obj,function(){
+    toast(naam+' toegevoegd!');
+    document.getElementById('op-nieuw-naam').value='';
+    document.getElementById('op-nieuw-pin').value='';
+    laadOperators();renderWisselLijst();
+  });
+}
+
+function wijzigWachtwoord(){
+  var huidig=document.getElementById('op-huidig-pw').value.trim();
+  var nieuw=document.getElementById('op-nieuw-pw').value.trim();
+  if(!huidig||!nieuw){toast('Vul beide velden in',true);return;}
+  fbGet('/instellingen/app_wachtwoord',function(pw){
+    var huidigPw=pw||'tsa1600';
+    if(huidig!==huidigPw){toast('Huidig wachtwoord onjuist',true);return;}
+    fbPut('/instellingen/app_wachtwoord',nieuw,function(){
+      toast('Wachtwoord gewijzigd!');
+      document.getElementById('op-huidig-pw').value='';
+      document.getElementById('op-nieuw-pw').value='';
+    });
+  });
+}
+
+// WISSEL OPERATOR
+function renderWisselLijst(){
+  var el=document.getElementById('wissel-lijst');if(!el)return;
+  var huidig=sessionStorage.getItem('tsa_operator')||'';
+  fbGet('/operators',function(data){
+    if(!data){el.innerHTML='<div style="font-size:14px;color:#6b7280;">Geen operators.</div>';return;}
+    var html='';
+    Object.keys(data).forEach(function(k){
+      var op=data[k];
+      if(op.naam===huidig)return; // skip huidige
+      html+='<button onclick="wisselNaar(\''+op.naam+'\')" style="width:100%;background:#0f1520;border:1px solid #1a2540;border-left:4px solid #60a5fa;border-radius:4px;display:flex;align-items:center;justify-content:space-between;padding:16px;cursor:pointer;margin-bottom:4px;">';
+      html+='<div><div style="font-size:16px;font-weight:700;color:#e5e7eb;">'+op.naam+'</div>';
+      html+='<div style="font-size:13px;color:#6b7280;margin-top:3px;">'+(op.admin?'Admin':'Operator')+'</div></div>';
+      html+='<span style="font-size:20px;color:#60a5fa;">&#8250;</span>';
+      html+='</button>';
+    });
+    if(!html)html='<div style="font-size:14px;color:#6b7280;">Geen andere operators.</div>';
+    el.innerHTML=html;
+  });
+}
+
+function wisselNaar(naam){
+  sessionStorage.setItem('tsa_operator',naam);
+  toast('Ingelogd als '+naam);
+  setTimeout(function(){window.location.href='index.html';},800);
+}
+
+// PIN MODAL
+function toonPinModal(onSuccess){
+  document.getElementById('pin-overlay').style.display='flex';
+  document.getElementById('pin-input').value='';
+  document.getElementById('pin-err').style.display='none';
+  document.getElementById('pin-input').focus();
+  window._pinCallback=onSuccess;
+}
+function sluitPinModal(){document.getElementById('pin-overlay').style.display='none';window._pinCallback=null;}
+function bevestigPin(){
+  var pin=document.getElementById('pin-input').value.trim();
+  // Check admin pin via Firebase
+  fbGet('/operators',function(data){
+    var adminPin='007';
+    if(data){Object.keys(data).forEach(function(k){if(data[k].admin)adminPin=data[k].pin;});}
+    if(pin===adminPin){var cb=window._pinCallback;sluitPinModal();if(cb)cb();}
+    else{document.getElementById('pin-err').style.display='block';document.getElementById('pin-input').value='';}
+  });
+}
+
+// INIT - schrijf default operators naar Firebase als ze er nog niet zijn
+function initFirebaseOperators(){
+  fbGet('/operators',function(data){
+    if(!data){
+      // Eerste keer - schrijf defaults
+      fbPut('/operators/dirk',{naam:'Dirk',pin:'007',admin:true},function(){});
+      fbPut('/operators/casper',{naam:'Casper',pin:'100',admin:false},function(){});
+    }
+  });
+  fbGet('/instellingen/app_wachtwoord',function(pw){
+    if(!pw){fbPut('/instellingen/app_wachtwoord','tsa1600',function(){});}
+  });
+}
+initFirebaseOperators();
 
 var PARAM_UITLEG={
   'Rolls change advance':{wat:'Wachttijd in ms na "rol vol". Bepaalt wanneer drukarm en slagarmen komen.',hoger:'Langere vrijloop (flap). Folie kan wabberen.',lager:'Schonere wissel. MINIMUM 100ms.',advies:'Start 200ms, dan 100ms. NOOIT 0ms. RC1: 800ms / RC2: 400ms.',systeem:'Belangrijkste parameter voor vrijloop.',tijdlijn:'Rol vol → timer → drukarm → slagarmen → lucht → drukarm houdt vast'},
