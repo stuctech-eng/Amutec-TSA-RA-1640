@@ -220,10 +220,16 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 ```
   <div class="label">Liggend -- Piramide patroon</div>
   <div class="uitleg-blok">
-    Rollen liggen op zijkant.<br>
-    rijA = round( palletbreedte / rolD )<br>
-    rijB = rijA &minus; 1<br><br>
+    Rollen liggen op zijkant.<br><br>
+    <b>Breedte is de harde grens:</b><br>
+    rijA = <b>floor</b>( palletbreedte / rolD )<br>
+    → altijd naar beneden afronden zodat rollen nooit over de breedte uitsteken<br><br>
+    <b>Voorbeeld:</b> rolD 250mm op blokpallet 1000mm<br>
+    floor(1000 / 250) = <span style="color:#34d399;font-weight:700;">4 rollen</span> &bull; 4 &times; 250 = 1000mm ✓<br>
+    round() zou 5 geven → 5 &times; 250 = 1250mm ✗ te breed<br><br>
+    rijB = rijA &minus; 1<br>
     Lagen: zolang rolD + (lagen-1) &times; rolD &times; 0.866 &le; maxHoogte<br><br>
+    <b>Lengte (1200mm) is flexibel</b> -- rollen mogen in lengterichting over de pallet uitsteken.<br><br>
     <b>Huidjes nodig om oneven lagen.</b>
   </div>
 
