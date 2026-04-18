@@ -746,27 +746,26 @@ function terugNaarStap1() {
 }
 
 function checkLogin() {
-  laadOperatorsConfig(function(){
-    if(sessionStorage.getItem('tsa_auth') === APP_PW || sessionStorage.getItem('tsa_auth') === APP_PW_FALLBACK) {
-      _huidigeOperator = sessionStorage.getItem('tsa_operator') || null;
-      // Hervalideer operator bestaat nog
-      if(_huidigeOperator && !OPERATORS_CONFIG[_huidigeOperator]) {
-        // Operator bestaat niet meer - opnieuw inloggen
-        sessionStorage.clear();
+  if(sessionStorage.getItem('tsa_auth')) {
+    laadOperatorsConfig(function(){
+      var opgeslagenAuth = sessionStorage.getItem('tsa_auth');
+      if(opgeslagenAuth === APP_PW || opgeslagenAuth === APP_PW_FALLBACK) {
+        _huidigeOperator = sessionStorage.getItem('tsa_operator') || null;
+        if(_huidigeOperator && !OPERATORS_CONFIG[_huidigeOperator]) {
+          sessionStorage.clear();
+          go('s-login');
+          return;
+        }
+        toonAdminFuncties(_huidigeOperator && OPERATORS_CONFIG[_huidigeOperator] && OPERATORS_CONFIG[_huidigeOperator].admin);
+        if(_huidigeOperator){ updateHomeOperator(); go('s-home'); }
+        else { go('s-login'); toonStap2(); }
+      } else {
         go('s-login');
-        return;
       }
-      toonAdminFuncties(_huidigeOperator && OPERATORS_CONFIG[_huidigeOperator] && OPERATORS_CONFIG[_huidigeOperator].admin);
-      if(_huidigeOperator){ updateHomeOperator(); go('s-home'); }
-      else { go('s-login'); setTimeout(toonStap2, 50); }
-    } else {
-      go('s-login');
-    }
-    if(_offlineModus) {
-      var el = document.getElementById('login-err');
-      if(el) { el.textContent = 'Offline modus -- backup codes actief'; el.style.display = 'block'; el.style.color = '#f59e0b'; }
-    }
-  });
+    });
+  } else {
+    go('s-login');
+  }
 }
 
 function updateHomeOperator() {
