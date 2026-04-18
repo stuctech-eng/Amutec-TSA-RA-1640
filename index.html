@@ -168,7 +168,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
         </div>
         <button onclick="terugNaarStap1()" style="width:100%;background:transparent;border:1px solid #1a2540;border-radius:4px;color:#6b7280;font-family:'Courier New',Courier,monospace;font-size:13px;padding:10px;cursor:pointer;margin-top:10px;">&#8249; Terug</button>
       </div>
-      <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v15.4 &#8212; 2026-04-18</div>
+      <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v15.5 &#8212; 2026-04-18</div>
     </div>
   </div>
 </div>
@@ -550,7 +550,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 <script>
 'use strict';
 var FB_URL = 'https://amutec-tsa-ra-1640-default-rtdb.europe-west1.firebasedatabase.app';
-var APP_VERSION = '15.4';
+var APP_VERSION = '15.5';
 
 // Hardcoded fallback
 var OPERATORS_FALLBACK = {
@@ -1267,10 +1267,18 @@ function openDetail(key){
       }
     }
     document.getElementById('detail-content').innerHTML=
-      '<div class="slabel">Klant &amp; Product</div>'+
-      '<div class="info-block">'+row('Klantnummer',r.klantnr)+row('Klantnaam',r.klantnaam)+row('Producttype',r.prodtype)+row('Operator',r.versie)+row('Datum',r.datum)+'</div>'+
-      '<div class="slabel">Materiaal &amp; Afmetingen</div>'+
-      '<div class="info-block">'+row('Materiaal',mat.label||r.materiaal)+row('Breedte',r.breedte+' mm')+row('Lengte',r.lengte+' mm')+row('Dikte',r.dikte+' mm')+'</div>'+
+      '<div onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display===\'none\'?\'block\':\'none\';this.querySelector(\'.det-chev\').textContent=this.nextElementSibling.style.display===\'none\'?\'\u203a\':\'\u2039\'" style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#0f1520;border:1px solid #1a2540;border-left:3px solid #9ca3af;border-radius:4px;margin-bottom:4px;cursor:pointer;">'+
+      '<span style="font-size:11px;color:#9ca3af;letter-spacing:2px;text-transform:uppercase;">Klant &amp; Product</span>'+
+      '<span class="det-chev" style="color:#9ca3af;font-size:20px;">\u203a</span></div>'+
+      '<div style="display:none;margin-bottom:8px;">'+
+      '<div class="info-block">'+row('Klantnummer',r.klantnr)+row('Klantnaam',r.klantnaam)+row('Producttype',r.prodtype)+row('Operator',r.versie)+row('Datum',r.datum)+'</div></div>'+
+
+      '<div onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display===\'none\'?\'block\':\'none\';this.querySelector(\'.det-chev\').textContent=this.nextElementSibling.style.display===\'none\'?\'\u203a\':\'\u2039\'" style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#0f1520;border:1px solid #1a2540;border-left:3px solid #9ca3af;border-radius:4px;margin-bottom:4px;cursor:pointer;">'+
+      '<span style="font-size:11px;color:#9ca3af;letter-spacing:2px;text-transform:uppercase;">Materiaal &amp; Afmetingen</span>'+
+      '<span class="det-chev" style="color:#9ca3af;font-size:20px;">\u203a</span></div>'+
+      '<div style="display:none;margin-bottom:8px;">'+
+      '<div class="info-block">'+row('Materiaal',mat.label||r.materiaal)+row('Breedte',r.breedte+' mm')+row('Lengte',r.lengte+' mm')+row('Dikte',r.dikte+' mm')+'</div></div>'+
+
       '<div class="slabel">Productie Parameters</div>'+
       '<div class="info-block">'+row('Sealtijd',r.seal+' ms')+row('Snelheid',r.snelheid+' m/min')+row('Zakken/rol',r.zakrol)+row('Koker dia',r.koker+' mm')+'</div>'+
       '<div class="slabel">Offset Rolwissel</div>'+
