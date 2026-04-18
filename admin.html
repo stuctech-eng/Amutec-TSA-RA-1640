@@ -519,7 +519,14 @@ function voegOperatorToe(){
     toast(naam+' toegevoegd!');
     document.getElementById('op-nieuw-naam').value='';
     document.getElementById('op-nieuw-pin').value='';
-    laadOperators();renderWisselLijst();
+    laadOperators();
+    // Wissel lijst altijd updaten
+    renderWisselLijst();
+    // Open wissel sectie als hij dicht is zodat gebruiker het ziet
+    var wisselBody=document.getElementById('wissel-body');
+    if(wisselBody&&wisselBody.style.display==='none'){
+      toggleSectie('wissel-body','wissel-chev');
+    }
   });
 }
 
