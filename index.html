@@ -168,7 +168,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
         </div>
         <button onclick="terugNaarStap1()" style="width:100%;background:transparent;border:1px solid #1a2540;border-radius:4px;color:#6b7280;font-family:'Courier New',Courier,monospace;font-size:13px;padding:10px;cursor:pointer;margin-top:10px;">&#8249; Terug</button>
       </div>
-      <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v16.9 &#8212; 2026-04-20</div>
+      <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v17.0 &#8212; 2026-04-20</div>
     </div>
   </div>
 </div>
@@ -552,7 +552,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 <script>
 'use strict';
 var FB_URL = 'https://amutec-tsa-ra-1640-default-rtdb.europe-west1.firebasedatabase.app';
-var APP_VERSION = '16.9';
+var APP_VERSION = '17.0';
 
 // Hardcoded fallback
 var OPERATORS_FALLBACK = {
@@ -1222,15 +1222,16 @@ function openDetail(key){
       html3+='<div style="font-size:10px;color:#a78bfa;letter-spacing:2px;margin-bottom:12px;">Roldiameter: '+rolD2+'mm · '+(staand2?'Staand':'Liggend')+'</div>';
       if(staand2){
         var maxLS2=Math.min(2,Math.max(1,Math.floor(maxH2/breedte2))),vis2='';
-        if(rolD2<=200){
-          var rijAS2=Math.max(1,Math.floor(palB2/rolD2)),rijBS2=Math.max(1,rijAS2-1);
+        var grens43_2=Math.min(Math.floor(1200/4),Math.floor(palB2/3));
+        if(rolD2<=grens43_2){
+          var rijAS2=4,rijBS2=3;
           for(var ls2=maxLS2;ls2>=1;ls2--){
             for(var ri3a=0;ri3a<rijAS2;ri3a++) vis2+='&#128260;'; vis2+='<br>';
             for(var ri3b=0;ri3b<rijBS2;ri3b++) vis2+='&#9675;'; vis2+='<br>';
             for(var ri3c=0;ri3c<rijAS2;ri3c++) vis2+='&#128260;';
             if(ls2>1) vis2+='<br>&#8212;<br>';
           }
-        } else if(rolD2<=266){
+        } else if(rolD2<=Math.floor(palB2/2)){
           var rijZL=Math.max(1,Math.floor(palB2/rolD2));
           for(var ls2z=maxLS2;ls2z>=1;ls2z--){
             for(var rz1=0;rz1<rijZL;rz1++) vis2+='&#128260;'; vis2+='<br>';
