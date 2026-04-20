@@ -276,7 +276,7 @@ html,body{min-height:100%;background:#070a10;color:#e5e7eb;font-family:'Courier 
   <script>
   function updatePatroonTabel(){
     var palletB = _pcPallet==='blok'?1000:800;
-    var grens43 = Math.min(Math.floor(1200/4), Math.floor(palletB/3));
+    var grens43 = 300;
     var grensZigzag = Math.floor(palletB/2);
     var tabel = document.getElementById('patroon-tabel-staand');
     if(!tabel) return;
@@ -398,19 +398,18 @@ function pcBereken(){
 
     var rollenPerLaag, zigzag=false;
 
-    // Dynamische grenzen per pallettype
-    // 4-3-4: 4 rollen in lengterichting (1200mm), 3 rijen in breedterichting
-    // Beperkende factor breedte: floor(palletL/4) voor lengte, floor(palletB/3) voor breedte
-    var grens43 = Math.min(Math.floor(1200/4), Math.floor(palletB/3)); // min van lengte en breedte grens
-    // Zigzag grens: floor(palletB/2)
+    // Grenzen staand stapelen
+    // 4-3-4: 4 rollen passen in lengterichting 1200mm → max 300mm
+    var grens43 = 300; // floor(1200/4) = 300mm
+    // Zigzag: 2 rijen in breedterichting → max floor(palletB/2)
     var grensZigzag = Math.floor(palletB/2);
 
     if(rolD <= grens43){
-      // 4-3-4 piramide per laag
-      var rijA = 4; // 4 rollen in lengterichting
-      var rijB = 3; // 3 rollen ertussen in breedterichting
-      rollenPerLaag = rijA + rijB + rijA; // 4+3+4 = 11
-      patroonLabel = rijA+'-'+rijB+'-'+rijA+' piramide';
+      // 4-3-4 piramide: rijA in lengterichting (1200mm), rijB in breedterichting
+      var rijA = 4; // altijd 4 rollen in lengterichting
+      var rijB = 3; // altijd 3 rollen ertussen
+      rollenPerLaag = rijA + rijB + rijA; // 11 per laag
+      patroonLabel = '4-3-4 piramide';
       stapelHoogte = Math.round(maxLagen * laagHoogte);
 
       // visualisatie: piramide per laag
@@ -425,9 +424,9 @@ function pcBereken(){
       }
 
     } else if(rolD <= grensZigzag){
-      // ZIGZAG: 2 rijen verschoven
+      // ZIGZAG: 2 rijen in breedterichting, rollen in lengterichting (1200mm)
       zigzag = true;
-      var rijLinks = Math.max(1, Math.floor(palletB / rolD));
+      var rijLinks = rolD <= 300 ? 4 : Math.max(1, Math.floor(1200 / rolD));
       var rijRechts = rijLinks;
       rollenPerLaag = rijLinks + rijRechts;
       patroonLabel = 'Zigzag 2 rijen ('+rijLinks+'+'+rijRechts+')';
@@ -444,9 +443,9 @@ function pcBereken(){
       }
 
     } else {
-      // Grote diameter - zigzag met beschikbare rijen
+      // Grote diameter - zigzag met rollen in lengterichting (1200mm)
       zigzag = true;
-      var rijLinks2 = Math.max(1, Math.floor(palletB / rolD));
+      var rijLinks2 = Math.max(1, Math.floor(1200 / rolD));
       rollenPerLaag = rijLinks2 * 2;
       patroonLabel = 'Zigzag 2 rijen ('+rijLinks2+'+'+rijLinks2+')';
       stapelHoogte = Math.round(maxLagen * laagHoogte);
