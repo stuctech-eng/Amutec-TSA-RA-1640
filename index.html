@@ -168,7 +168,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
         </div>
         <button onclick="terugNaarStap1()" style="width:100%;background:transparent;border:1px solid #1a2540;border-radius:4px;color:#6b7280;font-family:'Courier New',Courier,monospace;font-size:13px;padding:10px;cursor:pointer;margin-top:10px;">&#8249; Terug</button>
       </div>
-      <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v16.2 &#8212; 2026-04-18</div>
+      <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v16.3 &#8212; 2026-04-18</div>
     </div>
   </div>
 </div>
@@ -557,7 +557,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 <script>
 'use strict';
 var FB_URL = 'https://amutec-tsa-ra-1640-default-rtdb.europe-west1.firebasedatabase.app';
-var APP_VERSION = '16.2';
+var APP_VERSION = '16.3';
 
 // Hardcoded fallback
 var OPERATORS_FALLBACK = {
@@ -1220,7 +1220,8 @@ function openDetail(key){
       var zakrol2=parseFloat(r.order_zakrol)>0?parseFloat(r.order_zakrol):parseFloat(r.zakrol)||0;
       if(!zakrol2||!breedte2||!lengte2||!dikte2) return '';
       var wf2=Math.max(1.0,2.5-dikte2*30);
-      var rolD2=Math.round(Math.sqrt((koker2/2)*(koker2/2)+(zakrol2*lengte2*dikte2*2*wf2)/Math.PI)*2);
+      var rolD2Berekend=Math.round(Math.sqrt((koker2/2)*(koker2/2)+(zakrol2*lengte2*dikte2*2*wf2)/Math.PI)*2);
+      var rolD2=parseFloat(r.order_rolD)>0?parseFloat(r.order_rolD):rolD2Berekend;
       var maxH2=(r.order_maxhoogte==='1'||r.order_maxhoogte===1)?1050:1550;
       var palB2={'blok':1000}[r.order_pallet]||800;
       var staand2=breedte2<=500;
@@ -1255,7 +1256,8 @@ function openDetail(key){
       var sv2=SOORTELIJK_GEWICHT[r.materiaal]||920;
       if(zakrol&&breedte&&lengte&&dikte){
         var wfD=Math.max(1.0,2.5-dikte*30);
-        var rolD=Math.round(Math.sqrt((koker/2)*(koker/2)+(zakrol*lengte*dikte*2*wfD)/Math.PI)*2);
+        var rolDBerekend=Math.round(Math.sqrt((koker/2)*(koker/2)+(zakrol*lengte*dikte*2*wfD)/Math.PI)*2);
+        var rolD=parseFloat(r.order_rolD)>0?parseFloat(r.order_rolD):rolDBerekend;
         var rolLengte2=zakrol*lengte/1000;
         var gew100m2=parseFloat(r.order_gew100m)||0;
         var gwRol=gew100m2>0?Math.round(gew100m2*rolLengte2/100*10)/10:Math.round((breedte/1000)*rolLengte2*(dikte/1000)*2*sv2*10)/10;
