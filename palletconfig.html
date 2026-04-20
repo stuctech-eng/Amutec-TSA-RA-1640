@@ -177,7 +177,7 @@ html,body{min-height:100%;background:#070a10;color:#e5e7eb;font-family:'Courier 
 
 <!-- STAAND: 4-3-4 piramide -->
 <div class="form-card" style="border-top-color:#60a5fa;">
-  <div class="form-card-title" style="color:#60a5fa;">Staand &mdash; 4-3-4 piramide (dia &le;200mm)</div>
+  <div class="form-card-title" style="color:#60a5fa;">Staand &mdash; 4-3-4 piramide (dia &le; floor(palletbreedte/3))</div>
   <div style="background:#070a10;border:1px solid #1a2540;border-radius:8px;padding:16px;">
     <div style="font-size:11px;color:#6b7280;margin-bottom:6px;text-align:center;">&#8593; LAAG 2 (TOP)</div>
     <div style="display:flex;justify-content:center;gap:4px;margin-bottom:2px;">
@@ -226,7 +226,7 @@ html,body{min-height:100%;background:#070a10;color:#e5e7eb;font-family:'Courier 
 
 <!-- STAAND: zigzag -->
 <div class="form-card" style="border-top-color:#60a5fa;">
-  <div class="form-card-title" style="color:#60a5fa;">Staand &mdash; 2 Rijen Zigzag (dia 201&ndash;266mm)</div>
+  <div class="form-card-title" style="color:#60a5fa;">Staand &mdash; 2 Rijen Zigzag (dia &gt; floor(palletbreedte/3))</div>
   <div style="font-size:12px;color:#6b7280;margin-bottom:12px;">Rechter rij verschoven &bull; 4+4 = 8 per laag &bull; 2 lagen = 16 rollen</div>
   <div style="background:#070a10;border:1px solid #1a2540;border-radius:8px;padding:16px;">
     <div style="font-size:11px;color:#6b7280;margin-bottom:8px;text-align:center;">&#8593; LAAG 2 (TOP)</div>
@@ -265,16 +265,27 @@ html,body{min-height:100%;background:#070a10;color:#e5e7eb;font-family:'Courier 
   <div style="background:#070a10;border:1px solid #1a2540;border-radius:4px;padding:12px;margin-top:12px;font-size:13px;color:#9ca3af;line-height:2;">
     L+R per laag = 4+4 = <span style="color:#60a5fa;font-weight:700;">8 rollen</span> &bull;
     2 lagen = <span style="color:#34d399;font-weight:700;">16 rollen</span><br>
-    Max diameter: <span style="color:#60a5fa;font-weight:700;">266mm</span> &bull; Geen huidjes nodig
+    Max diameter: <span style="color:#60a5fa;font-weight:700;" id="uitleg-maxzigzag">afhankelijk van pallet</span> &bull; Geen huidjes nodig
   </div>
 </div>
 
 <!-- PATRONEN OVERZICHT -->
 <div style="background:#070a10;border:1px solid #60a5fa;border-radius:6px;padding:14px;margin-bottom:12px;">
   <div style="font-size:11px;color:#60a5fa;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;">Wanneer welk staand patroon?</div>
-  <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;font-size:13px;"><span style="color:#60a5fa;font-weight:700;">Dia. &le;200mm</span><span style="color:#e5e7eb;">4-3-4 piramide (11/laag)</span></div>
-  <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;font-size:13px;"><span style="color:#60a5fa;font-weight:700;">Dia. 201-266mm</span><span style="color:#e5e7eb;">Zigzag 2 rijen (8/laag)</span></div>
-  <div style="display:flex;justify-content:space-between;padding:8px 0;font-size:13px;"><span style="color:#ef4444;font-weight:700;">Dia. &gt;266mm</span><span style="color:#ef4444;">Niet stabiel &#10005;</span></div>
+  <div id="patroon-tabel-staand" style="font-size:13px;"></div>
+  <script>
+  function updatePatroonTabel(){
+    var palletB = _pcPallet==='blok'?1000:800;
+    var grens43 = Math.min(Math.floor(1200/4), Math.floor(palletB/3));
+    var grensZigzag = Math.floor(palletB/2);
+    var tabel = document.getElementById('patroon-tabel-staand');
+    if(!tabel) return;
+    tabel.innerHTML =
+      '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="color:#60a5fa;font-weight:700;">Dia. &le;'+grens43+'mm</span><span style="color:#e5e7eb;">4-3-4 piramide (11/laag)</span></div>'+
+      '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="color:#60a5fa;font-weight:700;">Dia. '+(grens43+1)+'-'+grensZigzag+'mm</span><span style="color:#e5e7eb;">Zigzag 2 rijen</span></div>'+
+      '<div style="display:flex;justify-content:space-between;padding:8px 0;"><span style="color:#9ca3af;font-weight:700;">Dia. &gt;'+grensZigzag+'mm</span><span style="color:#9ca3af;">Liggend stapelen</span></div>';
+  }
+  </script>
 </div>
 ```
 
@@ -333,6 +344,7 @@ function pcKiesPallet(type){
     if(t===type){btn.style.borderColor='#34d399';btn.style.background='rgba(52,211,153,0.15)';btn.style.color='#34d399';}
     else{btn.style.borderColor='#1a2540';btn.style.background='#0f1520';btn.style.color='#9ca3af';}
   });
+  updatePatroonTabel();
   pcBereken();
 }
 
@@ -386,41 +398,40 @@ function pcBereken(){
 
     var rollenPerLaag, zigzag=false;
 
-    if(rolD <= 200){
+    // Dynamische grenzen per pallettype
+    // 4-3-4: 4 rollen in lengterichting (1200mm), 3 rijen in breedterichting
+    // Beperkende factor breedte: floor(palletL/4) voor lengte, floor(palletB/3) voor breedte
+    var grens43 = Math.min(Math.floor(1200/4), Math.floor(palletB/3)); // min van lengte en breedte grens
+    // Zigzag grens: floor(palletB/2)
+    var grensZigzag = Math.floor(palletB/2);
+
+    if(rolD <= grens43){
       // 4-3-4 piramide per laag
-      var rijA = Math.max(1, Math.round(palletB / rolD));
-      var rijB = Math.max(1, rijA - 1);
+      var rijA = 4; // 4 rollen in lengterichting
+      var rijB = 3; // 3 rollen ertussen in breedterichting
       rollenPerLaag = rijA + rijB + rijA; // 4+3+4 = 11
       patroonLabel = rijA+'-'+rijB+'-'+rijA+' piramide';
       stapelHoogte = Math.round(maxLagen * laagHoogte);
-
-      html += rr('STAPELWIJZE','Staand piramide','#60a5fa');
-      html += rr('PATROON', patroonLabel, '#60a5fa');
-      html += rr('ROLLEN PER LAAG', rollenPerLaag+' rollen', '#34d399');
 
       // visualisatie: piramide per laag
       visual = '';
       for(var lg=maxLagen;lg>=1;lg--){
         for(var ri=0;ri<rijA;ri++) visual+='&#128260;';
         visual+='<br>';
-        for(var ri2=0;ri2<rijB;ri2++) visual+='&#9675;'; // midden rij iets anders tonen
+        for(var ri2=0;ri2<rijB;ri2++) visual+='&#9675;';
         visual+='<br>';
         for(var ri3=0;ri3<rijA;ri3++) visual+='&#128260;';
         if(lg>1) visual+='<br><span style="font-size:12px;color:#1a2540;">&#9135;</span><br>';
       }
 
-    } else if(rolD <= 266){
+    } else if(rolD <= grensZigzag){
       // ZIGZAG: 2 rijen verschoven
       zigzag = true;
-      var rijLinks = Math.max(1, Math.round(palletB / rolD));
-      var rijRechts = rijLinks; // zelfde aantal, verschoven
+      var rijLinks = Math.max(1, Math.floor(palletB / rolD));
+      var rijRechts = rijLinks;
       rollenPerLaag = rijLinks + rijRechts;
       patroonLabel = 'Zigzag 2 rijen ('+rijLinks+'+'+rijRechts+')';
       stapelHoogte = Math.round(maxLagen * laagHoogte);
-
-      html += rr('STAPELWIJZE','Staand zigzag','#60a5fa');
-      html += rr('PATROON', patroonLabel, '#60a5fa');
-      html += rr('ROLLEN PER LAAG', rollenPerLaag+' rollen', '#34d399');
 
       // visualisatie: zigzag
       visual = '';
@@ -433,13 +444,12 @@ function pcBereken(){
       }
 
     } else {
-      // Te groot voor staand
-      html += rr('STAPELWIJZE','Staand - dia te groot!','#ef4444');
-      html += rr('ADVIES','Liggend stapelen','#f59e0b');
-      document.getElementById('pc-output').innerHTML = html;
-      document.getElementById('pc-visual').innerHTML = '<div style="color:#ef4444;font-size:14px;">Diameter >266mm &mdash; niet stabiel staand</div>';
-      document.getElementById('pc-resultaat').style.display = 'block';
-      return;
+      // Grote diameter - zigzag met beschikbare rijen
+      zigzag = true;
+      var rijLinks2 = Math.max(1, Math.floor(palletB / rolD));
+      rollenPerLaag = rijLinks2 * 2;
+      patroonLabel = 'Zigzag 2 rijen ('+rijLinks2+'+'+rijLinks2+')';
+      stapelHoogte = Math.round(maxLagen * laagHoogte);
     }
 
     rpp = rollenPerLaag * maxLagen;
@@ -467,7 +477,7 @@ function pcBereken(){
     if(_pcPatroon==='43'){rijA2=4;rijB2=3;}
     else if(_pcPatroon==='54'){rijA2=5;rijB2=4;}
     else if(_pcPatroon==='65'){rijA2=6;rijB2=5;}
-    else{rijA2=Math.max(1,Math.round(palletB/rolD));rijB2=Math.max(1,rijA2-1);}
+    else{rijA2=Math.max(1,Math.floor(palletB/rolD));rijB2=Math.max(1,rijA2-1);}
 
     maxLagen=1;
     for(var nl=2;nl<=20;nl++){if(rolD+(nl-1)*rolD*0.866<=_pcMaxH)maxLagen=nl;else break;}
@@ -485,7 +495,7 @@ function pcBereken(){
       if(pallets2===0)pallets2=1;
     }
 
-    var huidjeRuw=rijA2*rolD+50;
+    var huidjeRuw=rijA2*rolD+150;
     var hMaten=[700,750,800,850,900,950,1000,1050,1100,1150,1200,1250,1300,1350,1400];
     var huidje=hMaten[hMaten.length-1];
     for(var hi=0;hi<hMaten.length;hi++){if(hMaten[hi]>=huidjeRuw){huidje=hMaten[hi];break;}}
@@ -545,6 +555,7 @@ function invulOk(){
   invulSluit();
   pcBereken();
 }
+updatePatroonTabel();
 </script>
 
 </body>
