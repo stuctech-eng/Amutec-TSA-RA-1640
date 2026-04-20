@@ -168,7 +168,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
         </div>
         <button onclick="terugNaarStap1()" style="width:100%;background:transparent;border:1px solid #1a2540;border-radius:4px;color:#6b7280;font-family:'Courier New',Courier,monospace;font-size:13px;padding:10px;cursor:pointer;margin-top:10px;">&#8249; Terug</button>
       </div>
-      <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v15.8 &#8212; 2026-04-18</div>
+      <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v15.9 &#8212; 2026-04-18</div>
     </div>
   </div>
 </div>
@@ -551,7 +551,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 <script>
 'use strict';
 var FB_URL = 'https://amutec-tsa-ra-1640-default-rtdb.europe-west1.firebasedatabase.app';
-var APP_VERSION = '15.8';
+var APP_VERSION = '15.9';
 
 // Hardcoded fallback
 var OPERATORS_FALLBACK = {
@@ -1220,12 +1220,12 @@ function openDetail(key){
       html3+='<div style="background:#0f1520;border:1px solid #a78bfa;border-radius:6px;padding:16px;margin-bottom:12px;text-align:center;">';
       html3+='<div style="font-size:10px;color:#a78bfa;letter-spacing:2px;margin-bottom:12px;">Roldiameter: '+rolD2+'mm · '+(staand2?'Staand':'Liggend')+'</div>';
       if(staand2){
-        var rijAS2=Math.max(1,Math.round(palB2/rolD2)),rijBS2=Math.max(1,rijAS2-1),maxLS2=Math.max(1,Math.floor(maxH2/breedte2)),vis2='';
+        var rijAS2=Math.max(1,Math.floor(palB2/rolD2)),rijBS2=Math.max(1,rijAS2-1),maxLS2=Math.max(1,Math.floor(maxH2/breedte2)),vis2='';
         for(var ls2=maxLS2;ls2>=1;ls2--){var rv2=(ls2%2===1)?rijAS2:rijBS2;for(var ri3=0;ri3<rv2;ri3++)vis2+='&#128260;';if(ls2>1)vis2+='<br>';}
         html3+='<div style="font-size:20px;line-height:1.8;letter-spacing:3px;">'+vis2+'</div>';
         html3+='<div style="font-size:10px;color:#9ca3af;margin-top:8px;">Staand · '+maxLS2+' lagen · geen huidjes</div>';
       } else {
-        var rijA2=Math.max(1,Math.round(palB2/rolD2)),rijB2=Math.max(1,rijA2-1),maxLagen2=1;
+        var rijA2=Math.max(1,Math.floor(palB2/rolD2)),rijB2=Math.max(1,rijA2-1),maxLagen2=1;
         for(var nl2=2;nl2<=20;nl2++){if(rolD2+(nl2-1)*rolD2*0.866<=maxH2)maxLagen2=nl2;else break;}
         var visual2='';
         for(var lag2=maxLagen2;lag2>=1;lag2--){var rijv2=(lag2%2===1)?rijA2:rijB2,kleurL2=(lag2%2===1)?'&#128992;':'&#128994;';for(var ri2=0;ri2<rijv2;ri2++)visual2+=kleurL2;if(lag2>1)visual2+='<br>';}
@@ -1305,7 +1305,7 @@ function openDetail(key){
     if(r.notities) detHtml+='<div class="slabel">Notities</div><div class="info-block"><div style="padding:12px 14px;font-size:13px;color:#9ca3af;line-height:1.6;">'+r.notities+'</div></div>';
     detHtml+=huidjeVak;
     detHtml+=stapelVisHtml;
-    detHtml+='<button class="btn btn-amber" style="margin-top:8px;" onclick="bewerkRecept(\'"+key+"\')">Bewerken</button>';
+    detHtml+='<button class="btn btn-amber" style="margin-top:8px;" onclick="bewerkRecept(\"'+key+'\")">Bewerken</button>';
     document.getElementById('detail-content').innerHTML=detHtml;
     go('s-detail');
   });
