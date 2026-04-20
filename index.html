@@ -168,7 +168,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
         </div>
         <button onclick="terugNaarStap1()" style="width:100%;background:transparent;border:1px solid #1a2540;border-radius:4px;color:#6b7280;font-family:'Courier New',Courier,monospace;font-size:13px;padding:10px;cursor:pointer;margin-top:10px;">&#8249; Terug</button>
       </div>
-      <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v16.7 &#8212; 2026-04-18</div>
+      <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v16.8 &#8212; 2026-04-18</div>
     </div>
   </div>
 </div>
@@ -557,7 +557,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 <script>
 'use strict';
 var FB_URL = 'https://amutec-tsa-ra-1640-default-rtdb.europe-west1.firebasedatabase.app';
-var APP_VERSION = '16.7';
+var APP_VERSION = '16.8';
 
 // Hardcoded fallback
 var OPERATORS_FALLBACK = {
@@ -1247,7 +1247,13 @@ function openDetail(key){
             if(ls2z>1) vis2+='<br>&#8212;<br>';
           }
         } else {
-          vis2='<span style="color:#ef4444;">Dia. &gt;266mm -- niet stabiel</span>';
+          // Grote diameter - toon zigzag met beschikbare rijen
+          var rijZLg=Math.max(1,Math.floor(palB2/rolD2));
+          for(var ls2g=maxLS2;ls2g>=1;ls2g--){
+            for(var rzg1=0;rzg1<rijZLg;rzg1++) vis2+='&#128260;'; vis2+='<br>';
+            if(rijZLg>1){vis2+='&nbsp;&nbsp;';for(var rzg2=0;rzg2<rijZLg;rzg2++) vis2+='&#128260;';}
+            if(ls2g>1) vis2+='<br>&#8212;<br>';
+          }
         }
         html3+='<div style="font-size:20px;line-height:1.8;letter-spacing:3px;">'+vis2+'</div>';
         html3+='<div style="font-size:10px;color:#9ca3af;margin-top:8px;">Staand · '+maxLS2+' lagen · geen huidjes</div>';
