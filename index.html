@@ -168,7 +168,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
         </div>
         <button onclick="terugNaarStap1()" style="width:100%;background:transparent;border:1px solid #1a2540;border-radius:4px;color:#6b7280;font-family:'Courier New',Courier,monospace;font-size:13px;padding:10px;cursor:pointer;margin-top:10px;">&#8249; Terug</button>
       </div>
-      <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v16.8 &#8212; 2026-04-18</div>
+      <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v15.8 &#8212; 2026-04-18</div>
     </div>
   </div>
 </div>
@@ -300,12 +300,6 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
         <input id="f-order-rpp" type="number" placeholder="auto" class="veld-leeg" readonly onclick="openInvul(this)"
           style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;cursor:pointer;">
         <div style="font-size:10px;color:#6b7280;margin-top:4px;">Leeg = automatisch berekend op hoogte</div>
-      </div>
-      <div class="field">
-        <label>Roldiameter (mm) <span style="color:#f59e0b;">*</span></label>
-        <input id="f-order-rolD" type="number" placeholder="bv. 200" class="veld-leeg" readonly onclick="openInvul(this)"
-          style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;cursor:pointer;">
-        <div style="font-size:10px;color:#6b7280;margin-top:4px;">Vul werkelijke roldiameter in van de machine</div>
       </div>
       <div class="field">
         <label>Gewicht per 100 meter (kg)</label>
@@ -557,7 +551,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 <script>
 'use strict';
 var FB_URL = 'https://amutec-tsa-ra-1640-default-rtdb.europe-west1.firebasedatabase.app';
-var APP_VERSION = '16.8';
+var APP_VERSION = '15.8';
 
 // Hardcoded fallback
 var OPERATORS_FALLBACK = {
@@ -997,14 +991,13 @@ function berekenOrder(){
   }
   var totaalGewicht=Math.round(aantalRollen*gewichtPerRol);
   var pallet=PALLETS[_gekozenPallet]||PALLETS['euro'];
-  var rolDOverrideEl=document.getElementById('f-order-rolD');
-  var rolDiameter=rolDOverrideEl&&parseFloat(rolDOverrideEl.value)>0?parseFloat(rolDOverrideEl.value):0;
-  if(!rolDiameter){document.getElementById('order-resultaten').style.display='none';return;}
+  var windingsFactor=Math.max(1.0,2.5-dikte*30);
+  var rolDiameter=Math.round(Math.sqrt((koker/2)*(koker/2)+(zakrol*lengte*dikte*2*windingsFactor)/Math.PI)*2);
   var staand=breedte<=500;
   var maxStapelHoogte=_maxHoogte?1050:1550;
   var rollenPerRijCalc=1,lagen=1,rollenPerPallet=1;
   if(staand){
-    var lagenStaand=Math.min(2, Math.max(1,Math.floor(maxStapelHoogte/breedte)));
+    var lagenStaand=Math.max(1,Math.floor(maxStapelHoogte/lengte));
     lagen=lagenStaand; rollenPerRijCalc=Math.floor(pallet.b/rolDiameter)||1;
     rollenPerPallet=Math.max(1,rollenPerRijCalc*Math.max(1,Math.floor(pallet.l/rolDiameter))*lagenStaand);
   } else {
@@ -1033,7 +1026,7 @@ function berekenOrder(){
   var totaleFolieMeter=aantalRollen*rolLengte;
   var huidjeLengte=0,aantalHuidjes=0,huidjesTotaalM=0;
   if(!staand&&lagen>1){
-    var huidjeRuw=rollenPerRijCalc*rolDiameter+150;
+    var huidjeRuw=rollenPerRijCalc*rolDiameter+50;
     var hMaten=[700,750,800,850,900,950,1000,1050,1100,1150,1200,1250,1300,1350,1400];
     huidjeLengte=hMaten[hMaten.length-1];
     for(var hi=0;hi<hMaten.length;hi++){if(hMaten[hi]>=huidjeRuw){huidjeLengte=hMaten[hi];break;}}
@@ -1093,7 +1086,6 @@ function slaOp(){
     order_gew100m:document.getElementById('f-gew100m')?document.getElementById('f-gew100m').value||'':'',
     order_maxhoogte:_maxHoogte?'1':'0',
     order_rpp:document.getElementById('f-order-rpp')?document.getElementById('f-order-rpp').value||'':'',
-    order_rolD:document.getElementById('f-order-rolD')?document.getElementById('f-order-rolD').value||'':'',
     werk_rpp:document.getElementById('f-werk-rpp')?document.getElementById('f-werk-rpp').value||'':'',
     werk_huidje:document.getElementById('f-werk-huidje')?document.getElementById('f-werk-huidje').value||'':''
   };
@@ -1105,7 +1097,7 @@ function slaOp(){
 function resetForm(){
   var ids=['f-klantnr','f-klantnaam','f-versie','f-breedte','f-lengte','f-dikte','f-koker','f-seal','f-snelheid','f-zakmin','f-zakrol','f-static-mat','f-drukker','f-temp-boven','f-temp-onder','f-notities','f-offset1','f-order-stuks'];
   document.getElementById('order-resultaten')&&(document.getElementById('order-resultaten').style.display='none');
-  ['f-werk-rpp','f-werk-huidje','f-order-rpp','f-order-zakrol','f-order-rolD'].forEach(function(id){var el=document.getElementById(id);if(el){el.value='';el.classList.remove('veld-definitief');el.classList.add('veld-leeg');}});
+  ['f-werk-rpp','f-werk-huidje','f-order-rpp','f-order-zakrol'].forEach(function(id){var el=document.getElementById(id);if(el){el.value='';el.classList.remove('veld-definitief');el.classList.add('veld-leeg');}});
   var gew100mReset=document.getElementById('f-gew100m');if(gew100mReset){gew100mReset.value='';gew100mReset.classList.remove('veld-definitief');gew100mReset.classList.add('veld-leeg');}
   if(_maxHoogte)toggleMaxHoogte();
   ['f-klantnr','f-klantnaam','f-versie'].forEach(function(id){var el=document.getElementById(id);if(el){el.classList.remove('veld-definitief','veld-benadering');el.classList.add('veld-leeg');}});
@@ -1220,8 +1212,7 @@ function openDetail(key){
       var zakrol2=parseFloat(r.order_zakrol)>0?parseFloat(r.order_zakrol):parseFloat(r.zakrol)||0;
       if(!zakrol2||!breedte2||!lengte2||!dikte2) return '';
       var wf2=Math.max(1.0,2.5-dikte2*30);
-      var rolD2Berekend=Math.round(Math.sqrt((koker2/2)*(koker2/2)+(zakrol2*lengte2*dikte2*2*wf2)/Math.PI)*2);
-      var rolD2=parseFloat(r.order_rolD)>0?parseFloat(r.order_rolD):rolD2Berekend;
+      var rolD2=Math.round(Math.sqrt((koker2/2)*(koker2/2)+(zakrol2*lengte2*dikte2*2*wf2)/Math.PI)*2);
       var maxH2=(r.order_maxhoogte==='1'||r.order_maxhoogte===1)?1050:1550;
       var palB2={'blok':1000}[r.order_pallet]||800;
       var staand2=breedte2<=500;
@@ -1229,36 +1220,12 @@ function openDetail(key){
       html3+='<div style="background:#0f1520;border:1px solid #a78bfa;border-radius:6px;padding:16px;margin-bottom:12px;text-align:center;">';
       html3+='<div style="font-size:10px;color:#a78bfa;letter-spacing:2px;margin-bottom:12px;">Roldiameter: '+rolD2+'mm · '+(staand2?'Staand':'Liggend')+'</div>';
       if(staand2){
-        var maxLS2=Math.min(2,Math.max(1,Math.floor(maxH2/breedte2))),vis2='';
-        if(rolD2<=200){
-          var rijAS2=Math.max(1,Math.floor(palB2/rolD2)),rijBS2=Math.max(1,rijAS2-1);
-          for(var ls2=maxLS2;ls2>=1;ls2--){
-            for(var ri3a=0;ri3a<rijAS2;ri3a++) vis2+='&#128260;'; vis2+='<br>';
-            for(var ri3b=0;ri3b<rijBS2;ri3b++) vis2+='&#9675;'; vis2+='<br>';
-            for(var ri3c=0;ri3c<rijAS2;ri3c++) vis2+='&#128260;';
-            if(ls2>1) vis2+='<br>&#8212;<br>';
-          }
-        } else if(rolD2<=266){
-          var rijZL=Math.max(1,Math.floor(palB2/rolD2));
-          for(var ls2z=maxLS2;ls2z>=1;ls2z--){
-            for(var rz1=0;rz1<rijZL;rz1++) vis2+='&#128260;'; vis2+='<br>';
-            vis2+='&nbsp;&nbsp;';
-            for(var rz2=0;rz2<rijZL;rz2++) vis2+='&#128260;';
-            if(ls2z>1) vis2+='<br>&#8212;<br>';
-          }
-        } else {
-          // Grote diameter - toon zigzag met beschikbare rijen
-          var rijZLg=Math.max(1,Math.floor(palB2/rolD2));
-          for(var ls2g=maxLS2;ls2g>=1;ls2g--){
-            for(var rzg1=0;rzg1<rijZLg;rzg1++) vis2+='&#128260;'; vis2+='<br>';
-            if(rijZLg>1){vis2+='&nbsp;&nbsp;';for(var rzg2=0;rzg2<rijZLg;rzg2++) vis2+='&#128260;';}
-            if(ls2g>1) vis2+='<br>&#8212;<br>';
-          }
-        }
+        var rijAS2=Math.max(1,Math.round(palB2/rolD2)),rijBS2=Math.max(1,rijAS2-1),maxLS2=Math.max(1,Math.floor(maxH2/breedte2)),vis2='';
+        for(var ls2=maxLS2;ls2>=1;ls2--){var rv2=(ls2%2===1)?rijAS2:rijBS2;for(var ri3=0;ri3<rv2;ri3++)vis2+='&#128260;';if(ls2>1)vis2+='<br>';}
         html3+='<div style="font-size:20px;line-height:1.8;letter-spacing:3px;">'+vis2+'</div>';
         html3+='<div style="font-size:10px;color:#9ca3af;margin-top:8px;">Staand · '+maxLS2+' lagen · geen huidjes</div>';
       } else {
-        var rijA2=Math.max(1,Math.floor(palB2/rolD2)),rijB2=Math.max(1,rijA2-1),maxLagen2=1;
+        var rijA2=Math.max(1,Math.round(palB2/rolD2)),rijB2=Math.max(1,rijA2-1),maxLagen2=1;
         for(var nl2=2;nl2<=20;nl2++){if(rolD2+(nl2-1)*rolD2*0.866<=maxH2)maxLagen2=nl2;else break;}
         var visual2='';
         for(var lag2=maxLagen2;lag2>=1;lag2--){var rijv2=(lag2%2===1)?rijA2:rijB2,kleurL2=(lag2%2===1)?'&#128992;':'&#128994;';for(var ri2=0;ri2<rijv2;ri2++)visual2+=kleurL2;if(lag2>1)visual2+='<br>';}
@@ -1280,8 +1247,7 @@ function openDetail(key){
       var sv2=SOORTELIJK_GEWICHT[r.materiaal]||920;
       if(zakrol&&breedte&&lengte&&dikte){
         var wfD=Math.max(1.0,2.5-dikte*30);
-        var rolDBerekend=Math.round(Math.sqrt((koker/2)*(koker/2)+(zakrol*lengte*dikte*2*wfD)/Math.PI)*2);
-        var rolD=parseFloat(r.order_rolD)>0?parseFloat(r.order_rolD):rolDBerekend;
+        var rolD=Math.round(Math.sqrt((koker/2)*(koker/2)+(zakrol*lengte*dikte*2*wfD)/Math.PI)*2);
         var rolLengte2=zakrol*lengte/1000;
         var gew100m2=parseFloat(r.order_gew100m)||0;
         var gwRol=gew100m2>0?Math.round(gew100m2*rolLengte2/100*10)/10:Math.round((breedte/1000)*rolLengte2*(dikte/1000)*2*sv2*10)/10;
@@ -1289,13 +1255,13 @@ function openDetail(key){
         var maxHD=(r.order_maxhoogte==='1'||r.order_maxhoogte===1||r.order_maxhoogte===true)?1050:1550;
         var palletD={'euro':{b:800,naam:'Euro pallet'},'euro-formaat':{b:800,naam:'Euro formaat'},'blok':{b:1000,naam:'Blokpallet'}}[r.order_pallet]||{b:800,naam:'Euro pallet'};
         var rpPallet2,lagenD2;
-        if(staandD){lagenD2=Math.min(2,Math.max(1,Math.floor(maxHD/breedte)));rpPallet2=Math.max(1,Math.floor(palletD.b/rolD)*Math.max(1,Math.floor(1200/rolD))*lagenD2);}
+        if(staandD){lagenD2=Math.max(1,Math.floor(maxHD/lengte));rpPallet2=Math.max(1,Math.floor(palletD.b/rolD)*Math.max(1,Math.floor(1200/rolD))*lagenD2);}
         else{var rijAD=Math.max(1,Math.floor(palletD.b/rolD)),rijBD=Math.max(1,rijAD-1),maxLD=1;for(var nld=2;nld<=20;nld++){if(rolD+(nld-1)*rolD*0.866<=maxHD)maxLD=nld;else break;}lagenD2=maxLD;var parenD2=Math.floor(lagenD2/2),extraD2=lagenD2%2;rpPallet2=Math.max(1,parenD2*(rijAD+rijBD)+extraD2*rijAD);}
         var rppKlantD2=parseFloat(r.order_rpp)||0;if(rppKlantD2>0)rpPallet2=rppKlantD2;
         var rollen2=stuks>0?Math.ceil(stuks/zakrol):0;
         var volP2=rollen2>0?Math.floor(rollen2/rpPallet2):0,restD2=rollen2>0?rollen2%rpPallet2:0,losD2=0,pallets2=0,rpPalletToon2=rpPallet2;
         if(rollen2>0){if(restD2===0)pallets2=volP2;else if(restD2<=4){pallets2=volP2;losD2=restD2;}else if(volP2>0&&restD2<=volP2){pallets2=volP2;rpPalletToon2=rpPallet2+1;}else pallets2=volP2+1;if(pallets2===0)pallets2=1;}
-        var huidjeD=0;if(!staandD&&lagenD2>1){var hRuw2=(Math.max(1,Math.floor(palletD.b/rolD)))*rolD+150,hM2=[700,750,800,850,900,950,1000,1050,1100,1150,1200,1250,1300,1350,1400];huidjeD=hM2[hM2.length-1];for(var hi3=0;hi3<hM2.length;hi3++){if(hM2[hi3]>=hRuw2){huidjeD=hM2[hi3];break;}}}
+        var huidjeD=0;if(!staandD&&lagenD2>1){var hRuw2=(Math.max(1,Math.floor(palletD.b/rolD)))*rolD+50,hM2=[700,750,800,850,900,950,1000,1050,1100,1150,1200,1250,1300,1350,1400];huidjeD=hM2[hM2.length-1];for(var hi3=0;hi3<hM2.length;hi3++){if(hM2[hi3]>=hRuw2){huidjeD=hM2[hi3];break;}}}
         orderHtml='<div class="slabel">Order Berekening</div><div class="info-block">';
         if(stuks>0)orderHtml+='<div class="info-row"><div class="ir-lbl">TE LEVEREN</div><div class="ir-val">'+stuks.toLocaleString()+' st</div></div>';
         if(rollen2>0)orderHtml+='<div class="info-row"><div class="ir-lbl">AANTAL ROLLEN</div><div class="ir-val" style="color:#a78bfa;">'+rollen2+'</div></div>';
@@ -1339,7 +1305,7 @@ function openDetail(key){
     if(r.notities) detHtml+='<div class="slabel">Notities</div><div class="info-block"><div style="padding:12px 14px;font-size:13px;color:#9ca3af;line-height:1.6;">'+r.notities+'</div></div>';
     detHtml+=huidjeVak;
     detHtml+=stapelVisHtml;
-    detHtml+='<button class="btn btn-amber" style="margin-top:8px;" onclick="bewerkRecept(this.dataset.key)" data-key="'+key+'">Bewerken</button>';
+    detHtml+='<button class="btn btn-amber" style="margin-top:8px;" onclick="bewerkRecept(\'"+key+"\')">Bewerken</button>';
     document.getElementById('detail-content').innerHTML=detHtml;
     go('s-detail');
   });
@@ -1364,7 +1330,6 @@ function bewerkRecept(key){
     if(r.order_pallet){_gekozenPallet=r.order_pallet;try{kiesPallet(r.order_pallet);}catch(e){}}
     if(r.order_gew100m){var ogEl=document.getElementById('f-gew100m');if(ogEl){ogEl.value=r.order_gew100m;ogEl.classList.remove('veld-leeg');ogEl.classList.add('veld-definitief');}}
     if(r.order_rpp){var orppEl=document.getElementById('f-order-rpp');if(orppEl){orppEl.value=r.order_rpp;orppEl.classList.remove('veld-leeg');orppEl.classList.add('veld-definitief');}}
-    if(r.order_rolD){var orDEl=document.getElementById('f-order-rolD');if(orDEl){orDEl.value=r.order_rolD;orDEl.classList.remove('veld-leeg');orDEl.classList.add('veld-definitief');}}
     if(r.werk_rpp){var wrppEl=document.getElementById('f-werk-rpp');if(wrppEl){wrppEl.value=r.werk_rpp;wrppEl.classList.remove('veld-leeg');wrppEl.classList.add('veld-definitief');}}
     if(r.werk_huidje){var whEl=document.getElementById('f-werk-huidje');if(whEl){whEl.value=r.werk_huidje;whEl.classList.remove('veld-leeg');whEl.classList.add('veld-definitief');}}
     editKey=key;
@@ -1495,7 +1460,6 @@ var INVUL_CONFIG={
   'f-static-mat':{label:'Material to be charged (mm)',snel:[10000,20000,30000,40000]},
   'f-order-stuks':{label:'Te leveren (stuks)',snel:[1000,2000,5000,10000,20000,50000]},
   'f-order-rpp':{label:'Rollen per pallet (klant) -- 0=auto',snel:[0,4,6,8,10,12,15,20,24]},
-  'f-order-rolD':{label:'Werkelijke roldiameter (mm)',snel:[100,125,150,175,200,213,225,250,266,300,350]},
   'f-werk-rpp':{label:'Werkelijk rollen per pallet -- 0=wissen',snel:[0,4,6,8,10,12,15,20,24,28,36]},
   'f-werk-huidje':{label:'Werkelijke huidje lengte (mm)',snel:[700,750,800,850,900,950,1000,1050,1100,1150,1200,1250,1300]},
   'f-order-zakrol':{label:'Zakken op rol',snel:[100,150,200,250,500,750,1000]},
