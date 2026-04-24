@@ -168,7 +168,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
         </div>
         <button onclick="terugNaarStap1()" style="width:100%;background:transparent;border:1px solid #1a2540;border-radius:4px;color:#6b7280;font-family:'Courier New',Courier,monospace;font-size:13px;padding:10px;cursor:pointer;margin-top:10px;">&#8249; Terug</button>
       </div>
-      <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v17.5 &#8212; 2026-04-20</div>
+      <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v17.6 &#8212; 2026-04-24</div>
     </div>
   </div>
 </div>
@@ -337,7 +337,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
   <div class="grid2">
     <div class="field"><label>Producttype</label>
       <select id="f-prodtype" class="veld-definitief" onchange="prodtypeChange(this.value);veldIngevuld(this);">
-        <option>Zak</option><option>Hoes</option><option>Vel</option><option>Huls</option><option>Krimpfolie</option><option>Uitsparing</option><option>Andere</option>
+        <option>Zak</option><option>Zak met invouw</option><option>Hoes</option><option>Vel</option><option>Huls</option><option>Krimpfolie</option><option>Uitsparing</option><option>Andere</option>
       </select>
     </div>
   </div>
@@ -552,7 +552,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 <script>
 'use strict';
 var FB_URL = 'https://amutec-tsa-ra-1640-default-rtdb.europe-west1.firebasedatabase.app';
-var APP_VERSION = '17.5';
+var APP_VERSION = '17.6';
 
 // Hardcoded fallback
 var OPERATORS_FALLBACK = {
@@ -846,6 +846,7 @@ function toggleDrukker() {
 }
 function prodtypeChange(val) {
   try{if(val==='Vel'||val==='Huls'){var fs=document.getElementById('f-seal');if(fs)fs.value='50';var fb=document.getElementById('f-temp-boven');if(fb)fb.value='0';var fo=document.getElementById('f-temp-onder');if(fo)fo.value='0';}}catch(e){}
+  try{berekenOrder();}catch(e){}
 }
 
 function veldIngevuld(el) {
@@ -861,6 +862,12 @@ function setBerekend(id,val) {
   el.style.textAlign='center';
 }
 
+
+function lagenPerProdtype(prodtype) {
+  if(prodtype==='Vel'||prodtype==='Huls') return 1;
+  if(prodtype==='Zak met invouw') return 4;
+  return 2; // Zak, Hoes, Krimpfolie, Uitsparing, Andere
+}
 function berekenOffset(lengte){
   if(!lengte) return 0;
   var basis = MECH_BASIS;
@@ -897,8 +904,8 @@ function calcUpdate(){
   var co1=document.getElementById('c-offset1');if(co1)co1.textContent=o1||'-';
   var co2=document.getElementById('c-offset2');if(co2)co2.textContent=o2||'-';
   if(l&&z){
-    var wf=Math.max(1.0,2.5-d*30);
-    var rolR=Math.sqrt((k/2)*(k/2)+(z*l*d*2*wf)/Math.PI);
+    // Calculator gebruikt standaard 2 lagen (zak)
+    var rolR=Math.sqrt((k/2)*(k/2)+(z*l*d*2)/Math.PI);
     var rolD=Math.round(rolR*2);
     var crl=document.getElementById('c-rollengte');if(crl)crl.textContent=Math.round(z*l/1000)+' m';
     var crd=document.getElementById('c-roldiameter');if(crd)crd.textContent=rolD+' mm';
@@ -992,8 +999,9 @@ function berekenOrder(){
   }
   var totaalGewicht=Math.round(aantalRollen*gewichtPerRol);
   var pallet=PALLETS[_gekozenPallet]||PALLETS['euro'];
-  var windingsFactor=Math.max(1.0,2.5-dikte*30);
-  var rolDiameter=Math.round(Math.sqrt((koker/2)*(koker/2)+(zakrol*lengte*dikte*2*windingsFactor)/Math.PI)*2);
+  var prodtype=document.getElementById('f-prodtype')?document.getElementById('f-prodtype').value:'Zak';
+  var lagen=lagenPerProdtype(prodtype);
+  var rolDiameter=Math.round(Math.sqrt((koker/2)*(koker/2)+(zakrol*lengte*dikte*lagen)/Math.PI)*2);
   var staand=breedte<=500;
   var maxStapelHoogte=_maxHoogte?1050:1550;
   var rollenPerRijCalc=1,lagen=1,rollenPerPallet=1;
@@ -1212,8 +1220,8 @@ function openDetail(key){
       var breedte2=parseFloat(r.breedte)||0,lengte2=parseFloat(r.lengte)||0,dikte2=parseFloat(r.dikte)||0,koker2=parseFloat(r.koker)||90;
       var zakrol2=parseFloat(r.order_zakrol)>0?parseFloat(r.order_zakrol):parseFloat(r.zakrol)||0;
       if(!zakrol2||!breedte2||!lengte2||!dikte2) return '';
-      var wf2=Math.max(1.0,2.5-dikte2*30);
-      var rolD2=Math.round(Math.sqrt((koker2/2)*(koker2/2)+(zakrol2*lengte2*dikte2*2*wf2)/Math.PI)*2);
+      var lagen2=lagenPerProdtype(r.prodtype||'Zak');
+      var rolD2=Math.round(Math.sqrt((koker2/2)*(koker2/2)+(zakrol2*lengte2*dikte2*lagen2)/Math.PI)*2);
       var maxH2=(r.order_maxhoogte==='1'||r.order_maxhoogte===1)?1050:1550;
       var palB2={'blok':1000}[r.order_pallet]||800;
       var staand2=breedte2<=500;
@@ -1221,35 +1229,41 @@ function openDetail(key){
       html3+='<div style="background:#0f1520;border:1px solid #a78bfa;border-radius:6px;padding:16px;margin-bottom:12px;text-align:center;">';
       html3+='<div style="font-size:10px;color:#a78bfa;letter-spacing:2px;margin-bottom:12px;">Roldiameter: '+rolD2+'mm · '+(staand2?'Staand':'Liggend')+'</div>';
       if(staand2){
-        var maxLS2=Math.min(2,Math.max(1,Math.floor(maxH2/breedte2))),vis2='';
-        var grens43_2=300;
-        if(rolD2<=grens43_2){
-          var rijAS2=4,rijBS2=3;
+        var maxLS2=Math.min(2,Math.max(1,Math.floor(maxH2/breedte2)));
+        var ROL='<span style="display:inline-block;width:32px;height:32px;background:linear-gradient(135deg,#60a5fa,#3b82f6);border-radius:50%;border:2px solid #93c5fd;margin:3px;vertical-align:middle;"></span>';
+        var ROL_MID='<span style="display:inline-block;width:32px;height:32px;background:linear-gradient(135deg,#a78bfa,#7c3aed);border-radius:50%;border:2px solid #c4b5fd;margin:3px;vertical-align:middle;"></span>';
+        var vis2='';
+        if(rolD2<=300){
+          // 4-3-4 piramide
           for(var ls2=maxLS2;ls2>=1;ls2--){
-            for(var ri3a=0;ri3a<rijAS2;ri3a++) vis2+='&#128260;'; vis2+='<br>';
-            for(var ri3b=0;ri3b<rijBS2;ri3b++) vis2+='&#9675;'; vis2+='<br>';
-            for(var ri3c=0;ri3c<rijAS2;ri3c++) vis2+='&#128260;';
-            if(ls2>1) vis2+='<br>&#8212;<br>';
+            vis2+='<div style="display:flex;justify-content:center;align-items:center;margin:2px 0;">';
+            for(var ri3a=0;ri3a<4;ri3a++) vis2+=ROL;
+            vis2+='</div>';
+            vis2+='<div style="display:flex;justify-content:center;align-items:center;margin:2px 0;margin-left:18px;">';
+            for(var ri3b=0;ri3b<3;ri3b++) vis2+=ROL_MID;
+            vis2+='</div>';
+            vis2+='<div style="display:flex;justify-content:center;align-items:center;margin:2px 0;">';
+            for(var ri3c=0;ri3c<4;ri3c++) vis2+=ROL;
+            vis2+='</div>';
+            if(ls2>1) vis2+='<div style="border-top:1px dashed #1a2540;margin:8px 20px;"></div>';
           }
         } else if(rolD2<=Math.floor(palB2/2)){
-          var rijZL=rolD2<=300?4:Math.max(1,Math.floor(1200/rolD2));
+          // Zigzag
+          var rijZL=Math.max(1,Math.floor(1200/rolD2));
           for(var ls2z=maxLS2;ls2z>=1;ls2z--){
-            for(var rz1=0;rz1<rijZL;rz1++) vis2+='&#128260;'; vis2+='<br>';
-            vis2+='&nbsp;&nbsp;';
-            for(var rz2=0;rz2<rijZL;rz2++) vis2+='&#128260;';
-            if(ls2z>1) vis2+='<br>&#8212;<br>';
+            vis2+='<div style="display:flex;justify-content:center;align-items:center;margin:2px 0;">';
+            for(var rz1=0;rz1<rijZL;rz1++) vis2+=ROL;
+            vis2+='</div>';
+            vis2+='<div style="display:flex;justify-content:center;align-items:center;margin:2px 0;margin-left:18px;">';
+            for(var rz2=0;rz2<rijZL;rz2++) vis2+=ROL_MID;
+            vis2+='</div>';
+            if(ls2z>1) vis2+='<div style="border-top:1px dashed #1a2540;margin:8px 20px;"></div>';
           }
         } else {
-          // Grote diameter - toon zigzag met beschikbare rijen
-          var rijZLg=rolD2<=300?4:Math.max(1,Math.floor(1200/rolD2));
-          for(var ls2g=maxLS2;ls2g>=1;ls2g--){
-            for(var rzg1=0;rzg1<rijZLg;rzg1++) vis2+='&#128260;'; vis2+='<br>';
-            if(rijZLg>1){vis2+='&nbsp;&nbsp;';for(var rzg2=0;rzg2<rijZLg;rzg2++) vis2+='&#128260;';}
-            if(ls2g>1) vis2+='<br>&#8212;<br>';
-          }
+          vis2+='<div style="color:#9ca3af;font-size:13px;">Liggend stapelen aanbevolen</div>';
         }
-        html3+='<div style="font-size:20px;line-height:1.8;letter-spacing:3px;">'+vis2+'</div>';
-        html3+='<div style="font-size:10px;color:#9ca3af;margin-top:8px;">Staand · '+maxLS2+' lagen · geen huidjes</div>';
+        html3+='<div style="padding:12px 0;">'+vis2+'</div>';
+        html3+='<div style="font-size:10px;color:#9ca3af;margin-top:4px;">Staand · '+maxLS2+' lagen · geen huidjes</div>';
       } else {
         var rijA2=Math.max(1,Math.floor(palB2/rolD2)),rijB2=Math.max(1,rijA2-1),maxLagen2=1;
         for(var nl2=2;nl2<=20;nl2++){if(rolD2+(nl2-1)*rolD2*0.866<=maxH2)maxLagen2=nl2;else break;}
@@ -1272,8 +1286,8 @@ function openDetail(key){
       var breedte=parseFloat(r.breedte)||0,lengte=parseFloat(r.lengte)||0,dikte=parseFloat(r.dikte)||0,koker=parseFloat(r.koker)||90;
       var sv2=SOORTELIJK_GEWICHT[r.materiaal]||920;
       if(zakrol&&breedte&&lengte&&dikte){
-        var wfD=Math.max(1.0,2.5-dikte*30);
-        var rolD=Math.round(Math.sqrt((koker/2)*(koker/2)+(zakrol*lengte*dikte*2*wfD)/Math.PI)*2);
+        var lagenD=lagenPerProdtype(r.prodtype||'Zak');
+        var rolD=Math.round(Math.sqrt((koker/2)*(koker/2)+(zakrol*lengte*dikte*lagenD)/Math.PI)*2);
         var rolLengte2=zakrol*lengte/1000;
         var gew100m2=parseFloat(r.order_gew100m)||0;
         var gwRol=gew100m2>0?Math.round(gew100m2*rolLengte2/100*10)/10:Math.round((breedte/1000)*rolLengte2*(dikte/1000)*2*sv2*10)/10;
