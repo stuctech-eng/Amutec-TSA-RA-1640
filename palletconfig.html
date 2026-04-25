@@ -47,92 +47,108 @@ html,body{min-height:100%;background:#070a10;color:#e5e7eb;font-family:'Courier 
 
 <div class="content">
 
-  <div style="display:flex;gap:8px;margin-bottom:16px;">
-    <button id="tab-config" onclick="toonTab('config')" style="flex:1;padding:12px;border-radius:6px;border:2px solid #34d399;background:rgba(52,211,153,0.15);color:#34d399;font-family:'Courier New',monospace;font-size:13px;font-weight:700;cursor:pointer;">&#128230; Config</button>
-    <button id="tab-uitleg" onclick="toonTab('uitleg')" style="flex:1;padding:12px;border-radius:6px;border:2px solid #1a2540;background:#0f1520;color:#9ca3af;font-family:'Courier New',monospace;font-size:13px;font-weight:700;cursor:pointer;">&#128218; Uitleg</button>
-    <button onclick="window.location.href='berekeningen.html'" style="flex:1;padding:12px;border-radius:6px;border:2px solid #1a2540;background:#0f1520;color:#9ca3af;font-family:'Courier New',monospace;font-size:13px;font-weight:700;cursor:pointer;">&#128202; Bereken</button>
-  </div>
-
-  <!-- CONFIG TAB -->
-
-  <div id="sectie-config">
-
 ```
-<!-- STAP 1: PRODUCTTYPE -->
-<div class="form-card" style="border-top-color:#a78bfa;">
-  <div class="form-card-title" style="color:#a78bfa;">1 &mdash; Producttype</div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-    <button class="pc-type-btn" id="pctype-Zak" onclick="pcKiesProdtype('Zak')" style="padding:14px 8px;border-radius:6px;border:2px solid #34d399;background:rgba(52,211,153,0.15);color:#34d399;font-family:'Courier New',monospace;font-size:14px;font-weight:700;cursor:pointer;">Zak<br><span style="font-size:10px;color:#9ca3af;">2x dikte</span></button>
-    <button class="pc-type-btn" id="pctype-Zak met invouw" onclick="pcKiesProdtype('Zak met invouw')" style="padding:14px 8px;border-radius:6px;border:2px solid #1a2540;background:#0f1520;color:#9ca3af;font-family:'Courier New',monospace;font-size:13px;cursor:pointer;">Zak invouw<br><span style="font-size:10px;color:#6b7280;">4x dikte</span></button>
-    <button class="pc-type-btn" id="pctype-Hoes" onclick="pcKiesProdtype('Hoes')" style="padding:14px 8px;border-radius:6px;border:2px solid #1a2540;background:#0f1520;color:#9ca3af;font-family:'Courier New',monospace;font-size:14px;cursor:pointer;">Hoes<br><span style="font-size:10px;color:#6b7280;">2x dikte</span></button>
-    <button class="pc-type-btn" id="pctype-Vel" onclick="pcKiesProdtype('Vel')" style="padding:14px 8px;border-radius:6px;border:2px solid #1a2540;background:#0f1520;color:#9ca3af;font-family:'Courier New',monospace;font-size:14px;cursor:pointer;">Vel<br><span style="font-size:10px;color:#6b7280;">1x dikte</span></button>
-    <button class="pc-type-btn" id="pctype-Huls" onclick="pcKiesProdtype('Huls')" style="padding:14px 8px;border-radius:6px;border:2px solid #1a2540;background:#0f1520;color:#9ca3af;font-family:'Courier New',monospace;font-size:14px;cursor:pointer;">Huls<br><span style="font-size:10px;color:#6b7280;">1x dikte</span></button>
-    <button class="pc-type-btn" id="pctype-Krimpfolie" onclick="pcKiesProdtype('Krimpfolie')" style="padding:14px 8px;border-radius:6px;border:2px solid #1a2540;background:#0f1520;color:#9ca3af;font-family:'Courier New',monospace;font-size:13px;cursor:pointer;">Krimpfolie<br><span style="font-size:10px;color:#6b7280;">2x dikte</span></button>
-    <button class="pc-type-btn" id="pctype-Uitsparing" onclick="pcKiesProdtype('Uitsparing')" style="padding:14px 8px;border-radius:6px;border:2px solid #1a2540;background:#0f1520;color:#9ca3af;font-family:'Courier New',monospace;font-size:13px;cursor:pointer;">Uitsparing<br><span style="font-size:10px;color:#6b7280;">2x dikte</span></button>
-    <button class="pc-type-btn" id="pctype-Andere" onclick="pcKiesProdtype('Andere')" style="padding:14px 8px;border-radius:6px;border:2px solid #1a2540;background:#0f1520;color:#9ca3af;font-family:'Courier New',monospace;font-size:14px;cursor:pointer;">Andere<br><span style="font-size:10px;color:#6b7280;">2x dikte</span></button>
-  </div>
-  <input type="hidden" id="pc-prodtype" value="Zak">
-</div>
-
-<!-- STAP 2: PALLET & HOOGTE -->
 <div class="form-card" style="border-top-color:#34d399;">
-  <div class="form-card-title" style="color:#34d399;">2 &mdash; Pallet & Hoogte</div>
+  <div class="form-card-title" style="color:#34d399;">&#9881;&#65039; Parameters</div>
+
+  <!-- 1. Producttype -->
+  <input type="hidden" id="pc-prodtype" value="Zak">
   <div class="field">
-    <label>Pallet type</label>
+    <label>1 &mdash; Producttype</label>
+    <button onclick="openPcPopup('prodtype')" id="btn-pc-prodtype" style="width:100%;background:#0f1520;border:1px solid #1a2540;border-left:4px solid rgba(245,158,11,0.6);border-radius:8px;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
+      <div>
+        <div style="font-size:10px;color:#9ca3af;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">Producttype</div>
+        <div style="font-size:20px;font-weight:700;color:#6b7280;" id="toon-pc-prodtype">Kies producttype</div>
+      </div>
+      <span style="font-size:22px;color:#6b7280;">&#8250;</span>
+    </button>
+  </div>
+
+  <!-- 1b. Materiaaltype -->
+  <input type="hidden" id="pc-materiaal" value="ldpe">
+  <div class="field">
+    <label>1b &mdash; Materiaaltype</label>
+    <button onclick="openPcPopup('materiaal')" id="btn-pc-materiaal" style="width:100%;background:#0f1520;border:1px solid #1a2540;border-left:4px solid rgba(245,158,11,0.6);border-radius:8px;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
+      <div>
+        <div style="font-size:10px;color:#9ca3af;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">Materiaaltype</div>
+        <div style="font-size:20px;font-weight:700;color:#6b7280;" id="toon-pc-materiaal">LDPE</div>
+      </div>
+      <span style="font-size:22px;color:#6b7280;">&#8250;</span>
+    </button>
+  </div>
+
+  <!-- 2. Pallet type -->
+  <div class="field">
+    <label>2 &mdash; Pallet type</label>
     <div style="display:flex;gap:8px;">
       <button id="pc-btn-euro" onclick="pcKiesPallet('euro')" style="flex:1;padding:16px 8px;border-radius:6px;border:2px solid #34d399;background:rgba(52,211,153,0.15);color:#34d399;font-family:'Courier New',monospace;font-size:15px;font-weight:700;cursor:pointer;">EURO<br><span style="font-size:11px;color:#9ca3af;">800&#215;1200mm</span></button>
       <button id="pc-btn-blok" onclick="pcKiesPallet('blok')" style="flex:1;padding:16px 8px;border-radius:6px;border:2px solid #1a2540;background:#0f1520;color:#9ca3af;font-family:'Courier New',monospace;font-size:15px;font-weight:700;cursor:pointer;">BLOK<br><span style="font-size:11px;color:#6b7280;">1000&#215;1200mm</span></button>
     </div>
   </div>
+
+  <!-- 3. Max stapelhoogte -->
   <div class="field">
-    <label>Max stapelhoogte</label>
+    <label>3 &mdash; Max stapelhoogte</label>
     <div style="display:flex;gap:8px;">
       <button id="pc-btn-h1700" onclick="pcKiesHoogte(1550)" style="flex:1;padding:16px 8px;border-radius:6px;border:2px solid #34d399;background:rgba(52,211,153,0.15);color:#34d399;font-family:'Courier New',monospace;font-size:15px;font-weight:700;cursor:pointer;">1700mm<br><span style="font-size:11px;color:#9ca3af;">incl. pallet</span></button>
       <button id="pc-btn-h1200" onclick="pcKiesHoogte(1050)" style="flex:1;padding:16px 8px;border-radius:6px;border:2px solid #1a2540;background:#0f1520;color:#9ca3af;font-family:'Courier New',monospace;font-size:15px;font-weight:700;cursor:pointer;">1200mm<br><span style="font-size:11px;color:#6b7280;">incl. pallet</span></button>
     </div>
   </div>
-</div>
 
-<!-- STAP 3: ZAKMAAT -->
-<div class="form-card" style="border-top-color:#60a5fa;">
-  <div class="form-card-title" style="color:#60a5fa;">3 &mdash; Zakmaat</div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-    <div class="field"><label>Breedte (mm)</label><input id="pc-breedte" type="number" placeholder="400" readonly inputmode="none" onclick="openInvul(this,'Zakbreedte (mm)',[200,300,400,470,500,600,800,1000,1200,1600])" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:22px;padding:14px;text-align:center;outline:none;cursor:pointer;"></div>
-    <div class="field"><label>Lengte (mm)</label><input id="pc-lengte" type="number" placeholder="600" readonly inputmode="none" onclick="openInvul(this,'Zaklengte (mm)',[300,400,500,600,800,1000,1200,1500,1900,2000,3000])" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:22px;padding:14px;text-align:center;outline:none;cursor:pointer;"></div>
-  </div>
-</div>
-
-<!-- STAP 4: FOLIE & ROL -->
-<div class="form-card" style="border-top-color:#f59e0b;">
-  <div class="form-card-title" style="color:#f59e0b;">4 &mdash; Folie & Rol</div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-    <div class="field"><label>Dikte (mm)</label><input id="pc-dikte" type="number" placeholder="0.03" readonly inputmode="none" onclick="openInvul(this,'Folie dikte (mm)',[0.015,0.02,0.025,0.03,0.04,0.05,0.06,0.08,0.1])" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:22px;padding:14px;text-align:center;outline:none;cursor:pointer;"></div>
-    <div class="field"><label>Zakken/rol</label><input id="pc-zakrol" type="number" placeholder="250" readonly inputmode="none" onclick="openInvul(this,'Zakken op rol',[100,150,200,250,500,750,1000])" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:22px;padding:14px;text-align:center;outline:none;cursor:pointer;"></div>
-    <div class="field"><label>Koker (mm)</label><input id="pc-koker" type="number" placeholder="90" readonly inputmode="none" onclick="openInvul(this,'Koker (mm)',[76,90,100,150,200])" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:22px;padding:14px;text-align:center;outline:none;cursor:pointer;"></div>
-    <div class="field"><label>Roldiameter (mm)</label>
-      <input id="pc-rolD" type="number" placeholder="auto" readonly inputmode="none" onclick="openInvul(this,'Roldiameter override (mm)',[150,175,200,213,225,250,266,300])" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:22px;padding:14px;text-align:center;outline:none;cursor:pointer;">
-      <div style="font-size:10px;color:#6b7280;margin-top:4px;text-align:center;" id="pc-rolD-auto"></div>
+  <!-- 4. Zakmaat -->
+  <div class="field">
+    <label>4 &mdash; Zakmaat</label>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div>
+        <div style="font-size:9px;color:#9ca3af;letter-spacing:1px;margin-bottom:4px;">BREEDTE (mm)</div>
+        <input id="pc-breedte" type="number" placeholder="400" readonly inputmode="none" onclick="openInvul(this,'Zakbreedte (mm)',[200,300,400,470,500,600,800,1000,1200,1600])" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:22px;padding:14px;text-align:center;outline:none;cursor:pointer;">
+      </div>
+      <div>
+        <div style="font-size:9px;color:#9ca3af;letter-spacing:1px;margin-bottom:4px;">LENGTE (mm)</div>
+        <input id="pc-lengte" type="number" placeholder="600" readonly inputmode="none" onclick="openInvul(this,'Zaklengte (mm)',[300,400,500,600,800,1000,1200,1500,1900,2000,3000])" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:22px;padding:14px;text-align:center;outline:none;cursor:pointer;">
+      </div>
     </div>
   </div>
-</div>
 
-<!-- STAP 5: AANTAL ROLLEN (optioneel) -->
-<div class="form-card" style="border-top-color:#9ca3af;">
-  <div class="form-card-title" style="color:#9ca3af;">5 &mdash; Aantal rollen (optioneel)</div>
-  <div class="field"><input id="pc-rollen" type="number" placeholder="bv. 950" readonly inputmode="none" onclick="openInvul(this,'Aantal rollen',[100,250,500,750,950,1000,1500,2000])" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:28px;padding:16px;text-align:center;outline:none;cursor:pointer;"></div>
-  <div style="font-size:10px;color:#6b7280;margin-top:4px;">Voor palletaantal berekening</div>
-</div>
+  <!-- 5. Folie & Rol -->
+  <div class="field">
+    <label>5 &mdash; Folie &amp; Rol</label>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div>
+        <div style="font-size:9px;color:#9ca3af;letter-spacing:1px;margin-bottom:4px;">ZAKKEN/ROL</div>
+        <input id="pc-zakrol" type="number" placeholder="250" readonly inputmode="none" onclick="openInvul(this,'Zakken op rol',[100,150,200,250,500,750,1000])" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:22px;padding:14px;text-align:center;outline:none;cursor:pointer;">
+      </div>
+      <div>
+        <div style="font-size:9px;color:#9ca3af;letter-spacing:1px;margin-bottom:4px;">DIKTE (mm)</div>
+        <input id="pc-dikte" type="number" placeholder="0.03" readonly inputmode="none" onclick="openInvul(this,'Folie dikte (mm)',[0.015,0.02,0.025,0.03,0.04,0.05,0.06,0.08,0.1])" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:22px;padding:14px;text-align:center;outline:none;cursor:pointer;">
+      </div>
+      <div>
+        <div style="font-size:9px;color:#9ca3af;letter-spacing:1px;margin-bottom:4px;">KOKER (mm)</div>
+        <input id="pc-koker" type="number" placeholder="90" readonly inputmode="none" onclick="openInvul(this,'Koker (mm)',[76,90,100,150,200])" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:22px;padding:14px;text-align:center;outline:none;cursor:pointer;">
+      </div>
+      <div>
+        <div style="font-size:9px;color:#9ca3af;letter-spacing:1px;margin-bottom:4px;">ROLDIAMETER (mm)</div>
+        <input id="pc-rolD" type="number" placeholder="auto" readonly inputmode="none" onclick="openInvul(this,'Roldiameter override (mm)',[150,175,200,213,225,250,266,300])" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:22px;padding:14px;text-align:center;outline:none;cursor:pointer;">
+        <div style="font-size:10px;color:#6b7280;margin-top:3px;text-align:center;" id="pc-rolD-auto"></div>
+      </div>
+    </div>
+  </div>
 
-<!-- LIGGEND PATROON (alleen zichtbaar bij liggend) -->
-<div id="pc-patroon-sectie" style="display:none;">
-  <div class="form-card" style="border-top-color:#f59e0b;">
-    <div class="form-card-title" style="color:#f59e0b;">Stapelpatroon (liggend)</div>
+  <!-- 6. Stapelpatroon liggend -->
+  <div class="field" id="pc-patroon-sectie">
+    <label>6 &mdash; Stapelpatroon (liggend)</label>
     <div style="display:flex;gap:8px;flex-wrap:wrap;">
       <button id="pc-pat-auto" onclick="pcKiesPatroon('auto')" style="flex:1;padding:12px;border-radius:6px;border:2px solid #34d399;background:rgba(52,211,153,0.15);color:#34d399;font-family:'Courier New',monospace;font-size:14px;font-weight:700;cursor:pointer;">AUTO</button>
       <button id="pc-pat-43" onclick="pcKiesPatroon('43')" style="flex:1;padding:12px;border-radius:6px;border:2px solid #1a2540;background:#0f1520;color:#9ca3af;font-family:'Courier New',monospace;font-size:14px;cursor:pointer;">4-3</button>
       <button id="pc-pat-54" onclick="pcKiesPatroon('54')" style="flex:1;padding:12px;border-radius:6px;border:2px solid #1a2540;background:#0f1520;color:#9ca3af;font-family:'Courier New',monospace;font-size:14px;cursor:pointer;">5-4</button>
       <button id="pc-pat-65" onclick="pcKiesPatroon('65')" style="flex:1;padding:12px;border-radius:6px;border:2px solid #1a2540;background:#0f1520;color:#9ca3af;font-family:'Courier New',monospace;font-size:14px;cursor:pointer;">6-5</button>
     </div>
+  </div>
+
+  <!-- 7. Aantal rollen -->
+  <div class="field">
+    <label>7 &mdash; Aantal rollen <span style="color:#6b7280;">(optioneel)</span></label>
+    <input id="pc-rollen" type="number" placeholder="bv. 950" readonly inputmode="none" onclick="openInvul(this,'Aantal rollen',[100,250,500,750,950,1000,1500,2000])" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:28px;padding:16px;text-align:center;outline:none;cursor:pointer;">
   </div>
 </div>
 
@@ -144,192 +160,8 @@ html,body{min-height:100%;background:#070a10;color:#e5e7eb;font-family:'Courier 
   </div>
   <div class="form-card" style="border-top-color:#a78bfa;">
     <div class="form-card-title" style="color:#a78bfa;">&#128064; Stapelvisualisatie</div>
-    <div id="pc-visual" style="text-align:center;font-size:22px;line-height:1.6;letter-spacing:4px;padding:8px 0;"></div>
+    <div id="pc-visual" style="text-align:center;font-size:22px;line-height:1.8;letter-spacing:4px;padding:8px 0;"></div>
   </div>
-</div>
-```
-
-  </div>
-
-  <!-- UITLEG TAB -->
-
-  <div id="sectie-uitleg" style="display:none;">
-
-```
-<div class="form-card" style="border-top-color:#f59e0b;">
-  <div class="form-card-title" style="color:#f59e0b;">&#128230; Wanneer welk patroon?</div>
-  <div style="font-size:13px;color:#9ca3af;line-height:1.8;">
-    <span style="color:#f59e0b;font-weight:700;">Breedte &gt;500mm</span> &rarr; Liggend stapelen<br>
-    <span style="color:#60a5fa;font-weight:700;">Breedte &le;500mm</span> &rarr; Staand stapelen
-  </div>
-</div>
-
-<!-- LIGGEND -->
-<div style="background:#f59e0b;color:#000;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;padding:10px 16px;border-radius:6px;margin-bottom:12px;text-align:center;">&#128992; LIGGEND STAPELEN &mdash; Breedte &gt;500mm</div>
-
-<div style="background:#0f1520;border:1px solid #1a2540;border-radius:6px;padding:14px;margin-bottom:16px;font-size:13px;color:#9ca3af;line-height:1.9;">
-  Rollen liggen op hun zijkant &bull; Piramide patroon<br>
-  Laag 1 = meer rollen &bull; Laag 2 = 1 rol minder<br>
-  <span style="color:#f59e0b;font-weight:700;">Huidjes nodig om de oneven lagen</span>
-</div>
-
-<div class="form-card" style="border-top-color:#f59e0b;">
-  <div class="form-card-title" style="color:#f59e0b;">Liggend &mdash; 4-3 patroon (~200mm dia)</div>
-  <div style="background:#070a10;border:1px solid #1a2540;border-radius:8px;padding:16px;">
-    <div style="font-size:11px;color:#6b7280;margin-bottom:6px;text-align:center;">&#8593; TOP</div>
-    <div style="display:flex;justify-content:center;gap:8px;margin-bottom:2px;">
-      <div style="width:44px;height:44px;border-radius:50%;background:rgba(245,158,11,0.5);border:2px solid #f59e0b;display:flex;align-items:center;justify-content:center;color:#fcd34d;">&#128992;</div>
-      <div style="width:44px;height:44px;border-radius:50%;background:rgba(245,158,11,0.5);border:2px solid #f59e0b;display:flex;align-items:center;justify-content:center;color:#fcd34d;">&#128992;</div>
-      <div style="width:44px;height:44px;border-radius:50%;background:rgba(245,158,11,0.5);border:2px solid #f59e0b;display:flex;align-items:center;justify-content:center;color:#fcd34d;">&#128992;</div>
-    </div>
-    <div style="font-size:10px;color:#f59e0b;text-align:center;margin-bottom:4px;">Laag 4 &mdash; 3 rollen</div>
-    <div style="display:flex;justify-content:center;gap:4px;margin-bottom:2px;margin-top:-8px;">
-      <div style="width:44px;height:44px;border-radius:50%;background:#f59e0b;display:flex;align-items:center;justify-content:center;color:#000;">&#128992;</div>
-      <div style="width:44px;height:44px;border-radius:50%;background:#f59e0b;display:flex;align-items:center;justify-content:center;color:#000;">&#128992;</div>
-      <div style="width:44px;height:44px;border-radius:50%;background:#f59e0b;display:flex;align-items:center;justify-content:center;color:#000;">&#128992;</div>
-      <div style="width:44px;height:44px;border-radius:50%;background:#f59e0b;display:flex;align-items:center;justify-content:center;color:#000;">&#128992;</div>
-    </div>
-    <div style="font-size:10px;color:#f59e0b;text-align:center;margin-bottom:4px;">Laag 3 &mdash; 4 rollen</div>
-    <div style="display:flex;justify-content:center;gap:8px;margin-bottom:2px;margin-top:-8px;">
-      <div style="width:44px;height:44px;border-radius:50%;background:rgba(245,158,11,0.5);border:2px solid #f59e0b;display:flex;align-items:center;justify-content:center;color:#fcd34d;">&#128992;</div>
-      <div style="width:44px;height:44px;border-radius:50%;background:rgba(245,158,11,0.5);border:2px solid #f59e0b;display:flex;align-items:center;justify-content:center;color:#fcd34d;">&#128992;</div>
-      <div style="width:44px;height:44px;border-radius:50%;background:rgba(245,158,11,0.5);border:2px solid #f59e0b;display:flex;align-items:center;justify-content:center;color:#fcd34d;">&#128992;</div>
-    </div>
-    <div style="font-size:10px;color:#f59e0b;text-align:center;margin-bottom:4px;">Laag 2 &mdash; 3 rollen</div>
-    <div style="display:flex;justify-content:center;gap:4px;margin-top:-8px;">
-      <div style="width:44px;height:44px;border-radius:50%;background:#f59e0b;display:flex;align-items:center;justify-content:center;color:#000;">&#128992;</div>
-      <div style="width:44px;height:44px;border-radius:50%;background:#f59e0b;display:flex;align-items:center;justify-content:center;color:#000;">&#128992;</div>
-      <div style="width:44px;height:44px;border-radius:50%;background:#f59e0b;display:flex;align-items:center;justify-content:center;color:#000;">&#128992;</div>
-      <div style="width:44px;height:44px;border-radius:50%;background:#f59e0b;display:flex;align-items:center;justify-content:center;color:#000;">&#128992;</div>
-    </div>
-    <div style="font-size:10px;color:#f59e0b;text-align:center;margin-top:4px;">Laag 1 &mdash; 4 rollen (bodem)</div>
-    <div style="background:#3d2800;border:1px solid #6b4c11;border-radius:4px;padding:6px;text-align:center;margin-top:8px;"><span style="font-size:11px;color:#fcd34d;">PALLET 150mm</span></div>
-  </div>
-  <div style="background:#070a10;border:1px solid #1a2540;border-radius:4px;padding:12px;margin-top:12px;font-size:13px;color:#9ca3af;line-height:2;">
-    4 lagen &bull; Patroon 4-3-4-3 &bull; Totaal: 2&times;(4+3) = <span style="color:#f59e0b;font-weight:700;">14 rollen</span><br>
-    Huidje om laag 1 en 3 &rarr; <span style="color:#34d399;font-weight:700;">nodig</span>
-  </div>
-</div>
-
-<!-- STAAND -->
-<div style="background:#60a5fa;color:#000;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;padding:10px 16px;border-radius:6px;margin-bottom:12px;margin-top:8px;text-align:center;">&#128260; STAAND STAPELEN &mdash; Breedte &le;500mm</div>
-
-<div style="background:#0f1520;border:1px solid #1a2540;border-radius:6px;padding:14px;margin-bottom:12px;font-size:13px;color:#9ca3af;line-height:1.9;">
-  Rollen staan rechtop &bull; Hoogte per laag = zakbreedte<br>
-  <span style="color:#60a5fa;font-weight:700;">Geen huidjes nodig bij staand stapelen</span>
-</div>
-
-<!-- STAAND: 4-3-4 piramide -->
-<div class="form-card" style="border-top-color:#60a5fa;">
-  <div class="form-card-title" style="color:#60a5fa;">Staand &mdash; 4-3-4 piramide (dia &le; floor(palletbreedte/3))</div>
-  <div style="background:#070a10;border:1px solid #1a2540;border-radius:8px;padding:16px;">
-    <div style="font-size:11px;color:#6b7280;margin-bottom:6px;text-align:center;">&#8593; LAAG 2 (TOP)</div>
-    <div style="display:flex;justify-content:center;gap:4px;margin-bottom:2px;">
-      <div style="width:40px;height:40px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
-      <div style="width:40px;height:40px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
-      <div style="width:40px;height:40px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
-      <div style="width:40px;height:40px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
-    </div>
-    <div style="display:flex;justify-content:center;gap:4px;margin-bottom:2px;margin-left:20px;">
-      <div style="width:40px;height:40px;border-radius:50%;background:rgba(96,165,250,0.5);border:2px solid #60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
-      <div style="width:40px;height:40px;border-radius:50%;background:rgba(96,165,250,0.5);border:2px solid #60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
-      <div style="width:40px;height:40px;border-radius:50%;background:rgba(96,165,250,0.5);border:2px solid #60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
-    </div>
-    <div style="display:flex;justify-content:center;gap:4px;">
-      <div style="width:40px;height:40px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
-      <div style="width:40px;height:40px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
-      <div style="width:40px;height:40px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
-      <div style="width:40px;height:40px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
-    </div>
-    <div style="border-top:2px dashed #1a2540;margin:10px 0;"></div>
-    <div style="font-size:11px;color:#6b7280;text-align:center;margin-bottom:6px;">LAAG 1 (BODEM)</div>
-    <div style="display:flex;justify-content:center;gap:4px;margin-bottom:2px;">
-      <div style="width:40px;height:40px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
-      <div style="width:40px;height:40px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
-      <div style="width:40px;height:40px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
-      <div style="width:40px;height:40px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
-    </div>
-    <div style="display:flex;justify-content:center;gap:4px;margin-bottom:2px;margin-left:20px;">
-      <div style="width:40px;height:40px;border-radius:50%;background:rgba(96,165,250,0.5);border:2px solid #60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
-      <div style="width:40px;height:40px;border-radius:50%;background:rgba(96,165,250,0.5);border:2px solid #60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
-      <div style="width:40px;height:40px;border-radius:50%;background:rgba(96,165,250,0.5);border:2px solid #60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
-    </div>
-    <div style="display:flex;justify-content:center;gap:4px;">
-      <div style="width:40px;height:40px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
-      <div style="width:40px;height:40px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
-      <div style="width:40px;height:40px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
-      <div style="width:40px;height:40px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
-    </div>
-    <div style="background:#3d2800;border:1px solid #6b4c11;border-radius:4px;padding:6px;text-align:center;margin-top:10px;"><span style="font-size:11px;color:#fcd34d;">PALLET 150mm</span></div>
-  </div>
-  <div style="background:#070a10;border:1px solid #1a2540;border-radius:4px;padding:12px;margin-top:12px;font-size:13px;color:#9ca3af;line-height:2;">
-    Per laag: 4+3+4 = <span style="color:#60a5fa;font-weight:700;">11 rollen</span> &bull;
-    2 lagen = <span style="color:#34d399;font-weight:700;">22 rollen</span>
-  </div>
-</div>
-
-<!-- STAAND: zigzag -->
-<div class="form-card" style="border-top-color:#60a5fa;">
-  <div class="form-card-title" style="color:#60a5fa;">Staand &mdash; 2 Rijen Zigzag (dia &gt; floor(palletbreedte/3))</div>
-  <div style="font-size:12px;color:#6b7280;margin-bottom:12px;">Rechter rij verschoven &bull; 4+4 = 8 per laag &bull; 2 lagen = 16 rollen</div>
-  <div style="background:#070a10;border:1px solid #1a2540;border-radius:8px;padding:16px;">
-    <div style="font-size:11px;color:#6b7280;margin-bottom:8px;text-align:center;">&#8593; LAAG 2 (TOP)</div>
-    <div style="display:flex;gap:4px;margin-bottom:3px;">
-      <div style="font-size:11px;color:#60a5fa;width:22px;line-height:40px;text-align:center;font-weight:700;">L</div>
-      <div style="width:40px;height:40px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
-      <div style="width:40px;height:40px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
-      <div style="width:40px;height:40px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
-      <div style="width:40px;height:40px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
-    </div>
-    <div style="display:flex;gap:4px;margin-left:20px;margin-bottom:3px;">
-      <div style="font-size:11px;color:#93c5fd;width:22px;line-height:40px;text-align:center;font-weight:700;">R</div>
-      <div style="width:40px;height:40px;border-radius:50%;background:rgba(96,165,250,0.5);border:2px solid #60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
-      <div style="width:40px;height:40px;border-radius:50%;background:rgba(96,165,250,0.5);border:2px solid #60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
-      <div style="width:40px;height:40px;border-radius:50%;background:rgba(96,165,250,0.5);border:2px solid #60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
-      <div style="width:40px;height:40px;border-radius:50%;background:rgba(96,165,250,0.5);border:2px solid #60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
-    </div>
-    <div style="border-top:2px dashed #1a2540;margin:10px 0;"></div>
-    <div style="font-size:11px;color:#6b7280;text-align:center;margin-bottom:8px;">LAAG 1 (BODEM)</div>
-    <div style="display:flex;gap:4px;margin-bottom:3px;">
-      <div style="font-size:11px;color:#60a5fa;width:22px;line-height:40px;text-align:center;font-weight:700;">L</div>
-      <div style="width:40px;height:40px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
-      <div style="width:40px;height:40px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
-      <div style="width:40px;height:40px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
-      <div style="width:40px;height:40px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
-    </div>
-    <div style="display:flex;gap:4px;margin-left:20px;">
-      <div style="font-size:11px;color:#93c5fd;width:22px;line-height:40px;text-align:center;font-weight:700;">R</div>
-      <div style="width:40px;height:40px;border-radius:50%;background:rgba(96,165,250,0.5);border:2px solid #60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
-      <div style="width:40px;height:40px;border-radius:50%;background:rgba(96,165,250,0.5);border:2px solid #60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
-      <div style="width:40px;height:40px;border-radius:50%;background:rgba(96,165,250,0.5);border:2px solid #60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
-      <div style="width:40px;height:40px;border-radius:50%;background:rgba(96,165,250,0.5);border:2px solid #60a5fa;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128260;</div>
-    </div>
-    <div style="background:#3d2800;border:1px solid #6b4c11;border-radius:4px;padding:6px;text-align:center;margin-top:10px;"><span style="font-size:11px;color:#fcd34d;">PALLET 150mm</span></div>
-  </div>
-  <div style="background:#070a10;border:1px solid #1a2540;border-radius:4px;padding:12px;margin-top:12px;font-size:13px;color:#9ca3af;line-height:2;">
-    L+R per laag = 4+4 = <span style="color:#60a5fa;font-weight:700;">8 rollen</span> &bull;
-    2 lagen = <span style="color:#34d399;font-weight:700;">16 rollen</span><br>
-    Max diameter: <span style="color:#60a5fa;font-weight:700;" id="uitleg-maxzigzag">afhankelijk van pallet</span> &bull; Geen huidjes nodig
-  </div>
-</div>
-
-<!-- PATRONEN OVERZICHT -->
-<div style="background:#070a10;border:1px solid #60a5fa;border-radius:6px;padding:14px;margin-bottom:12px;">
-  <div style="font-size:11px;color:#60a5fa;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;">Wanneer welk staand patroon?</div>
-  <div id="patroon-tabel-staand" style="font-size:13px;"></div>
-  <script>
-  function updatePatroonTabel(){
-    var palletB = _pcPallet==='blok'?1000:800;
-    var grens43 = 300;
-    var grensZigzag = Math.floor(palletB/2);
-    var tabel = document.getElementById('patroon-tabel-staand');
-    if(!tabel) return;
-    tabel.innerHTML =
-      '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="color:#60a5fa;font-weight:700;">Dia. &le;'+grens43+'mm</span><span style="color:#e5e7eb;">4-3-4 piramide (11/laag)</span></div>'+
-      '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="color:#60a5fa;font-weight:700;">Dia. '+(grens43+1)+'-'+grensZigzag+'mm</span><span style="color:#e5e7eb;">Zigzag 2 rijen</span></div>'+
-      '<div style="display:flex;justify-content:space-between;padding:8px 0;"><span style="color:#9ca3af;font-weight:700;">Dia. &gt;'+grensZigzag+'mm</span><span style="color:#9ca3af;">Liggend stapelen</span></div>';
-  }
-  </script>
 </div>
 ```
 
@@ -339,24 +171,55 @@ html,body{min-height:100%;background:#070a10;color:#e5e7eb;font-family:'Courier 
 
 </div>
 
+<!-- POPUP: PRODUCTTYPE -->
+
+<div id="pc-popup-prodtype" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:9200;align-items:flex-end;justify-content:center;">
+  <div style="background:#0f1520;border-top:3px solid #f59e0b;width:100%;max-width:500px;border-radius:16px 16px 0 0;padding:24px 20px 40px;max-height:85vh;overflow-y:auto;">
+    <div style="font-size:11px;color:#f59e0b;letter-spacing:3px;text-transform:uppercase;margin-bottom:6px;">Producttype</div>
+    <div style="font-size:13px;color:#6b7280;margin-bottom:20px;">Selecteer het type product</div>
+    <button class="pc-keuze" onclick="kiesPcProdtype('Zak')"><div><div style="font-size:18px;font-weight:700;">Zak</div><div style="font-size:11px;color:#6b7280;margin-top:2px;">Tweezijdig &mdash; 2&times; dikte</div></div><span id="pck-Zak" style="color:#34d399;font-size:22px;">&#10003;</span></button>
+    <button class="pc-keuze" onclick="kiesPcProdtype('Zak met invouw')"><div><div style="font-size:18px;font-weight:700;">Zak met invouw</div><div style="font-size:11px;color:#6b7280;margin-top:2px;">Vouwzijde &mdash; 4&times; dikte</div></div><span id="pck-Zak met invouw" style="color:#34d399;font-size:22px;display:none;">&#10003;</span></button>
+    <button class="pc-keuze" onclick="kiesPcProdtype('Hoes')"><div><div style="font-size:18px;font-weight:700;">Hoes</div><div style="font-size:11px;color:#6b7280;margin-top:2px;">Tweezijdig &mdash; 2&times; dikte</div></div><span id="pck-Hoes" style="color:#34d399;font-size:22px;display:none;">&#10003;</span></button>
+    <button class="pc-keuze" onclick="kiesPcProdtype('Vel')"><div><div style="font-size:18px;font-weight:700;">Vel</div><div style="font-size:11px;color:#6b7280;margin-top:2px;">Enkelzijdig &mdash; 1&times; dikte</div></div><span id="pck-Vel" style="color:#34d399;font-size:22px;display:none;">&#10003;</span></button>
+    <button class="pc-keuze" onclick="kiesPcProdtype('Huls')"><div><div style="font-size:18px;font-weight:700;">Huls</div><div style="font-size:11px;color:#6b7280;margin-top:2px;">Enkelzijdig &mdash; 1&times; dikte</div></div><span id="pck-Huls" style="color:#34d399;font-size:22px;display:none;">&#10003;</span></button>
+    <button class="pc-keuze" onclick="kiesPcProdtype('Krimpfolie')"><div><div style="font-size:18px;font-weight:700;">Krimpfolie</div><div style="font-size:11px;color:#6b7280;margin-top:2px;">Tweezijdig &mdash; 2&times; dikte</div></div><span id="pck-Krimpfolie" style="color:#34d399;font-size:22px;display:none;">&#10003;</span></button>
+    <button class="pc-keuze" onclick="kiesPcProdtype('Uitsparing')"><div><div style="font-size:18px;font-weight:700;">Uitsparing</div><div style="font-size:11px;color:#6b7280;margin-top:2px;">Tweezijdig &mdash; 2&times; dikte</div></div><span id="pck-Uitsparing" style="color:#34d399;font-size:22px;display:none;">&#10003;</span></button>
+    <button class="pc-keuze" onclick="kiesPcProdtype('Andere')"><div><div style="font-size:18px;font-weight:700;">Andere</div><div style="font-size:11px;color:#6b7280;margin-top:2px;">Tweezijdig &mdash; 2&times; dikte</div></div><span id="pck-Andere" style="color:#34d399;font-size:22px;display:none;">&#10003;</span></button>
+    <button onclick="sluitPcPopup('prodtype')" style="width:100%;background:transparent;border:1px solid #1a2540;border-radius:8px;color:#6b7280;font-family:'Courier New',monospace;font-size:14px;padding:14px;cursor:pointer;margin-top:8px;">&#10005; Annuleer</button>
+  </div>
+</div>
+
+<!-- POPUP: MATERIAALTYPE -->
+
+<div id="pc-popup-materiaal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:9200;align-items:flex-end;justify-content:center;">
+  <div style="background:#0f1520;border-top:3px solid #f59e0b;width:100%;max-width:500px;border-radius:16px 16px 0 0;padding:24px 20px 40px;max-height:85vh;overflow-y:auto;">
+    <div style="font-size:11px;color:#f59e0b;letter-spacing:3px;text-transform:uppercase;margin-bottom:6px;">Materiaaltype</div>
+    <div style="font-size:13px;color:#6b7280;margin-bottom:20px;">Selecteer het foliemateriaal</div>
+    <button class="pc-keuze" onclick="kiesPcMateriaal('ldpe','LDPE')"><div><div style="font-size:18px;font-weight:700;">LDPE</div><div style="font-size:11px;color:#6b7280;margin-top:2px;">Low Density PE</div></div><span id="pckm-ldpe" style="color:#34d399;font-size:22px;">&#10003;</span></button>
+    <button class="pc-keuze" onclick="kiesPcMateriaal('mdpe','MDPE')"><div><div style="font-size:18px;font-weight:700;">MDPE</div><div style="font-size:11px;color:#6b7280;margin-top:2px;">Medium Density PE</div></div><span id="pckm-mdpe" style="color:#34d399;font-size:22px;display:none;">&#10003;</span></button>
+    <button class="pc-keuze" onclick="kiesPcMateriaal('recycle-mix','&#9851; Recycle Mix')"><div><div style="font-size:18px;font-weight:700;">&#9851; Recycle Mix</div><div style="font-size:11px;color:#6b7280;margin-top:2px;">Gemengd recyclemateriaal</div></div><span id="pckm-recycle-mix" style="color:#34d399;font-size:22px;display:none;">&#10003;</span></button>
+    <button class="pc-keuze" onclick="kiesPcMateriaal('recycle-peld','&#9851; Recycle PE-LD')"><div><div style="font-size:18px;font-weight:700;">&#9851; Recycle PE-LD</div><div style="font-size:11px;color:#6b7280;margin-top:2px;">PE-LD recyclemateriaal</div></div><span id="pckm-recycle-peld" style="color:#34d399;font-size:22px;display:none;">&#10003;</span></button>
+    <button onclick="sluitPcPopup('materiaal')" style="width:100%;background:transparent;border:1px solid #1a2540;border-radius:8px;color:#6b7280;font-family:'Courier New',monospace;font-size:14px;padding:14px;cursor:pointer;margin-top:8px;">&#10005; Annuleer</button>
+  </div>
+</div>
+
+<style>
+.pc-keuze{width:100%;background:#070a10;border:1px solid #1a2540;border-radius:8px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;padding:16px 20px;cursor:pointer;text-align:left;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;}
+.pc-keuze:active{background:#1a2540;}
+</style>
+
+<!-- INVUL MODAL -->
+
 <div id="invul-overlay" class="invul-overlay">
   <div class="invul-box">
     <div class="invul-label" id="invul-label">Waarde</div>
     <div class="invul-waarde geel" id="invul-waarde">0</div>
     <div class="invul-snel" id="invul-snel"></div>
     <div class="invul-nrs">
-      <div class="invul-nr" onclick="invulCijfer('7')">7</div>
-      <div class="invul-nr" onclick="invulCijfer('8')">8</div>
-      <div class="invul-nr" onclick="invulCijfer('9')">9</div>
-      <div class="invul-nr" onclick="invulCijfer('4')">4</div>
-      <div class="invul-nr" onclick="invulCijfer('5')">5</div>
-      <div class="invul-nr" onclick="invulCijfer('6')">6</div>
-      <div class="invul-nr" onclick="invulCijfer('1')">1</div>
-      <div class="invul-nr" onclick="invulCijfer('2')">2</div>
-      <div class="invul-nr" onclick="invulCijfer('3')">3</div>
-      <div class="invul-nr" onclick="invulCijfer('.')">.</div>
-      <div class="invul-nr" onclick="invulCijfer('0')">0</div>
-      <div class="invul-nr" onclick="invulWis()" style="color:#ef4444;">&#9003;</div>
+      <div class="invul-nr" onclick="invulCijfer('7')">7</div><div class="invul-nr" onclick="invulCijfer('8')">8</div><div class="invul-nr" onclick="invulCijfer('9')">9</div>
+      <div class="invul-nr" onclick="invulCijfer('4')">4</div><div class="invul-nr" onclick="invulCijfer('5')">5</div><div class="invul-nr" onclick="invulCijfer('6')">6</div>
+      <div class="invul-nr" onclick="invulCijfer('1')">1</div><div class="invul-nr" onclick="invulCijfer('2')">2</div><div class="invul-nr" onclick="invulCijfer('3')">3</div>
+      <div class="invul-nr" onclick="invulCijfer('.')">.</div><div class="invul-nr" onclick="invulCijfer('0')">0</div><div class="invul-nr" onclick="invulWis()" style="color:#ef4444;">&#9003;</div>
     </div>
     <button class="invul-ok" onclick="invulOk()">OK &#10003;</button>
     <button class="invul-annuleer" onclick="invulSluit()">Annuleer</button>
@@ -368,34 +231,51 @@ html,body{min-height:100%;background:#070a10;color:#e5e7eb;font-family:'Courier 
 var _pcPallet='euro', _pcMaxH=1550, _pcPatroon='auto';
 var _invulEl=null, _invulWaarde='';
 
-function toonTab(tab) {
-  document.getElementById('sectie-config').style.display = tab==='config' ? 'block' : 'none';
-  document.getElementById('sectie-uitleg').style.display = tab==='uitleg' ? 'block' : 'none';
-  var btnC=document.getElementById('tab-config'), btnU=document.getElementById('tab-uitleg');
+function openPcPopup(naam){document.getElementById('pc-popup-'+naam).style.display='flex';}
+function sluitPcPopup(naam){document.getElementById('pc-popup-'+naam).style.display='none';}
+
+function kiesPcProdtype(type){
+  document.getElementById('pc-prodtype').value=type;
+  document.getElementById('toon-pc-prodtype').textContent=type;
+  document.getElementById('toon-pc-prodtype').style.color='#6ee7b7';
+  document.getElementById('btn-pc-prodtype').style.borderLeftColor='#34d399';
+  ['Zak','Zak met invouw','Hoes','Vel','Huls','Krimpfolie','Uitsparing','Andere'].forEach(function(t){
+    var el=document.getElementById('pck-'+t);if(el)el.style.display=t===type?'inline':'none';
+  });
+  sluitPcPopup('prodtype');
+  pcBereken();
+}
+
+function kiesPcMateriaal(key,label){
+  document.getElementById('pc-materiaal').value=key;
+  document.getElementById('toon-pc-materiaal').innerHTML=label;
+  document.getElementById('toon-pc-materiaal').style.color='#6ee7b7';
+  document.getElementById('btn-pc-materiaal').style.borderLeftColor='#34d399';
+  ['ldpe','mdpe','recycle-mix','recycle-peld'].forEach(function(k){
+    var el=document.getElementById('pckm-'+k);if(el)el.style.display=k===key?'inline':'none';
+  });
+  sluitPcPopup('materiaal');
+  pcBereken();
+}
+
+function lagenPerProdtype(p){
+  if(p==='Vel'||p==='Huls') return 1;
+  if(p==='Zak met invouw') return 4;
+  return 2;
+}
+
+function toonTab(tab){
+  document.getElementById('sectie-config').style.display=tab==='config'?'block':'none';
+  document.getElementById('sectie-uitleg').style.display=tab==='uitleg'?'block':'none';
+  var btnC=document.getElementById('tab-config'),btnU=document.getElementById('tab-uitleg');
   if(tab==='config'){
     btnC.style.borderColor='#34d399';btnC.style.background='rgba(52,211,153,0.15)';btnC.style.color='#34d399';
     btnU.style.borderColor='#1a2540';btnU.style.background='#0f1520';btnU.style.color='#9ca3af';
   } else {
     btnU.style.borderColor='#34d399';btnU.style.background='rgba(52,211,153,0.15)';btnU.style.color='#34d399';
     btnC.style.borderColor='#1a2540';btnC.style.background='#0f1520';btnC.style.color='#9ca3af';
+    updatePatroonTabel();
   }
-}
-
-function lagenPerProdtype(prodtype) {
-  if(prodtype==='Vel'||prodtype==='Huls') return 1;
-  if(prodtype==='Zak met invouw') return 4;
-  return 2;
-}
-
-function pcKiesProdtype(type){
-  document.getElementById('pc-prodtype').value=type;
-  document.querySelectorAll('.pc-type-btn').forEach(function(b){
-    var isActive=b.id==='pctype-'+type;
-    b.style.borderColor=isActive?'#a78bfa':'#1a2540';
-    b.style.background=isActive?'rgba(167,139,250,0.15)':'#0f1520';
-    b.style.color=isActive?'#a78bfa':'#9ca3af';
-  });
-  pcBereken();
 }
 
 function pcKiesPallet(type){
@@ -428,6 +308,22 @@ function pcKiesPatroon(pat){
   pcBereken();
 }
 
+function updatePatroonTabel(){
+  var palletB=_pcPallet==='blok'?1000:800;
+  var grens43=300;
+  var grensZigzag=Math.floor(palletB/2);
+  var tabel=document.getElementById('patroon-tabel-staand');
+  if(!tabel)return;
+  tabel.innerHTML=
+    '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="color:#60a5fa;font-weight:700;">Dia. &le;'+grens43+'mm</span><span style="color:#e5e7eb;">4-3-4 piramide (11/laag)</span></div>'+
+    '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2540;"><span style="color:#60a5fa;font-weight:700;">Dia. '+(grens43+1)+'-'+grensZigzag+'mm</span><span style="color:#e5e7eb;">Zigzag 2 rijen</span></div>'+
+    '<div style="display:flex;justify-content:space-between;padding:8px 0;"><span style="color:#9ca3af;font-weight:700;">Dia. &gt;'+grensZigzag+'mm</span><span style="color:#9ca3af;">Liggend stapelen</span></div>';
+}
+
+function rr(lbl,val,kleur){
+  return '<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #1a2540;"><div style="color:#9ca3af;font-size:11px;letter-spacing:1px;">'+lbl+'</div><div style="color:'+(kleur||'#e5e7eb')+';font-size:18px;font-weight:700;">'+val+'</div></div>';
+}
+
 function pcBereken(){
   var palletB=_pcPallet==='blok'?1000:800;
   var palletNaam=_pcPallet==='blok'?'Blokpallet 1000mm':'Euro pallet 800mm';
@@ -438,111 +334,90 @@ function pcBereken(){
   var dikte=parseFloat(document.getElementById('pc-dikte').value)||0;
   var koker=parseFloat(document.getElementById('pc-koker').value)||90;
   var aantalRollen=parseFloat(document.getElementById('pc-rollen').value)||0;
+  var prodtype=document.getElementById('pc-prodtype').value;
 
+  // Toon/verberg patroon sectie
+  var patSectie=document.getElementById('pc-patroon-sectie');
+  if(patSectie) patSectie.style.display=(breedte>500||!breedte)?'block':'none';
+
+  // Bereken rolD
   var rolD=rolDInput;
   if(!rolD&&zakrol&&lengte&&dikte){
-    var prodtype=document.getElementById('pc-prodtype')?document.getElementById('pc-prodtype').value:'Zak';
     var lagen=lagenPerProdtype(prodtype);
     rolD=Math.round(Math.sqrt((koker/2)*(koker/2)+(zakrol*lengte*dikte*lagen)/Math.PI)*2);
     var autoEl=document.getElementById('pc-rolD-auto');
-    if(autoEl) autoEl.textContent='Auto berekend: '+rolD+'mm';
+    if(autoEl) autoEl.textContent='Auto: '+rolD+'mm';
   } else {
     var autoEl2=document.getElementById('pc-rolD-auto');
     if(autoEl2) autoEl2.textContent='';
   }
   if(!rolD){document.getElementById('pc-resultaat').style.display='none';return;}
 
-  var staand = breedte>0 && breedte<=500;
-  // Toon/verberg liggend patroon sectie
-  var patSectie=document.getElementById('pc-patroon-sectie');
-  if(patSectie) patSectie.style.display=staand?'none':'block';
-  var html='', visual='', rpp=0, stapelHoogte=0, maxLagen=0, patroonLabel='';
+  var staand=breedte>0&&breedte<=500;
+  var html='',visual='',rpp=0,stapelHoogte=0,maxLagen=0,patroonLabel='';
 
-  function rr(lbl,val,kleur){return '<div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #1a2540;"><div style="color:#9ca3af;font-size:12px;letter-spacing:1px;">'+lbl+'</div><div style="color:'+(kleur||'#e5e7eb')+';font-size:18px;font-weight:700;">'+val+'</div></div>';}
+  var ROL='<span style="display:inline-block;width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#60a5fa,#3b82f6);border:2px solid #93c5fd;margin:3px;vertical-align:middle;"></span>';
+  var ROL_M='<span style="display:inline-block;width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#a78bfa,#7c3aed);border:2px solid #c4b5fd;margin:3px;vertical-align:middle;"></span>';
 
   if(staand){
-    // STAAND STAPELEN
-    var laagHoogte = breedte; // hoogte per laag = zakbreedte
-    maxLagen = Math.max(1, Math.floor(_pcMaxH / laagHoogte));
-    maxLagen = Math.min(maxLagen, 2); // max 2 lagen staand
+    var laagHoogte=breedte;
+    maxLagen=Math.min(2,Math.max(1,Math.floor(_pcMaxH/laagHoogte)));
+    var grens43=300,grensZigzag=Math.floor(palletB/2);
+    var rollenPerLaag,zigzag=false;
 
-    var rollenPerLaag, zigzag=false;
-
-    // Grenzen staand stapelen
-    // 4-3-4: 4 rollen passen in lengterichting 1200mm → max 300mm
-    var grens43 = 300; // floor(1200/4) = 300mm
-    // Zigzag: 2 rijen in breedterichting → max floor(palletB/2)
-    var grensZigzag = Math.floor(palletB/2);
-
-    if(rolD <= grens43){
-      // 4-3-4 piramide: rijA in lengterichting (1200mm), rijB in breedterichting
-      var rijA = 4; // altijd 4 rollen in lengterichting
-      var rijB = 3; // altijd 3 rollen ertussen
-      rollenPerLaag = rijA + rijB + rijA; // 11 per laag
-      patroonLabel = '4-3-4 piramide';
-      stapelHoogte = Math.round(maxLagen * laagHoogte);
-
-      // visualisatie: piramide per laag
-      visual = '';
-      for(var lg=maxLagen;lg>=1;lg--){
-        for(var ri=0;ri<rijA;ri++) visual+='&#128260;';
-        visual+='<br>';
-        for(var ri2=0;ri2<rijB;ri2++) visual+='&#9675;';
-        visual+='<br>';
-        for(var ri3=0;ri3<rijA;ri3++) visual+='&#128260;';
-        if(lg>1) visual+='<br><span style="font-size:12px;color:#1a2540;">&#9135;</span><br>';
-      }
-
-    } else if(rolD <= grensZigzag){
-      // ZIGZAG: 2 rijen in breedterichting, rollen in lengterichting (1200mm)
-      zigzag = true;
-      var rijLinks = rolD <= 300 ? 4 : Math.max(1, Math.floor(1200 / rolD));
-      var rijRechts = rijLinks;
-      rollenPerLaag = rijLinks + rijRechts;
-      patroonLabel = 'Zigzag 2 rijen ('+rijLinks+'+'+rijRechts+')';
-      stapelHoogte = Math.round(maxLagen * laagHoogte);
-
-      // visualisatie: zigzag
-      visual = '';
-      for(var lg2=maxLagen;lg2>=1;lg2--){
-        for(var r1=0;r1<rijLinks;r1++) visual+='&#128260;';
-        visual+='<br>';
-        visual+='&nbsp;&nbsp;';
-        for(var r2=0;r2<rijRechts;r2++) visual+='&#128260;';
-        if(lg2>1) visual+='<br><span style="font-size:12px;color:#1a2540;">&#9135;</span><br>';
-      }
-
+    if(rolD<=grens43){
+      rollenPerLaag=11;patroonLabel='4-3-4 piramide';
+    } else if(rolD<=grensZigzag){
+      zigzag=true;
+      var rij=Math.max(1,Math.floor(1200/rolD));
+      rollenPerLaag=rij*2;patroonLabel='Zigzag '+rij+'+'+rij;
     } else {
-      // Grote diameter - zigzag met rollen in lengterichting (1200mm)
-      zigzag = true;
-      var rijLinks2 = Math.max(1, Math.floor(1200 / rolD));
-      rollenPerLaag = rijLinks2 * 2;
-      patroonLabel = 'Zigzag 2 rijen ('+rijLinks2+'+'+rijLinks2+')';
-      stapelHoogte = Math.round(maxLagen * laagHoogte);
+      zigzag=true;
+      var rij2=Math.max(1,Math.floor(1200/rolD));
+      rollenPerLaag=rij2*2;patroonLabel='Zigzag '+rij2+'+'+rij2;
     }
+    stapelHoogte=Math.round(maxLagen*laagHoogte);
+    rpp=rollenPerLaag*maxLagen;
 
-    rpp = rollenPerLaag * maxLagen;
-
-    html = rr('PALLET', palletNaam) +
-           rr('ROLDIAMETER', rolD+'mm', '#60a5fa') +
-           rr('STAPELWIJZE', zigzag ? 'Staand zigzag' : 'Staand piramide', '#60a5fa') +
-           rr('PATROON', patroonLabel, '#60a5fa') +
-           rr('ROLLEN PER LAAG', rollenPerLaag+' rollen', '#34d399') +
-           rr('AANTAL LAGEN', maxLagen+' lagen', '#a78bfa') +
-           rr('STAPELHOOGTE', stapelHoogte+'mm') +
-           rr('ROLLEN PER PALLET', rpp+' rollen', '#f59e0b');
+    html=rr('PALLET',palletNaam)+rr('ROLDIAMETER',rolD+'mm','#60a5fa')+
+         rr('STAPELWIJZE',zigzag?'Staand zigzag':'Staand piramide','#60a5fa')+
+         rr('PATROON',patroonLabel,'#60a5fa')+
+         rr('ROLLEN PER LAAG',rollenPerLaag+' rollen','#34d399')+
+         rr('AANTAL LAGEN',maxLagen+' lagen','#a78bfa')+
+         rr('STAPELHOOGTE',stapelHoogte+'mm')+
+         rr('ROLLEN PER PALLET',rpp+' rollen','#f59e0b');
 
     if(aantalRollen>0){
-      var pallets=Math.ceil(aantalRollen/rpp);
-      var los=aantalRollen%rpp;
-      html += rr('AANTAL PALLETS', pallets+' pallets', '#f59e0b');
-      if(los>0) html += rr('LOS OP PALLET', los+' rollen', '#9ca3af');
+      var p=Math.ceil(aantalRollen/rpp),l=aantalRollen%rpp;
+      html+=rr('AANTAL PALLETS',p+' pallets','#f59e0b');
+      if(l>0)html+=rr('LOS OP PALLET',l+' rollen','#9ca3af');
     }
-    html += rr('HUIDJES', 'Niet nodig bij staand', '#6b7280');
+    html+=rr('HUIDJES','Niet nodig bij staand','#6b7280');
+
+    // Visualisatie staand
+    for(var lg=maxLagen;lg>=1;lg--){
+      if(rolD<=300){
+        visual+='<div style="display:flex;justify-content:center;margin:2px 0;">';
+        for(var i=0;i<4;i++) visual+=ROL;
+        visual+='</div><div style="display:flex;justify-content:center;margin:2px 0;padding-left:18px;">';
+        for(var j=0;j<3;j++) visual+=ROL_M;
+        visual+='</div><div style="display:flex;justify-content:center;margin:2px 0;">';
+        for(var k=0;k<4;k++) visual+=ROL;
+        visual+='</div>';
+      } else {
+        var rj=Math.max(1,Math.floor(1200/rolD));
+        visual+='<div style="display:flex;justify-content:center;margin:2px 0;">';
+        for(var r1=0;r1<rj;r1++) visual+=ROL;
+        visual+='</div><div style="display:flex;justify-content:center;margin:2px 0;padding-left:18px;">';
+        for(var r2=0;r2<rj;r2++) visual+=ROL_M;
+        visual+='</div>';
+      }
+      if(lg>1)visual+='<div style="border-top:1px dashed #1a2540;margin:10px 20px;"></div>';
+    }
 
   } else {
-    // LIGGEND STAPELEN (originele logica)
-    var rijA2, rijB2;
+    // LIGGEND
+    var rijA2,rijB2;
     if(_pcPatroon==='43'){rijA2=4;rijB2=3;}
     else if(_pcPatroon==='54'){rijA2=5;rijB2=4;}
     else if(_pcPatroon==='65'){rijA2=6;rijB2=5;}
@@ -554,6 +429,11 @@ function pcBereken(){
     rpp=paren*(rijA2+rijB2)+extra*rijA2;
     stapelHoogte=Math.round(rolD+(maxLagen-1)*rolD*0.866);
 
+    var huidjeRuw=rijA2*rolD+150;
+    var hMaten=[700,750,800,850,900,950,1000,1050,1100,1150,1200,1250,1300,1350,1400];
+    var huidje=hMaten[hMaten.length-1];
+    for(var hi=0;hi<hMaten.length;hi++){if(hMaten[hi]>=huidjeRuw){huidje=hMaten[hi];break;}}
+
     var pallets2=0,losRollen=0,rppToon=rpp;
     if(aantalRollen>0){
       var volP=Math.floor(aantalRollen/rpp),rest=aantalRollen%rpp;
@@ -563,33 +443,28 @@ function pcBereken(){
       else pallets2=volP+1;
       if(pallets2===0)pallets2=1;
     }
+    var aH=pallets2>0?Math.floor(maxLagen/2)*pallets2:0;
 
-    var huidjeRuw=rijA2*rolD+150;
-    var hMaten=[700,750,800,850,900,950,1000,1050,1100,1150,1200,1250,1300,1350,1400];
-    var huidje=hMaten[hMaten.length-1];
-    for(var hi=0;hi<hMaten.length;hi++){if(hMaten[hi]>=huidjeRuw){huidje=hMaten[hi];break;}}
-    var aantalHuidjes=pallets2>0?Math.floor(maxLagen/2)*pallets2:0;
-
-    html = rr('PALLET',palletNaam)+
-           rr('ROLDIAMETER',rolD+'mm','#60a5fa')+
-           rr('STAPELWIJZE','Liggend piramide','#f59e0b')+
-           rr('RIJEN LAAG 1',rijA2+' rollen','#34d399')+
-           rr('RIJEN LAAG 2',rijB2+' rollen','#34d399')+
-           rr('PATROON',rijA2+'-'+rijB2+' piramide')+
-           rr('AANTAL LAGEN',maxLagen+' lagen','#a78bfa')+
-           rr('STAPELHOOGTE',stapelHoogte+'mm')+
-           rr('ROLLEN PER PALLET',rppToon+' rollen','#f59e0b');
+    html=rr('PALLET',palletNaam)+rr('ROLDIAMETER',rolD+'mm','#60a5fa')+
+         rr('STAPELWIJZE','Liggend piramide','#f59e0b')+
+         rr('PATROON',rijA2+'-'+rijB2)+
+         rr('AANTAL LAGEN',maxLagen+' lagen','#a78bfa')+
+         rr('STAPELHOOGTE',stapelHoogte+'mm')+
+         rr('ROLLEN PER PALLET',rppToon+' rollen','#f59e0b');
     if(aantalRollen>0)html+=rr('AANTAL PALLETS',pallets2+' pallets','#f59e0b');
     if(losRollen>0)html+=rr('LOS OP PALLET',losRollen+' rollen','#9ca3af');
     html+=rr('HUIDJE LENGTE',huidje+'mm','#34d399');
-    if(aantalRollen>0)html+=rr('AANTAL HUIDJES',aantalHuidjes+' stuks');
+    if(aantalRollen>0&&aH>0)html+=rr('AANTAL HUIDJES',aH+' stuks');
 
-    visual='';
+    // Visualisatie liggend
     for(var lag=maxLagen;lag>=1;lag--){
-      var rijv=(lag%2===1)?rijA2:rijB2;
-      var kleurL=(lag%2===1)?'&#128992;':'&#128994;';
-      for(var ri4=0;ri4<rijv;ri4++) visual+=kleurL;
-      if(lag>1) visual+='<br>';
+      var rv=(lag%2===1)?rijA2:rijB2;
+      var kleurL=(lag%2===1)?'#f59e0b':'#34d399';
+      visual+='<div style="display:flex;justify-content:center;margin:2px 0;">';
+      for(var ri=0;ri<rv;ri++){
+        visual+='<span style="display:inline-block;width:34px;height:34px;border-radius:50%;background:'+kleurL+';border:2px solid '+kleurL+';opacity:'+(lag%2===1?'1':'0.7')+';margin:3px;vertical-align:middle;"></span>';
+      }
+      visual+='</div>';
     }
   }
 
@@ -598,6 +473,7 @@ function pcBereken(){
   document.getElementById('pc-resultaat').style.display='block';
 }
 
+// Invul modal
 function openInvul(el,label,snel){
   _invulEl=el;_invulWaarde=el.value?String(el.value):'';
   document.getElementById('invul-label').textContent=label;
@@ -624,7 +500,9 @@ function invulOk(){
   invulSluit();
   pcBereken();
 }
+
 updatePatroonTabel();
+document.getElementById('toon-pc-materiaal').innerHTML='LDPE';
 </script>
 
 </body>
