@@ -552,7 +552,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 <script>
 'use strict';
 var FB_URL = 'https://amutec-tsa-ra-1640-default-rtdb.europe-west1.firebasedatabase.app';
-var APP_VERSION = '17.9';
+var APP_VERSION = '18.1';
 
 // Hardcoded fallback
 var OPERATORS_FALLBACK = {
@@ -1042,7 +1042,7 @@ function berekenOrder(){
   var totaleFolieMeter=aantalRollen*rolLengte;
   var huidjeLengte=0,aantalHuidjes=0,huidjesTotaalM=0;
   if(!staand&&lagen>1){
-    var huidjeRuw=rollenPerRijCalc*rolDiameter+150;
+    var huidjeRuw=rollenPerRijCalc*rolDiameter+90;
     var hMaten=[700,750,800,850,900,950,1000,1050,1100,1150,1200,1250,1300,1350,1400];
     huidjeLengte=hMaten[hMaten.length-1];
     for(var hi=0;hi<hMaten.length;hi++){if(hMaten[hi]>=huidjeRuw){huidjeLengte=hMaten[hi];break;}}
@@ -1312,7 +1312,7 @@ function openDetail(key){
         var rollen2=stuks>0?Math.ceil(stuks/zakrol):0;
         var volP2=rollen2>0?Math.floor(rollen2/rpPallet2):0,restD2=rollen2>0?rollen2%rpPallet2:0,losD2=0,pallets2=0,rpPalletToon2=rpPallet2;
         if(rollen2>0){if(restD2===0)pallets2=volP2;else if(restD2<=4){pallets2=volP2;losD2=restD2;}else if(volP2>0&&restD2<=volP2){pallets2=volP2;rpPalletToon2=rpPallet2+1;}else pallets2=volP2+1;if(pallets2===0)pallets2=1;}
-        var huidjeD=0;if(!staandD&&lagenD2>1){var hRuw2=(Math.max(1,Math.floor(palletD.b/rolD)))*rolD+150,hM2=[700,750,800,850,900,950,1000,1050,1100,1150,1200,1250,1300,1350,1400];huidjeD=hM2[hM2.length-1];for(var hi3=0;hi3<hM2.length;hi3++){if(hM2[hi3]>=hRuw2){huidjeD=hM2[hi3];break;}}}
+        var huidjeD=0;if(!staandD&&lagenD2>1){var hRuw2=rijAD*rolD+90,hM2=[700,750,800,850,900,950,1000,1050,1100,1150,1200,1250,1300,1350,1400];huidjeD=hM2[hM2.length-1];for(var hi3=0;hi3<hM2.length;hi3++){if(hM2[hi3]>=hRuw2){huidjeD=hM2[hi3];break;}}}
         orderHtml='<div class="slabel">Order Berekening</div><div class="info-block">';
         if(stuks>0)orderHtml+='<div class="info-row"><div class="ir-lbl">TE LEVEREN</div><div class="ir-val">'+stuks.toLocaleString()+' st</div></div>';
         if(rollen2>0)orderHtml+='<div class="info-row"><div class="ir-lbl">AANTAL ROLLEN</div><div class="ir-val" style="color:#a78bfa;">'+rollen2+'</div></div>';
