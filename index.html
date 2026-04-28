@@ -168,7 +168,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
         </div>
         <button onclick="terugNaarStap1()" style="width:100%;background:transparent;border:1px solid #1a2540;border-radius:4px;color:#6b7280;font-family:'Courier New',Courier,monospace;font-size:13px;padding:10px;cursor:pointer;margin-top:10px;">&#8249; Terug</button>
       </div>
-      <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v18.1 &#8212; 2026-04-28</div>
+      <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v18.2 &#8212; 2026-04-29</div>
     </div>
   </div>
 </div>
@@ -552,7 +552,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 <script>
 'use strict';
 var FB_URL = 'https://amutec-tsa-ra-1640-default-rtdb.europe-west1.firebasedatabase.app';
-var APP_VERSION = '18.1';
+var APP_VERSION = '18.2';
 
 // Hardcoded fallback
 var OPERATORS_FALLBACK = {
@@ -761,7 +761,8 @@ function doLoginPin() {
     sessionStorage.setItem('tsa_auth',APP_PW);
     sessionStorage.setItem('tsa_operator',_huidigeOperator);
     toonAdminFuncties(_huidigeOperator==='Dirk');
-    setTimeout(function(){updateHomeOperator();go('s-home');},400);
+    var isAdm2=OPERATORS_CONFIG[_huidigeOperator]&&OPERATORS_CONFIG[_huidigeOperator].admin;
+    setTimeout(function(){updateHomeOperator();if(isAdm2)go('s-home');else window.location.href='operator.html';},400);
   } else {
     document.getElementById('login-pin-err').style.display='block';
     document.getElementById('login-pin').value='';
@@ -787,8 +788,12 @@ function checkLogin() {
           return;
         }
         toonAdminFuncties(_huidigeOperator && OPERATORS_CONFIG[_huidigeOperator] && OPERATORS_CONFIG[_huidigeOperator].admin);
-        if(_huidigeOperator){ updateHomeOperator(); go('s-home'); }
-        else { go('s-login'); toonStap2(); }
+        if(_huidigeOperator){
+          updateHomeOperator();
+          var isAdm=OPERATORS_CONFIG[_huidigeOperator]&&OPERATORS_CONFIG[_huidigeOperator].admin;
+          if(isAdm) go('s-home');
+          else window.location.href='operator.html';
+        } else { go('s-login'); toonStap2(); }
       } else {
         go('s-login');
       }
@@ -1165,6 +1170,7 @@ function renderReceptenTree(lijst,query,openAll){
           '</div>'+
           '<div style="display:flex;gap:6px;align-items:center;flex-shrink:0;">'+
             '<button onclick="event.stopPropagation();bewerkRecept(\''+rk+'\')" style="background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.4);border-radius:6px;color:#f59e0b;font-size:16px;width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center;">&#9998;</button>'+
+            (isAdmin()?'<button onclick="event.stopPropagation();togglePubliceer(\''+rk+'\','+(rec.operator_gepubliceerd?'true':'false')+')" style="background:'+(rec.operator_gepubliceerd?'rgba(52,211,153,0.2)':'rgba(100,100,100,0.1)')+';border:1px solid '+(rec.operator_gepubliceerd?'#34d399':'#1a2540')+';border-radius:6px;font-size:14px;width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center;" title="'+(rec.operator_gepubliceerd?'Verwijderen uit operator recepten':'Toevoegen aan operator recepten')+'">'+(rec.operator_gepubliceerd?'&#128994;':'&#9675;')+'</button>':'')+
             '<button onclick="event.stopPropagation();window._delKey=\''+rk+'\';verwijderRecept(null,window._delKey)" style="background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.4);border-radius:6px;color:#ef4444;font-size:16px;width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center;">&#10005;</button>'+
           '</div>'+
         '</div>'+
@@ -1181,6 +1187,14 @@ function renderReceptenTree(lijst,query,openAll){
     '</div>';
   }
   el.innerHTML=html;
+}
+
+function togglePubliceer(key, huidigGepubliceerd){
+  var nieuweWaarde = !huidigGepubliceerd;
+  fbPatch('/recepten', key, {operator_gepubliceerd: nieuweWaarde}, function(){
+    toast(nieuweWaarde ? '&#128994; Toegevoegd aan operator recepten' : 'Verwijderd uit operator recepten');
+    laadRecepten();
+  });
 }
 
 function verwijderRecept(btn,key){

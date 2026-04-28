@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#070a10">
+<title>TSA Operator Recepten</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{height:100%}
+body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospace;min-height:100%;overscroll-behavior:none;font-size:17px}
+.screen{display:none;flex-direction:column;min-height:100dvh;}
+.screen.active{display:flex}
+.topbar{background:#0f1520;border-bottom:2px solid #34d399;height:56px;display:flex;align-items:center;padding:0 16px;gap:12px;position:sticky;top:0;z-index:100;flex-shrink:0;}
+.back-btn{background:none;border:1px solid #1a2540;border-radius:4px;color:#34d399;font-size:22px;cursor:pointer;padding:4px 10px;line-height:1;}
+.topbar-title{font-weight:700;font-size:16px;letter-spacing:2px;text-transform:uppercase;color:#e5e7eb;flex:1;}
+.content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px 14px 80px;}
+.slabel{font-size:9px;color:#34d399;letter-spacing:3px;text-transform:uppercase;display:flex;align-items:center;gap:10px;margin:20px 0 10px}
+.slabel:first-child{margin-top:0}
+.slabel::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,#1a2540,transparent)}
+.info-block{background:#0f1520;border:1px solid #1a2540;border-radius:4px;overflow:hidden;margin-bottom:8px}
+.info-row{display:flex;align-items:center;padding:14px 16px;border-bottom:1px solid #1a2540;gap:10px}
+.info-row:last-child{border-bottom:none}
+.ir-lbl{font-size:10px;color:#9ca3af;letter-spacing:1px;text-transform:uppercase;min-width:140px;flex-shrink:0;}
+.ir-val{font-size:20px;font-weight:700;color:#e5e7eb;}
+.temp-card{background:#070a10;border:1px solid #1a2540;border-radius:6px;padding:14px 18px;text-align:center;flex:1;}
+.temp-lbl{font-size:9px;color:#6b7280;letter-spacing:1px;margin-bottom:8px;}
+.pulse{width:8px;height:8px;border-radius:50%;background:#34d399;animation:pulse 2s infinite;flex-shrink:0;}
+@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 8px #34d39988}50%{opacity:.2;box-shadow:none}}
+.rol-cirkel{display:inline-block;width:30px;height:30px;border-radius:50%;margin:3px;vertical-align:middle;}
+.recept-kaart{background:#0f1520;border:1px solid #1a2540;border-left:4px solid #34d399;border-radius:6px;padding:16px 18px;margin-bottom:10px;cursor:pointer;-webkit-user-select:none;user-select:none;}
+.recept-kaart:active{background:#141d2e;}
+.recept-naam{font-size:20px;font-weight:700;color:#e5e7eb;letter-spacing:1px;}
+.recept-meta{font-size:11px;color:#9ca3af;margin-top:6px;display:flex;flex-wrap:wrap;gap:8px;}
+.tag{font-size:9px;padding:2px 8px;border-radius:3px;background:#0a0d14;border:1px solid #1a2540;color:#9ca3af;}
+.tag-groen{border-color:rgba(52,211,153,.4);color:#34d399;}
+.numpad-overlay{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:9100;display:none;align-items:flex-end;justify-content:center;}
+.numpad-box{background:#0f1520;border-top:3px solid #34d399;width:100%;max-width:480px;padding:24px 20px 36px;border-radius:12px 12px 0 0;}
+.numpad-waarde{font-size:52px;font-weight:700;color:#fcd34d;text-align:center;margin-bottom:16px;min-height:64px;letter-spacing:4px;background:#070a10;border:2px solid rgba(52,211,153,0.6);border-radius:8px;padding:12px;}
+.numpad-nrs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:8px;}
+.numpad-nr{background:#141d2e;border:1px solid #1a2540;border-radius:8px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:26px;font-weight:700;padding:18px 0;cursor:pointer;text-align:center;}
+.numpad-nr:active{background:#34d399;color:#000;}
+.numpad-ok{width:100%;background:#34d399;color:#000;border:none;border-radius:8px;font-family:'Courier New',Courier,monospace;font-weight:700;font-size:18px;letter-spacing:2px;padding:16px;cursor:pointer;margin-top:4px;}
+.numpad-ann{width:100%;background:transparent;border:1px solid #1a2540;border-radius:8px;color:#6b7280;font-family:'Courier New',Courier,monospace;font-size:13px;padding:12px;cursor:pointer;margin-top:8px;}
+.static-blok{background:#0f1520;border:1px solid #1a2540;border-radius:6px;padding:14px 16px;margin-bottom:8px;}
+.static-waarde{font-size:20px;font-weight:700;color:#34d399;margin-bottom:8px;}
+.static-mat{font-size:13px;color:#9ca3af;}
+</style>
+</head>
+<body>
+
+<!-- WELKOM SCHERM -->
+
+<div class="screen active" id="s-welkom">
+  <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100dvh;padding:32px 24px;background:#070a10;position:relative;">
+    <div style="position:absolute;top:20px;left:20px;width:24px;height:24px;border-top:2px solid #34d399;border-left:2px solid #34d399;"></div>
+    <div style="position:absolute;top:20px;right:20px;width:24px;height:24px;border-top:2px solid #34d399;border-right:2px solid #34d399;"></div>
+    <div style="position:absolute;bottom:20px;left:20px;width:24px;height:24px;border-bottom:2px solid #34d399;border-left:2px solid #34d399;"></div>
+    <div style="position:absolute;bottom:20px;right:20px;width:24px;height:24px;border-bottom:2px solid #34d399;border-right:2px solid #34d399;"></div>
+
+```
+<div style="background:#34d399;color:#000;font-size:9px;letter-spacing:3px;padding:5px 16px;text-transform:uppercase;margin-bottom:14px;">AMUTEC</div>
+<div style="font-weight:700;font-size:36px;letter-spacing:3px;text-transform:uppercase;color:#e5e7eb;text-align:center;line-height:1.1;margin-bottom:6px;">Operator<br>Recepten</div>
+<div style="font-size:11px;color:#9ca3af;letter-spacing:2px;margin-bottom:6px;">TSA D-ROLLER 1600</div>
+
+<div style="display:flex;align-items:center;gap:8px;margin-bottom:32px;">
+  <div class="pulse"></div>
+  <span style="font-size:12px;color:#34d399;letter-spacing:2px;" id="welkom-operator">--</span>
+</div>
+
+<div style="width:100%;max-width:320px;">
+  <div style="font-size:9px;color:#9ca3af;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;">Klantnummer</div>
+  <div onclick="openNumpad()" style="width:100%;background:#0f1520;border:2px solid rgba(52,211,153,0.6);border-radius:8px;padding:20px;text-align:center;cursor:pointer;font-size:36px;font-weight:700;color:#fcd34d;letter-spacing:4px;min-height:80px;" id="klant-display">
+    ----
+  </div>
+  <div style="font-size:10px;color:#6b7280;text-align:center;margin-top:8px;">Druk om klantnummer in te voeren</div>
+
+  <button onclick="zoekKlant()" style="width:100%;margin-top:16px;background:#34d399;color:#000;border:none;border-radius:6px;font-family:'Courier New',Courier,monospace;font-weight:700;font-size:18px;letter-spacing:2px;text-transform:uppercase;padding:16px;cursor:pointer;">ZOEKEN &#8250;</button>
+  <div id="zoek-err" style="display:none;color:#ef4444;font-size:11px;text-align:center;margin-top:10px;letter-spacing:1px;">GEEN RECEPTEN GEVONDEN</div>
+</div>
+```
+
+  </div>
+</div>
+
+<!-- RECEPTEN LIJST -->
+
+<div class="screen" id="s-lijst">
+  <div class="topbar">
+    <button class="back-btn" onclick="go('s-welkom')">&#8249;</button>
+    <div class="topbar-title" id="lijst-title">Recepten</div>
+  </div>
+  <div class="content" id="lijst-content"></div>
+</div>
+
+<!-- RECEPT DETAIL -->
+
+<div class="screen" id="s-detail">
+  <div class="topbar">
+    <button class="back-btn" onclick="go('s-lijst')">&#8249;</button>
+    <div class="topbar-title" id="detail-title">Recept</div>
+  </div>
+  <div class="content" id="detail-content"></div>
+</div>
+
+<!-- NUMPAD -->
+
+<div class="numpad-overlay" id="numpad-overlay">
+  <div class="numpad-box">
+    <div style="font-size:10px;color:#34d399;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;">Klantnummer</div>
+    <div class="numpad-waarde" id="numpad-waarde">----</div>
+    <div class="numpad-nrs">
+      <div class="numpad-nr" onclick="npCijfer('7')">7</div><div class="numpad-nr" onclick="npCijfer('8')">8</div><div class="numpad-nr" onclick="npCijfer('9')">9</div>
+      <div class="numpad-nr" onclick="npCijfer('4')">4</div><div class="numpad-nr" onclick="npCijfer('5')">5</div><div class="numpad-nr" onclick="npCijfer('6')">6</div>
+      <div class="numpad-nr" onclick="npCijfer('1')">1</div><div class="numpad-nr" onclick="npCijfer('2')">2</div><div class="numpad-nr" onclick="npCijfer('3')">3</div>
+      <div class="numpad-nr" onclick="npCijfer('0')">0</div>
+      <div class="numpad-nr" onclick="npWis()" style="color:#ef4444;">&#9003;</div>
+      <div class="numpad-nr" onclick="zoekKlant()" style="background:#34d399;color:#000;font-size:18px;">&#8250;</div>
+    </div>
+    <button class="numpad-ann" onclick="sluitNumpad()">&#10005; Annuleer</button>
+  </div>
+</div>
+
+<script>
+'use strict';
+var FB_URL = 'https://amutec-tsa-ra-1640-default-rtdb.europe-west1.firebasedatabase.app';
+var _operator = '';
+var _klantNr = '';
+var _npWaarde = '';
+var _recepten = [];
+
+// Init -- haal operator op uit sessionStorage
+function init(){
+  _operator = sessionStorage.getItem('tsa_operator') || 'Operator';
+  document.getElementById('welkom-operator').textContent = _operator.toUpperCase();
+}
+
+function go(id){
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
+  var el = document.getElementById(id);
+  if(el){ el.classList.add('active'); var c=el.querySelector('.content');if(c)c.scrollTop=0; }
+}
+
+// NUMPAD
+function openNumpad(){
+  _npWaarde = _klantNr || '';
+  document.getElementById('numpad-waarde').textContent = _npWaarde || '----';
+  document.getElementById('numpad-overlay').style.display = 'flex';
+}
+function sluitNumpad(){ document.getElementById('numpad-overlay').style.display = 'none'; }
+function npCijfer(c){
+  _npWaarde += c;
+  document.getElementById('numpad-waarde').textContent = _npWaarde || '----';
+}
+function npWis(){
+  _npWaarde = _npWaarde.slice(0,-1);
+  document.getElementById('numpad-waarde').textContent = _npWaarde || '----';
+}
+
+// ZOEKEN
+function zoekKlant(){
+  var nr = _npWaarde || _klantNr;
+  if(!nr){ document.getElementById('zoek-err').style.display='block'; return; }
+  _klantNr = nr;
+  document.getElementById('klant-display').textContent = nr;
+  sluitNumpad();
+  document.getElementById('zoek-err').style.display = 'none';
+
+  // Laad gepubliceerde recepten van dit klantnummer
+  fetch(FB_URL + '/recepten.json')
+    .then(function(r){return r.json();})
+    .then(function(data){
+      if(!data){ toonGeenResultaten(); return; }
+      var gevonden = [];
+      Object.keys(data).forEach(function(k){
+        var r = data[k];
+        if(r && r.klantnr === nr && r.operator_gepubliceerd === true){
+          r._key = k;
+          gevonden.push(r);
+        }
+      });
+      if(!gevonden.length){ toonGeenResultaten(); return; }
+      _recepten = gevonden;
+      toonLijst(nr, gevonden);
+    })
+    .catch(function(){ toonGeenResultaten(); });
+}
+
+function toonGeenResultaten(){
+  document.getElementById('zoek-err').style.display = 'block';
+}
+
+function toonLijst(nr, lijst){
+  document.getElementById('lijst-title').textContent = 'Klant ' + nr;
+  var html = '';
+  lijst.forEach(function(r){
+    html += '<div class="recept-kaart" onclick="openDetail(\''+r._key+'\')">';
+    html += '<div class="recept-naam">'+(r.prodtype||'')+(r.breedte?' '+r.breedte+'mm':'')+' &times; '+(r.lengte||'')+'mm</div>';
+    html += '<div class="recept-meta">';
+    html += '<span class="tag tag-groen">'+r.klantnaam+'</span>';
+    html += '<span class="tag">'+(r.materiaal||'').toUpperCase()+'</span>';
+    if(r.snelheid) html += '<span class="tag">'+r.snelheid+' m/min</span>';
+    if(r.seal) html += '<span class="tag">'+r.seal+' ms</span>';
+    html += '</div></div>';
+  });
+  document.getElementById('lijst-content').innerHTML = html;
+  go('s-lijst');
+}
+
+function openDetail(key){
+  var r = null;
+  for(var i=0;i<_recepten.length;i++){if(_recepten[i]._key===key){r=_recepten[i];break;}}
+  if(!r) return;
+
+  document.getElementById('detail-title').textContent = (r.klantnr||'') + ' - ' + (r.prodtype||'');
+
+  function row(lbl,val,kleur){
+    if(!val&&val!==0) return '';
+    return '<div class="info-row"><div class="ir-lbl">'+lbl+'</div><div class="ir-val" style="color:'+(kleur||'#e5e7eb')+';">'+val+'</div></div>';
+  }
+
+  var html = '';
+
+  // VAK 1: PRODUCTIE
+  html += '<div class="slabel">Productie</div>';
+  html += '<div class="info-block">';
+  html += row('Sealtijd', r.seal ? r.seal+' ms' : null, '#fcd34d');
+  html += row('Snelheid', r.snelheid ? r.snelheid+' m/min' : null, '#fcd34d');
+  html += row('Zakken/rol', r.zakrol||r.order_zakrol, '#fcd34d');
+  if(r.order_stuks&&r.order_zakrol){
+    var rollen = Math.ceil(parseFloat(r.order_stuks)/parseFloat(r.order_zakrol));
+    html += row('Aantal rollen', rollen+' rol', '#a78bfa');
+  }
+  html += '</div>';
+
+  // VAK 2: OPWIKKELAAR RA
+  html += '<div class="slabel">Opwikkelaar RA</div>';
+  html += '<div class="info-block">';
+  var o1 = r.offset1_werke ? parseFloat(r.offset1_werke) : 0;
+  var o2 = o1 ? Math.round(o1/2) : 0;
+  if(o1) html += row('Offset 1', o1, o1==r.offset1_werke?'#34d399':'#60a5fa');
+  if(o2) html += row('Offset 2', o2, o1==r.offset1_werke?'#34d399':'#60a5fa');
+  html += row('Koker diameter', r.koker ? r.koker+' mm' : null);
+  html += row('Cycle drukker', r.drukker ? 'AAN' + (r.drukker_inst?' -- '+r.drukker_inst:'') : 'UIT');
+  html += '</div>';
+
+  // VAK 3: ACCESSOIRES RA
+  html += '<div class="slabel">Accessoires RA</div>';
+  html += '<div class="static-blok">';
+  html += '<div style="font-size:9px;color:#9ca3af;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">Static Charger</div>';
+  html += '<div class="static-waarde">'+(r.static_ch||'Off')+'</div>';
+  if(r.static_mat&&parseFloat(r.static_mat)>0){
+    html += '<div class="static-mat">Material to be Charged: <strong style="color:#e5e7eb;">'+r.static_mat+' mm</strong></div>';
+  }
+  html += '</div>';
+
+  // VAK 4: TEMPERATUUR
+  html += '<div class="slabel">Temperatuur Sealer</div>';
+  html += '<div style="display:flex;gap:16px;margin-bottom:8px;">';
+  html += '<div class="temp-card"><div class="temp-lbl">BOVENSTE &deg;C</div><div style="font-size:42px;font-weight:700;color:#fcd34d;text-align:center;">'+(r.temp_boven||'--')+'</div></div>';
+  html += '<div style="font-size:20px;color:#1a2540;align-self:center;">|</div>';
+  html += '<div class="temp-card"><div class="temp-lbl">ONDERSTE &deg;C</div><div style="font-size:42px;font-weight:700;color:#fcd34d;text-align:center;">'+(r.temp_onder||'--')+'</div></div>';
+  html += '</div>';
+
+  // PALLET VISUALISATIE (als beschikbaar)
+  if(r.order_zakrol&&r.breedte&&r.lengte&&r.dikte){
+    var breedte=parseFloat(r.breedte),lengte=parseFloat(r.lengte),dikte=parseFloat(r.dikte);
+    var zakrol=parseFloat(r.order_zakrol)||parseFloat(r.zakrol)||0;
+    var koker=parseFloat(r.koker)||90;
+    var lagen_n = r.prodtype==='Vel'||r.prodtype==='Huls'?1:r.prodtype==='Zak met invouw'?4:2;
+    var rolD = Math.round(Math.sqrt((koker/2)*(koker/2)+(zakrol*lengte*dikte*lagen_n)/Math.PI)*2);
+    var palletB = r.order_pallet==='blok'?1000:800;
+    var maxH = (r.order_maxhoogte==='1'||r.order_maxhoogte===1)?1050:1550;
+    var staand = breedte<=500;
+
+    html += '<div class="slabel">Pallet Stapeling</div>';
+    html += '<div style="background:#0f1520;border:1px solid #a78bfa;border-radius:6px;padding:16px;margin-bottom:8px;text-align:center;">';
+    html += '<div style="font-size:10px;color:#a78bfa;letter-spacing:2px;margin-bottom:12px;">';
+    html += (r.order_pallet==='blok'?'Blokpallet 1000mm':'Euro pallet 800mm')+' &bull; &#216;'+rolD+'mm &bull; '+(staand?'Staand':'Liggend');
+    html += '</div>';
+
+    var ROL='<span class="rol-cirkel" style="background:linear-gradient(135deg,#60a5fa,#3b82f6);border:2px solid #93c5fd;"></span>';
+    var ROL_M='<span class="rol-cirkel" style="background:linear-gradient(135deg,#a78bfa,#7c3aed);border:2px solid #c4b5fd;"></span>';
+    var visual='';
+
+    if(staand){
+      var maxLS=Math.min(2,Math.max(1,Math.floor(maxH/breedte)));
+      if(rolD<=300){
+        for(var lg=maxLS;lg>=1;lg--){
+          visual+='<div style="display:flex;justify-content:center;margin:2px 0;">';for(var i=0;i<4;i++)visual+=ROL;visual+='</div>';
+          visual+='<div style="display:flex;justify-content:center;margin:2px 0;padding-left:18px;">';for(var j=0;j<3;j++)visual+=ROL_M;visual+='</div>';
+          visual+='<div style="display:flex;justify-content:center;margin:2px 0;">';for(var k=0;k<4;k++)visual+=ROL;visual+='</div>';
+          if(lg>1)visual+='<div style="border-top:1px dashed #1a2540;margin:8px 20px;"></div>';
+        }
+      } else {
+        var rj=Math.max(1,Math.floor(1200/rolD));
+        visual+='<div style="display:flex;justify-content:center;margin:2px 0;">';for(var r1=0;r1<rj;r1++)visual+=ROL;visual+='</div>';
+        visual+='<div style="display:flex;justify-content:center;margin:2px 0;padding-left:18px;">';for(var r2=0;r2<rj;r2++)visual+=ROL_M;visual+='</div>';
+      }
+    } else {
+      var maxL2=1;for(var nl=2;nl<=20;nl++){if(rolD+(nl-1)*rolD*0.866<=maxH)maxL2=nl;else break;}
+      var par=Math.floor(maxL2/2),ext=maxL2%2;
+      var rAl=Math.max(1,Math.floor(palletB/rolD)),rBl=Math.max(1,rAl-1),rppl=par*(rAl+rBl)+ext*rAl;
+      var rAb=Math.max(1,Math.floor(1200/rolD)),rBb=Math.max(1,rAb-1),rppb=par*(rAb+rBb)+ext*rAb;
+      var rijA=rppb>rppl?rAb:rAl,rijB=rppb>rppl?rBb:rBl;
+      for(var lag=maxL2;lag>=1;lag--){
+        var rv=(lag%2===1)?rijA:rijB,kl=(lag%2===1)?'#f59e0b':'#34d399';
+        visual+='<div style="display:flex;justify-content:center;margin:2px 0;">';
+        for(var ri=0;ri<rv;ri++)visual+='<span class="rol-cirkel" style="background:'+kl+';border:2px solid '+kl+';opacity:'+(lag%2===1?'1':'0.7')+';"></span>';
+        visual+='</div>';
+      }
+      // Huidje
+      var hRuw=rijA*rolD+90;
+      var hMaten=[700,750,800,850,900,950,1000,1050,1100,1150,1200,1250,1300,1350,1400];
+      var huidje=hMaten[hMaten.length-1];
+      for(var hi=0;hi<hMaten.length;hi++){if(hMaten[hi]>=hRuw){huidje=hMaten[hi];break;}}
+      // Override als admin heeft ingevuld
+      if(r.operator_huidje&&parseFloat(r.operator_huidje)>0) huidje=parseFloat(r.operator_huidje);
+
+      html += visual+'</div>';
+      html += '<div style="background:#0f1520;border:1px solid #34d399;border-radius:6px;padding:16px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;">';
+      html += '<div><div style="font-size:9px;color:#34d399;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">Huidje lengte</div>';
+      html += '<div style="font-size:13px;color:#6b7280;">Om '+rijA+' rollen</div></div>';
+      html += '<div style="font-size:36px;font-weight:700;color:#34d399;">'+huidje+'<span style="font-size:16px;margin-left:4px;">mm</span></div>';
+      html += '</div>';
+      document.getElementById('detail-content').innerHTML = html;
+      go('s-detail');
+      return;
+    }
+    html += visual+'</div>';
+  }
+
+  if(r.notities){
+    html += '<div class="slabel">Notities</div>';
+    html += '<div style="background:#0f1520;border:1px solid #1a2540;border-radius:4px;padding:14px;font-size:13px;color:#9ca3af;line-height:1.6;margin-bottom:8px;">'+r.notities+'</div>';
+  }
+
+  document.getElementById('detail-content').innerHTML = html;
+  go('s-detail');
+}
+
+init();
+</script>
+
+</body>
+</html>
