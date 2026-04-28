@@ -416,17 +416,19 @@ function pcBereken(){
     }
 
   } else {
-    // LIGGEND
-    var rijA2,rijB2;
-    if(_pcPatroon==='43'){rijA2=4;rijB2=3;}
-    else if(_pcPatroon==='54'){rijA2=5;rijB2=4;}
-    else if(_pcPatroon==='65'){rijA2=6;rijB2=5;}
-    else{rijA2=Math.max(1,Math.floor(palletB/rolD));rijB2=Math.max(1,rijA2-1);}
-
+    // LIGGEND - bereken beste oriëntatie
+    var rijA2_l=Math.max(1,Math.floor(palletB/rolD));
+    var rijB2_l=Math.max(1,rijA2_l-1);
     maxLagen=1;
     for(var nl=2;nl<=20;nl++){if(rolD+(nl-1)*rolD*0.866<=_pcMaxH)maxLagen=nl;else break;}
     var paren=Math.floor(maxLagen/2),extra=maxLagen%2;
-    rpp=paren*(rijA2+rijB2)+extra*rijA2;
+    var rpp_l=paren*(rijA2_l+rijB2_l)+extra*rijA2_l;
+    var rijA2_b=Math.max(1,Math.floor(1200/rolD));
+    var rijB2_b=Math.max(1,rijA2_b-1);
+    var rpp_b2=paren*(rijA2_b+rijB2_b)+extra*rijA2_b;
+    var rijA2=rpp_b2>rpp_l?rijA2_b:rijA2_l;
+    var rijB2=rpp_b2>rpp_l?rijB2_b:rijB2_l;
+    rpp=Math.max(rpp_l,rpp_b2);
     stapelHoogte=Math.round(rolD+(maxLagen-1)*rolD*0.866);
 
     var huidjeRuw=rijA2*rolD+150;
