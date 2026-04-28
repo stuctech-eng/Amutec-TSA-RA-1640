@@ -552,7 +552,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 <script>
 'use strict';
 var FB_URL = 'https://amutec-tsa-ra-1640-default-rtdb.europe-west1.firebasedatabase.app';
-var APP_VERSION = '17.8';
+var APP_VERSION = '17.9';
 
 // Hardcoded fallback
 var OPERATORS_FALLBACK = {
@@ -1106,8 +1106,8 @@ function slaOp(){
     werk_huidje:document.getElementById('f-werk-huidje')?document.getElementById('f-werk-huidje').value||'':''
   };
   toast('Opslaan...');
-  if(editKey){fbPatch('/recepten',editKey,recept,function(){toast('Recept bijgewerkt!');resetForm();go('s-recepten');});}
-  else{fbPost('/recepten',recept,function(){toast('Recept opgeslagen!');resetForm();go('s-recepten');});}
+  if(editKey){fbPatch('/recepten',editKey,recept,function(){toast('Recept bijgewerkt!');var k=editKey;resetForm();openDetail(k);});}
+  else{fbPost('/recepten',recept,function(d){toast('Recept opgeslagen!');var k=d&&d.name?d.name:null;resetForm();if(k)openDetail(k);else go('s-recepten');});}
 }
 
 function resetForm(){
@@ -1307,7 +1307,7 @@ function openDetail(key){
         var palletD={'euro':{b:800,naam:'Euro pallet'},'euro-formaat':{b:800,naam:'Euro formaat'},'blok':{b:1000,naam:'Blokpallet'}}[r.order_pallet]||{b:800,naam:'Euro pallet'};
         var rpPallet2,lagenD2;
         if(staandD){lagenD2=Math.min(2,Math.max(1,Math.floor(maxHD/breedte)));rpPallet2=Math.max(1,Math.floor(palletD.b/rolD)*Math.max(1,Math.floor(1200/rolD))*lagenD2);}
-        else{maxLD=1;for(var nld=2;nld<=20;nld++){if(rolD+(nld-1)*rolD*0.866<=maxHD)maxLD=nld;else break;}lagenD2=maxLD;var parenD2=Math.floor(lagenD2/2),extraD2=lagenD2%2;var rijAD_l=Math.max(1,Math.floor(palletD.b/rolD)),rijBD_l=Math.max(1,rijAD_l-1),rppD_l=parenD2*(rijAD_l+rijBD_l)+extraD2*rijAD_l;var rijAD_b=Math.max(1,Math.floor(1200/rolD)),rijBD_b=Math.max(1,rijAD_b-1),rppD_b=parenD2*(rijAD_b+rijBD_b)+extraD2*rijAD_b;var rijAD=rppD_b>rppD_l?rijAD_b:rijAD_l,rijBD=rppD_b>rppD_l?rijBD_b:rijBD_l;rpPallet2=Math.max(1,Math.max(rppD_l,rppD_b));}
+        else{var maxLD=1;for(var nld=2;nld<=20;nld++){if(rolD+(nld-1)*rolD*0.866<=maxHD)maxLD=nld;else break;}lagenD2=maxLD;var parenD2=Math.floor(lagenD2/2),extraD2=lagenD2%2;var rijAD_l=Math.max(1,Math.floor(palletD.b/rolD)),rijBD_l=Math.max(1,rijAD_l-1),rppD_l=parenD2*(rijAD_l+rijBD_l)+extraD2*rijAD_l;var rijAD_b=Math.max(1,Math.floor(1200/rolD)),rijBD_b=Math.max(1,rijAD_b-1),rppD_b=parenD2*(rijAD_b+rijBD_b)+extraD2*rijAD_b;var rijAD=rppD_b>rppD_l?rijAD_b:rijAD_l,rijBD=rppD_b>rppD_l?rijBD_b:rijBD_l;rpPallet2=Math.max(1,Math.max(rppD_l,rppD_b));}
         var rppKlantD2=parseFloat(r.order_rpp)||0;if(rppKlantD2>0)rpPallet2=rppKlantD2;
         var rollen2=stuks>0?Math.ceil(stuks/zakrol):0;
         var volP2=rollen2>0?Math.floor(rollen2/rpPallet2):0,restD2=rollen2>0?rollen2%rpPallet2:0,losD2=0,pallets2=0,rpPalletToon2=rpPallet2;
