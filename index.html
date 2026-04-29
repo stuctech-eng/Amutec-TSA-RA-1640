@@ -168,7 +168,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
         </div>
         <button onclick="terugNaarStap1()" style="width:100%;background:transparent;border:1px solid #1a2540;border-radius:4px;color:#6b7280;font-family:'Courier New',Courier,monospace;font-size:13px;padding:10px;cursor:pointer;margin-top:10px;">&#8249; Terug</button>
       </div>
-      <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v18.2 &#8212; 2026-04-29</div>
+      <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v18.3 &#8212; 2026-04-29</div>
     </div>
   </div>
 </div>
@@ -552,7 +552,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 <script>
 'use strict';
 var FB_URL = 'https://amutec-tsa-ra-1640-default-rtdb.europe-west1.firebasedatabase.app';
-var APP_VERSION = '18.2';
+var APP_VERSION = '18.3';
 
 // Hardcoded fallback
 var OPERATORS_FALLBACK = {
@@ -1156,7 +1156,7 @@ function renderReceptenTree(lijst,query,openAll){
     var klant=keys[ki],items='';
     for(var ri=0;ri<groepen[klant].length;ri++){
       var rec=groepen[klant][ri];var mat=MATERIALEN[rec.materiaal];var rk=rec._key;
-      items+='<div class="tree-item" onclick="window._detailKey=\''+rk+'\';openDetail(window._detailKey)">'+
+      items+='<div class="tree-item" onclick="window._detailKey=\''+rk+'\';openDetail(window._detailKey)" style="'+(rec.operator_gepubliceerd?'border-left:3px solid #34d399;':'')+'">'+
         '<div class="tree-item-inner">'+
           '<div class="tree-connector"></div>'+
           '<div class="tree-content">'+
