@@ -168,7 +168,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
         </div>
         <button onclick="terugNaarStap1()" style="width:100%;background:transparent;border:1px solid #1a2540;border-radius:4px;color:#6b7280;font-family:'Courier New',Courier,monospace;font-size:13px;padding:10px;cursor:pointer;margin-top:10px;">&#8249; Terug</button>
       </div>
-      <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v18.5 &#8212; 2026-04-29</div>
+      <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v18.6 &#8212; 2026-04-29</div>
     </div>
   </div>
 </div>
@@ -552,7 +552,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 <script>
 'use strict';
 var FB_URL = 'https://amutec-tsa-ra-1640-default-rtdb.europe-west1.firebasedatabase.app';
-var APP_VERSION = '18.5';
+var APP_VERSION = '18.6';
 
 // Hardcoded fallback
 var OPERATORS_FALLBACK = {
@@ -1147,7 +1147,6 @@ function renderReceptenTree(lijst,query,openAll){
   if(!lijst.length){el.innerHTML='<div class="empty-state">Nog geen recepten.</div>';return;}
   var q=query?query.toLowerCase().trim():'';
 
-  // Filter
   var gef=q?lijst.filter(function(r){
     return (r.klantnr||'').toLowerCase().indexOf(q)>=0||
            (r.klantnaam||'').toLowerCase().indexOf(q)>=0||
@@ -1166,7 +1165,6 @@ function renderReceptenTree(lijst,query,openAll){
     klanten[knr].plaatsen[pnaam].push(r);
   });
 
-  // Kleur berekening
   function kleurRecept(r){return r.operator_gepubliceerd?'#34d399':'#f59e0b';}
   function kleurPlaats(recepten){
     var g=recepten.filter(function(r){return r.operator_gepubliceerd;}).length;
@@ -1183,74 +1181,80 @@ function renderReceptenTree(lijst,query,openAll){
 
   var knrs=Object.keys(klanten).sort(function(a,b){return a.localeCompare(b,undefined,{numeric:true,sensitivity:'base'});});
   var html='';
-  var ki=0;
 
-  knrs.forEach(function(knr){
+  knrs.forEach(function(knr,ki){
     var plaatsen=klanten[knr].plaatsen;
     var kKleur=kleurKlant(plaatsen);
     var gid='tg-'+ki;
-    var openKlas=openAll?' open':'';
     var aantalRec=Object.values(plaatsen).reduce(function(s,r){return s+r.length;},0);
+    var plaatsNamen=Object.keys(plaatsen).sort().join(' / ');
+    var openKlas=openAll?'open':'';
 
-    html+='<div class="tree-group">';
-    html+='<div class="tree-header'+openKlas+'" id="'+gid+'" onclick="toggleGroep(this)" style="border-left-color:'+kKleur+';">';
-    html+='<span style="color:'+kKleur+';">&#128193;</span>';
-    html+='<span class="tree-klant" style="color:'+kKleur+';">'+knr+'</span>';
-    html+='<span class="tree-count">'+aantalRec+' rec.</span>';
-    html+='<span class="tree-chevron">&#8250;</span>';
+    // KLANT HEADER - compact, één regel
+    html+='<div style="margin-bottom:6px;">';
+    html+='<div id="'+gid+'" onclick="toggleGroepNieuw(this)" style="display:flex;align-items:center;gap:12px;padding:14px 16px;background:#0f1520;border:1px solid #1a2540;border-left:4px solid '+kKleur+';border-radius:6px;cursor:pointer;-webkit-user-select:none;user-select:none;">';
+    html+='<div style="flex:1;min-width:0;">';
+    html+='<div style="font-size:18px;font-weight:700;color:#e5e7eb;letter-spacing:1px;">'+knr+'</div>';
+    html+='<div style="font-size:11px;color:#6b7280;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+plaatsNamen+'</div>';
     html+='</div>';
-    html+='<div class="tree-items'+openKlas+'" id="'+gid+'-items">';
+    html+='<div style="font-size:11px;color:#9ca3af;flex-shrink:0;">'+aantalRec+' rec.</div>';
+    html+='<div style="font-size:20px;color:'+kKleur+';flex-shrink:0;transition:transform .2s;" class="klant-chev">&#8250;</div>';
+    html+='</div>';
 
-    var pi=0;
-    Object.keys(plaatsen).sort().forEach(function(pnaam){
+    // UITKLAPBAAR DEEL
+    html+='<div id="'+gid+'-items" style="display:'+(openAll?'block':'none')+';margin-top:2px;">';
+
+    Object.keys(plaatsen).sort().forEach(function(pnaam,pi){
       var recepten=plaatsen[pnaam];
       var pKleur=kleurPlaats(recepten);
-      var pid='tp-'+ki+'-'+pi;
-      var openKlasPl=openAll?' open':'';
 
-      // Plaatsnaam submap
-      html+='<div style="background:#0a0d14;border:1px solid #1a2540;border-top:none;border-left:3px solid '+pKleur+';">';
-      html+='<div id="'+pid+'" onclick="togglePlaats(this)" style="display:flex;align-items:center;gap:8px;padding:10px 12px 10px 24px;cursor:pointer;">';
-      html+='<span style="color:'+pKleur+';font-size:14px;">&#128205;</span>';
+      // PLAATS HEADER
+      html+='<div style="display:flex;align-items:center;gap:10px;padding:10px 16px 10px 24px;background:#0a0d14;border:1px solid #1a2540;border-left:3px solid '+pKleur+';margin-bottom:2px;border-radius:4px;">';
+      html+='<span style="font-size:14px;">&#128205;</span>';
       html+='<span style="font-size:14px;font-weight:700;color:#9ca3af;letter-spacing:1px;flex:1;">'+pnaam+'</span>';
-      html+='<span style="font-size:10px;color:#6b7280;">'+recepten.length+' rec.</span>';
-      html+='<span style="font-size:14px;color:#6b7280;margin-left:4px;" class="plaats-chev">&#8250;</span>';
+      html+='<span style="font-size:10px;color:#6b7280;">'+recepten.length+'</span>';
       html+='</div>';
-      html+='<div class="plaats-items'+openKlasPl+'" id="'+pid+'-items" style="display:'+(openAll?'block':'none')+';">';
 
+      // RECEPTEN
       recepten.forEach(function(rec){
         var rk=rec._key;
         var rKleur=kleurRecept(rec);
-        html+='<div class="tree-item" onclick="window._detailKey=\''+rk+'\';openDetail(window._detailKey)" style="border-left:3px solid '+rKleur+';padding-left:36px;">';
-        html+='<div class="tree-item-inner">';
-        html+='<div class="tree-content">';
-        html+='<div class="tree-name">'+(rec.prodtype||'')+(rec.breedte?' '+rec.breedte+'mm':'')+(rec.lengte?' × '+rec.lengte+'mm':'')+(rec.dikte?' / '+rec.dikte+' mm':'')+'</div>';
-        html+='<div class="tree-meta">';
-        html+='<span class="tag">'+(rec.versie||'')+'</span>';
-        html+='<span class="tag">'+(rec.datum||'')+'</span>';
         var mat=MATERIALEN[rec.materiaal];
-        if(mat)html+='<span class="tag '+(mat.recycle?'tag-rec':'tag-mat')+'">'+mat.label+'</span>';
-        if(rec.snelheid)html+='<span class="tag tag-spd">'+rec.snelheid+' m/min</span>';
-        html+='</div></div>';
-        html+='<div style="display:flex;gap:6px;align-items:center;flex-shrink:0;">';
-        html+='<button onclick="event.stopPropagation();bewerkRecept(this.dataset.key)" data-key="'+rk+'" style="background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.4);border-radius:6px;color:#f59e0b;font-size:16px;width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center;">&#9998;</button>';
-        if(isAdmin()){
-          html+=maakPubliceerKnop(rk, rec.operator_gepubliceerd);
-        }
-        html+='<button onclick="event.stopPropagation();window._delKey=this.dataset.key;verwijderRecept(null,this.dataset.key)" data-key="'+rk+'" style="background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.4);border-radius:6px;color:#ef4444;font-size:16px;width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center;">&#10005;</button>';
-        html+='</div></div></div>';
-      });
 
-      html+='</div></div>';
-      pi++;
+        html+='<div onclick="window._detailKey=\''+rk+'\';openDetail(window._detailKey)" style="display:flex;align-items:center;gap:10px;padding:12px 16px 12px 36px;background:#070a10;border:1px solid #1a2540;border-left:3px solid '+rKleur+';border-top:none;margin-bottom:2px;border-radius:4px;cursor:pointer;-webkit-user-select:none;user-select:none;">';
+        html+='<div style="flex:1;min-width:0;">';
+        html+='<div style="font-size:16px;font-weight:700;color:#e5e7eb;">'+(rec.prodtype||'')+(rec.breedte?' '+rec.breedte+'mm':'')+(rec.lengte?' × '+rec.lengte+'mm':'')+'</div>';
+        html+='<div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:5px;">';
+        if(mat)html+='<span style="font-size:9px;padding:2px 7px;border-radius:3px;background:#0a0d14;border:1px solid '+(mat.recycle?'rgba(52,211,153,.4)':'rgba(96,165,250,.4)')+';color:'+(mat.recycle?'#34d399':'#60a5fa')+';">'+mat.label+'</span>';
+        if(rec.snelheid)html+='<span style="font-size:9px;padding:2px 7px;border-radius:3px;background:#0a0d14;border:1px solid rgba(245,158,11,.4);color:#f59e0b;">'+rec.snelheid+' m/min</span>';
+        if(rec.datum)html+='<span style="font-size:9px;padding:2px 7px;border-radius:3px;background:#0a0d14;border:1px solid #1a2540;color:#9ca3af;">'+rec.datum+'</span>';
+        html+='</div></div>';
+
+        // KNOPPEN - groter en duidelijker
+        html+='<div style="display:flex;gap:8px;align-items:center;flex-shrink:0;">';
+        html+=isAdmin()?maakPubliceerKnop(rk,rec.operator_gepubliceerd):'';
+        html+='<button onclick="event.stopPropagation();bewerkRecept(this.dataset.key)" data-key="'+rk+'" style="background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.4);border-radius:6px;color:#f59e0b;font-size:18px;width:42px;height:42px;cursor:pointer;display:flex;align-items:center;justify-content:center;">&#9998;</button>';
+        html+='<button onclick="event.stopPropagation();verwijderRecept(null,this.dataset.key)" data-key="'+rk+'" style="background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.4);border-radius:6px;color:#ef4444;font-size:18px;width:42px;height:42px;cursor:pointer;display:flex;align-items:center;justify-content:center;">&#10005;</button>';
+        html+='</div></div>';
+      });
     });
 
     html+='</div></div>';
-    ki++;
   });
 
   el.innerHTML=html;
 }
+
+function toggleGroepNieuw(hdr){
+  var id=hdr.id;
+  var items=document.getElementById(id+'-items');
+  var chev=hdr.querySelector('.klant-chev');
+  if(!items)return;
+  var open=items.style.display!=='none'&&items.style.display!=='';
+  items.style.display=open?'none':'block';
+  if(chev){chev.style.transform=open?'':'rotate(90deg)';chev.style.color=open?'#6b7280':'#f59e0b';}
+}
+
 
 function maakPubliceerKnop(key, gepubliceerd){
   var bg=gepubliceerd?'rgba(52,211,153,0.2)':'rgba(100,100,100,0.1)';
@@ -1268,11 +1272,10 @@ function togglePubliceer(key,huidigGepubliceerd){
 }
 
 function togglePlaats(hdr){
-  var pid=hdr.parentElement.id;
-  var items=document.getElementById(pid+'-items');
+  var items=hdr.nextElementSibling;
   var chev=hdr.querySelector('.plaats-chev');
   if(!items)return;
-  var open=items.style.display!=='none';
+  var open=items.style.display!=='none'&&items.style.display!=='';
   items.style.display=open?'none':'block';
   if(chev)chev.style.transform=open?'':'rotate(90deg)';
 }
