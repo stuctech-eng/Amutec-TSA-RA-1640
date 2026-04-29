@@ -168,7 +168,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
         </div>
         <button onclick="terugNaarStap1()" style="width:100%;background:transparent;border:1px solid #1a2540;border-radius:4px;color:#6b7280;font-family:'Courier New',Courier,monospace;font-size:13px;padding:10px;cursor:pointer;margin-top:10px;">&#8249; Terug</button>
       </div>
-      <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v18.3 &#8212; 2026-04-29</div>
+      <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v18.5 &#8212; 2026-04-29</div>
     </div>
   </div>
 </div>
@@ -552,7 +552,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 <script>
 'use strict';
 var FB_URL = 'https://amutec-tsa-ra-1640-default-rtdb.europe-west1.firebasedatabase.app';
-var APP_VERSION = '18.3';
+var APP_VERSION = '18.5';
 
 // Hardcoded fallback
 var OPERATORS_FALLBACK = {
@@ -1145,57 +1145,138 @@ function filterRecepten(){renderReceptenTree(_recepten,document.getElementById('
 function renderReceptenTree(lijst,query,openAll){
   var el=document.getElementById('recepten-lijst');
   if(!lijst.length){el.innerHTML='<div class="empty-state">Nog geen recepten.</div>';return;}
-  var q=query.toLowerCase().trim();
-  var gef=q?lijst.filter(function(r){return (r.klantnr||'').toLowerCase().indexOf(q)>=0||(r.klantnaam||'').toLowerCase().indexOf(q)>=0||(r.materiaal||'').toLowerCase().indexOf(q)>=0||(r.prodtype||'').toLowerCase().indexOf(q)>=0;}):lijst;
+  var q=query?query.toLowerCase().trim():'';
+
+  // Filter
+  var gef=q?lijst.filter(function(r){
+    return (r.klantnr||'').toLowerCase().indexOf(q)>=0||
+           (r.klantnaam||'').toLowerCase().indexOf(q)>=0||
+           (r.materiaal||'').toLowerCase().indexOf(q)>=0||
+           (r.prodtype||'').toLowerCase().indexOf(q)>=0;
+  }):lijst;
   if(!gef.length){el.innerHTML='<div class="empty-state">Geen resultaten.</div>';return;}
-  var groepen={};
-  for(var i=0;i<gef.length;i++){var r=gef[i];var k=(r.klantnr||'-')+(r.klantnaam?' - '+r.klantnaam:'');if(!groepen[k])groepen[k]=[];groepen[k].push(r);}
-  var keys=Object.keys(groepen).sort(function(a,b){return a.localeCompare(b,undefined,{numeric:true,sensitivity:'base'});});
-  var html='';
-  for(var ki=0;ki<keys.length;ki++){
-    var klant=keys[ki],items='';
-    for(var ri=0;ri<groepen[klant].length;ri++){
-      var rec=groepen[klant][ri];var mat=MATERIALEN[rec.materiaal];var rk=rec._key;
-      items+='<div class="tree-item" onclick="window._detailKey=\''+rk+'\';openDetail(window._detailKey)" style="'+(rec.operator_gepubliceerd?'border-left:3px solid #34d399;':'')+'">'+
-        '<div class="tree-item-inner">'+
-          '<div class="tree-connector"></div>'+
-          '<div class="tree-content">'+
-            '<div class="tree-name">'+(rec.prodtype||'')+(rec.breedte?' '+rec.breedte+'mm':'')+(rec.lengte?' x '+rec.lengte+'mm':'')+(rec.dikte?' / '+rec.dikte+' mm':'')+'</div>'+
-            '<div class="tree-meta">'+
-              '<span class="tag">'+(rec.versie||'')+'</span>'+
-              '<span class="tag">'+(rec.datum||'')+'</span>'+
-              (mat?'<span class="tag '+(mat.recycle?'tag-rec':'tag-mat')+'">'+mat.label+'</span>':'')+
-              (rec.snelheid?'<span class="tag tag-spd">'+rec.snelheid+' m/min</span>':'')+
-            '</div>'+
-          '</div>'+
-          '<div style="display:flex;gap:6px;align-items:center;flex-shrink:0;">'+
-            '<button onclick="event.stopPropagation();bewerkRecept(\''+rk+'\')" style="background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.4);border-radius:6px;color:#f59e0b;font-size:16px;width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center;">&#9998;</button>'+
-            (isAdmin()?'<button onclick="event.stopPropagation();togglePubliceer(\''+rk+'\','+(rec.operator_gepubliceerd?'true':'false')+')" style="background:'+(rec.operator_gepubliceerd?'rgba(52,211,153,0.2)':'rgba(100,100,100,0.1)')+';border:1px solid '+(rec.operator_gepubliceerd?'#34d399':'#1a2540')+';border-radius:6px;font-size:14px;width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center;" title="'+(rec.operator_gepubliceerd?'Verwijderen uit operator recepten':'Toevoegen aan operator recepten')+'">'+(rec.operator_gepubliceerd?'&#128994;':'&#9675;')+'</button>':'')+
-            '<button onclick="event.stopPropagation();window._delKey=\''+rk+'\';verwijderRecept(null,window._delKey)" style="background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.4);border-radius:6px;color:#ef4444;font-size:16px;width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center;">&#10005;</button>'+
-          '</div>'+
-        '</div>'+
-      '</div>';
-    }
-    var gid='tg-'+ki;var openKlas=openAll?' open':'';
-    html+='<div class="tree-group">'+
-      '<div class="tree-header'+openKlas+'" id="'+gid+'" onclick="toggleGroep(this)">'+
-        '<span>&#128193;</span><span class="tree-klant">'+klant+'</span>'+
-        '<span class="tree-count">'+groepen[klant].length+' rec.</span>'+
-        '<span class="tree-chevron">&#8250;</span>'+
-      '</div>'+
-      '<div class="tree-items'+openKlas+'" id="'+gid+'-items">'+items+'</div>'+
-    '</div>';
+
+  // Groepeer: klantnr → klantnaam → recepten
+  var klanten={};
+  gef.forEach(function(r){
+    var knr=r.klantnr||'-';
+    if(!klanten[knr])klanten[knr]={plaatsen:{}};
+    var pnaam=r.klantnaam||'-';
+    if(!klanten[knr].plaatsen[pnaam])klanten[knr].plaatsen[pnaam]=[];
+    klanten[knr].plaatsen[pnaam].push(r);
+  });
+
+  // Kleur berekening
+  function kleurRecept(r){return r.operator_gepubliceerd?'#34d399':'#f59e0b';}
+  function kleurPlaats(recepten){
+    var g=recepten.filter(function(r){return r.operator_gepubliceerd;}).length;
+    if(g===0)return '#f59e0b';
+    if(g===recepten.length)return '#34d399';
+    return '#fbbf24';
   }
+  function kleurKlant(plaatsen){
+    var kleuren=Object.keys(plaatsen).map(function(p){return kleurPlaats(plaatsen[p]);});
+    if(kleuren.every(function(k){return k==='#34d399';}))return '#34d399';
+    if(kleuren.every(function(k){return k==='#f59e0b';}))return '#f59e0b';
+    return '#fbbf24';
+  }
+
+  var knrs=Object.keys(klanten).sort(function(a,b){return a.localeCompare(b,undefined,{numeric:true,sensitivity:'base'});});
+  var html='';
+  var ki=0;
+
+  knrs.forEach(function(knr){
+    var plaatsen=klanten[knr].plaatsen;
+    var kKleur=kleurKlant(plaatsen);
+    var gid='tg-'+ki;
+    var openKlas=openAll?' open':'';
+    var aantalRec=Object.values(plaatsen).reduce(function(s,r){return s+r.length;},0);
+
+    html+='<div class="tree-group">';
+    html+='<div class="tree-header'+openKlas+'" id="'+gid+'" onclick="toggleGroep(this)" style="border-left-color:'+kKleur+';">';
+    html+='<span style="color:'+kKleur+';">&#128193;</span>';
+    html+='<span class="tree-klant" style="color:'+kKleur+';">'+knr+'</span>';
+    html+='<span class="tree-count">'+aantalRec+' rec.</span>';
+    html+='<span class="tree-chevron">&#8250;</span>';
+    html+='</div>';
+    html+='<div class="tree-items'+openKlas+'" id="'+gid+'-items">';
+
+    var pi=0;
+    Object.keys(plaatsen).sort().forEach(function(pnaam){
+      var recepten=plaatsen[pnaam];
+      var pKleur=kleurPlaats(recepten);
+      var pid='tp-'+ki+'-'+pi;
+      var openKlasPl=openAll?' open':'';
+
+      // Plaatsnaam submap
+      html+='<div style="background:#0a0d14;border:1px solid #1a2540;border-top:none;border-left:3px solid '+pKleur+';">';
+      html+='<div id="'+pid+'" onclick="togglePlaats(this)" style="display:flex;align-items:center;gap:8px;padding:10px 12px 10px 24px;cursor:pointer;">';
+      html+='<span style="color:'+pKleur+';font-size:14px;">&#128205;</span>';
+      html+='<span style="font-size:14px;font-weight:700;color:#9ca3af;letter-spacing:1px;flex:1;">'+pnaam+'</span>';
+      html+='<span style="font-size:10px;color:#6b7280;">'+recepten.length+' rec.</span>';
+      html+='<span style="font-size:14px;color:#6b7280;margin-left:4px;" class="plaats-chev">&#8250;</span>';
+      html+='</div>';
+      html+='<div class="plaats-items'+openKlasPl+'" id="'+pid+'-items" style="display:'+(openAll?'block':'none')+';">';
+
+      recepten.forEach(function(rec){
+        var rk=rec._key;
+        var rKleur=kleurRecept(rec);
+        html+='<div class="tree-item" onclick="window._detailKey=\''+rk+'\';openDetail(window._detailKey)" style="border-left:3px solid '+rKleur+';padding-left:36px;">';
+        html+='<div class="tree-item-inner">';
+        html+='<div class="tree-content">';
+        html+='<div class="tree-name">'+(rec.prodtype||'')+(rec.breedte?' '+rec.breedte+'mm':'')+(rec.lengte?' × '+rec.lengte+'mm':'')+(rec.dikte?' / '+rec.dikte+' mm':'')+'</div>';
+        html+='<div class="tree-meta">';
+        html+='<span class="tag">'+(rec.versie||'')+'</span>';
+        html+='<span class="tag">'+(rec.datum||'')+'</span>';
+        var mat=MATERIALEN[rec.materiaal];
+        if(mat)html+='<span class="tag '+(mat.recycle?'tag-rec':'tag-mat')+'">'+mat.label+'</span>';
+        if(rec.snelheid)html+='<span class="tag tag-spd">'+rec.snelheid+' m/min</span>';
+        html+='</div></div>';
+        html+='<div style="display:flex;gap:6px;align-items:center;flex-shrink:0;">';
+        html+='<button onclick="event.stopPropagation();bewerkRecept(this.dataset.key)" data-key="'+rk+'" style="background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.4);border-radius:6px;color:#f59e0b;font-size:16px;width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center;">&#9998;</button>';
+        if(isAdmin()){
+          html+=maakPubliceerKnop(rk, rec.operator_gepubliceerd);
+        }
+        html+='<button onclick="event.stopPropagation();window._delKey=this.dataset.key;verwijderRecept(null,this.dataset.key)" data-key="'+rk+'" style="background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.4);border-radius:6px;color:#ef4444;font-size:16px;width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center;">&#10005;</button>';
+        html+='</div></div></div>';
+      });
+
+      html+='</div></div>';
+      pi++;
+    });
+
+    html+='</div></div>';
+    ki++;
+  });
+
   el.innerHTML=html;
 }
 
-function togglePubliceer(key, huidigGepubliceerd){
-  var nieuweWaarde = !huidigGepubliceerd;
-  fbPatch('/recepten', key, {operator_gepubliceerd: nieuweWaarde}, function(){
-    toast(nieuweWaarde ? '&#128994; Toegevoegd aan operator recepten' : 'Verwijderd uit operator recepten');
+function maakPubliceerKnop(key, gepubliceerd){
+  var bg=gepubliceerd?'rgba(52,211,153,0.2)':'rgba(100,100,100,0.1)';
+  var border=gepubliceerd?'#34d399':'#1a2540';
+  var icon=gepubliceerd?'&#128994;':'&#9675;';
+  return '<button onclick="event.stopPropagation();togglePubliceer(this.dataset.key,'+gepubliceerd+')" data-key="'+key+'" style="background:'+bg+';border:1px solid '+border+';border-radius:6px;font-size:14px;width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center;">'+icon+'</button>';
+}
+
+function togglePubliceer(key,huidigGepubliceerd){
+  var nieuweWaarde=!huidigGepubliceerd;
+  fbPatch('/recepten',key,{operator_gepubliceerd:nieuweWaarde},function(){
+    toast(nieuweWaarde?'&#128994; Toegevoegd aan operator recepten':'Verwijderd uit operator recepten');
     laadRecepten();
   });
 }
+
+function togglePlaats(hdr){
+  var pid=hdr.parentElement.id;
+  var items=document.getElementById(pid+'-items');
+  var chev=hdr.querySelector('.plaats-chev');
+  if(!items)return;
+  var open=items.style.display!=='none';
+  items.style.display=open?'none':'block';
+  if(chev)chev.style.transform=open?'':'rotate(90deg)';
+}
+
 
 function verwijderRecept(btn,key){
   key=key||window._delKey;
