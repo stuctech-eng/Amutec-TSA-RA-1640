@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="nl">
 <head>
 <meta charset="UTF-8">
@@ -136,7 +135,6 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 <body>
 
 <!-- LOGIN -->
-
 <div class="screen active" id="s-login">
   <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100dvh;padding:32px 24px;background:#070a10;position:relative;">
     <div style="position:absolute;top:20px;left:20px;width:24px;height:24px;border-top:2px solid #f59e0b;border-left:2px solid #f59e0b;"></div>
@@ -168,13 +166,12 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
         </div>
         <button onclick="terugNaarStap1()" style="width:100%;background:transparent;border:1px solid #1a2540;border-radius:4px;color:#6b7280;font-family:'Courier New',Courier,monospace;font-size:13px;padding:10px;cursor:pointer;margin-top:10px;">&#8249; Terug</button>
       </div>
-      <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v18.6 &#8212; 2026-04-29</div>
+      <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v18.7 &#8212; 2026-04-29</div>
     </div>
   </div>
 </div>
 
 <!-- HOME -->
-
 <div class="screen" id="s-home">
   <div style="display:flex;flex-direction:column;min-height:100dvh;padding:0 0 70px;">
     <div style="padding:28px 20px 20px;border-bottom:1px solid #1a2540;">
@@ -230,7 +227,6 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 </div>
 
 <!-- RECEPTEN LIJST -->
-
 <div class="screen" id="s-recepten">
   <div class="topbar">
     <button class="back-btn" onclick="go('s-home')">&#8249;</button>
@@ -248,7 +244,6 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 </div>
 
 <!-- RECEPT DETAIL -->
-
 <div class="screen" id="s-detail">
   <div class="topbar">
     <button class="back-btn" onclick="go('s-recepten')">&#8249;</button>
@@ -258,7 +253,6 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 </div>
 
 <!-- NIEUW / BEWERK RECEPT -->
-
 <div class="screen" id="s-nieuw">
   <div class="topbar">
     <button class="back-btn" onclick="resetForm();go('s-recepten')">&#8249;</button>
@@ -302,168 +296,164 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
         <div style="font-size:10px;color:#6b7280;margin-top:4px;">Leeg = automatisch berekend op hoogte</div>
       </div>
 
-```
-  <div class="field">
-    <label>Gewicht per 100 meter (kg)</label>
-    <input id="f-gew100m" type="number" placeholder="auto" class="veld-leeg" readonly onclick="openInvul(this)"
-      style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:20px;padding:14px;outline:none;text-align:center;cursor:pointer;">
-    <button onclick="resetVeld('f-gew100m')" style="width:100%;margin-top:6px;background:#141d2e;border:1px solid #1a2540;border-radius:4px;color:#9ca3af;font-family:'Courier New',Courier,monospace;font-size:13px;padding:8px;cursor:pointer;">&#8635; Automatisch (wissen)</button>
-  </div>
-  <div class="field">
-    <label>Huidjes lengte override (mm)</label>
-    <input id="f-huidje" type="number" placeholder="automatisch" class="veld-leeg" readonly onclick="openInvul(this)"
-      style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:20px;padding:14px;outline:none;text-align:center;cursor:pointer;">
-    <button onclick="resetVeld('f-huidje')" style="width:100%;margin-top:6px;background:#141d2e;border:1px solid #1a2540;border-radius:4px;color:#9ca3af;font-family:'Courier New',Courier,monospace;font-size:13px;padding:8px;cursor:pointer;">&#8635; Automatisch (wissen)</button>
-  </div>
-  <div id="order-resultaten" style="display:none;margin-top:12px;background:#070a10;border:1px solid rgba(167,139,250,.4);border-radius:6px;padding:14px;">
-    <div style="font-size:9px;color:#a78bfa;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;">Berekening</div>
-    <div id="order-rijen"></div>
-  </div>
-</div>
-
-<div class="form-card">
-  <div class="form-card-title">Klant &amp; Product</div>
-  <div class="grid2" style="position:relative;">
-    <div class="field"><label>Klantnummer</label><input id="f-klantnr" type="text" placeholder="bv. 1001" class="veld-leeg" oninput="veldIngevuld(this)" autocomplete="off" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;"></div>
-    <div class="field"><label>Klantnaam</label>
-      <input id="f-klantnaam" type="text" placeholder="bv. ACME BV" class="veld-leeg" autocomplete="off"
-        oninput="veldIngevuld(this);zoekKlantnamen(this.value)"
-        onfocus="zoekKlantnamen(this.value)"
-        onblur="setTimeout(sluitKlantnamen,200)"
-        style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:18px;padding:12px 14px;outline:none;">
-      <div id="klantnaam-dropdown" style="display:none;position:absolute;left:0;right:0;background:#0f1520;border:1px solid #f59e0b;border-top:none;border-radius:0 0 6px 6px;z-index:500;max-height:200px;overflow-y:auto;"></div>
+      <div class="field">
+        <label>Gewicht per 100 meter (kg)</label>
+        <input id="f-gew100m" type="number" placeholder="auto" class="veld-leeg" readonly onclick="openInvul(this)"
+          style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:20px;padding:14px;outline:none;text-align:center;cursor:pointer;">
+        <button onclick="resetVeld('f-gew100m')" style="width:100%;margin-top:6px;background:#141d2e;border:1px solid #1a2540;border-radius:4px;color:#9ca3af;font-family:'Courier New',Courier,monospace;font-size:13px;padding:8px;cursor:pointer;">&#8635; Automatisch (wissen)</button>
+      </div>
+      <div class="field">
+        <label>Huidjes lengte override (mm)</label>
+        <input id="f-huidje" type="number" placeholder="automatisch" class="veld-leeg" readonly onclick="openInvul(this)"
+          style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:20px;padding:14px;outline:none;text-align:center;cursor:pointer;">
+        <button onclick="resetVeld('f-huidje')" style="width:100%;margin-top:6px;background:#141d2e;border:1px solid #1a2540;border-radius:4px;color:#9ca3af;font-family:'Courier New',Courier,monospace;font-size:13px;padding:8px;cursor:pointer;">&#8635; Automatisch (wissen)</button>
+      </div>
+      <div id="order-resultaten" style="display:none;margin-top:12px;background:#070a10;border:1px solid rgba(167,139,250,.4);border-radius:6px;padding:14px;">
+        <div style="font-size:9px;color:#a78bfa;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;">Berekening</div>
+        <div id="order-rijen"></div>
+      </div>
     </div>
-  </div>
-  <div class="grid2">
-    <div class="field"><label>Producttype</label>
-      <select id="f-prodtype" class="veld-definitief" onchange="prodtypeChange(this.value);veldIngevuld(this);">
-        <option>Zak</option><option>Zak met invouw</option><option>Hoes</option><option>Vel</option><option>Huls</option><option>Krimpfolie</option><option>Uitsparing</option><option>Andere</option>
-      </select>
-    </div>
-  </div>
-  <div class="field">
-    <label>Naam operator <span style="color:#ef4444;">*</span></label>
-    <div style="position:relative;">
-      <input id="f-versie" type="text" placeholder="Kies of typ naam" autocomplete="off" class="veld-leeg" readonly
-        onclick="this.removeAttribute('readonly');toonNaamDropdown()" oninput="toonNaamDropdown()"
-        onblur="setTimeout(sluitNaamDropdown,200)"
-        style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:17px;padding:12px 14px;outline:none;">
-      <div id="naam-dropdown" style="display:none;position:absolute;top:100%;left:0;right:0;background:#0f1520;border:1px solid #f59e0b;border-top:none;border-radius:0 0 4px 4px;z-index:200;"></div>
-    </div>
-  </div>
-</div>
 
-<div class="form-card">
-  <div class="form-card-title">Materiaal</div>
-  <div class="field">
-    <label>Materiaalsoort</label>
-    <div class="grid3">
-      <button class="mat-btn active" id="mat-ldpe" onclick="selectMat('ldpe')">LDPE</button>
-      <button class="mat-btn" id="mat-mdpe" onclick="selectMat('mdpe')">MDPE</button>
-      <button class="mat-btn" id="mat-recycle-mix" onclick="selectMat('recycle-mix')">&#9851; Mix</button>
-      <button class="mat-btn" id="mat-recycle-peld" onclick="selectMat('recycle-peld')">&#9851; PE-LD</button>
+    <div class="form-card">
+      <div class="form-card-title">Klant &amp; Product</div>
+      <div class="grid2" style="position:relative;">
+        <div class="field"><label>Klantnummer</label><input id="f-klantnr" type="text" placeholder="bv. 1001" class="veld-leeg" oninput="veldIngevuld(this)" autocomplete="off" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;"></div>
+        <div class="field"><label>Klantnaam</label>
+          <input id="f-klantnaam" type="text" placeholder="bv. ACME BV" class="veld-leeg" autocomplete="off"
+            oninput="veldIngevuld(this);zoekKlantnamen(this.value)"
+            onfocus="zoekKlantnamen(this.value)"
+            onblur="setTimeout(sluitKlantnamen,200)"
+            style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:18px;padding:12px 14px;outline:none;">
+          <div id="klantnaam-dropdown" style="display:none;position:absolute;left:0;right:0;background:#0f1520;border:1px solid #f59e0b;border-top:none;border-radius:0 0 6px 6px;z-index:500;max-height:200px;overflow-y:auto;"></div>
+        </div>
+      </div>
+      <div class="grid2">
+        <div class="field"><label>Producttype</label>
+          <select id="f-prodtype" class="veld-definitief" onchange="prodtypeChange(this.value);veldIngevuld(this);">
+            <option>Zak</option><option>Zak met invouw</option><option>Hoes</option><option>Vel</option><option>Huls</option><option>Krimpfolie</option><option>Uitsparing</option><option>Andere</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label>Naam operator <span style="color:#ef4444;">*</span></label>
+        <div style="position:relative;">
+          <input id="f-versie" type="text" placeholder="Kies of typ naam" autocomplete="off" class="veld-leeg" readonly
+            onclick="this.removeAttribute('readonly');toonNaamDropdown()" oninput="toonNaamDropdown()"
+            onblur="setTimeout(sluitNaamDropdown,200)"
+            style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:17px;padding:12px 14px;outline:none;">
+          <div id="naam-dropdown" style="display:none;position:absolute;top:100%;left:0;right:0;background:#0f1520;border:1px solid #f59e0b;border-top:none;border-radius:0 0 4px 4px;z-index:200;"></div>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
 
-<div class="form-card">
-  <div class="form-card-title">Zakmaat &amp; Berekening</div>
-  <div class="grid3">
-    <div class="field"><label>Breedte (mm)</label><input id="f-breedte" type="number" placeholder="400" onclick="openInvul(this)" readonly inputmode="none" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;cursor:pointer;"></div>
-    <div class="field"><label>Lengte (mm)</label><input id="f-lengte" type="number" placeholder="600" onclick="openInvul(this)" readonly inputmode="none" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;cursor:pointer;"></div>
-    <div class="field"><label>Dikte (mm)</label><input id="f-dikte" type="number" placeholder="0.03" onclick="openInvul(this)" readonly inputmode="none" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;cursor:pointer;"></div>
-  </div>
-  <div class="grid2">
-    <div class="field">
-      <label>Koker dia (mm)</label>
-      <input id="f-koker" type="number" placeholder="90" value="90" class="veld-definitief" onclick="openInvul(this)" readonly inputmode="none" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;cursor:pointer;">
+    <div class="form-card">
+      <div class="form-card-title">Materiaal</div>
+      <div class="field">
+        <label>Materiaalsoort</label>
+        <div class="grid3">
+          <button class="mat-btn active" id="mat-ldpe" onclick="selectMat('ldpe')">LDPE</button>
+          <button class="mat-btn" id="mat-mdpe" onclick="selectMat('mdpe')">MDPE</button>
+          <button class="mat-btn" id="mat-recycle-mix" onclick="selectMat('recycle-mix')">&#9851; Mix</button>
+          <button class="mat-btn" id="mat-recycle-peld" onclick="selectMat('recycle-peld')">&#9851; PE-LD</button>
+        </div>
+      </div>
     </div>
-  </div>
-  <div style="margin-top:12px;display:flex;flex-direction:column;gap:10px;">
-    <div class="field"><label>Sealtijd (ms)</label>
-      <input id="f-seal" type="number" placeholder="750" onclick="openInvul(this)" readonly style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;cursor:pointer;">
+
+    <div class="form-card">
+      <div class="form-card-title">Zakmaat &amp; Berekening</div>
+      <div class="grid3">
+        <div class="field"><label>Breedte (mm)</label><input id="f-breedte" type="number" placeholder="400" onclick="openInvul(this)" readonly inputmode="none" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;cursor:pointer;"></div>
+        <div class="field"><label>Lengte (mm)</label><input id="f-lengte" type="number" placeholder="600" onclick="openInvul(this)" readonly inputmode="none" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;cursor:pointer;"></div>
+        <div class="field"><label>Dikte (mm)</label><input id="f-dikte" type="number" placeholder="0.03" onclick="openInvul(this)" readonly inputmode="none" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;cursor:pointer;"></div>
+      </div>
+      <div class="grid2">
+        <div class="field">
+          <label>Koker dia (mm)</label>
+          <input id="f-koker" type="number" placeholder="90" value="90" class="veld-definitief" onclick="openInvul(this)" readonly inputmode="none" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;cursor:pointer;">
+        </div>
+      </div>
+      <div style="margin-top:12px;display:flex;flex-direction:column;gap:10px;">
+        <div class="field"><label>Sealtijd (ms)</label>
+          <input id="f-seal" type="number" placeholder="750" onclick="openInvul(this)" readonly style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;cursor:pointer;">
+        </div>
+        <div class="field"><label>Snelheid (m/min)</label>
+          <input id="f-snelheid" type="number" placeholder="140" onclick="openInvul(this)" readonly style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;cursor:pointer;">
+        </div>
+      </div>
     </div>
-    <div class="field"><label>Snelheid (m/min)</label>
-      <input id="f-snelheid" type="number" placeholder="140" onclick="openInvul(this)" readonly style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;cursor:pointer;">
+
+    <div class="form-card">
+      <div class="form-card-title">Machine - Static &amp; Cycle</div>
+      <div class="field">
+        <label>Static Charger</label>
+        <div style="display:flex;gap:8px;">
+          <button class="static-btn active" id="static-Off" onclick="selectStatic('Off')">Off</button>
+          <button class="static-btn" id="static-Always-on" onclick="selectStatic('Always-on')">Always on</button>
+          <button class="static-btn" id="static-End-of-roll" onclick="selectStatic('End-of-roll')">End of roll</button>
+        </div>
+      </div>
+      <div class="field">
+        <label>Material to be charged (mm)</label>
+        <input id="f-static-mat" type="number" placeholder="0" readonly onclick="openInvul(this)" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:20px;padding:12px 14px;outline:none;text-align:center;">
+      </div>
+      <div class="field"><label>Cycle met drukker</label>
+        <button id="drukker-btn" class="toggle-btn toggle-uit" onclick="toggleDrukker()">UIT</button>
+      </div>
+      <div id="drukker-extra" style="display:none;">
+        <div class="field"><label>Drukker instelling</label><input id="f-drukker" type="text" placeholder="bv. 2 cycli"></div>
+      </div>
     </div>
-  </div>
-</div>
 
-<div class="form-card">
-  <div class="form-card-title">Machine - Static &amp; Cycle</div>
-  <div class="field">
-    <label>Static Charger</label>
-    <div style="display:flex;gap:8px;">
-      <button class="static-btn active" id="static-Off" onclick="selectStatic('Off')">Off</button>
-      <button class="static-btn" id="static-Always-on" onclick="selectStatic('Always-on')">Always on</button>
-      <button class="static-btn" id="static-End-of-roll" onclick="selectStatic('End-of-roll')">End of roll</button>
+    <div class="form-card">
+      <div class="form-card-title">Seal Temperaturen</div>
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div>
+          <div style="font-size:9px;color:#9ca3af;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">BOVEN &deg;C</div>
+          <input class="temp-input veld-leeg" id="f-temp-boven" type="number" placeholder="160" onclick="openInvul(this)" readonly style="width:100%;text-align:center;">
+        </div>
+        <div>
+          <div style="font-size:9px;color:#9ca3af;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">ONDER &deg;C</div>
+          <input class="temp-input veld-leeg" id="f-temp-onder" type="number" placeholder="160" onclick="openInvul(this)" readonly style="width:100%;text-align:center;">
+        </div>
+      </div>
+      <div id="mat-info-temp" style="display:none;margin-top:10px;background:#070a10;border:1px solid rgba(96,165,250,.3);border-radius:4px;padding:8px 12px;font-size:11px;color:#60a5fa;"></div>
     </div>
-  </div>
-  <div class="field">
-    <label>Material to be charged (mm)</label>
-    <input id="f-static-mat" type="number" placeholder="0" readonly onclick="openInvul(this)" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:20px;padding:12px 14px;outline:none;text-align:center;">
-  </div>
-  <div class="field"><label>Cycle met drukker</label>
-    <button id="drukker-btn" class="toggle-btn toggle-uit" onclick="toggleDrukker()">UIT</button>
-  </div>
-  <div id="drukker-extra" style="display:none;">
-    <div class="field"><label>Drukker instelling</label><input id="f-drukker" type="text" placeholder="bv. 2 cycli"></div>
-  </div>
-</div>
 
-<div class="form-card">
-  <div class="form-card-title">Seal Temperaturen</div>
-  <div style="display:flex;flex-direction:column;gap:12px;">
-    <div>
-      <div style="font-size:9px;color:#9ca3af;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">BOVEN &deg;C</div>
-      <input class="temp-input veld-leeg" id="f-temp-boven" type="number" placeholder="160" onclick="openInvul(this)" readonly style="width:100%;text-align:center;">
+    <div class="form-card" style="border-top-color:#a78bfa;">
+      <div class="form-card-title" style="color:#a78bfa;">Werkelijke Pallet &amp; Huidje data</div>
+      <div style="font-size:11px;color:#9ca3af;margin-bottom:12px;line-height:1.6;">Vul in wat er in de praktijk werkte.</div>
+      <div class="field">
+        <label>Werkelijk rollen per pallet</label>
+        <input id="f-werk-rpp" type="number" placeholder="leeg = niet gemeten" class="veld-leeg" readonly onclick="openInvul(this)" inputmode="none" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;cursor:pointer;">
+      </div>
+      <div class="field">
+        <label>Werkelijke huidje lengte (mm)</label>
+        <input id="f-werk-huidje" type="number" placeholder="leeg = niet gemeten" class="veld-leeg" readonly onclick="openInvul(this)" inputmode="none" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;cursor:pointer;">
+      </div>
     </div>
-    <div>
-      <div style="font-size:9px;color:#9ca3af;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">ONDER &deg;C</div>
-      <input class="temp-input veld-leeg" id="f-temp-onder" type="number" placeholder="160" onclick="openInvul(this)" readonly style="width:100%;text-align:center;">
+
+    <div class="form-card" style="border-top-color:#60a5fa;">
+      <div class="form-card-title" style="color:#60a5fa;">Werkelijke Offset (leerdata)</div>
+      <div style="font-size:11px;color:#9ca3af;margin-bottom:12px;line-height:1.6;">Blauw = berekende schatting. Vul de werkelijke offset in die op de machine werkte.</div>
+      <div class="field">
+        <label>Werkelijke Offset 1</label>
+        <input id="f-offset1" type="number" placeholder="bv. 10850" class="veld-leeg" readonly onclick="openInvul(this)" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:20px;padding:12px 14px;outline:none;text-align:center;">
+      </div>
+      <div id="f-offset2-toon" style="display:none;margin-top:8px;background:#070a10;border:1px solid rgba(96,165,250,.3);border-radius:4px;padding:10px 14px;font-size:13px;color:#60a5fa;"></div>
     </div>
-  </div>
-  <div id="mat-info-temp" style="display:none;margin-top:10px;background:#070a10;border:1px solid rgba(96,165,250,.3);border-radius:4px;padding:8px 12px;font-size:11px;color:#60a5fa;"></div>
-</div>
 
-<div class="form-card" style="border-top-color:#a78bfa;">
-  <div class="form-card-title" style="color:#a78bfa;">Werkelijke Pallet &amp; Huidje data</div>
-  <div style="font-size:11px;color:#9ca3af;margin-bottom:12px;line-height:1.6;">Vul in wat er in de praktijk werkte.</div>
-  <div class="field">
-    <label>Werkelijk rollen per pallet</label>
-    <input id="f-werk-rpp" type="number" placeholder="leeg = niet gemeten" class="veld-leeg" readonly onclick="openInvul(this)" inputmode="none" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;cursor:pointer;">
-  </div>
-  <div class="field">
-    <label>Werkelijke huidje lengte (mm)</label>
-    <input id="f-werk-huidje" type="number" placeholder="leeg = niet gemeten" class="veld-leeg" readonly onclick="openInvul(this)" inputmode="none" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;cursor:pointer;">
-  </div>
-</div>
+    <div class="form-card">
+      <div class="form-card-title">Notities</div>
+      <div class="field"><textarea id="f-notities" rows="3" placeholder="Opmerkingen..."></textarea></div>
+    </div>
 
-<div class="form-card" style="border-top-color:#60a5fa;">
-  <div class="form-card-title" style="color:#60a5fa;">Werkelijke Offset (leerdata)</div>
-  <div style="font-size:11px;color:#9ca3af;margin-bottom:12px;line-height:1.6;">Blauw = berekende schatting. Vul de werkelijke offset in die op de machine werkte.</div>
-  <div class="field">
-    <label>Werkelijke Offset 1</label>
-    <input id="f-offset1" type="number" placeholder="bv. 10850" class="veld-leeg" readonly onclick="openInvul(this)" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:20px;padding:12px 14px;outline:none;text-align:center;">
-  </div>
-  <div id="f-offset2-toon" style="display:none;margin-top:8px;background:#070a10;border:1px solid rgba(96,165,250,.3);border-radius:4px;padding:10px 14px;font-size:13px;color:#60a5fa;"></div>
-</div>
-
-<div class="form-card">
-  <div class="form-card-title">Notities</div>
-  <div class="field"><textarea id="f-notities" rows="3" placeholder="Opmerkingen..."></textarea></div>
-</div>
-
-<button class="btn btn-amber" onclick="slaOp()">Opslaan</button>
-<button class="btn btn-ghost" onclick="resetForm();go('s-recepten')">Annuleer</button>
-<div style="height:20px;"></div>
-```
-
+    <button class="btn btn-amber" onclick="slaOp()">Opslaan</button>
+    <button class="btn btn-ghost" onclick="resetForm();go('s-recepten')">Annuleer</button>
+    <div style="height:20px;"></div>
   </div>
 </div>
 
 <!-- CALCULATOR -->
-
 <div class="screen" id="s-calculator">
   <div class="topbar">
     <button class="back-btn" onclick="go('s-home')">&#8249;</button>
@@ -497,7 +487,6 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 </div>
 
 <!-- PROBLEEMOPLOSSING -->
-
 <div class="screen" id="s-flow">
   <div class="topbar">
     <button class="back-btn" onclick="go('s-home')">&#8249;</button>
@@ -509,7 +498,6 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 <div class="toast" id="toast"></div>
 
 <!-- INVUL MODAL -->
-
 <div id="invul-overlay" class="invul-overlay">
   <div class="invul-box">
     <div class="invul-label" id="invul-label">Waarde</div>
@@ -535,7 +523,6 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 </div>
 
 <!-- PIN MODAL -->
-
 <div id="pin-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:9000;align-items:center;justify-content:center;padding:24px;">
   <div style="background:#0f1520;border:1px solid #1a2540;border-top:2px solid #ef4444;border-radius:6px;padding:28px 24px;width:100%;max-width:300px;">
     <div style="font-size:9px;color:#ef4444;letter-spacing:3px;text-transform:uppercase;margin-bottom:6px;">Beveiligd</div>
@@ -552,7 +539,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 <script>
 'use strict';
 var FB_URL = 'https://amutec-tsa-ra-1640-default-rtdb.europe-west1.firebasedatabase.app';
-var APP_VERSION = '18.6';
+var APP_VERSION = '18.7';
 
 // Hardcoded fallback
 var OPERATORS_FALLBACK = {
@@ -1047,10 +1034,15 @@ function berekenOrder(){
   var totaleFolieMeter=aantalRollen*rolLengte;
   var huidjeLengte=0,aantalHuidjes=0,huidjesTotaalM=0;
   if(!staand&&lagen>1){
-    var huidjeRuw=rollenPerRijCalc*rolDiameter+90;
-    var hMaten=[700,750,800,850,900,950,1000,1050,1100,1150,1200,1250,1300,1350,1400];
-    huidjeLengte=hMaten[hMaten.length-1];
-    for(var hi=0;hi<hMaten.length;hi++){if(hMaten[hi]>=huidjeRuw){huidjeLengte=hMaten[hi];break;}}
+    var huidjeOverride=document.getElementById('f-huidje')?parseFloat(document.getElementById('f-huidje').value)||0:0;
+    if(huidjeOverride>0){
+      huidjeLengte=huidjeOverride;
+    } else {
+      var huidjeRuw=rollenPerRijCalc*rolDiameter+90;
+      var hMaten=[700,750,800,850,900,950,1000,1050,1100,1150,1200,1250,1300,1350,1400];
+      huidjeLengte=hMaten[hMaten.length-1];
+      for(var hi=0;hi<hMaten.length;hi++){if(hMaten[hi]>=huidjeRuw){huidjeLengte=hMaten[hi];break;}}
+    }
     var parenH=Math.floor(lagen/2);
     aantalHuidjes=parenH*aantalPallets;
     huidjesTotaalM=Math.round(aantalHuidjes*huidjeLengte/1000*10)/10;
@@ -1410,7 +1402,15 @@ function openDetail(key){
         var rollen2=stuks>0?Math.ceil(stuks/zakrol):0;
         var volP2=rollen2>0?Math.floor(rollen2/rpPallet2):0,restD2=rollen2>0?rollen2%rpPallet2:0,losD2=0,pallets2=0,rpPalletToon2=rpPallet2;
         if(rollen2>0){if(restD2===0)pallets2=volP2;else if(restD2<=4){pallets2=volP2;losD2=restD2;}else if(volP2>0&&restD2<=volP2){pallets2=volP2;rpPalletToon2=rpPallet2+1;}else pallets2=volP2+1;if(pallets2===0)pallets2=1;}
-        var huidjeD=0;if(!staandD&&lagenD2>1){var hRuw2=rijAD*rolD+90,hM2=[700,750,800,850,900,950,1000,1050,1100,1150,1200,1250,1300,1350,1400];huidjeD=hM2[hM2.length-1];for(var hi3=0;hi3<hM2.length;hi3++){if(hM2[hi3]>=hRuw2){huidjeD=hM2[hi3];break;}}}
+        var huidjeD=0;if(!staandD&&lagenD2>1){
+          if(r.order_huidje&&parseFloat(r.order_huidje)>0){
+            huidjeD=parseFloat(r.order_huidje);
+          } else {
+            var hRuw2=rijAD*rolD+90,hM2=[700,750,800,850,900,950,1000,1050,1100,1150,1200,1250,1300,1350,1400];
+            huidjeD=hM2[hM2.length-1];
+            for(var hi3=0;hi3<hM2.length;hi3++){if(hM2[hi3]>=hRuw2){huidjeD=hM2[hi3];break;}}
+          }
+        }
         orderHtml='<div class="slabel">Order Berekening</div><div class="info-block">';
         if(stuks>0)orderHtml+='<div class="info-row"><div class="ir-lbl">TE LEVEREN</div><div class="ir-val">'+stuks.toLocaleString()+' st</div></div>';
         if(rollen2>0)orderHtml+='<div class="info-row"><div class="ir-lbl">AANTAL ROLLEN</div><div class="ir-val" style="color:#a78bfa;">'+rollen2+'</div></div>';
@@ -1481,6 +1481,7 @@ function bewerkRecept(key){
     if(r.order_rpp){var orppEl=document.getElementById('f-order-rpp');if(orppEl){orppEl.value=r.order_rpp;orppEl.classList.remove('veld-leeg');orppEl.classList.add('veld-definitief');}}
 if(r.werk_rpp){var wrppEl=document.getElementById('f-werk-rpp');if(wrppEl){wrppEl.value=r.werk_rpp;wrppEl.classList.remove('veld-leeg');wrppEl.classList.add('veld-definitief');}}
     if(r.werk_huidje){var whEl=document.getElementById('f-werk-huidje');if(whEl){whEl.value=r.werk_huidje;whEl.classList.remove('veld-leeg');whEl.classList.add('veld-definitief');}}
+    if(r.order_huidje){var ohEl=document.getElementById('f-huidje');if(ohEl){ohEl.value=r.order_huidje;ohEl.classList.remove('veld-leeg');ohEl.classList.add('veld-definitief');}}
     editKey=key;
     var ntEl2=document.getElementById('nieuw-title');if(ntEl2)ntEl2.textContent='Recept Bewerken';
     go('s-nieuw');
@@ -1708,6 +1709,5 @@ function resetVeld(id){
 
 checkLogin();
 </script>
-
 </body>
 </html>
