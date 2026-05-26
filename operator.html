@@ -5,10 +5,249 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#070a10">
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
 <title>TSA Operator Recepten</title>
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getDatabase, ref, onValue, get } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+
+const firebaseConfig = {
+  databaseURL: 'https://amutec-tsa-ra-1640-default-rtdb.europe-west1.firebasedatabase.app'
+};
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+var _operator = sessionStorage.getItem('tsa_operator') || 'Operator';
+var _klantNr = '';
+var _npVal = '';
+var _liveListener = null;
+
+function go(id){
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  var el = document.getElementById(id);
+  if(el){ el.classList.add('active'); var c=el.querySelector('.content');if(c)c.scrollTop=0; }
+}
+
+// NUMPAD
+window.openNumpad = function(){
+  _npVal = _klantNr || '';
+  document.getElementById('np-waarde').textContent = _npVal || '----';
+  document.getElementById('numpad-overlay').style.display = 'flex';
+};
+window.sluitNumpad = function(){ document.getElementById('numpad-overlay').style.display = 'none'; };
+window.npC = function(c){ _npVal += c; document.getElementById('np-waarde').textContent = _npVal || '----'; };
+window.npW = function(){ _npVal = _npVal.slice(0,-1); document.getElementById('np-waarde').textContent = _npVal || '----'; };
+
+window.zoekKlant = function(){
+  var nr = _npVal || _klantNr;
+  if(!nr){ document.getElementById('zoek-err').style.display='block'; return; }
+  _klantNr = nr;
+  document.getElementById('klant-display').textContent = nr;
+  window.sluitNumpad();
+  document.getElementById('zoek-err').style.display = 'none';
+
+  // Stop oude listener
+  if(_liveListener) { _liveListener(); _liveListener = null; }
+
+  // Start LIVE listener -- update automatisch bij elke Firebase wijziging
+  const receptenRef = ref(db, 'recepten');
+  _liveListener = onValue(receptenRef, function(snapshot){
+    var data = snapshot.val();
+    if(!data){ document.getElementById('zoek-err').style.display='block'; return; }
+    var gevonden = [];
+    Object.keys(data).forEach(function(k){
+      var r = data[k];
+      if(r && r.klantnr === nr && r.operator_gepubliceerd === true){
+        r._key = k;
+        gevonden.push(r);
+      }
+    });
+    if(!gevonden.length){
+      document.getElementById('zoek-err').style.display='block';
+      // Als we in de lijst zijn, terug naar welkom
+      if(document.getElementById('s-lijst').classList.contains('active')){
+        go('s-welkom');
+      }
+      return;
+    }
+    document.getElementById('zoek-err').style.display='none';
+    toonLijst(nr, gevonden);
+    // Als detail view open is, update die ook
+    if(document.getElementById('s-detail').classList.contains('active')){
+      var title = document.getElementById('detail-title').textContent;
+      // herlaad detail met nieuwe data
+    }
+  });
+};
+
+function toonLijst(nr, lijst){
+  document.getElementById('lijst-title').textContent = 'Klant ' + nr;
+  var html = '';
+  lijst.forEach(function(r){
+    var naam = (r.prodtype||'') + (r.breedte?' '+r.breedte+'mm':'') + (r.lengte?' \u00d7 '+r.lengte+'mm':'');
+    html += '<div class="recept-kaart" onclick="window.openDetail(\''+r._key+'\')">';
+    html += '<div style="font-size:20px;font-weight:700;color:#e5e7eb;">'+naam+'</div>';
+    html += '<div style="font-size:11px;color:#9ca3af;margin-top:6px;">'+r.klantnaam+'</div>';
+    html += '</div>';
+  });
+  document.getElementById('lijst-content').innerHTML = html;
+  // Alleen naar lijst als we niet al in detail zijn
+  if(!document.getElementById('s-detail').classList.contains('active')){
+    go('s-lijst');
+  }
+}
+
+window.openDetail = function(key){
+  // Live data voor dit recept
+  const receptRef = ref(db, 'recepten/' + key);
+  get(receptRef).then(function(snapshot){
+    var r = snapshot.val();
+    if(!r) return;
+    r._key = key;
+    renderDetail(r);
+  });
+};
+
+window.gaTerug = function(){
+  go('s-lijst');
+};
+
+function rij(lbl, val, kleur){
+  if(!val && val !== 0) return '';
+  return '<div class="info-row"><div class="ir-lbl">'+lbl+'</div><div class="ir-val" style="color:'+(kleur||'#e5e7eb')+';">'+val+'</div></div>';
+}
+
+function renderDetail(r){
+  document.getElementById('detail-title').textContent = (r.klantnr||'') + ' \u2014 ' + (r.prodtype||'');
+  var html = '';
+
+  html += '<div class="slabel">Productie</div>';
+  html += '<div class="info-block">';
+  html += rij('Sealtijd', r.seal ? r.seal+' ms' : null, '#fcd34d');
+  html += rij('Snelheid', r.snelheid ? r.snelheid+' m/min' : null, '#fcd34d');
+  html += rij('Zakken / rol', r.order_zakrol||r.zakrol, '#fcd34d');
+  if(r.order_stuks && r.order_zakrol){
+    var rollen = Math.ceil(parseFloat(r.order_stuks)/parseFloat(r.order_zakrol));
+    html += rij('Aantal rollen', rollen+' rol', '#a78bfa');
+  }
+  html += '</div>';
+
+  html += '<div class="slabel">Opwikkelaar RA</div>';
+  html += '<div class="info-block">';
+  if(r.offset1_werke) html += rij('Offset cycle wissel', r.offset1_werke, '#60a5fa');
+  html += rij('Koker diameter', r.koker ? r.koker+' mm' : null);
+  html += rij('Cycle drukker', r.drukker ? 'AAN'+(r.drukker_inst?' \u2014 '+r.drukker_inst:'') : 'UIT');
+  html += '</div>';
+
+  html += '<div class="slabel">Accessoires RA</div>';
+  html += '<div class="info-block">';
+  html += '<div class="info-row"><div class="ir-lbl">Static Charger</div><div class="ir-val" style="color:#34d399;">'+(r.static_ch||'Off')+'</div></div>';
+  if(r.static_mat && parseFloat(r.static_mat)>0){
+    html += rij('Material to be Charged', r.static_mat+' mm', '#9ca3af');
+  }
+  html += '</div>';
+
+  html += '<div class="slabel">Temperatuur Sealer</div>';
+  html += '<div style="display:flex;gap:12px;margin-bottom:8px;">';
+  html += '<div style="flex:1;background:#0f1520;border:1px solid #1a2540;border-radius:6px;padding:14px;text-align:center;">';
+  html += '<div style="font-size:9px;color:#6b7280;letter-spacing:1px;margin-bottom:8px;">BOVENSTE &deg;C</div>';
+  html += '<div style="font-size:44px;font-weight:700;color:#fcd34d;">'+(r.temp_boven||'--')+'</div></div>';
+  html += '<div style="flex:1;background:#0f1520;border:1px solid #1a2540;border-radius:6px;padding:14px;text-align:center;">';
+  html += '<div style="font-size:9px;color:#6b7280;letter-spacing:1px;margin-bottom:8px;">ONDERSTE &deg;C</div>';
+  html += '<div style="font-size:44px;font-weight:700;color:#fcd34d;">'+(r.temp_onder||'--')+'</div></div>';
+  html += '</div>';
+
+  var breedte=parseFloat(r.breedte)||0, lengte=parseFloat(r.lengte)||0;
+  var dikte=parseFloat(r.dikte)||0;
+  var zakrol=parseFloat(r.order_zakrol)||parseFloat(r.zakrol)||0;
+  var koker=parseFloat(r.koker)||90;
+
+  if(zakrol && lengte && dikte){
+    var lagen_n=(r.prodtype==='Vel'||r.prodtype==='Huls')?1:(r.prodtype==='Zak met invouw'?4:2);
+    var rolD=Math.round(Math.sqrt((koker/2)*(koker/2)+(zakrol*lengte*dikte*lagen_n)/Math.PI)*2);
+    var palletB=r.order_pallet==='blok'?1000:800;
+    var maxH=(r.order_maxhoogte==='1'||r.order_maxhoogte===1)?1050:1550;
+    var staand=breedte>0&&breedte<=500;
+
+    html += '<div class="slabel">Pallet Stapeling</div>';
+    html += '<div style="background:#0f1520;border:1px solid #a78bfa;border-radius:6px;padding:16px;margin-bottom:8px;text-align:center;">';
+    html += '<div style="font-size:10px;color:#a78bfa;letter-spacing:2px;margin-bottom:12px;">';
+    html += (r.order_pallet==='blok'?'Blokpallet 1000mm':'Euro pallet 800mm')+' &bull; &Oslash;'+rolD+'mm &bull; '+(staand?'Staand':'Liggend');
+    html += '</div>';
+
+    var ROL='<span class="rol-c" style="background:linear-gradient(135deg,#60a5fa,#3b82f6);border:2px solid #93c5fd;"></span>';
+    var ROL_M='<span class="rol-c" style="background:linear-gradient(135deg,#a78bfa,#7c3aed);border:2px solid #c4b5fd;"></span>';
+    var visual='';
+
+    if(staand){
+      var maxLS=Math.min(2,Math.max(1,Math.floor(maxH/breedte)));
+      for(var lg=maxLS;lg>=1;lg--){
+        if(rolD<=300){
+          visual+='<div style="display:flex;justify-content:center;margin:2px 0;">';
+          for(var i=0;i<4;i++) visual+=ROL;
+          visual+='</div><div style="display:flex;justify-content:center;margin:2px 0;padding-left:18px;">';
+          for(var j=0;j<3;j++) visual+=ROL_M;
+          visual+='</div><div style="display:flex;justify-content:center;margin:2px 0;">';
+          for(var k=0;k<4;k++) visual+=ROL;
+          visual+='</div>';
+        } else {
+          var rj=Math.max(1,Math.floor(1200/rolD));
+          visual+='<div style="display:flex;justify-content:center;margin:2px 0;">';
+          for(var r1=0;r1<rj;r1++) visual+=ROL;
+          visual+='</div><div style="display:flex;justify-content:center;margin:2px 0;padding-left:18px;">';
+          for(var r2=0;r2<rj;r2++) visual+=ROL_M;
+          visual+='</div>';
+        }
+        if(lg>1) visual+='<div style="border-top:1px dashed #1a2540;margin:8px 20px;"></div>';
+      }
+      html+=visual+'</div>';
+    } else {
+      var maxL2=1;
+      for(var nl=2;nl<=20;nl++){if(rolD+(nl-1)*rolD*0.866<=maxH)maxL2=nl;else break;}
+      var par=Math.floor(maxL2/2),ext=maxL2%2;
+      var rAl=Math.max(1,Math.floor(palletB/rolD)),rBl=Math.max(1,rAl-1),rppl=par*(rAl+rBl)+ext*rAl;
+      var rAb=Math.max(1,Math.floor(1200/rolD)),rBb=Math.max(1,rAb-1),rppb=par*(rAb+rBb)+ext*rAb;
+      var rijA=rppb>rppl?rAb:rAl, rijB=rppb>rppl?rBb:rBl;
+
+      for(var lag=maxL2;lag>=1;lag--){
+        var rv=(lag%2===1)?rijA:rijB;
+        var kl=(lag%2===1)?'#f59e0b':'#34d399';
+        visual+='<div style="display:flex;justify-content:center;margin:2px 0;">';
+        for(var ri=0;ri<rv;ri++){
+          visual+='<span class="rol-c" style="background:'+kl+';border:2px solid '+kl+';opacity:'+(lag%2===1?'1':'0.7')+';"></span>';
+        }
+        visual+='</div>';
+      }
+      html+=visual+'</div>';
+
+      var huidje=0;
+      if(r.operator_huidje&&parseFloat(r.operator_huidje)>0){
+        huidje=parseFloat(r.operator_huidje);
+      } else {
+        var hRuw=rijA*rolD+90;
+        var hM=[700,750,800,850,900,950,1000,1050,1100,1150,1200,1250,1300,1350,1400];
+        huidje=hM[hM.length-1];
+        for(var hi=0;hi<hM.length;hi++){if(hM[hi]>=hRuw){huidje=hM[hi];break;}}
+      }
+      html+='<div style="background:#0f1520;border:1px solid #34d399;border-radius:6px;padding:16px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;">';
+      html+='<div><div style="font-size:9px;color:#34d399;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">Huidje lengte</div>';
+      html+='<div style="font-size:13px;color:#6b7280;">Om '+rijA+' rollen</div></div>';
+      html+='<div style="font-size:36px;font-weight:700;color:#34d399;">'+huidje+'<span style="font-size:16px;margin-left:4px;">mm</span></div>';
+      html+='</div>';
+    }
+  }
+
+  if(r.notities){
+    html+='<div class="slabel">Notities</div>';
+    html+='<div style="background:#0f1520;border:1px solid #1a2540;border-radius:4px;padding:14px;font-size:13px;color:#9ca3af;line-height:1.6;margin-bottom:8px;">'+r.notities+'</div>';
+  }
+
+  document.getElementById('detail-content').innerHTML = html;
+  go('s-detail');
+}
+
+// Init
+document.getElementById('welkom-naam').textContent = _operator.toUpperCase();
+</script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospace;min-height:100%;overscroll-behavior:none;}
@@ -43,7 +282,6 @@ html,body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,mon
 </head>
 <body>
 
-<!-- WELKOM -->
 <div class="screen active" id="s-welkom">
   <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100dvh;padding:32px 24px;">
     <div style="position:fixed;top:20px;left:20px;width:24px;height:24px;border-top:2px solid #34d399;border-left:2px solid #34d399;"></div>
@@ -67,7 +305,6 @@ html,body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,mon
   </div>
 </div>
 
-<!-- LIJST -->
 <div class="screen" id="s-lijst">
   <div class="topbar">
     <button class="back-btn" onclick="go('s-welkom')">&#8249;</button>
@@ -76,16 +313,14 @@ html,body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,mon
   <div class="content" id="lijst-content"></div>
 </div>
 
-<!-- DETAIL -->
 <div class="screen" id="s-detail">
   <div class="topbar">
-    <button class="back-btn" onclick="herlaadLijst()">&#8249;</button>
+    <button class="back-btn" onclick="gaTerug()">&#8249;</button>
     <div class="topbar-title" id="detail-title">Recept</div>
   </div>
   <div class="content" id="detail-content"></div>
 </div>
 
-<!-- NUMPAD -->
 <div class="numpad-overlay" id="numpad-overlay">
   <div class="numpad-box">
     <div style="font-size:10px;color:#34d399;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;">Klantnummer</div>
@@ -101,269 +336,5 @@ html,body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,mon
     <button class="np-ann" onclick="sluitNumpad()">&#10005; Annuleer</button>
   </div>
 </div>
-
-<script>
-'use strict';
-var FB = 'https://amutec-tsa-ra-1640-default-rtdb.europe-west1.firebasedatabase.app';
-var _operator = '';
-var _klantNr = '';
-var _npVal = '';
-var _recepten = [];
-
-function init(){
-  _operator = sessionStorage.getItem('tsa_operator') || 'Operator';
-  document.getElementById('welkom-naam').textContent = _operator.toUpperCase();
-}
-
-function go(id){
-  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
-  var el = document.getElementById(id);
-  if(el){ el.classList.add('active'); var c=el.querySelector('.content');if(c)c.scrollTop=0; }
-}
-
-function openNumpad(){
-  _npVal = _klantNr || '';
-  document.getElementById('np-waarde').textContent = _npVal || '----';
-  document.getElementById('numpad-overlay').style.display = 'flex';
-}
-function sluitNumpad(){ document.getElementById('numpad-overlay').style.display = 'none'; }
-function npC(c){ _npVal += c; document.getElementById('np-waarde').textContent = _npVal || '----'; }
-function npW(){ _npVal = _npVal.slice(0,-1); document.getElementById('np-waarde').textContent = _npVal || '----'; }
-
-function zoekKlant(){
-  var nr = _npVal || _klantNr;
-  if(!nr){ document.getElementById('zoek-err').style.display='block'; return; }
-  _klantNr = nr;
-  _recepten = []; // altijd cache leegmaken
-  document.getElementById('klant-display').textContent = nr;
-  sluitNumpad();
-  document.getElementById('zoek-err').style.display = 'none';
-  fetch(FB + '/recepten.json?t=' + Date.now(), {cache:'no-store'})
-    .then(function(r){return r.json();})
-    .then(function(data){
-      if(!data){ toonErr(); return; }
-      var gevonden = [];
-      Object.keys(data).forEach(function(k){
-        var r = data[k];
-        if(r && r.klantnr === nr && r.operator_gepubliceerd === true){
-          r._key = k;
-          gevonden.push(r);
-        }
-      });
-      if(!gevonden.length){ toonErr(); return; }
-      _recepten = gevonden;
-      toonLijst(nr, gevonden);
-    })
-    .catch(function(){ toonErr(); });
-}
-
-function toonErr(){ document.getElementById('zoek-err').style.display = 'block'; }
-
-function toonLijst(nr, lijst){
-  document.getElementById('lijst-title').textContent = 'Klant ' + nr;
-  var html = '';
-  lijst.forEach(function(r){
-    var naam = (r.prodtype||'') + (r.breedte?' '+r.breedte+'mm':'') + (r.lengte?' \u00d7 '+r.lengte+'mm':'');
-    html += '<div class="recept-kaart" onclick="openDetail(\''+r._key+'\')">';
-    html += '<div style="font-size:20px;font-weight:700;color:#e5e7eb;">'+naam+'</div>';
-    html += '<div style="font-size:11px;color:#9ca3af;margin-top:6px;">'+r.klantnaam+'</div>';
-    html += '</div>';
-  });
-  document.getElementById('lijst-content').innerHTML = html;
-  go('s-lijst');
-}
-
-function herlaadLijst(){
-  _recepten = [];
-  if(_klantNr){
-    fetch(FB + '/recepten.json?t=' + Date.now(), {cache:'no-store'})
-      .then(function(r){return r.json();})
-      .then(function(data){
-        if(!data){ go('s-lijst'); return; }
-        var gevonden = [];
-        Object.keys(data).forEach(function(k){
-          var r = data[k];
-          if(r && r.klantnr === _klantNr && r.operator_gepubliceerd === true){
-            r._key = k;
-            gevonden.push(r);
-          }
-        });
-        _recepten = gevonden;
-        if(gevonden.length) toonLijst(_klantNr, gevonden);
-        else go('s-lijst');
-      })
-      .catch(function(){ go('s-lijst'); });
-  } else {
-    go('s-lijst');
-  }
-}
-
-function openDetail(key){
-  fetch(FB + '/recepten/' + key + '.json?t=' + Date.now(), {cache:'no-store'})
-    .then(function(res){return res.json();})
-    .then(function(r){
-      if(!r) return;
-      r._key = key;
-      renderDetail(r);
-    })
-    .catch(function(){
-      for(var i=0;i<_recepten.length;i++){
-        if(_recepten[i]._key===key){ renderDetail(_recepten[i]); break; }
-      }
-    });
-}
-
-function rij(lbl, val, kleur){
-  if(!val && val !== 0) return '';
-  return '<div class="info-row"><div class="ir-lbl">'+lbl+'</div><div class="ir-val" style="color:'+(kleur||'#e5e7eb')+';">'+val+'</div></div>';
-}
-
-function renderDetail(r){
-  document.getElementById('detail-title').textContent = (r.klantnr||'') + ' \u2014 ' + (r.prodtype||'');
-  var html = '';
-
-  // VAK 1: PRODUCTIE
-  html += '<div class="slabel">Productie</div>';
-  html += '<div class="info-block">';
-  html += rij('Sealtijd', r.seal ? r.seal+' ms' : null, '#fcd34d');
-  html += rij('Snelheid', r.snelheid ? r.snelheid+' m/min' : null, '#fcd34d');
-  html += rij('Zakken / rol', r.order_zakrol||r.zakrol, '#fcd34d');
-  if(r.order_stuks && r.order_zakrol){
-    var rollen = Math.ceil(parseFloat(r.order_stuks)/parseFloat(r.order_zakrol));
-    html += rij('Aantal rollen', rollen+' rol', '#a78bfa');
-  }
-  html += '</div>';
-
-  // VAK 2: OPWIKKELAAR RA
-  html += '<div class="slabel">Opwikkelaar RA</div>';
-  html += '<div class="info-block">';
-  if(r.offset1_werke) html += rij('Offset cycle wissel', r.offset1_werke, '#60a5fa');
-  html += rij('Koker diameter', r.koker ? r.koker+' mm' : null);
-  html += rij('Cycle drukker', r.drukker ? 'AAN'+(r.drukker_inst?' \u2014 '+r.drukker_inst:'') : 'UIT');
-  html += '</div>';
-
-  // VAK 3: ACCESSOIRES RA
-  html += '<div class="slabel">Accessoires RA</div>';
-  html += '<div class="info-block">';
-  html += '<div class="info-row"><div class="ir-lbl">Static Charger</div><div class="ir-val" style="color:#34d399;">'+(r.static_ch||'Off')+'</div></div>';
-  if(r.static_mat && parseFloat(r.static_mat)>0){
-    html += rij('Material to be Charged', r.static_mat+' mm', '#9ca3af');
-  }
-  html += '</div>';
-
-  // VAK 4: TEMPERATUUR
-  html += '<div class="slabel">Temperatuur Sealer</div>';
-  html += '<div style="display:flex;gap:12px;margin-bottom:8px;">';
-  html += '<div style="flex:1;background:#0f1520;border:1px solid #1a2540;border-radius:6px;padding:14px;text-align:center;">';
-  html += '<div style="font-size:9px;color:#6b7280;letter-spacing:1px;margin-bottom:8px;">BOVENSTE &deg;C</div>';
-  html += '<div style="font-size:44px;font-weight:700;color:#fcd34d;">'+(r.temp_boven||'--')+'</div></div>';
-  html += '<div style="flex:1;background:#0f1520;border:1px solid #1a2540;border-radius:6px;padding:14px;text-align:center;">';
-  html += '<div style="font-size:9px;color:#6b7280;letter-spacing:1px;margin-bottom:8px;">ONDERSTE &deg;C</div>';
-  html += '<div style="font-size:44px;font-weight:700;color:#fcd34d;">'+(r.temp_onder||'--')+'</div></div>';
-  html += '</div>';
-
-  // PALLET VISUALISATIE
-  var breedte=parseFloat(r.breedte)||0;
-  var lengte=parseFloat(r.lengte)||0;
-  var dikte=parseFloat(r.dikte)||0;
-  var zakrol=parseFloat(r.order_zakrol)||parseFloat(r.zakrol)||0;
-  var koker=parseFloat(r.koker)||90;
-
-  if(zakrol && lengte && dikte){
-    var lagen_n = (r.prodtype==='Vel'||r.prodtype==='Huls') ? 1 : (r.prodtype==='Zak met invouw' ? 4 : 2);
-    var rolD = Math.round(Math.sqrt((koker/2)*(koker/2)+(zakrol*lengte*dikte*lagen_n)/Math.PI)*2);
-    var palletB = r.order_pallet==='blok' ? 1000 : 800;
-    var maxH = (r.order_maxhoogte==='1'||r.order_maxhoogte===1) ? 1050 : 1550;
-    var staand = breedte > 0 && breedte <= 500;
-
-    html += '<div class="slabel">Pallet Stapeling</div>';
-    html += '<div style="background:#0f1520;border:1px solid #a78bfa;border-radius:6px;padding:16px;margin-bottom:8px;text-align:center;">';
-    html += '<div style="font-size:10px;color:#a78bfa;letter-spacing:2px;margin-bottom:12px;">';
-    html += (r.order_pallet==='blok'?'Blokpallet 1000mm':'Euro pallet 800mm')+' &bull; &Oslash;'+rolD+'mm &bull; '+(staand?'Staand':'Liggend');
-    html += '</div>';
-
-    var ROL = '<span class="rol-c" style="background:linear-gradient(135deg,#60a5fa,#3b82f6);border:2px solid #93c5fd;"></span>';
-    var ROL_M = '<span class="rol-c" style="background:linear-gradient(135deg,#a78bfa,#7c3aed);border:2px solid #c4b5fd;"></span>';
-    var visual = '';
-
-    if(staand){
-      var maxLS = Math.min(2, Math.max(1, Math.floor(maxH/breedte)));
-      for(var lg=maxLS; lg>=1; lg--){
-        if(rolD<=300){
-          visual += '<div style="display:flex;justify-content:center;margin:2px 0;">';
-          for(var i=0;i<4;i++) visual+=ROL;
-          visual += '</div><div style="display:flex;justify-content:center;margin:2px 0;padding-left:18px;">';
-          for(var j=0;j<3;j++) visual+=ROL_M;
-          visual += '</div><div style="display:flex;justify-content:center;margin:2px 0;">';
-          for(var k=0;k<4;k++) visual+=ROL;
-          visual += '</div>';
-        } else {
-          var rj = Math.max(1,Math.floor(1200/rolD));
-          visual += '<div style="display:flex;justify-content:center;margin:2px 0;">';
-          for(var r1=0;r1<rj;r1++) visual+=ROL;
-          visual += '</div><div style="display:flex;justify-content:center;margin:2px 0;padding-left:18px;">';
-          for(var r2=0;r2<rj;r2++) visual+=ROL_M;
-          visual += '</div>';
-        }
-        if(lg>1) visual += '<div style="border-top:1px dashed #1a2540;margin:8px 20px;"></div>';
-      }
-      html += visual;
-      html += '</div>';
-    } else {
-      var maxL2=1;
-      for(var nl=2;nl<=20;nl++){ if(rolD+(nl-1)*rolD*0.866<=maxH) maxL2=nl; else break; }
-      var par=Math.floor(maxL2/2), ext=maxL2%2;
-      var rAl=Math.max(1,Math.floor(palletB/rolD)), rBl=Math.max(1,rAl-1), rppl=par*(rAl+rBl)+ext*rAl;
-      var rAb=Math.max(1,Math.floor(1200/rolD)), rBb=Math.max(1,rAb-1), rppb=par*(rAb+rBb)+ext*rAb;
-      var rijA=rppb>rppl?rAb:rAl, rijB=rppb>rppl?rBb:rBl;
-
-      for(var lag=maxL2;lag>=1;lag--){
-        var rv=(lag%2===1)?rijA:rijB;
-        var kl=(lag%2===1)?'#f59e0b':'#34d399';
-        visual += '<div style="display:flex;justify-content:center;margin:2px 0;">';
-        for(var ri=0;ri<rv;ri++){
-          visual += '<span class="rol-c" style="background:'+kl+';border:2px solid '+kl+';opacity:'+(lag%2===1?'1':'0.7')+';"></span>';
-        }
-        visual += '</div>';
-      }
-      html += visual;
-      html += '</div>';
-
-      // Huidje
-      var huidje = 0;
-      if(r.operator_huidje && parseFloat(r.operator_huidje)>0){
-        huidje = parseFloat(r.operator_huidje);
-      } else {
-        var hRuw = rijA*rolD+90;
-        var hM = [700,750,800,850,900,950,1000,1050,1100,1150,1200,1250,1300,1350,1400];
-        huidje = hM[hM.length-1];
-        for(var hi=0;hi<hM.length;hi++){ if(hM[hi]>=hRuw){ huidje=hM[hi]; break; } }
-      }
-      html += '<div style="background:#0f1520;border:1px solid #34d399;border-radius:6px;padding:16px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;">';
-      html += '<div><div style="font-size:9px;color:#34d399;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">Huidje lengte</div>';
-      html += '<div style="font-size:13px;color:#6b7280;">Om '+rijA+' rollen</div></div>';
-      html += '<div style="font-size:36px;font-weight:700;color:#34d399;">'+huidje+'<span style="font-size:16px;margin-left:4px;">mm</span></div>';
-      html += '</div>';
-    }
-  }
-
-  if(r.notities){
-    html += '<div class="slabel">Notities</div>';
-    html += '<div style="background:#0f1520;border:1px solid #1a2540;border-radius:4px;padding:14px;font-size:13px;color:#9ca3af;line-height:1.6;margin-bottom:8px;">'+r.notities+'</div>';
-  }
-
-  document.getElementById('detail-content').innerHTML = html;
-  go('s-detail');
-}
-
-init();
-
-// Ververs data als app vanuit achtergrond komt (iOS PWA)
-document.addEventListener('visibilitychange', function(){
-  if(document.visibilityState === 'visible' && _klantNr){
-    herlaadLijst();
-  }
-});
-</script>
 </body>
 </html>
