@@ -170,8 +170,11 @@ function toonLijst(nr, lijst){
 }
 
 function herlaadLijst(){
-  if(_klantNr) zoekKlant();
   go('s-lijst');
+  if(_klantNr){
+    _recepten = []; // cache leegmaken
+    zoekKlant();
+  }
 }
 
 function openDetail(key){
