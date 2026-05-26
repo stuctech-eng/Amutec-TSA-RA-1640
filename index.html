@@ -166,7 +166,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
         </div>
         <button onclick="terugNaarStap1()" style="width:100%;background:transparent;border:1px solid #1a2540;border-radius:4px;color:#6b7280;font-family:'Courier New',Courier,monospace;font-size:13px;padding:10px;cursor:pointer;margin-top:10px;">&#8249; Terug</button>
       </div>
-      <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v18.7 &#8212; 2026-04-29</div>
+      <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v19.0 &#8212; 2026-04-29</div>
     </div>
   </div>
 </div>
@@ -539,12 +539,12 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
 <script>
 'use strict';
 var FB_URL = 'https://amutec-tsa-ra-1640-default-rtdb.europe-west1.firebasedatabase.app';
-var APP_VERSION = '18.7';
+var APP_VERSION = '19.0';
 
 // Hardcoded fallback
 var OPERATORS_FALLBACK = {
   'Dirk':   { pin: '007', admin: true  },
-  'Casper': { pin: '100', admin: false }
+  'Kevin': { pin: '101', admin: false }
 };
 var APP_PW_FALLBACK = 'tsa1600';
 
@@ -600,7 +600,8 @@ function laadOperatorsConfig(cb) {
 
 function schrijfDefaultOperators(){
   fetch(FB_URL+'/operators/dirk.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({naam:'Dirk',pin:'007',admin:true})}).catch(function(){});
-  fetch(FB_URL+'/operators/casper.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({naam:'Casper',pin:'100',admin:false})}).catch(function(){});
+  // Casper verwijderen uit Firebase
+  fetch(FB_URL+'/operators/casper.json',{method:'DELETE'}).catch(function(){});
   fetch(FB_URL+'/instellingen/app_wachtwoord.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify('tsa1600')}).catch(function(){});
 }
 var _huidigeOperator = null;
@@ -1256,10 +1257,18 @@ function maakPubliceerKnop(key, gepubliceerd){
 }
 
 function togglePubliceer(key,huidigGepubliceerd){
-  var nieuweWaarde=!huidigGepubliceerd;
-  fbPatch('/recepten',key,{operator_gepubliceerd:nieuweWaarde},function(){
+  var huidig = huidigGepubliceerd===true||huidigGepubliceerd==='true';
+  var nieuweWaarde = !huidig;
+  // Gebruik PUT direct op het veld voor betrouwbaarheid
+  fetch(FB_URL+'/recepten/'+key+'/operator_gepubliceerd.json',{
+    method:'PUT',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(nieuweWaarde)
+  }).then(function(){
     toast(nieuweWaarde?'&#128994; Toegevoegd aan operator recepten':'Verwijderd uit operator recepten');
     laadRecepten();
+  }).catch(function(){
+    toast('Fout bij opslaan');
   });
 }
 
@@ -1504,7 +1513,7 @@ function zoekKlantnamen(q){
 function kiesKlantnaam(naam){var el=document.getElementById('f-klantnaam');if(el){el.value=naam;el.classList.remove('veld-leeg','veld-benadering');el.classList.add('veld-definitief');}sluitKlantnamen();}
 function sluitKlantnamen(){var dd=document.getElementById('klantnaam-dropdown');if(dd)dd.style.display='none';}
 
-var OPERATORS=['Dirk','Casper'];
+var OPERATORS=['Dirk','Kevin'];
 function toonNaamDropdown(){
   var el=document.getElementById('f-versie');var dd=document.getElementById('naam-dropdown');if(!dd)return;
   var q=(el.value||'').toLowerCase();
