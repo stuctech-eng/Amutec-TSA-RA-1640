@@ -131,6 +131,7 @@ function zoekKlant(){
   var nr = _npVal || _klantNr;
   if(!nr){ document.getElementById('zoek-err').style.display='block'; return; }
   _klantNr = nr;
+  _recepten = []; // altijd cache leegmaken
   document.getElementById('klant-display').textContent = nr;
   sluitNumpad();
   document.getElementById('zoek-err').style.display = 'none';
