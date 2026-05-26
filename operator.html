@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#070a10">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>TSA Operator Recepten</title>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -135,7 +138,7 @@ function zoekKlant(){
   document.getElementById('klant-display').textContent = nr;
   sluitNumpad();
   document.getElementById('zoek-err').style.display = 'none';
-  fetch(FB + '/recepten.json?t=' + Date.now())
+  fetch(FB + '/recepten.json?t=' + Date.now(), {cache:'no-store'})
     .then(function(r){return r.json();})
     .then(function(data){
       if(!data){ toonErr(); return; }
@@ -173,7 +176,7 @@ function toonLijst(nr, lijst){
 function herlaadLijst(){
   _recepten = [];
   if(_klantNr){
-    fetch(FB + '/recepten.json?t=' + Date.now())
+    fetch(FB + '/recepten.json?t=' + Date.now(), {cache:'no-store'})
       .then(function(r){return r.json();})
       .then(function(data){
         if(!data){ go('s-lijst'); return; }
@@ -196,7 +199,7 @@ function herlaadLijst(){
 }
 
 function openDetail(key){
-  fetch(FB + '/recepten/' + key + '.json?t=' + Date.now())
+  fetch(FB + '/recepten/' + key + '.json?t=' + Date.now(), {cache:'no-store'})
     .then(function(res){return res.json();})
     .then(function(r){
       if(!r) return;
@@ -354,6 +357,13 @@ function renderDetail(r){
 }
 
 init();
+
+// Ververs data als app vanuit achtergrond komt (iOS PWA)
+document.addEventListener('visibilitychange', function(){
+  if(document.visibilityState === 'visible' && _klantNr){
+    herlaadLijst();
+  }
+});
 </script>
 </body>
 </html>
