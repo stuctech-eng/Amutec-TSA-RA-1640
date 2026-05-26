@@ -4,339 +4,1711 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="TSA 1600">
 <meta name="theme-color" content="#070a10">
-<title>TSA Operator Recepten</title>
+<link rel="manifest" href="manifest.json">
+<title>TSA D-Roller 1600</title>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospace;min-height:100%;overscroll-behavior:none;}
-.screen{display:none;flex-direction:column;min-height:100dvh;}
-.screen.active{display:flex;}
-.topbar{background:#0f1520;border-bottom:2px solid #34d399;height:56px;display:flex;align-items:center;padding:0 16px;gap:12px;position:sticky;top:0;z-index:100;flex-shrink:0;}
-.back-btn{background:none;border:1px solid #1a2540;border-radius:4px;color:#34d399;font-size:22px;cursor:pointer;padding:4px 10px;line-height:1;}
-.topbar-title{font-weight:700;font-size:15px;letter-spacing:2px;text-transform:uppercase;color:#e5e7eb;flex:1;}
-.content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px 14px 80px;}
-.slabel{font-size:9px;color:#34d399;letter-spacing:3px;text-transform:uppercase;display:flex;align-items:center;gap:10px;margin:20px 0 10px;}
-.slabel:first-child{margin-top:0;}
-.slabel::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,#1a2540,transparent);}
-.info-block{background:#0f1520;border:1px solid #1a2540;border-radius:4px;overflow:hidden;margin-bottom:8px;}
-.info-row{display:flex;align-items:center;padding:14px 16px;border-bottom:1px solid #1a2540;gap:10px;}
-.info-row:last-child{border-bottom:none;}
-.ir-lbl{font-size:10px;color:#9ca3af;letter-spacing:1px;text-transform:uppercase;min-width:130px;flex-shrink:0;}
-.ir-val{font-size:20px;font-weight:700;color:#e5e7eb;}
-.rol-c{display:inline-block;width:30px;height:30px;border-radius:50%;margin:3px;vertical-align:middle;}
-.recept-kaart{background:#0f1520;border:1px solid #1a2540;border-left:4px solid #34d399;border-radius:6px;padding:16px 18px;margin-bottom:10px;cursor:pointer;}
-.recept-kaart:active{background:#141d2e;}
-.numpad-overlay{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:9100;display:none;align-items:flex-end;justify-content:center;}
-.numpad-box{background:#0f1520;border-top:3px solid #34d399;width:100%;max-width:480px;padding:24px 20px 36px;border-radius:12px 12px 0 0;}
-.np-val{font-size:52px;font-weight:700;color:#fcd34d;text-align:center;margin-bottom:16px;min-height:64px;letter-spacing:4px;background:#070a10;border:2px solid rgba(52,211,153,0.6);border-radius:8px;padding:12px;}
-.np-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:8px;}
-.np-nr{background:#141d2e;border:1px solid #1a2540;border-radius:8px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:26px;font-weight:700;padding:18px 0;cursor:pointer;text-align:center;}
-.np-nr:active{background:#34d399;color:#000;}
-.np-ok{width:100%;background:#34d399;color:#000;border:none;border-radius:8px;font-family:'Courier New',monospace;font-weight:700;font-size:18px;letter-spacing:2px;padding:16px;cursor:pointer;margin-top:4px;}
-.np-ann{width:100%;background:transparent;border:1px solid #1a2540;border-radius:8px;color:#6b7280;font-family:'Courier New',monospace;font-size:13px;padding:12px;cursor:pointer;margin-top:8px;}
-.pulse{width:8px;height:8px;border-radius:50%;background:#34d399;animation:pulse 2s infinite;flex-shrink:0;}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.2}}
+html{height:100%}
+body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospace;min-height:100%;overscroll-behavior:none;font-size:17px}
+.screen{display:none;flex-direction:column;min-height:100dvh;position:relative;z-index:1}
+.screen.active{display:flex}
+.topbar{background:#0f1520;border-bottom:2px solid #f59e0b;height:56px;display:flex;align-items:center;padding:0 16px;gap:12px;position:sticky;top:0;z-index:100;flex-shrink:0}
+.back-btn{background:none;border:1px solid #1a2540;border-radius:4px;color:#f59e0b;font-size:22px;cursor:pointer;padding:4px 10px;line-height:1}
+.topbar-title{font-weight:700;font-size:16px;letter-spacing:2px;text-transform:uppercase;color:#e5e7eb;flex:1}
+.topbar-btn{background:#f59e0b;color:#000;border:none;font-weight:700;font-size:14px;letter-spacing:1px;padding:9px 14px;border-radius:4px;cursor:pointer;font-family:inherit}
+.content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px 14px 80px}
+.slabel{font-size:9px;color:#f59e0b;letter-spacing:3px;text-transform:uppercase;display:flex;align-items:center;gap:10px;margin:20px 0 10px}
+.slabel:first-child{margin-top:0}
+.slabel::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,#1a2540,transparent)}
+.tree-group{margin-bottom:8px}
+.tree-header{display:flex;align-items:center;gap:8px;padding:12px 14px;background:#141d2e;border:1px solid #1a2540;border-left:4px solid #f59e0b;border-radius:4px;cursor:pointer}
+.tree-header.open{border-radius:4px 4px 0 0}
+.tree-header:active{background:#1a2540}
+.tree-items{display:none}
+.tree-items.open{display:block}
+.tree-chevron{margin-left:auto;font-size:16px;color:#6b7280;transition:transform .2s;flex-shrink:0}
+.tree-header.open .tree-chevron{transform:rotate(90deg);color:#f59e0b}
+.tree-klant{font-weight:700;font-size:16px;letter-spacing:1px;text-transform:uppercase;color:#f59e0b;flex:1}
+.tree-count{font-size:10px;color:#9ca3af}
+.tree-item{background:#0f1520;border:1px solid #1a2540;border-top:none;cursor:pointer;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;}
+.tree-item:last-child{border-radius:0 0 4px 4px}
+.tree-item:active{background:#141d2e}
+.tree-item-inner{display:flex;align-items:center;gap:10px;padding:10px 12px}
+.tree-connector{width:16px;height:24px;border-left:1px solid #1a2540;border-bottom:1px solid #1a2540;flex-shrink:0;margin-left:8px;border-radius:0 0 0 4px}
+.tree-content{flex:1;min-width:0}
+.tree-name{font-weight:700;font-size:18px;letter-spacing:1px;color:#e5e7eb}
+.tree-meta{display:flex;flex-wrap:wrap;gap:5px;margin-top:5px}
+.tag{font-size:9px;padding:2px 7px;border-radius:3px;background:#0a0d14;border:1px solid #1a2540;color:#9ca3af}
+.tag-mat{border-color:rgba(96,165,250,.4);color:#60a5fa}
+.tag-spd{border-color:rgba(245,158,11,.4);color:#f59e0b}
+.tag-rec{border-color:rgba(52,211,153,.4);color:#34d399}
+.empty-state{text-align:center;padding:48px 24px;font-size:11px;color:#6b7280;line-height:2.4;border:1px dashed #1a2540;border-radius:6px}
+.form-card{background:#0f1520;border:1px solid #1a2540;border-top:2px solid #f59e0b;border-radius:4px;padding:16px;margin-bottom:12px}
+.form-card-title{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#f59e0b;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid #1a2540}
+.field{margin-bottom:12px}
+.field:last-child{margin-bottom:0}
+.field label{display:block;font-size:9px;color:#9ca3af;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px}
+.field input,.field select,.field textarea{width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:17px;padding:12px 14px;outline:none;-webkit-appearance:none;transition:border-color .15s}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:#f59e0b}
+.field textarea{resize:vertical;font-size:14px}
+.field select{color:#e5e7eb}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.mat-btn{background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#6b7280;font-family:'Courier New',Courier,monospace;font-weight:700;font-size:13px;padding:12px 6px;cursor:pointer;text-align:center}
+.mat-btn.active{background:#f59e0b;border-color:#f59e0b;color:#000}
+.static-btn{background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#6b7280;font-family:'Courier New',Courier,monospace;font-size:11px;padding:10px 6px;cursor:pointer;text-align:center;flex:1}
+.static-btn.active{background:rgba(52,211,153,.15);border-color:#34d399;color:#34d399}
+.toggle-btn{border:none;padding:10px 20px;border-radius:4px;cursor:pointer;font-weight:700;font-size:13px;font-family:'Courier New',Courier,monospace;letter-spacing:1px}
+.toggle-aan{background:rgba(52,211,153,.15);color:#34d399;border:1px solid #34d399}
+.toggle-uit{background:#0f1520;color:#6b7280;border:1px solid #1a2540}
+.calc-box{background:#070a10;border:1px solid #60a5fa;border-radius:6px;padding:14px 16px;margin-bottom:12px}
+.calc-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #1a2540}
+.calc-row:last-child{border-bottom:none}
+.calc-lbl{font-size:11px;color:#9ca3af;letter-spacing:1px}
+.calc-val{font-size:20px;font-weight:700;color:#60a5fa}
+.info-block{background:#0f1520;border:1px solid #1a2540;border-radius:4px;overflow:hidden;margin-bottom:8px}
+.info-row{display:flex;align-items:center;padding:11px 14px;border-bottom:1px solid #1a2540;gap:10px}
+.info-row:last-child{border-bottom:none}
+.ir-lbl{font-size:10px;color:#9ca3af;letter-spacing:1px;text-transform:uppercase;min-width:130px;flex-shrink:0}
+.ir-val{font-size:18px;font-weight:600;color:#e5e7eb}
+.btn{width:100%;border:none;border-radius:4px;font-family:'Courier New',Courier,monospace;font-weight:700;font-size:16px;letter-spacing:2px;text-transform:uppercase;padding:15px;cursor:pointer;margin-top:8px}
+.btn:active{opacity:.85}
+.btn-amber{background:#f59e0b;color:#000}
+.btn-ghost{background:transparent;border:1px solid #1a2540;color:#6b7280;margin-top:10px}
+.temp-card{background:#070a10;border:1px solid #1a2540;border-radius:6px;padding:14px 18px;text-align:center;flex:1}
+.temp-lbl{font-size:9px;color:#6b7280;letter-spacing:1px;margin-bottom:8px}
+.temp-input{background:transparent;border:none;border-bottom:2px solid #1a2540;color:#e5e7eb;font-size:34px;font-weight:700;font-family:'Courier New',Courier,monospace;text-align:center;width:100%;outline:none}
+.temp-unit{font-size:12px;color:#6b7280;margin-top:4px}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(10px);background:#34d399;color:#000;font-weight:700;font-size:14px;letter-spacing:1px;padding:12px 24px;border-radius:4px;opacity:0;transition:all .2s;pointer-events:none;z-index:9999;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.err{background:#ef4444;color:#fff}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#0f1520;border-top:1px solid #1a2540;display:flex;z-index:100}
+.bnav-btn{flex:1;padding:10px 0;background:transparent;border:none;color:#9ca3af;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;font-family:'Courier New',Courier,monospace}
+.bnav-btn.active{color:#f59e0b}
+.bnav-icon{font-size:20px}
+.bnav-label{font-size:8px;letter-spacing:1px;text-transform:uppercase}
+.pulse{width:7px;height:7px;border-radius:50%;background:#34d399;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 8px #34d39988}50%{opacity:.2;box-shadow:none}}
+.home-status{display:inline-flex;align-items:center;gap:8px;font-size:10px;color:#34d399;margin-top:14px;letter-spacing:2px;background:rgba(52,211,153,.06);border:1px solid rgba(52,211,153,.2);padding:5px 12px;border-radius:4px}
+.flow-step{background:#0f1520;border:1px solid #1a2540;border-radius:6px;margin-bottom:6px;overflow:hidden;cursor:pointer}
+.flow-step-hdr{display:flex;align-items:center;gap:14px;padding:16px}
+.flow-step-hdr:active{background:#141d2e}
+.flow-step-num{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0;color:#000}
+.flow-step-info{flex:1}
+.flow-step-naam{font-weight:700;font-size:18px;letter-spacing:1px;color:#e5e7eb}
+.flow-step-desc{font-size:11px;color:#9ca3af;margin-top:2px;line-height:1.4}
+.flow-step-chev{font-size:18px;color:#9ca3af;flex-shrink:0}
+.flow-body{display:none;padding:0 16px 14px;border-top:1px solid #1a2540}
+.flow-body.open{display:block}
+.flow-prob{background:#0a0d14;border:1px solid #1a2540;border-radius:4px;margin-top:10px;overflow:hidden}
+.flow-prob-titel{font-weight:700;font-size:15px;color:#e5e7eb;padding:10px 14px;border-bottom:1px solid #1a2540;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+.flow-prob-titel:active{background:#0f1520}
+.flow-prob-body{display:none;padding:10px 14px}
+.flow-prob-body.open{display:block}
+.flow-check-lbl{font-size:9px;letter-spacing:2px;text-transform:uppercase;margin:8px 0 6px}
+.flow-items{list-style:none;display:flex;flex-direction:column;gap:4px}
+.flow-items li{font-size:13px;padding:7px 10px;background:#070a10;border:1px solid #1a2540;border-radius:3px;display:flex;gap:8px;align-items:flex-start;line-height:1.4}
+@media(max-width:380px){.grid2{grid-template-columns:1fr}}
+.invul-overlay{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:9100;display:none;align-items:flex-end;justify-content:center}
+.invul-box{background:#0f1520;border-top:3px solid #f59e0b;width:100%;max-width:480px;padding:24px 20px 36px;border-radius:12px 12px 0 0}
+.invul-label{font-size:10px;color:#9ca3af;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;}
+.invul-waarde{font-size:52px;font-weight:700;color:#e5e7eb;text-align:center;margin-bottom:16px;min-height:64px;letter-spacing:2px;background:#070a10;border:2px solid #1a2540;border-radius:8px;padding:12px;}
+.invul-waarde.geel{border-color:rgba(245,158,11,0.6);color:#fcd34d;}
+.invul-waarde.blauw{border-color:rgba(96,165,250,0.5);color:#93c5fd;}
+.invul-waarde.groen{border-color:rgba(52,211,153,0.6);color:#6ee7b7;}
+.invul-snel{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
+.invul-snel-btn{background:#141d2e;border:1px solid #1a2540;border-radius:6px;color:#9ca3af;font-family:'Courier New',Courier,monospace;font-size:14px;font-weight:700;padding:10px 16px;cursor:pointer;flex:1;min-width:60px;text-align:center;}
+.invul-snel-btn:active{background:#f59e0b;color:#000;}
+.invul-nrs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:8px;}
+.invul-nr{background:#141d2e;border:1px solid #1a2540;border-radius:8px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:26px;font-weight:700;padding:18px 0;cursor:pointer;text-align:center;}
+.invul-nr:active{background:#f59e0b;color:#000;}
+.invul-ok{width:100%;background:#34d399;color:#000;border:none;border-radius:8px;font-family:'Courier New',Courier,monospace;font-weight:700;font-size:18px;letter-spacing:2px;padding:16px;cursor:pointer;margin-top:4px;}
+.invul-annuleer{width:100%;background:transparent;border:1px solid #1a2540;border-radius:8px;color:#6b7280;font-family:'Courier New',Courier,monospace;font-size:13px;padding:12px;cursor:pointer;margin-top:8px;}
+.veld-leeg{background:rgba(245,158,11,0.08)!important;border-color:rgba(245,158,11,0.6)!important;color:#fcd34d!important}
+.veld-benadering{background:rgba(96,165,250,0.08)!important;border-color:rgba(96,165,250,0.5)!important;color:#93c5fd!important}
+.veld-definitief{background:rgba(52,211,153,0.08)!important;border-color:rgba(52,211,153,0.6)!important;color:#6ee7b7!important}
 </style>
 </head>
 <body>
 
-<!-- WELKOM -->
-<div class="screen active" id="s-welkom">
-  <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100dvh;padding:32px 24px;">
-    <div style="position:fixed;top:20px;left:20px;width:24px;height:24px;border-top:2px solid #34d399;border-left:2px solid #34d399;"></div>
-    <div style="position:fixed;top:20px;right:20px;width:24px;height:24px;border-top:2px solid #34d399;border-right:2px solid #34d399;"></div>
-    <div style="position:fixed;bottom:20px;left:20px;width:24px;height:24px;border-bottom:2px solid #34d399;border-left:2px solid #34d399;"></div>
-    <div style="position:fixed;bottom:20px;right:20px;width:24px;height:24px;border-bottom:2px solid #34d399;border-right:2px solid #34d399;"></div>
-    <div style="background:#34d399;color:#000;font-size:9px;letter-spacing:3px;padding:5px 16px;text-transform:uppercase;margin-bottom:14px;">AMUTEC</div>
-    <div style="font-weight:700;font-size:36px;letter-spacing:3px;text-transform:uppercase;color:#e5e7eb;text-align:center;line-height:1.1;margin-bottom:6px;">Operator<br>Recepten</div>
-    <div style="font-size:11px;color:#9ca3af;letter-spacing:2px;margin-bottom:8px;">TSA D-ROLLER 1600</div>
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:40px;">
-      <div class="pulse"></div>
-      <span style="font-size:12px;color:#34d399;letter-spacing:2px;" id="welkom-naam">--</span>
-    </div>
-    <div style="width:100%;max-width:320px;">
-      <div style="font-size:9px;color:#9ca3af;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;">Klantnummer</div>
-      <div onclick="openNumpad()" id="klant-display" style="width:100%;background:#0f1520;border:2px solid rgba(52,211,153,0.6);border-radius:8px;padding:20px;text-align:center;cursor:pointer;font-size:36px;font-weight:700;color:#fcd34d;letter-spacing:4px;min-height:80px;">----</div>
-      <div style="font-size:10px;color:#6b7280;text-align:center;margin-top:8px;">Druk om klantnummer in te voeren</div>
-      <button onclick="zoekKlant()" style="width:100%;margin-top:16px;background:#34d399;color:#000;border:none;border-radius:6px;font-family:'Courier New',monospace;font-weight:700;font-size:18px;letter-spacing:2px;text-transform:uppercase;padding:16px;cursor:pointer;">ZOEKEN ›</button>
-      <div id="zoek-err" style="display:none;color:#ef4444;font-size:11px;text-align:center;margin-top:10px;letter-spacing:1px;">GEEN RECEPTEN GEVONDEN</div>
+<!-- LOGIN -->
+<div class="screen active" id="s-login">
+  <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100dvh;padding:32px 24px;background:#070a10;position:relative;">
+    <div style="position:absolute;top:20px;left:20px;width:24px;height:24px;border-top:2px solid #f59e0b;border-left:2px solid #f59e0b;"></div>
+    <div style="position:absolute;top:20px;right:20px;width:24px;height:24px;border-top:2px solid #f59e0b;border-right:2px solid #f59e0b;"></div>
+    <div style="position:absolute;bottom:20px;left:20px;width:24px;height:24px;border-bottom:2px solid #f59e0b;border-left:2px solid #f59e0b;"></div>
+    <div style="position:absolute;bottom:20px;right:20px;width:24px;height:24px;border-bottom:2px solid #f59e0b;border-right:2px solid #f59e0b;"></div>
+    <div style="background:#f59e0b;color:#000;font-size:9px;letter-spacing:3px;padding:5px 16px;text-transform:uppercase;margin-bottom:14px;">AMUTEC</div>
+    <div style="font-weight:700;font-size:40px;letter-spacing:4px;text-transform:uppercase;color:#e5e7eb;text-align:center;line-height:1;">TSA</div>
+    <div style="font-weight:700;font-size:18px;letter-spacing:4px;text-transform:uppercase;color:#9ca3af;margin-bottom:8px;">D-ROLLER 1600</div>
+    <div style="font-size:10px;color:#9ca3af;letter-spacing:2px;margin-bottom:28px;">MACHINE DATABASE</div>
+    <div style="width:100%;max-width:300px;">
+      <div id="login-stap1">
+        <div style="font-size:9px;color:#9ca3af;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;">App Wachtwoord</div>
+        <input id="login-pw" type="password" placeholder="........" onkeydown="if(event.key==='Enter')doLogin()"
+          style="width:100%;background:#0f1520;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;margin-bottom:10px;text-align:center;letter-spacing:6px;">
+        <div id="login-err" style="display:none;color:#ef4444;font-size:10px;text-align:center;margin-bottom:10px;letter-spacing:2px;">ONGELDIG WACHTWOORD</div>
+        <button onclick="doLogin()" style="width:100%;background:#f59e0b;color:#000;border:none;border-radius:4px;font-family:'Courier New',Courier,monospace;font-weight:700;font-size:18px;letter-spacing:3px;text-transform:uppercase;padding:15px;cursor:pointer;">VERDER &#8250;</button>
+      </div>
+      <div id="login-stap2" style="display:none;">
+        <div style="font-size:9px;color:#9ca3af;letter-spacing:2px;text-transform:uppercase;margin-bottom:14px;">Wie ben jij?</div>
+        <div id="operator-knoppen" style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px;"></div>
+        <div id="login-pin-sectie" style="display:none;">
+          <div style="font-size:9px;color:#9ca3af;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;" id="login-pin-label">Pincode</div>
+          <input id="login-pin" type="password" inputmode="numeric" maxlength="6" placeholder="&middot; &middot; &middot;"
+            onkeydown="if(event.key==='Enter')doLoginPin()"
+            style="width:100%;background:#0f1520;border:2px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:28px;padding:14px;outline:none;margin-bottom:10px;text-align:center;letter-spacing:8px;">
+          <div id="login-pin-err" style="display:none;color:#ef4444;font-size:10px;text-align:center;margin-bottom:10px;letter-spacing:2px;">VERKEERDE PINCODE</div>
+          <button onclick="doLoginPin()" style="width:100%;background:#34d399;color:#000;border:none;border-radius:4px;font-family:'Courier New',Courier,monospace;font-weight:700;font-size:18px;letter-spacing:3px;text-transform:uppercase;padding:15px;cursor:pointer;">INLOGGEN</button>
+        </div>
+        <button onclick="terugNaarStap1()" style="width:100%;background:transparent;border:1px solid #1a2540;border-radius:4px;color:#6b7280;font-family:'Courier New',Courier,monospace;font-size:13px;padding:10px;cursor:pointer;margin-top:10px;">&#8249; Terug</button>
+      </div>
+      <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px;letter-spacing:2px;">v18.8 &#8212; 2026-04-29</div>
     </div>
   </div>
 </div>
 
-<!-- LIJST -->
-<div class="screen" id="s-lijst">
+<!-- HOME -->
+<div class="screen" id="s-home">
+  <div style="display:flex;flex-direction:column;min-height:100dvh;padding:0 0 70px;">
+    <div style="padding:28px 20px 20px;border-bottom:1px solid #1a2540;">
+      <div style="display:inline-block;background:#f59e0b;color:#000;font-size:9px;letter-spacing:3px;padding:4px 14px;text-transform:uppercase;margin-bottom:12px;">AMUTEC</div>
+      <div style="font-weight:700;font-size:34px;letter-spacing:2px;text-transform:uppercase;color:#e5e7eb;line-height:1.1;">TSA D-Roller<br>1600</div>
+      <div style="font-size:11px;color:#9ca3af;letter-spacing:2px;margin-top:6px;">Machine Database &amp; Recepten</div>
+      <div class="home-status" style="margin-top:12px;"><div class="pulse"></div>SYSTEEM GEREED</div>
+      <div style="margin-top:8px;font-size:11px;letter-spacing:1px;">
+        <span style="color:#9ca3af;">Ingelogd: </span><span id="home-operator" style="font-weight:700;color:#34d399;">-</span>
+      </div>
+      <div style="margin-top:4px;font-size:11px;color:#6b7280;letter-spacing:1px;">v<span id="home-versie"></span></div>
+    </div>
+    <div style="flex:1;display:flex;flex-direction:column;gap:0;padding:0;">
+      <button onclick="go('s-recepten')" style="flex:1;background:#0f1520;border:none;border-bottom:1px solid #1a2540;border-left:5px solid #f59e0b;display:flex;align-items:center;gap:16px;padding:0 20px;cursor:pointer;text-align:left;width:100%;min-height:80px;">
+        <div style="width:52px;height:52px;background:#0a0d14;border:1px solid #1a2540;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;">&#128203;</div>
+        <div style="flex:1;"><div style="font-weight:700;font-size:22px;letter-spacing:2px;text-transform:uppercase;color:#e5e7eb;">Recepten</div><div style="font-size:12px;color:#9ca3af;margin-top:3px;">Machine-instellingen database</div></div>
+        <div style="font-size:26px;color:#f59e0b;">&#8250;</div>
+      </button>
+      <button onclick="go('s-flow')" style="flex:1;background:#0f1520;border:none;border-bottom:1px solid #1a2540;border-left:5px solid #34d399;display:flex;align-items:center;gap:16px;padding:0 20px;cursor:pointer;text-align:left;width:100%;min-height:80px;">
+        <div style="width:52px;height:52px;background:#0a0d14;border:1px solid #1a2540;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;">&#128295;</div>
+        <div style="flex:1;"><div style="font-weight:700;font-size:22px;letter-spacing:2px;text-transform:uppercase;color:#e5e7eb;">Problemen</div><div style="font-size:12px;color:#9ca3af;margin-top:3px;">Oorzaak &amp; oplossing per probleem</div></div>
+        <div style="font-size:26px;color:#34d399;">&#8250;</div>
+      </button>
+      <!-- Admin knoppen - alleen voor Dirk -->
+      <div id="admin-knoppen" style="display:none;flex-direction:column;">
+        <button onclick="go('s-calculator')" style="flex:1;background:#0f1520;border:none;border-bottom:1px solid #1a2540;border-left:5px solid #60a5fa;display:flex;align-items:center;gap:16px;padding:0 20px;cursor:pointer;text-align:left;width:100%;min-height:80px;">
+          <div style="width:52px;height:52px;background:#0a0d14;border:1px solid #1a2540;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;">&#9881;</div>
+          <div style="flex:1;"><div style="font-weight:700;font-size:22px;letter-spacing:2px;text-transform:uppercase;color:#e5e7eb;">Calculator Offset</div><div style="font-size:12px;color:#9ca3af;margin-top:3px;">Offset, rolwissel, roldiameter</div></div>
+          <div style="font-size:26px;color:#60a5fa;">&#8250;</div>
+        </button>
+        <button onclick="window.location.href='palletconfig.html'" style="flex:1;background:#0f1520;border:none;border-bottom:1px solid #1a2540;border-left:5px solid #34d399;display:flex;align-items:center;gap:16px;padding:0 20px;cursor:pointer;text-align:left;width:100%;min-height:80px;">
+          <div style="width:52px;height:52px;background:#0a0d14;border:1px solid #1a2540;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;">&#128230;</div>
+          <div style="flex:1;"><div style="font-weight:700;font-size:22px;letter-spacing:2px;text-transform:uppercase;color:#e5e7eb;">Pallet Config</div><div style="font-size:12px;color:#9ca3af;margin-top:3px;">Stapeling, maten, huidjes berekenen</div></div>
+          <div style="font-size:26px;color:#34d399;">&#8250;</div>
+        </button>
+        <button onclick="window.location.href='gids.html'" style="flex:1;background:#0f1520;border:none;border-bottom:1px solid #1a2540;border-left:5px solid #f59e0b;display:flex;align-items:center;gap:16px;padding:0 20px;cursor:pointer;text-align:left;width:100%;min-height:80px;">
+          <div style="width:52px;height:52px;background:#0a0d14;border:1px solid #1a2540;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;">&#128218;</div>
+          <div style="flex:1;"><div style="font-weight:700;font-size:22px;letter-spacing:2px;text-transform:uppercase;color:#e5e7eb;">App Gids</div><div style="font-size:12px;color:#9ca3af;margin-top:3px;">Uitleg functies &amp; berekeningen</div></div>
+          <div style="font-size:26px;color:#f59e0b;">&#8250;</div>
+        </button>
+        <button onclick="window.location.href='admin.html'" style="flex:1;background:#0f1520;border:none;border-bottom:1px solid #1a2540;border-left:5px solid #ef4444;display:flex;align-items:center;gap:16px;padding:0 20px;cursor:pointer;text-align:left;width:100%;min-height:80px;">
+          <div style="width:52px;height:52px;background:#0a0d14;border:1px solid #1a2540;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;">&#9881;&#65039;</div>
+          <div style="flex:1;"><div style="font-weight:700;font-size:22px;letter-spacing:2px;text-transform:uppercase;color:#ef4444;">Admin</div><div style="font-size:12px;color:#9ca3af;margin-top:3px;">History, info &amp; app beheer</div></div>
+          <div style="font-size:26px;color:#ef4444;">&#8250;</div>
+        </button>
+      </div>
+    </div>
+  </div>
+  <nav class="bottom-nav">
+    <button class="bnav-btn" onclick="go('s-recepten')"><span class="bnav-icon">&#128203;</span><span class="bnav-label">Recepten</span></button>
+    <button class="bnav-btn" onclick="go('s-flow')"><span class="bnav-icon">&#128295;</span><span class="bnav-label">Problemen</span></button>
+  </nav>
+</div>
+
+<!-- RECEPTEN LIJST -->
+<div class="screen" id="s-recepten">
   <div class="topbar">
-    <button class="back-btn" onclick="go('s-welkom')">&#8249;</button>
-    <div class="topbar-title" id="lijst-title">Recepten</div>
+    <button class="back-btn" onclick="go('s-home')">&#8249;</button>
+    <div class="topbar-title">Recepten</div>
+    <button class="topbar-btn" onclick="resetForm();go('s-nieuw')">+ Nieuw</button>
   </div>
-  <div class="content" id="lijst-content"></div>
+  <div style="padding:10px 14px 0;background:#070a10;position:sticky;top:56px;z-index:99;">
+    <div style="position:relative;">
+      <input id="zoek-input" type="text" placeholder="Zoek op klant of materiaal..." oninput="filterRecepten()"
+        style="width:100%;background:#0f1520;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:13px;padding:10px 14px 10px 36px;outline:none;-webkit-appearance:none;">
+      <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#6b7280;">&#128269;</span>
+    </div>
+  </div>
+  <div class="content" style="padding-top:10px;" id="recepten-lijst"></div>
 </div>
 
-<!-- DETAIL -->
+<!-- RECEPT DETAIL -->
 <div class="screen" id="s-detail">
   <div class="topbar">
-    <button class="back-btn" onclick="herlaadLijst()">&#8249;</button>
+    <button class="back-btn" onclick="go('s-recepten')">&#8249;</button>
     <div class="topbar-title" id="detail-title">Recept</div>
   </div>
   <div class="content" id="detail-content"></div>
 </div>
 
-<!-- NUMPAD -->
-<div class="numpad-overlay" id="numpad-overlay">
-  <div class="numpad-box">
-    <div style="font-size:10px;color:#34d399;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;">Klantnummer</div>
-    <div class="np-val" id="np-waarde">----</div>
-    <div class="np-grid">
-      <div class="np-nr" onclick="npC('7')">7</div><div class="np-nr" onclick="npC('8')">8</div><div class="np-nr" onclick="npC('9')">9</div>
-      <div class="np-nr" onclick="npC('4')">4</div><div class="np-nr" onclick="npC('5')">5</div><div class="np-nr" onclick="npC('6')">6</div>
-      <div class="np-nr" onclick="npC('1')">1</div><div class="np-nr" onclick="npC('2')">2</div><div class="np-nr" onclick="npC('3')">3</div>
-      <div class="np-nr" onclick="npC('0')">0</div>
-      <div class="np-nr" onclick="npW()" style="color:#ef4444;">&#9003;</div>
-      <div class="np-nr" onclick="zoekKlant()" style="background:#34d399;color:#000;font-size:18px;">›</div>
+<!-- NIEUW / BEWERK RECEPT -->
+<div class="screen" id="s-nieuw">
+  <div class="topbar">
+    <button class="back-btn" onclick="resetForm();go('s-recepten')">&#8249;</button>
+    <div class="topbar-title" id="nieuw-title">Nieuw Recept</div>
+  </div>
+  <div class="content">
+    <div class="form-card" style="border-top-color:#a78bfa;">
+      <div class="form-card-title" style="color:#a78bfa;">&#128230; Order</div>
+      <div class="field">
+        <label>Te leveren (stuks)</label>
+        <input id="f-order-stuks" type="number" placeholder="0" class="veld-leeg" readonly onclick="openInvul(this)"
+          style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;cursor:pointer;">
+      </div>
+      <div class="field">
+        <label>Max hoogte beperking</label>
+        <button id="btn-maxhoogte" onclick="toggleMaxHoogte()"
+          style="width:100%;background:#141d2e;border:2px solid #1a2540;border-radius:6px;color:#9ca3af;font-family:'Courier New',Courier,monospace;font-size:15px;font-weight:700;padding:14px;cursor:pointer;text-align:left;display:flex;align-items:center;gap:12px;">
+          <span id="maxhoogte-icon">&#9744;</span>
+          <span>Max 1200mm incl. pallet</span>
+          <span style="margin-left:auto;font-size:11px;color:#6b7280;">standaard 1700mm</span>
+        </button>
+      </div>
+      <div class="field">
+        <label>Zakken op rol</label>
+        <input id="f-order-zakrol" type="number" placeholder="bv. 250" class="veld-leeg" readonly onclick="openInvul(this)"
+          style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;cursor:pointer;">
+        <input id="f-zakrol" type="hidden" value="250">
+      </div>
+      <div class="field">
+        <label>Wat voor pallet</label>
+        <div style="display:flex;gap:8px;">
+          <button onclick="kiesPallet('euro')" id="pallet-euro" style="flex:1;background:rgba(167,139,250,0.1);border:1px solid #a78bfa;border-radius:4px;color:#a78bfa;font-family:'Courier New',Courier,monospace;font-size:12px;font-weight:700;padding:10px 6px;cursor:pointer;">Euro<br>800x1200</button>
+          <button onclick="kiesPallet('euro-formaat')" id="pallet-euro-formaat" style="flex:1;background:#141d2e;border:1px solid #1a2540;border-radius:4px;color:#9ca3af;font-family:'Courier New',Courier,monospace;font-size:12px;font-weight:700;padding:10px 6px;cursor:pointer;">Euro<br>formaat</button>
+          <button onclick="kiesPallet('blok')" id="pallet-blok" style="flex:1;background:#141d2e;border:1px solid #1a2540;border-radius:4px;color:#9ca3af;font-family:'Courier New',Courier,monospace;font-size:12px;font-weight:700;padding:10px 6px;cursor:pointer;">Blok<br>1000x1200</button>
+        </div>
+      </div>
+      <div class="field">
+        <label>Rollen per pallet (klant vereiste)</label>
+        <input id="f-order-rpp" type="number" placeholder="auto" class="veld-leeg" readonly onclick="openInvul(this)"
+          style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;cursor:pointer;">
+        <div style="font-size:10px;color:#6b7280;margin-top:4px;">Leeg = automatisch berekend op hoogte</div>
+      </div>
+
+      <div class="field">
+        <label>Gewicht per 100 meter (kg)</label>
+        <input id="f-gew100m" type="number" placeholder="auto" class="veld-leeg" readonly onclick="openInvul(this)"
+          style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:20px;padding:14px;outline:none;text-align:center;cursor:pointer;">
+        <button onclick="resetVeld('f-gew100m')" style="width:100%;margin-top:6px;background:#141d2e;border:1px solid #1a2540;border-radius:4px;color:#9ca3af;font-family:'Courier New',Courier,monospace;font-size:13px;padding:8px;cursor:pointer;">&#8635; Automatisch (wissen)</button>
+      </div>
+      <div class="field">
+        <label>Huidjes lengte override (mm)</label>
+        <input id="f-huidje" type="number" placeholder="automatisch" class="veld-leeg" readonly onclick="openInvul(this)"
+          style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:20px;padding:14px;outline:none;text-align:center;cursor:pointer;">
+        <button onclick="resetVeld('f-huidje')" style="width:100%;margin-top:6px;background:#141d2e;border:1px solid #1a2540;border-radius:4px;color:#9ca3af;font-family:'Courier New',Courier,monospace;font-size:13px;padding:8px;cursor:pointer;">&#8635; Automatisch (wissen)</button>
+      </div>
+      <div id="order-resultaten" style="display:none;margin-top:12px;background:#070a10;border:1px solid rgba(167,139,250,.4);border-radius:6px;padding:14px;">
+        <div style="font-size:9px;color:#a78bfa;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;">Berekening</div>
+        <div id="order-rijen"></div>
+      </div>
     </div>
-    <button class="np-ann" onclick="sluitNumpad()">&#10005; Annuleer</button>
+
+    <div class="form-card">
+      <div class="form-card-title">Klant &amp; Product</div>
+      <div class="grid2" style="position:relative;">
+        <div class="field"><label>Klantnummer</label><input id="f-klantnr" type="text" placeholder="bv. 1001" class="veld-leeg" oninput="veldIngevuld(this)" autocomplete="off" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;"></div>
+        <div class="field"><label>Klantnaam</label>
+          <input id="f-klantnaam" type="text" placeholder="bv. ACME BV" class="veld-leeg" autocomplete="off"
+            oninput="veldIngevuld(this);zoekKlantnamen(this.value)"
+            onfocus="zoekKlantnamen(this.value)"
+            onblur="setTimeout(sluitKlantnamen,200)"
+            style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:18px;padding:12px 14px;outline:none;">
+          <div id="klantnaam-dropdown" style="display:none;position:absolute;left:0;right:0;background:#0f1520;border:1px solid #f59e0b;border-top:none;border-radius:0 0 6px 6px;z-index:500;max-height:200px;overflow-y:auto;"></div>
+        </div>
+      </div>
+      <div class="grid2">
+        <div class="field"><label>Producttype</label>
+          <select id="f-prodtype" class="veld-definitief" onchange="prodtypeChange(this.value);veldIngevuld(this);">
+            <option>Zak</option><option>Zak met invouw</option><option>Hoes</option><option>Vel</option><option>Huls</option><option>Krimpfolie</option><option>Uitsparing</option><option>Andere</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label>Naam operator <span style="color:#ef4444;">*</span></label>
+        <div style="position:relative;">
+          <input id="f-versie" type="text" placeholder="Kies of typ naam" autocomplete="off" class="veld-leeg" readonly
+            onclick="this.removeAttribute('readonly');toonNaamDropdown()" oninput="toonNaamDropdown()"
+            onblur="setTimeout(sluitNaamDropdown,200)"
+            style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:17px;padding:12px 14px;outline:none;">
+          <div id="naam-dropdown" style="display:none;position:absolute;top:100%;left:0;right:0;background:#0f1520;border:1px solid #f59e0b;border-top:none;border-radius:0 0 4px 4px;z-index:200;"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-card">
+      <div class="form-card-title">Materiaal</div>
+      <div class="field">
+        <label>Materiaalsoort</label>
+        <div class="grid3">
+          <button class="mat-btn active" id="mat-ldpe" onclick="selectMat('ldpe')">LDPE</button>
+          <button class="mat-btn" id="mat-mdpe" onclick="selectMat('mdpe')">MDPE</button>
+          <button class="mat-btn" id="mat-recycle-mix" onclick="selectMat('recycle-mix')">&#9851; Mix</button>
+          <button class="mat-btn" id="mat-recycle-peld" onclick="selectMat('recycle-peld')">&#9851; PE-LD</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-card">
+      <div class="form-card-title">Zakmaat &amp; Berekening</div>
+      <div class="grid3">
+        <div class="field"><label>Breedte (mm)</label><input id="f-breedte" type="number" placeholder="400" onclick="openInvul(this)" readonly inputmode="none" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;cursor:pointer;"></div>
+        <div class="field"><label>Lengte (mm)</label><input id="f-lengte" type="number" placeholder="600" onclick="openInvul(this)" readonly inputmode="none" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;cursor:pointer;"></div>
+        <div class="field"><label>Dikte (mm)</label><input id="f-dikte" type="number" placeholder="0.03" onclick="openInvul(this)" readonly inputmode="none" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;cursor:pointer;"></div>
+      </div>
+      <div class="grid2">
+        <div class="field">
+          <label>Koker dia (mm)</label>
+          <input id="f-koker" type="number" placeholder="90" value="90" class="veld-definitief" onclick="openInvul(this)" readonly inputmode="none" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;cursor:pointer;">
+        </div>
+      </div>
+      <div style="margin-top:12px;display:flex;flex-direction:column;gap:10px;">
+        <div class="field"><label>Sealtijd (ms)</label>
+          <input id="f-seal" type="number" placeholder="750" onclick="openInvul(this)" readonly style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;cursor:pointer;">
+        </div>
+        <div class="field"><label>Snelheid (m/min)</label>
+          <input id="f-snelheid" type="number" placeholder="140" onclick="openInvul(this)" readonly style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;cursor:pointer;">
+        </div>
+      </div>
+    </div>
+
+    <div class="form-card">
+      <div class="form-card-title">Machine - Static &amp; Cycle</div>
+      <div class="field">
+        <label>Static Charger</label>
+        <div style="display:flex;gap:8px;">
+          <button class="static-btn active" id="static-Off" onclick="selectStatic('Off')">Off</button>
+          <button class="static-btn" id="static-Always-on" onclick="selectStatic('Always-on')">Always on</button>
+          <button class="static-btn" id="static-End-of-roll" onclick="selectStatic('End-of-roll')">End of roll</button>
+        </div>
+      </div>
+      <div class="field">
+        <label>Material to be charged (mm)</label>
+        <input id="f-static-mat" type="number" placeholder="0" readonly onclick="openInvul(this)" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:20px;padding:12px 14px;outline:none;text-align:center;">
+      </div>
+      <div class="field"><label>Cycle met drukker</label>
+        <button id="drukker-btn" class="toggle-btn toggle-uit" onclick="toggleDrukker()">UIT</button>
+      </div>
+      <div id="drukker-extra" style="display:none;">
+        <div class="field"><label>Drukker instelling</label><input id="f-drukker" type="text" placeholder="bv. 2 cycli"></div>
+      </div>
+    </div>
+
+    <div class="form-card">
+      <div class="form-card-title">Seal Temperaturen</div>
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div>
+          <div style="font-size:9px;color:#9ca3af;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">BOVEN &deg;C</div>
+          <input class="temp-input veld-leeg" id="f-temp-boven" type="number" placeholder="160" onclick="openInvul(this)" readonly style="width:100%;text-align:center;">
+        </div>
+        <div>
+          <div style="font-size:9px;color:#9ca3af;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">ONDER &deg;C</div>
+          <input class="temp-input veld-leeg" id="f-temp-onder" type="number" placeholder="160" onclick="openInvul(this)" readonly style="width:100%;text-align:center;">
+        </div>
+      </div>
+      <div id="mat-info-temp" style="display:none;margin-top:10px;background:#070a10;border:1px solid rgba(96,165,250,.3);border-radius:4px;padding:8px 12px;font-size:11px;color:#60a5fa;"></div>
+    </div>
+
+    <div class="form-card" style="border-top-color:#a78bfa;">
+      <div class="form-card-title" style="color:#a78bfa;">Werkelijke Pallet &amp; Huidje data</div>
+      <div style="font-size:11px;color:#9ca3af;margin-bottom:12px;line-height:1.6;">Vul in wat er in de praktijk werkte.</div>
+      <div class="field">
+        <label>Werkelijk rollen per pallet</label>
+        <input id="f-werk-rpp" type="number" placeholder="leeg = niet gemeten" class="veld-leeg" readonly onclick="openInvul(this)" inputmode="none" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;cursor:pointer;">
+      </div>
+      <div class="field">
+        <label>Werkelijke huidje lengte (mm)</label>
+        <input id="f-werk-huidje" type="number" placeholder="leeg = niet gemeten" class="veld-leeg" readonly onclick="openInvul(this)" inputmode="none" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;cursor:pointer;">
+      </div>
+    </div>
+
+    <div class="form-card" style="border-top-color:#60a5fa;">
+      <div class="form-card-title" style="color:#60a5fa;">Werkelijke Offset (leerdata)</div>
+      <div style="font-size:11px;color:#9ca3af;margin-bottom:12px;line-height:1.6;">Blauw = berekende schatting. Vul de werkelijke offset in die op de machine werkte.</div>
+      <div class="field">
+        <label>Werkelijke Offset 1</label>
+        <input id="f-offset1" type="number" placeholder="bv. 10850" class="veld-leeg" readonly onclick="openInvul(this)" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:20px;padding:12px 14px;outline:none;text-align:center;">
+      </div>
+      <div id="f-offset2-toon" style="display:none;margin-top:8px;background:#070a10;border:1px solid rgba(96,165,250,.3);border-radius:4px;padding:10px 14px;font-size:13px;color:#60a5fa;"></div>
+    </div>
+
+    <div class="form-card">
+      <div class="form-card-title">Notities</div>
+      <div class="field"><textarea id="f-notities" rows="3" placeholder="Opmerkingen..."></textarea></div>
+    </div>
+
+    <button class="btn btn-amber" onclick="slaOp()">Opslaan</button>
+    <button class="btn btn-ghost" onclick="resetForm();go('s-recepten')">Annuleer</button>
+    <div style="height:20px;"></div>
+  </div>
+</div>
+
+<!-- CALCULATOR -->
+<div class="screen" id="s-calculator">
+  <div class="topbar">
+    <button class="back-btn" onclick="go('s-home')">&#8249;</button>
+    <div class="topbar-title">Calculator Offset</div>
+    <button class="topbar-btn" onclick="window.location.href='berekeningen.html'" style="font-size:12px;padding:8px 10px;">&#128202; Uitleg</button>
+  </div>
+  <div class="content">
+    <div class="form-card" style="border-top-color:#60a5fa;">
+      <div class="form-card-title" style="color:#60a5fa;">Invoer</div>
+      <div class="grid2">
+        <div class="field"><label>Zaklengte (mm)</label><input id="c-lengte" type="number" placeholder="600" readonly inputmode="none" onclick="openInvulCalc(this,'Zaklengte (mm)',[300,400,500,600,800,1000,1200,1500,1900,2000,3000])" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:20px;padding:12px;text-align:center;outline:none;cursor:pointer;"></div>
+        <div class="field"><label>Zakken/rol</label><input id="c-zakrol" type="number" placeholder="250" readonly inputmode="none" onclick="openInvulCalc(this,'Zakken op rol',[100,150,200,250,500,750,1000])" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:20px;padding:12px;text-align:center;outline:none;cursor:pointer;"></div>
+      </div>
+      <div class="grid2">
+        <div class="field"><label>Foliedikte (mm)</label><input id="c-dikte" type="number" placeholder="0.015" readonly inputmode="none" onclick="openInvulCalc(this,'Foliedikte (mm)',[0.015,0.02,0.025,0.03,0.04,0.05,0.06,0.08,0.1])" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:20px;padding:12px;text-align:center;outline:none;cursor:pointer;"></div>
+        <div class="field"><label>Kerndiameter (mm)</label><input id="c-kern" type="number" placeholder="90" readonly inputmode="none" onclick="openInvulCalc(this,'Kerndiameter (mm)',[76,90,100,150,200])" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:20px;padding:12px;text-align:center;outline:none;cursor:pointer;"></div>
+      </div>
+    </div>
+    <div class="slabel">Offset Berekening</div>
+    <div class="calc-box">
+      <div class="calc-row"><span class="calc-lbl">&#9881; OFFSET 1</span><span class="calc-val" id="c-offset1">-</span></div>
+      <div class="calc-row"><span class="calc-lbl">&#9881; OFFSET 2</span><span class="calc-val" id="c-offset2">-</span></div>
+    </div>
+    <div class="slabel">Rolwissel Berekening</div>
+    <div class="calc-box">
+      <div class="calc-row"><span class="calc-lbl">&#128260; ROL LENGTE</span><span class="calc-val" id="c-rollengte">- m</span></div>
+      <div class="calc-row"><span class="calc-lbl">&#128260; ROL DIAMETER</span><span class="calc-val" id="c-roldiameter">- mm</span></div>
+    </div>
+    <div id="calc-dataset-info" style="display:none;margin-top:8px;background:#070a10;border:1px solid rgba(245,158,11,.3);border-radius:4px;padding:10px 14px;font-size:11px;color:#f59e0b;line-height:1.6;"></div>
+  </div>
+</div>
+
+<!-- PROBLEEMOPLOSSING -->
+<div class="screen" id="s-flow">
+  <div class="topbar">
+    <button class="back-btn" onclick="go('s-home')">&#8249;</button>
+    <div class="topbar-title">Probleemoplossing</div>
+  </div>
+  <div class="content" id="flow-content"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- INVUL MODAL -->
+<div id="invul-overlay" class="invul-overlay">
+  <div class="invul-box">
+    <div class="invul-label" id="invul-label">Waarde</div>
+    <div class="invul-waarde" id="invul-waarde">0</div>
+    <div class="invul-snel" id="invul-snel"></div>
+    <div class="invul-nrs">
+      <div class="invul-nr" onclick="invulCijfer('7')">7</div>
+      <div class="invul-nr" onclick="invulCijfer('8')">8</div>
+      <div class="invul-nr" onclick="invulCijfer('9')">9</div>
+      <div class="invul-nr" onclick="invulCijfer('4')">4</div>
+      <div class="invul-nr" onclick="invulCijfer('5')">5</div>
+      <div class="invul-nr" onclick="invulCijfer('6')">6</div>
+      <div class="invul-nr" onclick="invulCijfer('1')">1</div>
+      <div class="invul-nr" onclick="invulCijfer('2')">2</div>
+      <div class="invul-nr" onclick="invulCijfer('3')">3</div>
+      <div class="invul-nr" onclick="invulCijfer('.')">.</div>
+      <div class="invul-nr" onclick="invulCijfer('0')">0</div>
+      <div class="invul-nr" onclick="invulWis()" style="color:#ef4444;">&#9003;</div>
+    </div>
+    <button class="invul-ok" onclick="invulOkOverride()">OK &#10003;</button>
+    <button class="invul-annuleer" onclick="invulSluit()">Annuleer</button>
+  </div>
+</div>
+
+<!-- PIN MODAL -->
+<div id="pin-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:9000;align-items:center;justify-content:center;padding:24px;">
+  <div style="background:#0f1520;border:1px solid #1a2540;border-top:2px solid #ef4444;border-radius:6px;padding:28px 24px;width:100%;max-width:300px;">
+    <div style="font-size:9px;color:#ef4444;letter-spacing:3px;text-transform:uppercase;margin-bottom:6px;">Beveiligd</div>
+    <div style="font-weight:700;font-size:18px;color:#e5e7eb;margin-bottom:4px;">Pincode vereist</div>
+    <div style="font-size:12px;color:#6b7280;margin-bottom:20px;">Voer de pincode in om te verwijderen</div>
+    <input id="pin-input" type="password" inputmode="numeric" maxlength="6" placeholder="&middot; &middot; &middot; &middot; &middot; &middot;" onkeydown="if(event.key==='Enter')bevestigPin()"
+      style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:28px;padding:14px;outline:none;text-align:center;letter-spacing:8px;margin-bottom:8px;">
+    <div id="pin-err" style="display:none;color:#ef4444;font-size:11px;letter-spacing:1px;text-align:center;margin-bottom:10px;">VERKEERDE PINCODE</div>
+    <button onclick="bevestigPin()" style="width:100%;background:#ef4444;color:#fff;border:none;border-radius:4px;font-family:'Courier New',Courier,monospace;font-weight:700;font-size:15px;letter-spacing:2px;padding:14px;cursor:pointer;margin-bottom:10px;">VERWIJDEREN</button>
+    <button onclick="sluitPinModal()" style="width:100%;background:transparent;color:#6b7280;border:1px solid #1a2540;border-radius:4px;font-family:'Courier New',Courier,monospace;font-size:13px;padding:12px;cursor:pointer;">Annuleer</button>
   </div>
 </div>
 
 <script>
 'use strict';
-var FB = 'https://amutec-tsa-ra-1640-default-rtdb.europe-west1.firebasedatabase.app';
-var _operator = '';
-var _klantNr = '';
-var _npVal = '';
-var _recepten = [];
+var FB_URL = 'https://amutec-tsa-ra-1640-default-rtdb.europe-west1.firebasedatabase.app';
+var APP_VERSION = '18.8';
 
-function init(){
-  _operator = sessionStorage.getItem('tsa_operator') || 'Operator';
-  document.getElementById('welkom-naam').textContent = _operator.toUpperCase();
-}
+// Hardcoded fallback
+var OPERATORS_FALLBACK = {
+  'Dirk':   { pin: '007', admin: true  },
+  'Casper': { pin: '100', admin: false }
+};
+var APP_PW_FALLBACK = 'tsa1600';
 
-function go(id){
-  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
-  var el = document.getElementById(id);
-  if(el){ el.classList.add('active'); var c=el.querySelector('.content');if(c)c.scrollTop=0; }
-}
+var OPERATORS_CONFIG = Object.assign({}, OPERATORS_FALLBACK);
+var APP_PW = APP_PW_FALLBACK;
+var _offlineModus = false;
 
-function openNumpad(){
-  _npVal = _klantNr || '';
-  document.getElementById('np-waarde').textContent = _npVal || '----';
-  document.getElementById('numpad-overlay').style.display = 'flex';
-}
-function sluitNumpad(){ document.getElementById('numpad-overlay').style.display = 'none'; }
-function npC(c){ _npVal += c; document.getElementById('np-waarde').textContent = _npVal || '----'; }
-function npW(){ _npVal = _npVal.slice(0,-1); document.getElementById('np-waarde').textContent = _npVal || '----'; }
+function laadOperatorsConfig(cb) {
+  // Gebruik altijd eerst de fallback zodat login direct werkt
+  OPERATORS_CONFIG = Object.assign({}, OPERATORS_FALLBACK);
+  APP_PW = APP_PW_FALLBACK;
 
-function zoekKlant(){
-  var nr = _npVal || _klantNr;
-  if(!nr){ document.getElementById('zoek-err').style.display='block'; return; }
-  _klantNr = nr;
-  _recepten = []; // altijd cache leegmaken
-  document.getElementById('klant-display').textContent = nr;
-  sluitNumpad();
-  document.getElementById('zoek-err').style.display = 'none';
-  fetch(FB + '/recepten.json')
+  var pwKlaar = false, opKlaar = false;
+  function checkKlaar(){ if(pwKlaar && opKlaar && cb) cb(); }
+
+  // Wachtwoord uit Firebase
+  fetch(FB_URL + '/instellingen/app_wachtwoord.json')
     .then(function(r){return r.json();})
     .then(function(data){
-      if(!data){ toonErr(); return; }
-      var gevonden = [];
-      Object.keys(data).forEach(function(k){
-        var r = data[k];
-        if(r && r.klantnr === nr && r.operator_gepubliceerd === true){
-          r._key = k;
-          gevonden.push(r);
-        }
-      });
-      if(!gevonden.length){ toonErr(); return; }
-      _recepten = gevonden;
-      toonLijst(nr, gevonden);
+      if(data && typeof data === 'string' && data.length > 0) APP_PW = data;
+      pwKlaar = true; checkKlaar();
     })
-    .catch(function(){ toonErr(); });
-}
+    .catch(function(){ pwKlaar = true; checkKlaar(); });
 
-function toonErr(){ document.getElementById('zoek-err').style.display = 'block'; }
-
-function toonLijst(nr, lijst){
-  document.getElementById('lijst-title').textContent = 'Klant ' + nr;
-  var html = '';
-  lijst.forEach(function(r){
-    var naam = (r.prodtype||'') + (r.breedte?' '+r.breedte+'mm':'') + (r.lengte?' \u00d7 '+r.lengte+'mm':'');
-    html += '<div class="recept-kaart" onclick="openDetail(\''+r._key+'\')">';
-    html += '<div style="font-size:20px;font-weight:700;color:#e5e7eb;">'+naam+'</div>';
-    html += '<div style="font-size:11px;color:#9ca3af;margin-top:6px;">'+r.klantnaam+'</div>';
-    html += '</div>';
-  });
-  document.getElementById('lijst-content').innerHTML = html;
-  go('s-lijst');
-}
-
-function herlaadLijst(){
-  go('s-lijst');
-  if(_klantNr){
-    _recepten = []; // cache leegmaken
-    zoekKlant();
-  }
-}
-
-function openDetail(key){
-  fetch(FB + '/recepten/' + key + '.json')
-    .then(function(res){return res.json();})
-    .then(function(r){
-      if(!r) return;
-      r._key = key;
-      renderDetail(r);
+  // Operators uit Firebase
+  fetch(FB_URL + '/operators.json')
+    .then(function(r){return r.json();})
+    .then(function(data){
+      if(data && typeof data === 'object' && Object.keys(data).length > 0) {
+        var tijdelijk = {};
+        Object.keys(data).forEach(function(k){
+          var op = data[k];
+          if(op && op.naam && op.pin) {
+            tijdelijk[op.naam] = { pin: String(op.pin), admin: !!op.admin };
+          }
+        });
+        // Alleen overschrijven als er geldige operators zijn
+        if(Object.keys(tijdelijk).length > 0) {
+          OPERATORS_CONFIG = tijdelijk;
+          _offlineModus = false;
+        }
+      } else {
+        // Leeg -- schrijf defaults naar Firebase
+        schrijfDefaultOperators();
+      }
+      opKlaar = true; checkKlaar();
     })
     .catch(function(){
-      for(var i=0;i<_recepten.length;i++){
-        if(_recepten[i]._key===key){ renderDetail(_recepten[i]); break; }
-      }
+      _offlineModus = true;
+      opKlaar = true; checkKlaar();
     });
 }
 
-function rij(lbl, val, kleur){
-  if(!val && val !== 0) return '';
-  return '<div class="info-row"><div class="ir-lbl">'+lbl+'</div><div class="ir-val" style="color:'+(kleur||'#e5e7eb')+';">'+val+'</div></div>';
+function schrijfDefaultOperators(){
+  fetch(FB_URL+'/operators/dirk.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({naam:'Dirk',pin:'007',admin:true})}).catch(function(){});
+  fetch(FB_URL+'/operators/casper.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({naam:'Casper',pin:'100',admin:false})}).catch(function(){});
+  fetch(FB_URL+'/instellingen/app_wachtwoord.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify('tsa1600')}).catch(function(){});
+}
+var _huidigeOperator = null;
+var _geselecteerdeOperator = null;
+
+var MATERIALEN = {
+  'ldpe':         {label:'LDPE',          temp_b:155,temp_o:152,sv:1.00,st:1.00,recycle:false},
+  'mdpe':         {label:'MDPE',          temp_b:162,temp_o:159,sv:0.98,st:1.05,recycle:false},
+  'recycle-mix':  {label:'Recycle Mix',   temp_b:170,temp_o:168,sv:0.70,st:1.30,recycle:true},
+  'recycle-peld': {label:'Recycle PE-LD', temp_b:163,temp_o:160,sv:0.80,st:1.20,recycle:true}
+};
+
+var SOORTELIJK_GEWICHT = {'ldpe':920,'mdpe':935,'recycle-mix':950,'recycle-peld':930};
+
+var PALLETS = {
+  'euro':        {naam:'Euro pallet',  b:800,  l:1200},
+  'euro-formaat':{naam:'Euro formaat', b:800,  l:1200},
+  'blok':        {naam:'Blokpallet',   b:1000, l:1200}
+};
+
+var MECH_BASIS = 10750;
+var _gekozenPallet = 'euro';
+var _maxHoogte = false;
+var _recepten = [];
+var selectedMat = 'ldpe';
+var selectedStatic = 'Off';
+var drukkerAan = false;
+var editKey = null;
+
+function toonAdminFuncties(isAdm) {
+  var el = document.getElementById('admin-knoppen');
+  if(el) el.style.display = isAdm ? 'flex' : 'none';
+}
+function isAdmin() { return !!(OPERATORS_CONFIG[_huidigeOperator] && OPERATORS_CONFIG[_huidigeOperator].admin); }
+function magBewerken(receptOperator) {
+  if(!_huidigeOperator) return true;
+  if(isAdmin()) return true;
+  if(!receptOperator || receptOperator === '') return true;
+  return receptOperator === _huidigeOperator;
 }
 
-function renderDetail(r){
-  document.getElementById('detail-title').textContent = (r.klantnr||'') + ' \u2014 ' + (r.prodtype||'');
-  var html = '';
-
-  // VAK 1: PRODUCTIE
-  html += '<div class="slabel">Productie</div>';
-  html += '<div class="info-block">';
-  html += rij('Sealtijd', r.seal ? r.seal+' ms' : null, '#fcd34d');
-  html += rij('Snelheid', r.snelheid ? r.snelheid+' m/min' : null, '#fcd34d');
-  html += rij('Zakken / rol', r.order_zakrol||r.zakrol, '#fcd34d');
-  if(r.order_stuks && r.order_zakrol){
-    var rollen = Math.ceil(parseFloat(r.order_stuks)/parseFloat(r.order_zakrol));
-    html += rij('Aantal rollen', rollen+' rol', '#a78bfa');
+function go(id) {
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
+  var el = document.getElementById(id);
+  if(el) { el.classList.add('active'); var c=el.querySelector('.content'); if(c) c.scrollTop=0; }
+  var btns = document.querySelectorAll('.bnav-btn');
+  btns.forEach(function(b){b.classList.remove('active');});
+  if(id==='s-recepten'||id==='s-detail'||id==='s-nieuw') btns[0]&&btns[0].classList.add('active');
+  if(id==='s-flow') btns[1]&&btns[1].classList.add('active');
+  if(id==='s-calculator') btns[2]&&btns[2].classList.add('active');
+  if(id==='s-recepten') laadRecepten();
+  if(id==='s-flow') renderFlow();
+  if(id==='s-calculator') laadLeerdataOffset();
+  if(id==='s-nieuw' && !editKey) {
+    var ntReset = document.getElementById('nieuw-title');
+    if(ntReset) ntReset.textContent = 'Nieuw Recept';
+    vulOperatorIn();
+    var ozr=document.getElementById('f-order-zakrol'); if(ozr){ozr.value='';ozr.classList.remove('veld-definitief');ozr.classList.add('veld-leeg');}
+    var ost=document.getElementById('f-order-stuks'); if(ost){ost.value='';ost.classList.remove('veld-definitief');ost.classList.add('veld-leeg');}
+    var ogh=document.getElementById('f-gew100m'); if(ogh){ogh.value='';ogh.placeholder='auto';}
+    var orpp=document.getElementById('f-order-rpp'); if(orpp){orpp.value='';orpp.classList.remove('veld-definitief');orpp.classList.add('veld-leeg');}
+    if(_maxHoogte) toggleMaxHoogte();
+    _gekozenPallet='euro'; try{kiesPallet('euro');}catch(e){}
+    var orderEl=document.getElementById('order-resultaten'); if(orderEl) orderEl.style.display='none';
   }
-  html += '</div>';
+}
 
-  // VAK 2: OPWIKKELAAR RA
-  html += '<div class="slabel">Opwikkelaar RA</div>';
-  html += '<div class="info-block">';
-  if(r.offset1_werke) html += rij('Offset cycle wissel', r.offset1_werke, '#60a5fa');
-  html += rij('Koker diameter', r.koker ? r.koker+' mm' : null);
-  html += rij('Cycle drukker', r.drukker ? 'AAN'+(r.drukker_inst?' \u2014 '+r.drukker_inst:'') : 'UIT');
-  html += '</div>';
+function toast(msg, err) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (err ? ' err' : '');
+  clearTimeout(t._t);
+  t._t = setTimeout(function(){t.classList.remove('show');}, 2400);
+}
 
-  // VAK 3: ACCESSOIRES RA
-  html += '<div class="slabel">Accessoires RA</div>';
-  html += '<div class="info-block">';
-  html += '<div class="info-row"><div class="ir-lbl">Static Charger</div><div class="ir-val" style="color:#34d399;">'+(r.static_ch||'Off')+'</div></div>';
-  if(r.static_mat && parseFloat(r.static_mat)>0){
-    html += rij('Material to be Charged', r.static_mat+' mm', '#9ca3af');
+function doLogin() {
+  var pw = document.getElementById('login-pw').value;
+  var errEl = document.getElementById('login-err');
+  // Check eerst met fallback wachtwoord
+  if(pw !== APP_PW && pw !== APP_PW_FALLBACK) {
+    errEl.style.color='#ef4444';
+    errEl.textContent='ONGELDIG WACHTWOORD';
+    errEl.style.display='block';
+    document.getElementById('login-pw').value='';
+    return;
   }
-  html += '</div>';
-
-  // VAK 4: TEMPERATUUR
-  html += '<div class="slabel">Temperatuur Sealer</div>';
-  html += '<div style="display:flex;gap:12px;margin-bottom:8px;">';
-  html += '<div style="flex:1;background:#0f1520;border:1px solid #1a2540;border-radius:6px;padding:14px;text-align:center;">';
-  html += '<div style="font-size:9px;color:#6b7280;letter-spacing:1px;margin-bottom:8px;">BOVENSTE &deg;C</div>';
-  html += '<div style="font-size:44px;font-weight:700;color:#fcd34d;">'+(r.temp_boven||'--')+'</div></div>';
-  html += '<div style="flex:1;background:#0f1520;border:1px solid #1a2540;border-radius:6px;padding:14px;text-align:center;">';
-  html += '<div style="font-size:9px;color:#6b7280;letter-spacing:1px;margin-bottom:8px;">ONDERSTE &deg;C</div>';
-  html += '<div style="font-size:44px;font-weight:700;color:#fcd34d;">'+(r.temp_onder||'--')+'</div></div>';
-  html += '</div>';
-
-  // PALLET VISUALISATIE
-  var breedte=parseFloat(r.breedte)||0;
-  var lengte=parseFloat(r.lengte)||0;
-  var dikte=parseFloat(r.dikte)||0;
-  var zakrol=parseFloat(r.order_zakrol)||parseFloat(r.zakrol)||0;
-  var koker=parseFloat(r.koker)||90;
-
-  if(zakrol && lengte && dikte){
-    var lagen_n = (r.prodtype==='Vel'||r.prodtype==='Huls') ? 1 : (r.prodtype==='Zak met invouw' ? 4 : 2);
-    var rolD = Math.round(Math.sqrt((koker/2)*(koker/2)+(zakrol*lengte*dikte*lagen_n)/Math.PI)*2);
-    var palletB = r.order_pallet==='blok' ? 1000 : 800;
-    var maxH = (r.order_maxhoogte==='1'||r.order_maxhoogte===1) ? 1050 : 1550;
-    var staand = breedte > 0 && breedte <= 500;
-
-    html += '<div class="slabel">Pallet Stapeling</div>';
-    html += '<div style="background:#0f1520;border:1px solid #a78bfa;border-radius:6px;padding:16px;margin-bottom:8px;text-align:center;">';
-    html += '<div style="font-size:10px;color:#a78bfa;letter-spacing:2px;margin-bottom:12px;">';
-    html += (r.order_pallet==='blok'?'Blokpallet 1000mm':'Euro pallet 800mm')+' &bull; &Oslash;'+rolD+'mm &bull; '+(staand?'Staand':'Liggend');
-    html += '</div>';
-
-    var ROL = '<span class="rol-c" style="background:linear-gradient(135deg,#60a5fa,#3b82f6);border:2px solid #93c5fd;"></span>';
-    var ROL_M = '<span class="rol-c" style="background:linear-gradient(135deg,#a78bfa,#7c3aed);border:2px solid #c4b5fd;"></span>';
-    var visual = '';
-
-    if(staand){
-      var maxLS = Math.min(2, Math.max(1, Math.floor(maxH/breedte)));
-      for(var lg=maxLS; lg>=1; lg--){
-        if(rolD<=300){
-          visual += '<div style="display:flex;justify-content:center;margin:2px 0;">';
-          for(var i=0;i<4;i++) visual+=ROL;
-          visual += '</div><div style="display:flex;justify-content:center;margin:2px 0;padding-left:18px;">';
-          for(var j=0;j<3;j++) visual+=ROL_M;
-          visual += '</div><div style="display:flex;justify-content:center;margin:2px 0;">';
-          for(var k=0;k<4;k++) visual+=ROL;
-          visual += '</div>';
-        } else {
-          var rj = Math.max(1,Math.floor(1200/rolD));
-          visual += '<div style="display:flex;justify-content:center;margin:2px 0;">';
-          for(var r1=0;r1<rj;r1++) visual+=ROL;
-          visual += '</div><div style="display:flex;justify-content:center;margin:2px 0;padding-left:18px;">';
-          for(var r2=0;r2<rj;r2++) visual+=ROL_M;
-          visual += '</div>';
+  // Wachtwoord klopt - toon stap 2 direct met huidige operators (fallback)
+  errEl.style.display='none';
+  toonStap2();
+  // Laad Firebase op achtergrond en herrender knoppen als er meer operators zijn
+  fetch(FB_URL + '/operators.json')
+    .then(function(r){return r.json();})
+    .then(function(data){
+      if(data && typeof data === 'object' && Object.keys(data).length > 0) {
+        var tijdelijk2 = {};
+        Object.keys(data).forEach(function(k){
+          var op = data[k];
+          if(op && op.naam && op.pin) {
+            tijdelijk2[op.naam] = { pin: String(op.pin), admin: !!op.admin };
+          }
+        });
+        if(Object.keys(tijdelijk2).length > 0) {
+          OPERATORS_CONFIG = tijdelijk2;
+          var html='';
+          Object.keys(OPERATORS_CONFIG).forEach(function(naam){
+            html+='<button onclick="kiesOperatorLogin(\''+naam+'\')" id="opbtn-'+naam+'" style="width:100%;background:#0f1520;border:2px solid #1a2540;border-radius:6px;color:#e5e7eb;font-family:monospace;font-weight:700;font-size:20px;letter-spacing:2px;padding:16px;cursor:pointer;text-align:left;display:flex;align-items:center;gap:12px;"><span style="font-size:24px;">&#128100;</span>'+naam+'</button>';
+          });
+          document.getElementById('operator-knoppen').innerHTML=html;
         }
-        if(lg>1) visual += '<div style="border-top:1px dashed #1a2540;margin:8px 20px;"></div>';
-      }
-      html += visual;
-      html += '</div>';
-    } else {
-      var maxL2=1;
-      for(var nl=2;nl<=20;nl++){ if(rolD+(nl-1)*rolD*0.866<=maxH) maxL2=nl; else break; }
-      var par=Math.floor(maxL2/2), ext=maxL2%2;
-      var rAl=Math.max(1,Math.floor(palletB/rolD)), rBl=Math.max(1,rAl-1), rppl=par*(rAl+rBl)+ext*rAl;
-      var rAb=Math.max(1,Math.floor(1200/rolD)), rBb=Math.max(1,rAb-1), rppb=par*(rAb+rBb)+ext*rAb;
-      var rijA=rppb>rppl?rAb:rAl, rijB=rppb>rppl?rBb:rBl;
-
-      for(var lag=maxL2;lag>=1;lag--){
-        var rv=(lag%2===1)?rijA:rijB;
-        var kl=(lag%2===1)?'#f59e0b':'#34d399';
-        visual += '<div style="display:flex;justify-content:center;margin:2px 0;">';
-        for(var ri=0;ri<rv;ri++){
-          visual += '<span class="rol-c" style="background:'+kl+';border:2px solid '+kl+';opacity:'+(lag%2===1?'1':'0.7')+';"></span>';
-        }
-        visual += '</div>';
-      }
-      html += visual;
-      html += '</div>';
-
-      // Huidje
-      var huidje = 0;
-      if(r.operator_huidje && parseFloat(r.operator_huidje)>0){
-        huidje = parseFloat(r.operator_huidje);
       } else {
-        var hRuw = rijA*rolD+90;
-        var hM = [700,750,800,850,900,950,1000,1050,1100,1150,1200,1250,1300,1350,1400];
-        huidje = hM[hM.length-1];
-        for(var hi=0;hi<hM.length;hi++){ if(hM[hi]>=hRuw){ huidje=hM[hi]; break; } }
+        schrijfDefaultOperators();
       }
-      html += '<div style="background:#0f1520;border:1px solid #34d399;border-radius:6px;padding:16px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;">';
-      html += '<div><div style="font-size:9px;color:#34d399;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">Huidje lengte</div>';
-      html += '<div style="font-size:13px;color:#6b7280;">Om '+rijA+' rollen</div></div>';
-      html += '<div style="font-size:36px;font-weight:700;color:#34d399;">'+huidje+'<span style="font-size:16px;margin-left:4px;">mm</span></div>';
-      html += '</div>';
+    })
+    .catch(function(){});
+}
+
+function toonStap2() {
+  document.getElementById('login-stap1').style.display='none';
+  document.getElementById('login-stap2').style.display='block';
+  var html='';
+  Object.keys(OPERATORS_CONFIG).forEach(function(naam){
+    html+='<button onclick="kiesOperatorLogin(\''+naam+'\')" id="opbtn-'+naam+'" style="width:100%;background:#0f1520;border:2px solid #1a2540;border-radius:6px;color:#e5e7eb;font-family:monospace;font-weight:700;font-size:20px;letter-spacing:2px;padding:16px;cursor:pointer;text-align:left;display:flex;align-items:center;gap:12px;"><span style="font-size:24px;">&#128100;</span>'+naam+'</button>';
+  });
+  document.getElementById('operator-knoppen').innerHTML=html;
+}
+
+function kiesOperatorLogin(naam) {
+  _geselecteerdeOperator=naam;
+  Object.keys(OPERATORS_CONFIG).forEach(function(n){
+    var btn=document.getElementById('opbtn-'+n);
+    if(btn){btn.style.borderColor=n===naam?'rgba(245,158,11,0.8)':'#1a2540';btn.style.background=n===naam?'rgba(245,158,11,0.08)':'#0f1520';btn.style.color=n===naam?'#fcd34d':'#e5e7eb';}
+  });
+  document.getElementById('login-pin-sectie').style.display='block';
+  document.getElementById('login-pin-label').textContent='Pincode '+naam;
+  document.getElementById('login-pin').value='';
+  document.getElementById('login-pin-err').style.display='none';
+  document.getElementById('login-pin').focus();
+}
+
+function doLoginPin() {
+  var pin=document.getElementById('login-pin').value.trim();
+  var cfg=OPERATORS_CONFIG[_geselecteerdeOperator];
+  if(cfg && pin===cfg.pin) {
+    _huidigeOperator=_geselecteerdeOperator;
+    sessionStorage.setItem('tsa_auth',APP_PW);
+    sessionStorage.setItem('tsa_operator',_huidigeOperator);
+    toonAdminFuncties(_huidigeOperator==='Dirk');
+    var isAdm2=OPERATORS_CONFIG[_huidigeOperator]&&OPERATORS_CONFIG[_huidigeOperator].admin;
+    setTimeout(function(){updateHomeOperator();if(isAdm2)go('s-home');else window.location.href='operator.html';},400);
+  } else {
+    document.getElementById('login-pin-err').style.display='block';
+    document.getElementById('login-pin').value='';
+  }
+}
+
+function terugNaarStap1() {
+  document.getElementById('login-stap2').style.display='none';
+  document.getElementById('login-stap1').style.display='block';
+  document.getElementById('login-pw').value='';
+  _geselecteerdeOperator=null;
+}
+
+function checkLogin() {
+  if(sessionStorage.getItem('tsa_auth')) {
+    laadOperatorsConfig(function(){
+      var opgeslagenAuth = sessionStorage.getItem('tsa_auth');
+      if(opgeslagenAuth === APP_PW || opgeslagenAuth === APP_PW_FALLBACK) {
+        _huidigeOperator = sessionStorage.getItem('tsa_operator') || null;
+        if(_huidigeOperator && !OPERATORS_CONFIG[_huidigeOperator]) {
+          sessionStorage.clear();
+          go('s-login');
+          return;
+        }
+        toonAdminFuncties(_huidigeOperator && OPERATORS_CONFIG[_huidigeOperator] && OPERATORS_CONFIG[_huidigeOperator].admin);
+        if(_huidigeOperator){
+          updateHomeOperator();
+          var isAdm=OPERATORS_CONFIG[_huidigeOperator]&&OPERATORS_CONFIG[_huidigeOperator].admin;
+          if(isAdm) go('s-home');
+          else window.location.href='operator.html';
+        } else { go('s-login'); toonStap2(); }
+      } else {
+        go('s-login');
+      }
+    });
+  } else {
+    go('s-login');
+  }
+}
+
+function updateHomeOperator() {
+  var el=document.getElementById('home-operator');
+  if(!el||!_huidigeOperator) return;
+  var adm=OPERATORS_CONFIG[_huidigeOperator]&&OPERATORS_CONFIG[_huidigeOperator].admin;
+  el.textContent=_huidigeOperator+(adm?' -- ADMIN':'');
+  el.style.color=adm?'#f59e0b':'#34d399';
+  var vEl=document.getElementById('home-versie');
+  if(vEl) vEl.textContent=APP_VERSION+' \u2014 2026-04-18';
+}
+
+function vulOperatorIn() {
+  if(!_huidigeOperator) return;
+  var el=document.getElementById('f-versie');
+  if(el&&!el.value){el.value=_huidigeOperator;el.classList.remove('veld-leeg','veld-benadering');el.classList.add('veld-definitief');}
+}
+
+function fbLoad(pad,cb) {
+  fetch(FB_URL+pad+'.json').then(function(r){return r.json();}).then(function(data){
+    if(!data){cb([]);return;}
+    var arr=[];
+    Object.keys(data).forEach(function(k){var o=Object.assign({},data[k]);o._key=k;arr.push(o);});
+    cb(arr);
+  }).catch(function(){cb([]);});
+}
+function fbPost(pad,obj,cb){fetch(FB_URL+pad+'.json',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(obj)}).then(function(r){return r.json();}).then(function(d){if(cb)cb(d);}).catch(function(){});}
+function fbDelete(pad,key,cb){fetch(FB_URL+pad+'/'+key+'.json',{method:'DELETE'}).then(function(r){if(r.ok){if(cb)cb();}else{toast('Fout bij verwijderen',true);}}).catch(function(){toast('Verbindingsfout',true);});}
+function fbPatch(pad,key,obj,cb){fetch(FB_URL+pad+'/'+key+'.json',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(obj)}).then(function(){if(cb)cb();}).catch(function(){});}
+
+function selectMat(m) {
+  selectedMat=m;
+  document.querySelectorAll('.mat-btn').forEach(function(b){b.classList.remove('active');});
+  var el=document.getElementById('mat-'+m); if(el) el.classList.add('active');
+  herbereken();
+}
+function selectStatic(s) {
+  selectedStatic=s;
+  document.querySelectorAll('.static-btn').forEach(function(b){b.classList.remove('active');});
+  var el=document.getElementById('static-'+s); if(el) el.classList.add('active');
+}
+function toggleDrukker() {
+  drukkerAan=!drukkerAan;
+  var btn=document.getElementById('drukker-btn');
+  var extra=document.getElementById('drukker-extra');
+  if(btn){btn.textContent=drukkerAan?'AAN':'UIT';btn.className='toggle-btn '+(drukkerAan?'toggle-aan':'toggle-uit');}
+  if(extra) extra.style.display=drukkerAan?'block':'none';
+}
+function prodtypeChange(val) {
+  try{if(val==='Vel'||val==='Huls'){var fs=document.getElementById('f-seal');if(fs)fs.value='50';var fb=document.getElementById('f-temp-boven');if(fb)fb.value='0';var fo=document.getElementById('f-temp-onder');if(fo)fo.value='0';}}catch(e){}
+  try{berekenOrder();}catch(e){}
+}
+
+function veldIngevuld(el) {
+  if(el.value&&el.value.trim()!==''){el.classList.remove('veld-leeg','veld-benadering');el.classList.add('veld-definitief');}
+  else{el.classList.remove('veld-definitief','veld-benadering');el.classList.add('veld-leeg');}
+}
+function afrondenOp5(val){return Math.round(val/5)*5;}
+function setBerekend(id,val) {
+  var el=document.getElementById(id); if(!el) return;
+  if(el.classList.contains('veld-definitief')) return;
+  el.value=afrondenOp5(val); el.readOnly=true;
+  el.classList.remove('veld-leeg','veld-definitief'); el.classList.add('veld-benadering');
+  el.style.textAlign='center';
+}
+
+
+function lagenPerProdtype(prodtype) {
+  if(prodtype==='Vel'||prodtype==='Huls') return 1;
+  if(prodtype==='Zak met invouw') return 4;
+  return 2; // Zak, Hoes, Krimpfolie, Uitsparing, Andere
+}
+function berekenOffset(lengte){
+  if(!lengte) return 0;
+  var basis = MECH_BASIS;
+  if(window._leerdataOffset && window._leerdataOffset.length >= 1) {
+    var gSom=0, gTot=0;
+    for(var i=0;i<window._leerdataOffset.length;i++){
+      var ld = window._leerdataOffset[i];
+      var afwijking = ld.offset - MECH_BASIS;
+      var gewicht = 1 / (Math.abs(ld.lengte - lengte) + 1);
+      gSom += afwijking * gewicht;
+      gTot += gewicht;
+    }
+    return basis + Math.round(gSom / gTot);
+  }
+  return basis;
+}
+function berekenOffset2(o1){return o1?o1-200:0;}
+
+function laadLeerdataOffset(){
+  fbLoad('/recepten',function(lijst){
+    var ld=[];
+    for(var i=0;i<lijst.length;i++){var r=lijst[i];if(r.lengte&&r.offset1_werke&&parseFloat(r.offset1_werke)>0)ld.push({lengte:parseFloat(r.lengte),offset:parseFloat(r.offset1_werke)});}
+    window._leerdataOffset=ld;
+    var ci=document.getElementById('c-lengte'); if(ci&&ci.value)calcUpdate();
+  });
+}
+
+function calcUpdate(){
+  var l=parseFloat(document.getElementById('c-lengte').value)||0;
+  var z=parseFloat(document.getElementById('c-zakrol').value)||0;
+  var d=parseFloat(document.getElementById('c-dikte').value)||30;
+  var k=parseFloat(document.getElementById('c-kern').value)||76;
+  var o1=l?berekenOffset(l):0; var o2=berekenOffset2(o1);
+  var co1=document.getElementById('c-offset1');if(co1)co1.textContent=o1||'-';
+  var co2=document.getElementById('c-offset2');if(co2)co2.textContent=o2||'-';
+  if(l&&z){
+    // Calculator gebruikt standaard 2 lagen (zak)
+    var rolR=Math.sqrt((k/2)*(k/2)+(z*l*d*2)/Math.PI);
+    var rolD=Math.round(rolR*2);
+    var crl=document.getElementById('c-rollengte');if(crl)crl.textContent=Math.round(z*l/1000)+' m';
+    var crd=document.getElementById('c-roldiameter');if(crd)crd.textContent=rolD+' mm';
+  }
+  if(l){
+    var info=document.getElementById('calc-dataset-info');
+    if(info){info.style.display='block';info.textContent='Basis: 10750mm'+(window._leerdataOffset&&window._leerdataOffset.length>0?' + leerdata ('+window._leerdataOffset.length+' punten)':'')+' -- Offset 2 = Offset 1 - 200mm';}
+  }
+}
+
+function herbereken(){
+  ['f-breedte','f-lengte','f-dikte'].forEach(function(id){
+    var el=document.getElementById(id);if(!el)return;
+    if(el.value){el.classList.remove('veld-leeg','veld-benadering');el.classList.add('veld-definitief');}
+    else{el.classList.remove('veld-definitief','veld-benadering');el.classList.add('veld-leeg');}
+  });
+  var mat=MATERIALEN[selectedMat];
+  var l=parseFloat(document.getElementById('f-lengte').value);
+  var d=parseFloat(document.getElementById('f-dikte').value);
+  if(!mat||!l||!d) return;
+  var kokerEl=document.getElementById('f-koker');
+  if(kokerEl&&!kokerEl.value)kokerEl.value=90;
+  var sealtijd=Math.round(d*5000*mat.st);
+  var snelheid=Math.round(200*mat.sv);
+  var offset1=berekenOffset(l);
+  setBerekend('f-seal',sealtijd);
+  setBerekend('f-snelheid',snelheid);
+  setBerekend('f-temp-boven',mat.temp_b);
+  setBerekend('f-temp-onder',mat.temp_o);
+  if(!document.getElementById('f-offset1').value)setBerekend('f-offset1',offset1);
+  var infoEl=document.getElementById('mat-info-temp');
+  if(infoEl){infoEl.style.display='block';infoEl.textContent=mat.label+' - aanbevolen: '+(mat.temp_b-8)+'°C - '+(mat.temp_b+8)+'°C'+(mat.recycle?' - Recycle: hogere temp':'');}
+  try{berekenOrder();}catch(e){}
+}
+
+function toggleMaxHoogte(){
+  _maxHoogte=!_maxHoogte;
+  var btn=document.getElementById('btn-maxhoogte');var icon=document.getElementById('maxhoogte-icon');
+  if(!btn||!icon)return;
+  if(_maxHoogte){btn.style.borderColor='#f59e0b';btn.style.background='rgba(245,158,11,0.08)';btn.style.color='#fcd34d';icon.textContent='&#9745;';}
+  else{btn.style.borderColor='#1a2540';btn.style.background='#141d2e';btn.style.color='#9ca3af';icon.textContent='&#9744;';}
+  try{berekenOrder();}catch(e){}
+}
+
+function kiesPallet(type){
+  if(!type)return;
+  _gekozenPallet=type;
+  Object.keys(PALLETS).forEach(function(k){
+    var btn=document.getElementById('pallet-'+k);if(!btn)return;
+    if(k===type){btn.style.background='rgba(52,211,153,0.1)';btn.style.borderColor='#34d399';btn.style.color='#34d399';}
+    else{btn.style.background='#141d2e';btn.style.borderColor='#1a2540';btn.style.color='#9ca3af';}
+  });
+  try{berekenOrder();}catch(e){}
+}
+
+function rij(icon,lbl,val,kleur){
+  return '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #1a2540;">'+
+    '<span style="font-size:11px;color:#9ca3af;">'+icon+' '+lbl+'</span>'+
+    '<span style="font-size:20px;font-weight:700;color:'+(kleur||'#e5e7eb')+';">'+val+'</span>'+
+  '</div>';
+}
+
+function berekenOrder(){
+  try{
+  var orderEl=document.getElementById('order-resultaten');if(!orderEl)return;
+  var orderZakrolEl=document.getElementById('f-order-zakrol');
+  var fZakrolEl=document.getElementById('f-zakrol');
+  var zakrol=0;
+  if(orderZakrolEl&&parseFloat(orderZakrolEl.value)>0)zakrol=parseFloat(orderZakrolEl.value);
+  else if(fZakrolEl&&parseFloat(fZakrolEl.value)>0)zakrol=parseFloat(fZakrolEl.value);
+  var breedte=parseFloat((document.getElementById('f-breedte')||{}).value)||0;
+  var lengte=parseFloat((document.getElementById('f-lengte')||{}).value)||0;
+  var dikte=parseFloat((document.getElementById('f-dikte')||{}).value)||0;
+  var koker=parseFloat((document.getElementById('f-koker')||{}).value)||90;
+  var stuks=parseFloat((document.getElementById('f-order-stuks')||{}).value)||0;
+  if(!zakrol||!breedte||!lengte||!dikte){orderEl.style.display='none';return;}
+  var aantalRollen=stuks>0?Math.ceil(stuks/zakrol):0;
+  var sv=SOORTELIJK_GEWICHT[selectedMat]||920;
+  var rolLengte=zakrol*lengte/1000;
+  var gew100mEl=document.getElementById('f-gew100m');
+  var gew100m=gew100mEl?parseFloat(gew100mEl.value):0;
+  var gewichtPerRol;
+  if(gew100m>0){gewichtPerRol=Math.round(gew100m*rolLengte/100*10)/10;}
+  else{
+    var vol=(breedte/1000)*rolLengte*(dikte/1000)*2;
+    gewichtPerRol=Math.round(vol*sv*10)/10;
+    if(gew100mEl&&!gew100mEl.classList.contains('veld-definitief')){
+      var auto100m=Math.round((breedte/1000)*(dikte/1000)*2*sv*100*10)/10;
+      gew100mEl.placeholder='auto: '+auto100m+' kg';
     }
   }
-
-  if(r.notities){
-    html += '<div class="slabel">Notities</div>';
-    html += '<div style="background:#0f1520;border:1px solid #1a2540;border-radius:4px;padding:14px;font-size:13px;color:#9ca3af;line-height:1.6;margin-bottom:8px;">'+r.notities+'</div>';
+  var totaalGewicht=Math.round(aantalRollen*gewichtPerRol);
+  var pallet=PALLETS[_gekozenPallet]||PALLETS['euro'];
+  var prodtype=document.getElementById('f-prodtype')?document.getElementById('f-prodtype').value:'Zak';
+  var lagen=lagenPerProdtype(prodtype);
+  var rolDiameter=Math.round(Math.sqrt((koker/2)*(koker/2)+(zakrol*lengte*dikte*lagen)/Math.PI)*2);
+  var staand=breedte<=500;
+  var maxStapelHoogte=_maxHoogte?1050:1550;
+  var rollenPerRijCalc=1,lagen=1,rollenPerPallet=1;
+  if(staand){
+    var lagenStaand=Math.min(2, Math.max(1,Math.floor(maxStapelHoogte/breedte)));
+    lagen=lagenStaand; rollenPerRijCalc=Math.floor(pallet.b/rolDiameter)||1;
+    rollenPerPallet=Math.max(1,rollenPerRijCalc*Math.max(1,Math.floor(pallet.l/rolDiameter))*lagenStaand);
+  } else {
+    var maxLagen=1;
+    for(var nl=2;nl<=20;nl++){if(rolDiameter+(nl-1)*rolDiameter*0.866<=maxStapelHoogte)maxLagen=nl;else break;}
+    lagen=maxLagen;
+    var parenLagen=Math.floor(lagen/2);var extraLaag=lagen%2;
+    // Bereken beide oriëntaties en kies beste
+    var rijA_l=Math.max(1,Math.floor(pallet.b/rolDiameter));
+    var rijB_l=Math.max(1,rijA_l-1);
+    var rpp_l=parenLagen*(rijA_l+rijB_l)+extraLaag*rijA_l;
+    var rijA_b=Math.max(1,Math.floor(pallet.l/rolDiameter));
+    var rijB_b=Math.max(1,rijA_b-1);
+    var rpp_b=parenLagen*(rijA_b+rijB_b)+extraLaag*rijA_b;
+    var rijA,rijB;
+    if(rpp_b>rpp_l){rijA=rijA_b;rijB=rijB_b;rollenPerPallet=rpp_b;}
+    else{rijA=rijA_l;rijB=rijB_l;rollenPerPallet=rpp_l;}
+    rollenPerRijCalc=rijA;
   }
-
-  document.getElementById('detail-content').innerHTML = html;
-  go('s-detail');
+  var rppEl=document.getElementById('f-order-rpp');
+  var rppKlant=rppEl?parseFloat(rppEl.value):0;
+  if(rppKlant>0)rollenPerPallet=rppKlant;
+  var aantalPallets=0,losseRollen=0,rollenPerPalletToon=rollenPerPallet;
+  if(aantalRollen>0){
+    var vollePallets=Math.floor(aantalRollen/rollenPerPallet);
+    var restRollen=aantalRollen%rollenPerPallet;
+    if(restRollen===0)aantalPallets=vollePallets;
+    else if(restRollen<=4){aantalPallets=vollePallets;losseRollen=restRollen;}
+    else if(vollePallets>0&&restRollen<=vollePallets){aantalPallets=vollePallets;rollenPerPalletToon=rollenPerPallet+1;}
+    else aantalPallets=vollePallets+1;
+    if(aantalPallets===0)aantalPallets=1;
+  }
+  var totaleFolieMeter=aantalRollen*rolLengte;
+  var huidjeLengte=0,aantalHuidjes=0,huidjesTotaalM=0;
+  if(!staand&&lagen>1){
+    var huidjeOverride=document.getElementById('f-huidje')?parseFloat(document.getElementById('f-huidje').value)||0:0;
+    if(huidjeOverride>0){
+      huidjeLengte=huidjeOverride;
+    } else {
+      var huidjeRuw=rollenPerRijCalc*rolDiameter+90;
+      var hMaten=[700,750,800,850,900,950,1000,1050,1100,1150,1200,1250,1300,1350,1400];
+      huidjeLengte=hMaten[hMaten.length-1];
+      for(var hi=0;hi<hMaten.length;hi++){if(hMaten[hi]>=huidjeRuw){huidjeLengte=hMaten[hi];break;}}
+    }
+    var parenH=Math.floor(lagen/2);
+    aantalHuidjes=parenH*aantalPallets;
+    huidjesTotaalM=Math.round(aantalHuidjes*huidjeLengte/1000*10)/10;
+  }
+  var html=(aantalRollen>0?rij('&#128260;','Aantal rollen',aantalRollen+' rol','#a78bfa'):'')+
+    rij('&#9878;','Gewicht per rol',gewichtPerRol+' kg','#60a5fa')+
+    rij('&#9878;','Totaal gewicht',totaalGewicht+' kg','#60a5fa')+
+    rij('&#128230;','Rollen per pallet | '+pallet.naam,rollenPerPalletToon+' rol','#f59e0b')+
+    rij('&#128230;','Aantal pallets nodig',aantalPallets+' pallet','#f59e0b')+
+    (losseRollen>0?rij('&#128230;','Los op pallet',losseRollen+' rol','#9ca3af'):'')+
+    rij('&#128221;','Folie verbruik (meters)',Math.round(totaleFolieMeter)+' m','#34d399');
+  if(!staand){
+    html+=rij('&#128462;','Huidje (om '+rollenPerRijCalc+' rollen)',huidjeLengte+' mm lang','#9ca3af')+
+          rij('&#128462;','Aantal huidjes nodig',aantalHuidjes+' st','#9ca3af')+
+          rij('&#128462;','Totaal folie huidjes',huidjesTotaalM+' m','#9ca3af');
+  }
+  html+='<div style="margin-top:8px;font-size:10px;color:#6b7280;">Roldiameter: '+rolDiameter+'mm &middot; '+(staand?'Staand':'Liggend')+' &middot; '+lagen+' lagen</div>';
+  document.getElementById('order-rijen').innerHTML=html;
+  orderEl.style.display='block';
+  }catch(e){}
 }
 
-init();
+function slaOp(){
+  var ontbrekend=[];
+  var checks=[{id:'f-klantnr',label:'Klantnummer'},{id:'f-klantnaam',label:'Klantnaam'},{id:'f-versie',label:'Naam operator'},{id:'f-breedte',label:'Breedte'},{id:'f-lengte',label:'Lengte'},{id:'f-dikte',label:'Dikte'},{id:'f-seal',label:'Sealtijd'},{id:'f-snelheid',label:'Snelheid'},{id:'f-temp-boven',label:'Temp boven'},{id:'f-temp-onder',label:'Temp onder'}];
+  for(var ci=0;ci<checks.length;ci++){var el=document.getElementById(checks[ci].id);if(!el||!el.value||!el.value.trim()){ontbrekend.push(checks[ci].label);if(el){el.classList.remove('veld-definitief','veld-benadering');el.classList.add('veld-leeg');}}}
+  if(ontbrekend.length>0){toast('Vergeten: '+ontbrekend.join(', '),true);return;}
+  var recept={
+    klantnr:document.getElementById('f-klantnr').value.trim(),
+    klantnaam:document.getElementById('f-klantnaam').value.trim(),
+    prodtype:document.getElementById('f-prodtype').value,
+    versie:document.getElementById('f-versie').value||'',
+    materiaal:selectedMat,
+    breedte:document.getElementById('f-breedte').value,
+    lengte:document.getElementById('f-lengte').value,
+    dikte:document.getElementById('f-dikte').value,
+    koker:document.getElementById('f-koker').value||90,
+    seal:document.getElementById('f-seal').value,
+    snelheid:document.getElementById('f-snelheid').value,
+    zakrol:(function(){var ozr=document.getElementById('f-order-zakrol');if(ozr&&parseFloat(ozr.value)>0)return ozr.value;return document.getElementById('f-zakrol').value;})(),
+    static_ch:selectedStatic,
+    static_mat:document.getElementById('f-static-mat').value.trim(),
+    drukker:drukkerAan,
+    drukker_inst:document.getElementById('f-drukker').value.trim(),
+    temp_boven:document.getElementById('f-temp-boven').value,
+    temp_onder:document.getElementById('f-temp-onder').value,
+    notities:document.getElementById('f-notities').value.trim(),
+    offset1_werke:document.getElementById('f-offset1').value||'',
+    datum:new Date().toISOString().split('T')[0],
+    order_stuks:document.getElementById('f-order-stuks').value||'',
+    order_zakrol:document.getElementById('f-order-zakrol')?document.getElementById('f-order-zakrol').value||'':'',
+    order_pallet:_gekozenPallet||'euro',
+    order_huidje:document.getElementById('f-huidje').value||'',
+    order_gew100m:document.getElementById('f-gew100m')?document.getElementById('f-gew100m').value||'':'',
+    order_maxhoogte:_maxHoogte?'1':'0',
+    order_rpp:document.getElementById('f-order-rpp')?document.getElementById('f-order-rpp').value||'':'',
+    werk_rpp:document.getElementById('f-werk-rpp')?document.getElementById('f-werk-rpp').value||'':'',
+    werk_huidje:document.getElementById('f-werk-huidje')?document.getElementById('f-werk-huidje').value||'':''
+  };
+  toast('Opslaan...');
+  if(editKey){fbPatch('/recepten',editKey,recept,function(){toast('Recept bijgewerkt!');var k=editKey;resetForm();openDetail(k);});}
+  else{fbPost('/recepten',recept,function(d){toast('Recept opgeslagen!');var k=d&&d.name?d.name:null;resetForm();if(k)openDetail(k);else go('s-recepten');});}
+}
+
+function resetForm(){
+  var ids=['f-klantnr','f-klantnaam','f-versie','f-breedte','f-lengte','f-dikte','f-koker','f-seal','f-snelheid','f-zakmin','f-zakrol','f-static-mat','f-drukker','f-temp-boven','f-temp-onder','f-notities','f-offset1','f-order-stuks'];
+  document.getElementById('order-resultaten')&&(document.getElementById('order-resultaten').style.display='none');
+  ['f-werk-rpp','f-werk-huidje','f-order-rpp','f-order-zakrol'].forEach(function(id){var el=document.getElementById(id);if(el){el.value='';el.classList.remove('veld-definitief');el.classList.add('veld-leeg');}});
+  var gew100mReset=document.getElementById('f-gew100m');if(gew100mReset){gew100mReset.value='';gew100mReset.classList.remove('veld-definitief');gew100mReset.classList.add('veld-leeg');}
+  if(_maxHoogte)toggleMaxHoogte();
+  ['f-klantnr','f-klantnaam','f-versie'].forEach(function(id){var el=document.getElementById(id);if(el){el.classList.remove('veld-definitief','veld-benadering');el.classList.add('veld-leeg');}});
+  for(var i=0;i<ids.length;i++){var el=document.getElementById(ids[i]);if(el)el.value='';}
+  var prodEl=document.getElementById('f-prodtype');if(prodEl)prodEl.value='Zak';
+  selectMat('ldpe');selectStatic('Off');
+  drukkerAan=false;
+  var drkBtn=document.getElementById('drukker-btn');if(drkBtn){drkBtn.textContent='UIT';drkBtn.className='toggle-btn toggle-uit';}
+  var drkEx=document.getElementById('drukker-extra');if(drkEx)drkEx.style.display='none';
+  var matInfo=document.getElementById('mat-info-temp');if(matInfo)matInfo.style.display='none';
+  var zakrolEl=document.getElementById('f-zakrol');if(zakrolEl){zakrolEl.value=250;}
+  ['f-seal','f-snelheid','f-temp-boven','f-temp-onder','f-offset1'].forEach(function(id){var bel=document.getElementById(id);if(bel){bel.classList.remove('veld-benadering','veld-definitief','veld-leeg');bel.classList.add('veld-leeg');bel.readOnly=true;bel.value='';}});
+  ['f-breedte','f-lengte','f-dikte'].forEach(function(id){var el=document.getElementById(id);if(el){el.classList.add('veld-leeg');el.value='';}});
+  var kokerEl=document.getElementById('f-koker');if(kokerEl){kokerEl.value=90;kokerEl.classList.remove('veld-leeg','veld-benadering');kokerEl.classList.add('veld-definitief');}
+  var ntEl=document.getElementById('nieuw-title');if(ntEl)ntEl.textContent='Nieuw Recept';
+  editKey=null;
+  _gekozenPallet='euro';try{kiesPallet('euro');}catch(e){}
+}
+
+function toggleGroep(hdr){hdr.classList.toggle('open');var items=document.getElementById(hdr.id+'-items');if(items)items.classList.toggle('open');}
+function laadRecepten(){var el=document.getElementById('recepten-lijst');el.innerHTML='<div class="empty-state">Laden...</div>';fbLoad('/recepten',function(data){_recepten=data;renderReceptenTree(data,'');});}
+function filterRecepten(){renderReceptenTree(_recepten,document.getElementById('zoek-input').value,document.getElementById('zoek-input').value.length>0);}
+
+function renderReceptenTree(lijst,query,openAll){
+  var el=document.getElementById('recepten-lijst');
+  if(!lijst.length){el.innerHTML='<div class="empty-state">Nog geen recepten.</div>';return;}
+  var q=query?query.toLowerCase().trim():'';
+
+  var gef=q?lijst.filter(function(r){
+    return (r.klantnr||'').toLowerCase().indexOf(q)>=0||
+           (r.klantnaam||'').toLowerCase().indexOf(q)>=0||
+           (r.materiaal||'').toLowerCase().indexOf(q)>=0||
+           (r.prodtype||'').toLowerCase().indexOf(q)>=0;
+  }):lijst;
+  if(!gef.length){el.innerHTML='<div class="empty-state">Geen resultaten.</div>';return;}
+
+  // Groepeer: klantnr → klantnaam → recepten
+  var klanten={};
+  gef.forEach(function(r){
+    var knr=r.klantnr||'-';
+    if(!klanten[knr])klanten[knr]={plaatsen:{}};
+    var pnaam=r.klantnaam||'-';
+    if(!klanten[knr].plaatsen[pnaam])klanten[knr].plaatsen[pnaam]=[];
+    klanten[knr].plaatsen[pnaam].push(r);
+  });
+
+  function kleurRecept(r){return r.operator_gepubliceerd?'#34d399':'#f59e0b';}
+  function kleurPlaats(recepten){
+    var g=recepten.filter(function(r){return r.operator_gepubliceerd;}).length;
+    if(g===0)return '#f59e0b';
+    if(g===recepten.length)return '#34d399';
+    return '#fbbf24';
+  }
+  function kleurKlant(plaatsen){
+    var kleuren=Object.keys(plaatsen).map(function(p){return kleurPlaats(plaatsen[p]);});
+    if(kleuren.every(function(k){return k==='#34d399';}))return '#34d399';
+    if(kleuren.every(function(k){return k==='#f59e0b';}))return '#f59e0b';
+    return '#fbbf24';
+  }
+
+  var knrs=Object.keys(klanten).sort(function(a,b){return a.localeCompare(b,undefined,{numeric:true,sensitivity:'base'});});
+  var html='';
+
+  knrs.forEach(function(knr,ki){
+    var plaatsen=klanten[knr].plaatsen;
+    var kKleur=kleurKlant(plaatsen);
+    var gid='tg-'+ki;
+    var aantalRec=Object.values(plaatsen).reduce(function(s,r){return s+r.length;},0);
+    var plaatsNamen=Object.keys(plaatsen).sort().join(' / ');
+    var openKlas=openAll?'open':'';
+
+    // KLANT HEADER - compact, één regel
+    html+='<div style="margin-bottom:6px;">';
+    html+='<div id="'+gid+'" onclick="toggleGroepNieuw(this)" style="display:flex;align-items:center;gap:12px;padding:14px 16px;background:#0f1520;border:1px solid #1a2540;border-left:4px solid '+kKleur+';border-radius:6px;cursor:pointer;-webkit-user-select:none;user-select:none;">';
+    html+='<div style="flex:1;min-width:0;">';
+    html+='<div style="font-size:18px;font-weight:700;color:#e5e7eb;letter-spacing:1px;">'+knr+'</div>';
+    html+='<div style="font-size:11px;color:#6b7280;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+plaatsNamen+'</div>';
+    html+='</div>';
+    html+='<div style="font-size:11px;color:#9ca3af;flex-shrink:0;">'+aantalRec+' rec.</div>';
+    html+='<div style="font-size:20px;color:'+kKleur+';flex-shrink:0;transition:transform .2s;" class="klant-chev">&#8250;</div>';
+    html+='</div>';
+
+    // UITKLAPBAAR DEEL
+    html+='<div id="'+gid+'-items" style="display:'+(openAll?'block':'none')+';margin-top:2px;">';
+
+    Object.keys(plaatsen).sort().forEach(function(pnaam,pi){
+      var recepten=plaatsen[pnaam];
+      var pKleur=kleurPlaats(recepten);
+
+      // PLAATS HEADER
+      html+='<div style="display:flex;align-items:center;gap:10px;padding:10px 16px 10px 24px;background:#0a0d14;border:1px solid #1a2540;border-left:3px solid '+pKleur+';margin-bottom:2px;border-radius:4px;">';
+      html+='<span style="font-size:14px;">&#128205;</span>';
+      html+='<span style="font-size:14px;font-weight:700;color:#9ca3af;letter-spacing:1px;flex:1;">'+pnaam+'</span>';
+      html+='<span style="font-size:10px;color:#6b7280;">'+recepten.length+'</span>';
+      html+='</div>';
+
+      // RECEPTEN
+      recepten.forEach(function(rec){
+        var rk=rec._key;
+        var rKleur=kleurRecept(rec);
+        var mat=MATERIALEN[rec.materiaal];
+
+        html+='<div onclick="window._detailKey=\''+rk+'\';openDetail(window._detailKey)" style="display:flex;align-items:center;gap:10px;padding:12px 16px 12px 36px;background:#070a10;border:1px solid #1a2540;border-left:3px solid '+rKleur+';border-top:none;margin-bottom:2px;border-radius:4px;cursor:pointer;-webkit-user-select:none;user-select:none;">';
+        html+='<div style="flex:1;min-width:0;">';
+        html+='<div style="font-size:16px;font-weight:700;color:#e5e7eb;">'+(rec.prodtype||'')+(rec.breedte?' '+rec.breedte+'mm':'')+(rec.lengte?' × '+rec.lengte+'mm':'')+'</div>';
+        html+='<div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:5px;">';
+        if(mat)html+='<span style="font-size:9px;padding:2px 7px;border-radius:3px;background:#0a0d14;border:1px solid '+(mat.recycle?'rgba(52,211,153,.4)':'rgba(96,165,250,.4)')+';color:'+(mat.recycle?'#34d399':'#60a5fa')+';">'+mat.label+'</span>';
+        if(rec.snelheid)html+='<span style="font-size:9px;padding:2px 7px;border-radius:3px;background:#0a0d14;border:1px solid rgba(245,158,11,.4);color:#f59e0b;">'+rec.snelheid+' m/min</span>';
+        if(rec.datum)html+='<span style="font-size:9px;padding:2px 7px;border-radius:3px;background:#0a0d14;border:1px solid #1a2540;color:#9ca3af;">'+rec.datum+'</span>';
+        html+='</div></div>';
+
+        // KNOPPEN - groter en duidelijker
+        html+='<div style="display:flex;gap:8px;align-items:center;flex-shrink:0;">';
+        html+=isAdmin()?maakPubliceerKnop(rk,rec.operator_gepubliceerd):'';
+        html+='<button onclick="event.stopPropagation();bewerkRecept(this.dataset.key)" data-key="'+rk+'" style="background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.4);border-radius:6px;color:#f59e0b;font-size:18px;width:42px;height:42px;cursor:pointer;display:flex;align-items:center;justify-content:center;">&#9998;</button>';
+        html+='<button onclick="event.stopPropagation();verwijderRecept(null,this.dataset.key)" data-key="'+rk+'" style="background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.4);border-radius:6px;color:#ef4444;font-size:18px;width:42px;height:42px;cursor:pointer;display:flex;align-items:center;justify-content:center;">&#10005;</button>';
+        html+='</div></div>';
+      });
+    });
+
+    html+='</div></div>';
+  });
+
+  el.innerHTML=html;
+}
+
+function toggleGroepNieuw(hdr){
+  var id=hdr.id;
+  var items=document.getElementById(id+'-items');
+  var chev=hdr.querySelector('.klant-chev');
+  if(!items)return;
+  var open=items.style.display!=='none'&&items.style.display!=='';
+  items.style.display=open?'none':'block';
+  if(chev){chev.style.transform=open?'':'rotate(90deg)';chev.style.color=open?'#6b7280':'#f59e0b';}
+}
+
+
+function maakPubliceerKnop(key, gepubliceerd){
+  var bg=gepubliceerd?'rgba(52,211,153,0.2)':'rgba(100,100,100,0.1)';
+  var border=gepubliceerd?'#34d399':'#1a2540';
+  var icon=gepubliceerd?'&#128994;':'&#9675;';
+  return '<button onclick="event.stopPropagation();togglePubliceer(this.dataset.key,'+gepubliceerd+')" data-key="'+key+'" style="background:'+bg+';border:1px solid '+border+';border-radius:6px;font-size:14px;width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center;">'+icon+'</button>';
+}
+
+function togglePubliceer(key,huidigGepubliceerd){
+  var huidig = huidigGepubliceerd===true||huidigGepubliceerd==='true';
+  var nieuweWaarde = !huidig;
+  fbPatch('/recepten',key,{operator_gepubliceerd:nieuweWaarde},function(){
+    toast(nieuweWaarde?'&#128994; Toegevoegd aan operator recepten':'Verwijderd uit operator recepten');
+    laadRecepten();
+  });
+}
+
+function togglePlaats(hdr){
+  var items=hdr.nextElementSibling;
+  var chev=hdr.querySelector('.plaats-chev');
+  if(!items)return;
+  var open=items.style.display!=='none'&&items.style.display!=='';
+  items.style.display=open?'none':'block';
+  if(chev)chev.style.transform=open?'':'rotate(90deg)';
+}
+
+
+function verwijderRecept(btn,key){
+  key=key||window._delKey;
+  fbLoad('/recepten',function(lijst){
+    var r=null;for(var i=0;i<lijst.length;i++){if(lijst[i]._key===key){r=lijst[i];break;}}
+    if(!r)return;
+    if(!magBewerken(r.versie)){toast('Alleen eigen recepten verwijderen',true);return;}
+    window._deleteKey=key;
+    toonPinModal(function(){fbDelete('/recepten',window._deleteKey,function(){toast('Verwijderd');window._deleteKey=null;laadRecepten();});});
+  });
+}
+
+function toonPinModal(onSuccess){
+  document.getElementById('pin-overlay').style.display='flex';
+  document.getElementById('pin-input').value='';
+  document.getElementById('pin-err').style.display='none';
+  document.getElementById('pin-input').focus();
+  window._pinCallback=onSuccess;
+}
+function sluitPinModal(){document.getElementById('pin-overlay').style.display='none';window._pinCallback=null;}
+function bevestigPin(){
+  var pin=document.getElementById('pin-input').value.trim();
+  if(pin==='007'){var cb=window._pinCallback;sluitPinModal();if(cb)cb();}
+  else{document.getElementById('pin-err').style.display='block';document.getElementById('pin-input').value='';}
+}
+
+function detSectie(titel,kleur,inhoud){
+  return '<div onclick="var n=this.nextElementSibling;n.style.display=n.style.display===\'none\'?\'block\':\'none\'" style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#0f1520;border:1px solid #1a2540;border-left:3px solid '+kleur+';border-radius:4px;margin-bottom:4px;cursor:pointer;">'+
+    '<span style="font-size:11px;color:'+kleur+';letter-spacing:2px;text-transform:uppercase;">'+titel+'</span>'+
+    '<span style="color:'+kleur+';font-size:20px;">\u203a</span></div>'+
+    '<div style="display:none;margin-bottom:8px;">'+inhoud+'</div>';
+}
+
+function openDetail(key){
+  key=key||window._detailKey;
+  fbLoad('/recepten',function(lijst){
+    var r=null;for(var i=0;i<lijst.length;i++){if(lijst[i]._key===key){r=lijst[i];break;}}
+    if(!r)return;
+    var mat=MATERIALEN[r.materiaal]||{};
+    var dtEl=document.getElementById('detail-title');if(dtEl)dtEl.textContent=(r.klantnr||'')+' - '+(r.prodtype||'');
+    function row(lbl,val){if(!val&&val!==0)return '';return '<div class="info-row"><div class="ir-lbl">'+lbl+'</div><div class="ir-val">'+val+'</div></div>';}
+    var stapelVisHtml=(function(){
+      var breedte2=parseFloat(r.breedte)||0,lengte2=parseFloat(r.lengte)||0,dikte2=parseFloat(r.dikte)||0,koker2=parseFloat(r.koker)||90;
+      var zakrol2=parseFloat(r.order_zakrol)>0?parseFloat(r.order_zakrol):parseFloat(r.zakrol)||0;
+      if(!zakrol2||!breedte2||!lengte2||!dikte2) return '';
+      var lagen2=lagenPerProdtype(r.prodtype||'Zak');
+      var rolD2=Math.round(Math.sqrt((koker2/2)*(koker2/2)+(zakrol2*lengte2*dikte2*lagen2)/Math.PI)*2);
+      var maxH2=(r.order_maxhoogte==='1'||r.order_maxhoogte===1)?1050:1550;
+      var palB2={'blok':1000}[r.order_pallet]||800;
+      var staand2=breedte2<=500;
+      var html3='<div class="slabel">Stapelvisualisatie</div>';
+      html3+='<div style="background:#0f1520;border:1px solid #a78bfa;border-radius:6px;padding:16px;margin-bottom:12px;text-align:center;">';
+      html3+='<div style="font-size:10px;color:#a78bfa;letter-spacing:2px;margin-bottom:12px;">Roldiameter: '+rolD2+'mm · '+(staand2?'Staand':'Liggend')+'</div>';
+      if(staand2){
+        var maxLS2=Math.min(2,Math.max(1,Math.floor(maxH2/breedte2)));
+        var ROL='<span style="display:inline-block;width:32px;height:32px;background:linear-gradient(135deg,#60a5fa,#3b82f6);border-radius:50%;border:2px solid #93c5fd;margin:3px;vertical-align:middle;"></span>';
+        var ROL_MID='<span style="display:inline-block;width:32px;height:32px;background:linear-gradient(135deg,#a78bfa,#7c3aed);border-radius:50%;border:2px solid #c4b5fd;margin:3px;vertical-align:middle;"></span>';
+        var vis2='';
+        if(rolD2<=300){
+          // 4-3-4 piramide
+          for(var ls2=maxLS2;ls2>=1;ls2--){
+            vis2+='<div style="display:flex;justify-content:center;align-items:center;margin:2px 0;">';
+            for(var ri3a=0;ri3a<4;ri3a++) vis2+=ROL;
+            vis2+='</div>';
+            vis2+='<div style="display:flex;justify-content:center;align-items:center;margin:2px 0;margin-left:18px;">';
+            for(var ri3b=0;ri3b<3;ri3b++) vis2+=ROL_MID;
+            vis2+='</div>';
+            vis2+='<div style="display:flex;justify-content:center;align-items:center;margin:2px 0;">';
+            for(var ri3c=0;ri3c<4;ri3c++) vis2+=ROL;
+            vis2+='</div>';
+            if(ls2>1) vis2+='<div style="border-top:1px dashed #1a2540;margin:8px 20px;"></div>';
+          }
+        } else if(rolD2<=Math.floor(palB2/2)){
+          // Zigzag
+          var rijZL=Math.max(1,Math.floor(1200/rolD2));
+          for(var ls2z=maxLS2;ls2z>=1;ls2z--){
+            vis2+='<div style="display:flex;justify-content:center;align-items:center;margin:2px 0;">';
+            for(var rz1=0;rz1<rijZL;rz1++) vis2+=ROL;
+            vis2+='</div>';
+            vis2+='<div style="display:flex;justify-content:center;align-items:center;margin:2px 0;margin-left:18px;">';
+            for(var rz2=0;rz2<rijZL;rz2++) vis2+=ROL_MID;
+            vis2+='</div>';
+            if(ls2z>1) vis2+='<div style="border-top:1px dashed #1a2540;margin:8px 20px;"></div>';
+          }
+        } else {
+          vis2+='<div style="color:#9ca3af;font-size:13px;">Liggend stapelen aanbevolen</div>';
+        }
+        html3+='<div style="padding:12px 0;">'+vis2+'</div>';
+        html3+='<div style="font-size:10px;color:#9ca3af;margin-top:4px;">Staand · '+maxLS2+' lagen · geen huidjes</div>';
+      } else {
+        var maxLagen2=1;
+        for(var nl2=2;nl2<=20;nl2++){if(rolD2+(nl2-1)*rolD2*0.866<=maxH2)maxLagen2=nl2;else break;}
+        var par2=Math.floor(maxLagen2/2),ext2=maxLagen2%2;
+        var rA2l=Math.max(1,Math.floor(palB2/rolD2)),rB2l=Math.max(1,rA2l-1),rpp2l=par2*(rA2l+rB2l)+ext2*rA2l;
+        var rA2b=Math.max(1,Math.floor(1200/rolD2)),rB2b=Math.max(1,rA2b-1),rpp2b=par2*(rA2b+rB2b)+ext2*rA2b;
+        var rijA2=rpp2b>rpp2l?rA2b:rA2l,rijB2=rpp2b>rpp2l?rB2b:rB2l;
+        var visual2='';
+        for(var lag2=maxLagen2;lag2>=1;lag2--){var rijv2=(lag2%2===1)?rijA2:rijB2,kleurL2=(lag2%2===1)?'&#128992;':'&#128994;';for(var ri2=0;ri2<rijv2;ri2++)visual2+=kleurL2;if(lag2>1)visual2+='<br>';}
+        html3+='<div style="font-size:20px;line-height:1.8;letter-spacing:3px;">'+visual2+'</div>';
+        html3+='<div style="font-size:10px;color:#9ca3af;margin-top:8px;">'+maxLagen2+' lagen · '+rijA2+'-'+rijB2+' patroon</div>';
+      }
+      html3+='</div>';
+      return html3;
+    })();
+    var o1=r.offset1_werke?parseFloat(r.offset1_werke):berekenOffset(parseFloat(r.lengte)||0);
+    var o2=Math.round(o1/2);var werkelijk=!!r.offset1_werke;
+    var kleur1=werkelijk?'#34d399':'#60a5fa';
+    var bronLabel=werkelijk?'<span style="font-size:10px;background:rgba(52,211,153,.15);border:1px solid #34d399;color:#34d399;padding:2px 8px;border-radius:3px;margin-left:8px;">WERKELIJK</span>':'<span style="font-size:10px;background:rgba(96,165,250,.15);border:1px solid #60a5fa;color:#60a5fa;padding:2px 8px;border-radius:3px;margin-left:8px;">BEREKEND</span>';
+    var orderHtml='';
+    if(r.order_stuks||r.order_zakrol){
+      var stuks=parseFloat(r.order_stuks)||0;
+      var zakrol=parseFloat(r.order_zakrol)>0?parseFloat(r.order_zakrol):parseFloat(r.zakrol)||0;
+      var breedte=parseFloat(r.breedte)||0,lengte=parseFloat(r.lengte)||0,dikte=parseFloat(r.dikte)||0,koker=parseFloat(r.koker)||90;
+      var sv2=SOORTELIJK_GEWICHT[r.materiaal]||920;
+      if(zakrol&&breedte&&lengte&&dikte){
+        var lagenD=lagenPerProdtype(r.prodtype||'Zak');
+        var rolD=Math.round(Math.sqrt((koker/2)*(koker/2)+(zakrol*lengte*dikte*lagenD)/Math.PI)*2);
+        var rolLengte2=zakrol*lengte/1000;
+        var gew100m2=parseFloat(r.order_gew100m)||0;
+        var gwRol=gew100m2>0?Math.round(gew100m2*rolLengte2/100*10)/10:Math.round((breedte/1000)*rolLengte2*(dikte/1000)*2*sv2*10)/10;
+        var staandD=breedte<=500;
+        var maxHD=(r.order_maxhoogte==='1'||r.order_maxhoogte===1||r.order_maxhoogte===true)?1050:1550;
+        var palletD={'euro':{b:800,naam:'Euro pallet'},'euro-formaat':{b:800,naam:'Euro formaat'},'blok':{b:1000,naam:'Blokpallet'}}[r.order_pallet]||{b:800,naam:'Euro pallet'};
+        var rpPallet2,lagenD2;
+        if(staandD){lagenD2=Math.min(2,Math.max(1,Math.floor(maxHD/breedte)));rpPallet2=Math.max(1,Math.floor(palletD.b/rolD)*Math.max(1,Math.floor(1200/rolD))*lagenD2);}
+        else{var maxLD=1;for(var nld=2;nld<=20;nld++){if(rolD+(nld-1)*rolD*0.866<=maxHD)maxLD=nld;else break;}lagenD2=maxLD;var parenD2=Math.floor(lagenD2/2),extraD2=lagenD2%2;var rijAD_l=Math.max(1,Math.floor(palletD.b/rolD)),rijBD_l=Math.max(1,rijAD_l-1),rppD_l=parenD2*(rijAD_l+rijBD_l)+extraD2*rijAD_l;var rijAD_b=Math.max(1,Math.floor(1200/rolD)),rijBD_b=Math.max(1,rijAD_b-1),rppD_b=parenD2*(rijAD_b+rijBD_b)+extraD2*rijAD_b;var rijAD=rppD_b>rppD_l?rijAD_b:rijAD_l,rijBD=rppD_b>rppD_l?rijBD_b:rijBD_l;rpPallet2=Math.max(1,Math.max(rppD_l,rppD_b));}
+        var rppKlantD2=parseFloat(r.order_rpp)||0;if(rppKlantD2>0)rpPallet2=rppKlantD2;
+        var rollen2=stuks>0?Math.ceil(stuks/zakrol):0;
+        var volP2=rollen2>0?Math.floor(rollen2/rpPallet2):0,restD2=rollen2>0?rollen2%rpPallet2:0,losD2=0,pallets2=0,rpPalletToon2=rpPallet2;
+        if(rollen2>0){if(restD2===0)pallets2=volP2;else if(restD2<=4){pallets2=volP2;losD2=restD2;}else if(volP2>0&&restD2<=volP2){pallets2=volP2;rpPalletToon2=rpPallet2+1;}else pallets2=volP2+1;if(pallets2===0)pallets2=1;}
+        var huidjeD=0;if(!staandD&&lagenD2>1){
+          if(r.order_huidje&&parseFloat(r.order_huidje)>0){
+            huidjeD=parseFloat(r.order_huidje);
+          } else {
+            var hRuw2=rijAD*rolD+90,hM2=[700,750,800,850,900,950,1000,1050,1100,1150,1200,1250,1300,1350,1400];
+            huidjeD=hM2[hM2.length-1];
+            for(var hi3=0;hi3<hM2.length;hi3++){if(hM2[hi3]>=hRuw2){huidjeD=hM2[hi3];break;}}
+          }
+        }
+        orderHtml='<div class="slabel">Order Berekening</div><div class="info-block">';
+        if(stuks>0)orderHtml+='<div class="info-row"><div class="ir-lbl">TE LEVEREN</div><div class="ir-val">'+stuks.toLocaleString()+' st</div></div>';
+        if(rollen2>0)orderHtml+='<div class="info-row"><div class="ir-lbl">AANTAL ROLLEN</div><div class="ir-val" style="color:#a78bfa;">'+rollen2+'</div></div>';
+        orderHtml+='<div class="info-row"><div class="ir-lbl">GEWICHT PER ROL</div><div class="ir-val" style="color:#60a5fa;">'+gwRol+' kg</div></div>';
+        if(rollen2>0)orderHtml+='<div class="info-row"><div class="ir-lbl">TOTAAL GEWICHT</div><div class="ir-val" style="color:#60a5fa;">'+(rollen2*gwRol).toFixed(0)+' kg</div></div>';
+        orderHtml+='<div class="info-row"><div class="ir-lbl">STAPELWIJZE</div><div class="ir-val">'+(staandD?'Staand':'Liggend')+' &middot; '+lagenD2+' lagen</div></div>';
+        orderHtml+='<div class="info-row"><div class="ir-lbl">PALLET</div><div class="ir-val">'+palletD.naam+'</div></div>';
+        orderHtml+='<div class="info-row"><div class="ir-lbl">ROLLEN PER PALLET</div><div class="ir-val" style="color:#f59e0b;">'+rpPalletToon2+(rppKlantD2>0?' (klant)':'')+'</div></div>';
+        if(pallets2>0)orderHtml+='<div class="info-row"><div class="ir-lbl">AANTAL PALLETS</div><div class="ir-val" style="color:#f59e0b;">'+pallets2+'</div></div>';
+        if(losD2>0)orderHtml+='<div class="info-row"><div class="ir-lbl">LOS OP PALLET</div><div class="ir-val" style="color:#9ca3af;">'+losD2+' rol</div></div>';
+        if(!staandD&&lagenD2>1&&huidjeD>0)orderHtml+='<div class="info-row"><div class="ir-lbl">HUIDJE LENGTE</div><div class="ir-val">'+huidjeD+' mm</div></div>';
+        orderHtml+='</div>';
+      }
+    }
+    // Huidje lengte apart vak
+    var huidjeVak='';
+    if(orderHtml){
+      var huidjeMatch=orderHtml.match(/HUIDJE LENGTE<\/div><div class="ir-val">([^<]+)<\/div>/);
+      if(huidjeMatch){
+        huidjeVak='<div class="slabel" style="color:#34d399;">Huidje Lengte</div>'+
+          '<div style="background:#0f1520;border:1px solid #34d399;border-radius:4px;padding:16px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;">'+
+          '<span style="font-size:14px;color:#9ca3af;">Huidje lengte</span>'+
+          '<span style="font-size:28px;font-weight:700;color:#34d399;">'+huidjeMatch[1]+'</span></div>';
+      }
+    }
+    var orderHtmlClean=orderHtml?orderHtml.replace(/<div class="info-row"><div class="ir-lbl">HUIDJE LENGTE<\/div><div class="ir-val">[^<]+<\/div><\/div>/,''):'';
+
+    var detHtml='';
+    detHtml+=detSectie('Klant &amp; Product','#6b7280','<div class="info-block">'+row('Klantnummer',r.klantnr)+row('Klantnaam',r.klantnaam)+row('Producttype',r.prodtype)+row('Operator',r.versie)+row('Datum',r.datum)+'</div>');
+    detHtml+=detSectie('Materiaal &amp; Afmetingen','#6b7280','<div class="info-block">'+row('Materiaal',mat.label||r.materiaal)+row('Breedte',r.breedte+' mm')+row('Lengte',r.lengte+' mm')+row('Dikte',r.dikte+' mm')+'</div>');
+    if(orderHtmlClean) detHtml+=detSectie('Order Berekening','#a78bfa',orderHtmlClean);
+        // Altijd zichtbaar
+    detHtml+='<div class="slabel">Productie Parameters</div>';
+    detHtml+='<div class="info-block">'+row('Sealtijd',r.seal+' ms')+row('Snelheid',r.snelheid+' m/min')+row('Zakken/rol',r.zakrol)+row('Koker dia',r.koker+' mm')+'</div>';
+    detHtml+='<div class="slabel">Offset Rolwissel</div>';
+    detHtml+='<div class="info-block"><div class="info-row"><div class="ir-lbl">OFFSET 1</div><div style="display:flex;align-items:center;"><div class="ir-val" style="color:'+kleur1+';">'+o1+'</div>'+bronLabel+'</div></div><div class="info-row"><div class="ir-lbl">OFFSET 2</div><div class="ir-val" style="color:'+kleur1+';">'+o2+'</div></div></div>';
+    detHtml+='<div class="slabel">Machine Instellingen</div>';
+    detHtml+='<div class="info-block">'+row('Static charger',r.static_ch)+row('Static mat (mm)',r.static_mat)+row('Cycle drukker',r.drukker?'AAN - '+(r.drukker_inst||''):'UIT')+'</div>';
+    detHtml+='<div class="slabel">Seal Temperaturen</div>';
+    detHtml+='<div style="display:flex;gap:16px;margin-bottom:8px;"><div class="temp-card"><div class="temp-lbl">BOVEN</div><div style="font-size:34px;font-weight:700;color:#fcd34d;text-align:center;">'+(r.temp_boven||'-')+'</div><div class="temp-unit">C</div></div><div style="font-size:20px;color:#9ca3af;align-self:center;">|</div><div class="temp-card"><div class="temp-lbl">ONDER</div><div style="font-size:34px;font-weight:700;color:#fcd34d;text-align:center;">'+(r.temp_onder||'-')+'</div><div class="temp-unit">C</div></div></div>';
+    if(r.notities) detHtml+='<div class="slabel">Notities</div><div class="info-block"><div style="padding:12px 14px;font-size:13px;color:#9ca3af;line-height:1.6;">'+r.notities+'</div></div>';
+    detHtml+=huidjeVak;
+    detHtml+=stapelVisHtml;
+    detHtml+='<button class="btn btn-amber" style="margin-top:8px;" onclick="bewerkRecept(this.dataset.key)" data-key="'+key+'">Bewerken</button>';
+    document.getElementById('detail-content').innerHTML=detHtml;
+    go('s-detail');
+  });
+}
+
+function bewerkRecept(key){
+  fbLoad('/recepten',function(lijst){
+    var r=null;for(var i=0;i<lijst.length;i++){if(lijst[i]._key===key){r=lijst[i];break;}}
+    if(!r)return;
+    if(!magBewerken(r.versie)){toast('Alleen eigen recepten bewerken',true);return;}
+    var fields=['klantnr','klantnaam','versie','breedte','lengte','dikte','koker','seal','snelheid','zakmin','zakrol','drukker_inst','temp_boven','temp_onder','notities','offset1_werke'];
+    var fnames=['f-klantnr','f-klantnaam','f-versie','f-breedte','f-lengte','f-dikte','f-koker','f-seal','f-snelheid','f-zakmin','f-zakrol','f-drukker','f-temp-boven','f-temp-onder','f-notities','f-offset1'];
+    for(var i=0;i<fields.length;i++){var el=document.getElementById(fnames[i]);if(el&&r[fields[i]]){el.value=r[fields[i]];el.classList.remove('veld-leeg','veld-benadering');el.classList.add('veld-definitief');if(fnames[i]!=='f-notities')el.readOnly=true;}}
+    document.getElementById('f-prodtype').value=r.prodtype||'Zak';
+    document.getElementById('f-static-mat').value=r.static_mat||'';
+    selectMat(r.materiaal||'ldpe');selectStatic(r.static_ch||'Off');
+    ['f-breedte','f-lengte','f-dikte','f-klantnr','f-klantnaam','f-versie'].forEach(function(id){var e=document.getElementById(id);if(e&&e.value){e.classList.remove('veld-leeg','veld-benadering');e.classList.add('veld-definitief');e.readOnly=false;}});
+    if(r.offset1_werke){var toon=document.getElementById('f-offset2-toon');if(toon){toon.style.display='block';toon.textContent='Offset 2 (automatisch): '+Math.round(r.offset1_werke/2);}}
+    if(r.drukker){drukkerAan=true;document.getElementById('drukker-btn').textContent='AAN';document.getElementById('drukker-btn').className='toggle-btn toggle-aan';document.getElementById('drukker-extra').style.display='block';}
+    if(r.order_zakrol){var ozEl=document.getElementById('f-order-zakrol');if(ozEl){ozEl.value=r.order_zakrol;ozEl.classList.remove('veld-leeg');ozEl.classList.add('veld-definitief');}}
+    if(r.order_stuks){var osEl=document.getElementById('f-order-stuks');if(osEl){osEl.value=r.order_stuks;osEl.classList.remove('veld-leeg');osEl.classList.add('veld-definitief');}}
+    if(r.order_pallet){_gekozenPallet=r.order_pallet;try{kiesPallet(r.order_pallet);}catch(e){}}
+    if(r.order_gew100m){var ogEl=document.getElementById('f-gew100m');if(ogEl){ogEl.value=r.order_gew100m;ogEl.classList.remove('veld-leeg');ogEl.classList.add('veld-definitief');}}
+    if(r.order_rpp){var orppEl=document.getElementById('f-order-rpp');if(orppEl){orppEl.value=r.order_rpp;orppEl.classList.remove('veld-leeg');orppEl.classList.add('veld-definitief');}}
+if(r.werk_rpp){var wrppEl=document.getElementById('f-werk-rpp');if(wrppEl){wrppEl.value=r.werk_rpp;wrppEl.classList.remove('veld-leeg');wrppEl.classList.add('veld-definitief');}}
+    if(r.werk_huidje){var whEl=document.getElementById('f-werk-huidje');if(whEl){whEl.value=r.werk_huidje;whEl.classList.remove('veld-leeg');whEl.classList.add('veld-definitief');}}
+    if(r.order_huidje){var ohEl=document.getElementById('f-huidje');if(ohEl){ohEl.value=r.order_huidje;ohEl.classList.remove('veld-leeg');ohEl.classList.add('veld-definitief');}}
+    editKey=key;
+    var ntEl2=document.getElementById('nieuw-title');if(ntEl2)ntEl2.textContent='Recept Bewerken';
+    go('s-nieuw');
+    if(_maxHoogte)toggleMaxHoogte();
+    if(r.order_maxhoogte==='1')toggleMaxHoogte();
+    setTimeout(function(){try{berekenOrder();}catch(e){}},100);
+  });
+}
+
+function zoekKlantnamen(q){
+  if(!_recepten||!_recepten.length)return;
+  var namen={};_recepten.forEach(function(r){if(r.klantnaam)namen[r.klantnaam]=true;});
+  var lijst=Object.keys(namen).sort();
+  if(q&&q.length>0){var ql=q.toLowerCase();lijst=lijst.filter(function(n){return n.toLowerCase().indexOf(ql)>=0;});}
+  var dd=document.getElementById('klantnaam-dropdown');if(!dd)return;
+  if(!lijst.length){dd.style.display='none';return;}
+  dd.innerHTML=lijst.map(function(naam){return '<div onclick="kiesKlantnaam(\''+naam.replace(/'/g,"\\'")+'\');" style="padding:12px 14px;cursor:pointer;font-size:16px;border-bottom:1px solid #1a2540;color:#e5e7eb;font-family:\'Courier New\',Courier,monospace;" onmousedown="event.preventDefault()">'+naam+'</div>';}).join('');
+  dd.style.display='block';
+}
+function kiesKlantnaam(naam){var el=document.getElementById('f-klantnaam');if(el){el.value=naam;el.classList.remove('veld-leeg','veld-benadering');el.classList.add('veld-definitief');}sluitKlantnamen();}
+function sluitKlantnamen(){var dd=document.getElementById('klantnaam-dropdown');if(dd)dd.style.display='none';}
+
+var OPERATORS=['Dirk','Casper'];
+function toonNaamDropdown(){
+  var el=document.getElementById('f-versie');var dd=document.getElementById('naam-dropdown');if(!dd)return;
+  var q=(el.value||'').toLowerCase();
+  var lijst=OPERATORS.filter(function(n){return !q||n.toLowerCase().indexOf(q)>=0;});
+  if(!lijst.length){dd.style.display='none';return;}
+  dd.innerHTML=lijst.map(function(naam){return '<div onclick="kiesOperator(\''+naam+'\')" style="padding:12px 14px;cursor:pointer;font-size:16px;border-bottom:1px solid #1a2540;color:#e5e7eb;font-family:\'Courier New\',Courier,monospace;" onmousedown="event.preventDefault()">'+naam+'</div>';}).join('');
+  dd.style.display='block';
+}
+function sluitNaamDropdown(){var dd=document.getElementById('naam-dropdown');if(dd)dd.style.display='none';}
+function kiesOperator(naam){var el=document.getElementById('f-versie');el.value=naam;el.classList.remove('veld-leeg','veld-benadering');el.classList.add('veld-definitief');sluitNaamDropdown();}
+
+var PROBLEEMGROEPEN=[
+  {id:'wissel',icon:'&#128260;',kleur:'#60a5fa',vraag:'Waarom wisselt hij niet goed?',omschrijving:'De machine wisselt niet correct naar een nieuwe rol',problemen:[
+    {titel:'Vrijloop (flap) te lang',oorzaken:['Rolls change advance staat te hoog (bijv. 1000ms)','Turret draaitijd + wachttijd samen te lang'],oplossingen:['Rolls change advance verlagen naar 200ms als startpunt','Daarna naar 100ms als wissel stabiel is','NOOIT op 0ms -- armen kunnen slaan terwijl turret nog trilt']},
+    {titel:'Maantjes slaan vóór de perforatie',oorzaken:['Offset te laag -- armen komen te vroeg'],oplossingen:['Offset 1 verhogen met 50-100mm (bijv. 10750 → 10850)','Kleine stappen -- testen op lage snelheid']},
+    {titel:'Maantjes slaan voorbij de perforatie',oorzaken:['Offset te hoog -- armen komen te laat'],oplossingen:['Offset 1 verlagen met 50-100mm','Kleine stappen van 50mm tegelijk']},
+    {titel:'Folie loopt weg links/rechts bij wissel',oorzaken:['Drukarm fixeert folie te laat of te zwak','Pressor roll advance te hoog','Mat.speed <75mm te laag'],oplossingen:['Pressor roll advance verlagen naar 1500-2000ms','Mat.speed diam. <75mm verhogen naar 90-95 m/min','Smoorventiel drukarm cilinder verder openzetten']},
+    {titel:'Rol bouwt niet strak op',oorzaken:['V DAC rewinder te laag'],oplossingen:['V DAC verhogen (bijv. 8000 → 8500mV)','KFF Material verhogen naar 80-90%']},
+    {titel:'Rol start scheef',oorzaken:['Drukarm te laat of te weinig druk'],oplossingen:['Pressor roll advance verlagen voor snellere fixatie','Drukarm moet BOEM op folie vallen']}
+  ]},
+  {id:'spanning',icon:'&#9889;',kleur:'#a78bfa',vraag:'Spanningsproblemen bij de folie',omschrijving:'Folie te strak, te slap of instabiel',problemen:[
+    {titel:'Folie te strak -- scheurt vóór perforatie',oorzaken:['V DAC rewinder te hoog','Material Loop te hoog'],oplossingen:['V DAC verlagen (bijv. 9000 → 8000mV)','Material Loop verlagen (80 → 60-70)','KFF Material verlagen naar 70-80%']},
+    {titel:'Folie te slap -- instabiel of lussen',oorzaken:['V DAC rewinder te laag','Material Loop te laag'],oplossingen:['Material Loop verhogen',"Material's Releasing verlagen (8 → 6mm)"]},
+    {titel:'Folie te strak in de wisselzone',oorzaken:['Rewinder trekt te hard tijdens wissel','Material loop Kp at running te hoog'],oplossingen:['Rewinder torque verlagen 20-40% (V DAC)','Material loop Kp at running verlagen naar 50-60','Material loop max tension verlagen naar 150%']},
+    {titel:'Spanning instabiel / oscillerend',oorzaken:['Time cycle te laag','KFF Material te hoog'],oplossingen:['Time cycle verhogen naar 15-20s','KFF Material verlagen naar 70-80%','Loop integral time verhogen naar 2000-4000ms']}
+  ]},
+  {id:'dancer',icon:'&#8651;',kleur:'#34d399',vraag:'Dancer problemen',omschrijving:'Dancer hangt te hoog, te laag of oscilleert',problemen:[
+    {titel:'Dancer hangt te hoog -- te weinig foliebuffer',oorzaken:['Dancer setpoint te laag','Rewinder trekt te hard'],oplossingen:['Danc.roll.work posit. verhogen naar 3700-4000mV','Luchtdruk dancer cilinder verlagen']},
+    {titel:'Dancer oscilleert / instabiel',oorzaken:['Kp Dancing roll te hoog','Time cycle te laag'],oplossingen:['Kp Dancing roll verlagen','Time cycle verhogen naar 15-20s']},
+    {titel:'Dancer reageert te traag',oorzaken:['Kp Dancing roll te laag'],oplossingen:['Kp Dancing roll iets verhogen','Time cycle verlagen naar 10-15s']}
+  ]},
+  {id:'seal',icon:'&#9632;',kleur:'#f59e0b',vraag:'Waarom sealt hij niet goed?',omschrijving:'De sealnaad is niet in orde',problemen:[
+    {titel:'Seal breekt open',oorzaken:['Sealtemperatuur te laag','Sealtijd te kort'],oplossingen:['Temperatuur verhogen','Sealtijd verlengen']},
+    {titel:'Seal verbrandt / PTFE tape beschadigd',oorzaken:['Temperatuur te hoog','Sealtijd te lang'],oplossingen:['Temperatuur verlagen','PTFE tape vervangen']},
+    {titel:'Seal uitgerekt of vervormd',oorzaken:['Folie te strak in neutrale zone','Rewinder torque te hoog'],oplossingen:['Niproldruk iets verhogen','Rewinder torque verlagen 20-40%','Material Loop max tension verlagen naar 100-120%']},
+    {titel:'AVI sleep band methode',oorzaken:['Foliespanning moeilijk te regelen'],oplossingen:['Sleep band met gedoseerd gewicht op de folie','Via het hekje spanning instellen']}
+  ]},
+  {id:'niprollen',icon:'&#8651;',kleur:'#a78bfa',vraag:'Problemen met niprollen?',omschrijving:'Folie wikkelt om niprollen of zaklengte varieert',problemen:[
+    {titel:'Folie wikkelt zich om de niprollen',oorzaken:['Sealtemperatuur te hoog','Koeling werkt niet'],oplossingen:['Sealtemperatuur verlagen','Koeling controleren']},
+    {titel:'Zaklengte varieert',oorzaken:['Encoder slip op niprollen','Foliespanning wisselt'],oplossingen:['Niprollen reinigen','Encoder controleren']}
+  ]},
+  {id:'plooien',icon:'&#9699;',kleur:'#fb923c',vraag:'Verwijderen van plooien',omschrijving:'Folie vertoont plooien of kreukels',problemen:[
+    {titel:'Folie loopt scheef en geeft plooien',oorzaken:['Moederrol niet gecentreerd','Foliespanning ongelijk'],oplossingen:['Moederrol centreren','Folie centreren via het hekje']},
+    {titel:'Slappe kant geeft plooien',oorzaken:['Foliedikte ongelijk'],oplossingen:['Static charger op Altijd aan','Snelheid verlagen']}
+  ]},
+  {id:'uitsparing',icon:'&#9633;',kleur:'#34d399',vraag:'Het maken van een uitsparing',omschrijving:'Instellen en produceren van zakken met uitsparing',problemen:[
+    {titel:'Uitsparing niet op juiste positie',oorzaken:['Offset niet correct'],oplossingen:['Offset opnieuw instellen','Perforatie positie corrigeren']},
+    {titel:'AVI uitsparing -- sealbalken',oorzaken:['Seal instelling niet aangepast'],oplossingen:['MET invouw: breed teflon op boven EN onderbalk','MET invouw: onderbalk 145°C, bovenbalk 210°C','MET invouw: klein stukje karton in de uitsparing']}
+  ]},
+  {id:'static',icon:'&#9889;',kleur:'#facc15',vraag:'Static charger instelling',omschrijving:'Instelling van de static charger',problemen:[
+    {titel:'Folie plakt aan de rollen',oorzaken:['Te veel statische lading'],oplossingen:['Static uitschakelen of verlagen','Ionisatie balk controleren']},
+    {titel:'Rol vormt niet goed',oorzaken:['PE/PP slecht geleidend','Droge omgeving'],oplossingen:['Einde van de rol: End of roll','Slappe folie: Always on','Static charger reinigen']}
+  ]}
+];
+
+function renderFlow(){
+  var el=document.getElementById('flow-content');
+  var html='<div style="font-size:11px;color:#6b7280;margin-bottom:16px;line-height:1.7;">Kies een probleemstelling.</div>';
+  for(var i=0;i<PROBLEEMGROEPEN.length;i++){
+    var g=PROBLEEMGROEPEN[i];
+    html+='<div class="flow-step" id="fs-'+i+'"><div class="flow-step-hdr" onclick="toggleFlowStep('+i+')"><div class="flow-step-num" style="background:'+g.kleur+';font-size:20px;">'+g.icon+'</div><div class="flow-step-info"><div class="flow-step-naam">'+g.vraag+'</div><div class="flow-step-desc">'+g.omschrijving+'</div></div><span class="flow-step-chev" id="fsc-'+i+'">&#8250;</span></div><div class="flow-body" id="fb-'+i+'">';
+    for(var p=0;p<g.problemen.length;p++){
+      var pr=g.problemen[p];var pid='fp-'+i+'-'+p;
+      html+='<div class="flow-prob"><div class="flow-prob-titel" onclick="toggleFlowProb(\''+pid+'\')"><span>'+pr.titel+'</span><span style="color:#9ca3af;font-size:16px;">&#8250;</span></div><div class="flow-prob-body" id="'+pid+'">';
+      html+='<div class="flow-check-lbl" style="color:#facc15;">Oorzaak</div><ul class="flow-items">';
+      for(var oi=0;oi<pr.oorzaken.length;oi++)html+='<li style="border-color:rgba(250,204,21,.2);"><span style="color:#facc15;">&#9656;</span>'+pr.oorzaken[oi]+'</li>';
+      html+='</ul><div class="flow-check-lbl" style="color:#34d399;margin-top:12px;">Oplossing</div><ul class="flow-items">';
+      for(var ci2=0;ci2<pr.oplossingen.length;ci2++)html+='<li style="border-color:rgba(52,211,153,.2);"><span style="color:#34d399;">&#10003;</span>'+pr.oplossingen[ci2]+'</li>';
+      html+='</ul></div></div>';
+    }
+    html+='</div></div>';
+    if(i<PROBLEEMGROEPEN.length-1)html+='<div style="text-align:center;color:#1a2540;font-size:16px;margin:4px 0;">&#9135;</div>';
+  }
+  el.innerHTML=html;
+}
+function toggleFlowStep(i){var body=document.getElementById('fb-'+i);var chev=document.getElementById('fsc-'+i);var open=body.classList.contains('open');body.classList.toggle('open',!open);chev.style.transform=open?'':'rotate(90deg)';chev.style.color=open?'#6b7280':'#f59e0b';}
+function toggleFlowProb(id){document.getElementById(id).classList.toggle('open');}
+
+function checkVoorUpdate(){
+  fetch('./version.json?t='+Date.now()).then(function(r){return r.json();}).then(function(data){
+    if(data && data.version && data.version!==APP_VERSION){
+      if('caches'in window)caches.keys().then(function(names){names.forEach(function(name){caches.delete(name);});});
+      setTimeout(function(){window.location.reload(true);},500);
+    }
+  }).catch(function(){});
+}
+checkVoorUpdate();
+setInterval(checkVoorUpdate,5*60*1000);
+window.addEventListener('unhandledrejection',function(e){e.preventDefault();});
+
+var _invulEl=null,_invulWaarde='';
+var INVUL_CONFIG={
+  'f-koker':{label:'Koker diameter (mm)',snel:[76,90,100,150,200]},
+  'f-breedte':{label:'Breedte (mm)',snel:[200,300,400,470,500,600,800,1000,1200,1600]},
+  'f-lengte':{label:'Lengte (mm)',snel:[300,400,500,600,800,1000,1200,1500,2000,3000]},
+  'f-dikte':{label:'Dikte (mm)',snel:[0.015,0.02,0.025,0.03,0.04,0.05,0.06,0.08,0.1]},
+  'f-seal':{label:'Sealtijd (ms)',snel:[50,75,100,150,200,500]},
+  'f-snelheid':{label:'Snelheid (m/min)',snel:[80,100,130,150,180,200]},
+  'f-zakrol':{label:'Zakken/rol',snel:[100,150,200,250,500,1000]},
+  'f-temp-boven':{label:'Temperatuur Boven (\u00b0C)',snel:[140,145,150,155,160,165,170,180,190,200]},
+  'f-temp-onder':{label:'Temperatuur Onder (\u00b0C)',snel:[140,145,150,155,160,165,170,180,190,200]},
+  'f-offset1':{label:'Werkelijke Offset 1',snel:[]},
+  'f-static-mat':{label:'Material to be charged (mm)',snel:[10000,20000,30000,40000]},
+  'f-order-stuks':{label:'Te leveren (stuks)',snel:[1000,2000,5000,10000,20000,50000]},
+  'f-order-rpp':{label:'Rollen per pallet (klant) -- 0=auto',snel:[0,4,6,8,10,12,15,20,24]},
+  'f-werk-rpp':{label:'Werkelijk rollen per pallet -- 0=wissen',snel:[0,4,6,8,10,12,15,20,24,28,36]},
+  'f-werk-huidje':{label:'Werkelijke huidje lengte (mm)',snel:[700,750,800,850,900,950,1000,1050,1100,1150,1200,1250,1300]},
+  'f-order-zakrol':{label:'Zakken op rol',snel:[100,150,200,250,500,750,1000]},
+  'f-huidje':{label:'Huidjes lengte (mm)',snel:[500,800,1000,1200,1500]},
+  'f-gew100m':{label:'Gewicht per 100 meter (kg)',snel:[1,2,3,5,8,10,15,20]}
+};
+
+function openInvul(el){
+  _invulEl=el;_invulWaarde=el.value?String(el.value):'';
+  var cfg=INVUL_CONFIG[el.id]||{label:el.id,snel:[]};
+  document.getElementById('invul-label').textContent=cfg.label;
+  var disp=document.getElementById('invul-waarde');disp.className='invul-waarde';
+  if(el.classList.contains('veld-benadering'))disp.classList.add('blauw');
+  else if(el.classList.contains('veld-definitief'))disp.classList.add('groen');
+  else disp.classList.add('geel');
+  disp.textContent=_invulWaarde||'0';
+  var snelHtml='';if(cfg.snel&&cfg.snel.length){cfg.snel.forEach(function(v){snelHtml+='<div class="invul-snel-btn" onclick="invulSnel('+v+')">'+v+'</div>';});}
+  document.getElementById('invul-snel').innerHTML=snelHtml;
+  document.getElementById('invul-overlay').style.display='flex';
+}
+function invulSluit(){document.getElementById('invul-overlay').style.display='none';_invulEl=null;_invulWaarde='';}
+function invulCijfer(c){
+  var mode=document.getElementById('invul-overlay').getAttribute('data-mode');
+  if(mode==='pc'||mode==='calc'){
+    if(c==='.'&&_invulPcWaarde.indexOf('.')>=0)return;
+    if(_invulPcWaarde==='0'&&c!=='.')_invulPcWaarde=c;else _invulPcWaarde+=c;
+    document.getElementById('invul-waarde').textContent=_invulPcWaarde;
+  } else {
+    if(c==='.'&&_invulWaarde.indexOf('.')>=0)return;if(_invulWaarde==='0'&&c!=='.')_invulWaarde=c;else _invulWaarde+=c;document.getElementById('invul-waarde').textContent=_invulWaarde;
+  }
+}
+function invulWis(){
+  var mode=document.getElementById('invul-overlay').getAttribute('data-mode');
+  if(mode==='pc'||mode==='calc'){_invulPcWaarde=_invulPcWaarde.slice(0,-1);document.getElementById('invul-waarde').textContent=_invulPcWaarde||'0';}
+  else{_invulWaarde=_invulWaarde.slice(0,-1);document.getElementById('invul-waarde').textContent=_invulWaarde||'0';}
+}
+function invulSnel(val){_invulWaarde=String(val);document.getElementById('invul-waarde').textContent=_invulWaarde;}
+function invulOk(){
+  if(!_invulEl||!_invulWaarde){invulSluit();return;}
+  var resetVelden=['f-order-rpp','f-werk-rpp','f-werk-huidje','f-huidje','f-gew100m'];
+  if(resetVelden.indexOf(_invulEl.id)>=0&&(!_invulWaarde||parseFloat(_invulWaarde)<=0)){
+    _invulEl.value='';_invulEl.classList.remove('veld-definitief','veld-benadering');_invulEl.classList.add('veld-leeg');
+    if(_invulEl.id==='f-huidje')_invulEl.placeholder='automatisch';
+    if(_invulEl.id==='f-gew100m')_invulEl.placeholder='auto';
+    invulSluit();try{berekenOrder();}catch(e){}return;
+  }
+  _invulEl.value=_invulWaarde;_invulEl.classList.remove('veld-benadering','veld-leeg');_invulEl.classList.add('veld-definitief');_invulEl.readOnly=true;
+  if(_invulEl.id==='f-temp-boven'||_invulEl.id==='f-temp-onder'){_invulEl.style.borderBottom='2px solid #34d399';_invulEl.style.color='#6ee7b7';}
+  if(_invulEl.id==='f-offset1'){var v=parseFloat(_invulWaarde);var toon=document.getElementById('f-offset2-toon');if(toon&&v>0){toon.style.display='block';toon.textContent='Offset 2 (automatisch): '+Math.round(v/2);}}
+  invulSluit();
+  if(_invulEl.id==='f-order-zakrol'){var fzr=document.getElementById('f-zakrol');if(fzr)fzr.value=_invulWaarde;herbereken();}
+  if(['f-breedte','f-lengte','f-dikte','f-koker','f-zakrol'].indexOf(_invulEl.id)>=0)herbereken();
+  try{berekenOrder();}catch(e){}
+}
+
+var _invulPcEl=null,_invulPcWaarde='';
+function openInvulCalc(el,label,snel){
+  _invulPcEl=el;_invulPcWaarde=el.value?String(el.value):'';
+  document.getElementById('invul-label').textContent=label;
+  var disp=document.getElementById('invul-waarde');disp.className='invul-waarde';
+  disp.classList.add(el.classList.contains('veld-definitief')?'groen':'geel');
+  disp.textContent=_invulPcWaarde||'0';
+  var snelHtml='';
+  if(snel&&snel.length){snel.forEach(function(v){snelHtml+='<div class="invul-snel-btn" onclick="invulPcSnel('+v+')">'+v+'</div>';});}
+  document.getElementById('invul-snel').innerHTML=snelHtml;
+  document.getElementById('invul-overlay').style.display='flex';
+  document.getElementById('invul-overlay').setAttribute('data-mode','calc');
+}
+function invulPcSnel(val){
+  var mode=document.getElementById('invul-overlay').getAttribute('data-mode');
+  if(mode==='pc'||mode==='calc'){_invulPcWaarde=String(val);document.getElementById('invul-waarde').textContent=_invulPcWaarde;}
+  else{invulSnel(val);}
+}
+function invulOkOverride(){
+  var mode=document.getElementById('invul-overlay').getAttribute('data-mode');
+  if((mode==='pc'||mode==='calc')&&_invulPcEl){
+    var waarde=document.getElementById('invul-waarde').textContent;
+    if(!waarde||waarde==='0'){invulSluit();return;}
+    _invulPcEl.value=waarde;_invulPcEl.classList.remove('veld-leeg','veld-benadering');_invulPcEl.classList.add('veld-definitief');_invulPcEl.readOnly=true;
+    document.getElementById('invul-overlay').removeAttribute('data-mode');
+    invulSluit();
+    if(mode==='calc')calcUpdate();
+    _invulPcEl=null;_invulPcWaarde='';
+  } else {
+    invulOk();
+  }
+}
+
+function resetVeld(id){
+  var el=document.getElementById(id);if(!el)return;
+  el.value='';el.classList.remove('veld-definitief','veld-benadering');el.classList.add('veld-leeg');
+  if(id==='f-gew100m')el.placeholder='auto';
+  if(id==='f-huidje')el.placeholder='automatisch';
+  if(id==='f-order-rpp')el.placeholder='auto';
+  try{berekenOrder();}catch(e){}
+}
+
+checkLogin();
 </script>
 </body>
 </html>
