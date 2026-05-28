@@ -631,7 +631,7 @@ function vulFormulierIn(obj,status){
   setV('f-breedte',obj.breedte,'Breedte');
   setV('f-lengte',obj.lengte,'Lengte');
   setV('f-dikte',obj.dikte,'Dikte');
-  setV('f-zakrol',obj.zakrol,'Zakken/rol');
+  setV('f-order-zakrol',obj.zakrol,'Zakken/rol');
   setV('f-order-stuks',obj.order_stuks,'Stuks');
   setV('f-huidje',obj.order_huidje,'Huidje');
   setV('f-temp-boven',obj.temp_boven,'Temp↑');
@@ -655,7 +655,10 @@ function vulFormulierIn(obj,status){
     gevuld.push('Pallet');
   }
   if(obj.order_maxhoogte==='1'||obj.order_maxhoogte===1){
-    var mh=document.getElementById('f-maxhoogte');if(mh){mh.value='1';gevuld.push('Hoogte');}
+    var icon=document.getElementById('maxhoogte-icon');
+    var isAan=icon&&icon.textContent==='☑';
+    if(!isAan){var btn=document.getElementById('btn-maxhoogte');if(btn)btn.click();}
+    gevuld.push('Hoogte 1200mm');
   }
   try{berekenOrder();}catch(e){}
   status.innerHTML='<div style="background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.3);border-radius:6px;padding:12px;">'
@@ -665,7 +668,7 @@ function vulFormulierIn(obj,status){
     +'</div>';
 }
 
-var APP_VERSION = '20.2';
+var APP_VERSION = '20.3';
 
 // Hardcoded fallback
 var OPERATORS_FALLBACK = {
