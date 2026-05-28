@@ -587,7 +587,7 @@ function verwerkFoto(input){
         max_tokens:1000,
         messages:[{role:'user',content:[
           {type:'image',source:{type:'base64',media_type:mediaType,data:base64}},
-          {type:'text',text:'Lees deze orderbon zorgvuldig en geef de gegevens terug als JSON. Regels:\n1. klantnr: Het grote getal LINKSBOVEN (bijv 573 of 0118). Nooit het artikelnr van de klant. Als het 3 cijfers heeft zet er een 0 voor (573 wordt 0573). Als het 4 cijfers heeft laat zo.\n2. klantnaam: De plaatsnaam naast het klantnummer (bijv Haaksbergen, Dokkum).\n3. breedte: Zakbreedte in mm. Staat in Seal/Snijformaat of Omschrijving. Converteer cm naar mm (65cm = 650mm).\n4. lengte: Zaklengte in mm. Zelfde bron. Converteer cm naar mm (200cm = 2000mm).\n5. dikte: Foliedikte in mm als decimaal (0,04 = 0.04).\n6. materiaal: ldpe of mdpe of recycle. Staat in Omschrijving.\n7. zakrol: Zakken per rol. Staat als "225 st" of "a/rol 225 stuks" of in Seal/Snijformaat tussen haakjes bijv (225 st.). Nooit leeg laten als het er staat.\n8. order_stuks: Totaal te leveren stuks. "Te leveren" regel: vermenigvuldig de getallen (8,50 x 1.000 = 8500). Geef altijd het totaal als geheel getal.\n9. order_pallet: Staat als "EUROPALLET" of "BLOKPALLET" of "Euro formaat". Geef euro of blok terug.\n10. order_maxhoogte: Geef 1 als max pallethoogte 120cm of 1200mm staat, anders leeg.\n11. order_huidje: Huidjelengte in mm. Staat als "huidjes 130 cm" = 1300.\n12. temp_boven: Bovenste sealtemperatuur als vermeld.\n13. temp_onder: Onderste sealtemperatuur als vermeld.\nGeef ALLEEN de JSON terug, geen uitleg.'}
+          {type:'text',text:'Lees deze orderbon zorgvuldig en geef de gegevens terug als JSON. Regels:\n1. klantnr: Het grote getal LINKSBOVEN (bijv 573 of 0118). Nooit het artikelnr van de klant. Als het 3 cijfers heeft zet er een 0 voor (573 wordt 0573). Als het 4 cijfers heeft laat zo.\n2. klantnaam: De plaatsnaam naast het klantnummer (bijv Haaksbergen, Dokkum).\n3. breedte: Zakbreedte in mm. Staat in Seal/Snijformaat of Omschrijving. Converteer cm naar mm (65cm = 650mm).\n4. lengte: Zaklengte in mm. Zelfde bron. Converteer cm naar mm (200cm = 2000mm).\n5. dikte: Foliedikte in mm als decimaal (0,04 = 0.04).\n6. materiaal: ldpe of mdpe of recycle. Staat in Omschrijving.\n7. zakrol: Zakken per rol. Zoek op: "ZAKKEN GEPERF. a/rol X STUKS", "a/rol X stuks", "(X st.)" rechtsboven of in Seal/Snijformaat. Nooit leeg laten als het er staat.\n8. order_stuks: Totaal te leveren stuks. "Te leveren" regel: vermenigvuldig de getallen (8,50 x 1.000 = 8500). Geef altijd het totaal als geheel getal.\n9. order_pallet: Staat als "EUROPALLET" of "BLOKPALLET" of "Euro formaat". Geef euro of blok terug.\n10. order_maxhoogte: Geef 1 als tekst bevat "PALLETHOOGTE: MAX. 120 cm" of "MAX 120 cm" of "1200mm", anders leeg.\n11. order_huidje: Huidjelengte in mm. Staat als "huidjes 130 cm" = 1300.\n12. temp_boven: Bovenste sealtemperatuur als vermeld.\n13. temp_onder: Onderste sealtemperatuur als vermeld.\nGeef ALLEEN de JSON terug, geen uitleg.'}
         ]}]
       })
     })
@@ -665,7 +665,7 @@ function vulFormulierIn(obj,status){
     +'</div>';
 }
 
-var APP_VERSION = '20.1';
+var APP_VERSION = '20.2';
 
 // Hardcoded fallback
 var OPERATORS_FALLBACK = {
