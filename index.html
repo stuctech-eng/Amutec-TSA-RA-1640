@@ -264,16 +264,10 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
     <div style="background:#0f1520;border:1px solid #1a2540;border-top:2px solid #34d399;border-radius:4px;padding:14px 16px;margin-bottom:12px;">
       <div style="font-size:10px;color:#34d399;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;">&#128247; Order Importeren</div>
       <div style="font-size:12px;color:#6b7280;margin-bottom:12px;">Foto van orderbon → velden automatisch invullen</div>
-      <input type="file" id="foto-input" accept="image/*" style="display:none;" onchange="verwerkFoto(this)">
       <input type="file" id="foto-input-lib" accept="image/*" style="display:none;" onchange="verwerkFoto(this)">
-      <div style="display:flex;gap:8px;">
-        <button onclick="document.getElementById('foto-input').setAttribute('capture','environment');document.getElementById('foto-input').click()" style="flex:1;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.4);border-radius:6px;color:#34d399;font-family:'Courier New',Courier,monospace;font-size:14px;font-weight:700;padding:14px;cursor:pointer;">
-          &#128247; Camera
-        </button>
-        <button onclick="document.getElementById('foto-input-lib').removeAttribute('capture');document.getElementById('foto-input-lib').click()" style="flex:1;background:rgba(96,165,250,0.1);border:1px solid rgba(96,165,250,0.4);border-radius:6px;color:#60a5fa;font-family:'Courier New',Courier,monospace;font-size:14px;font-weight:700;padding:14px;cursor:pointer;">
-          &#128444; Bibliotheek
-        </button>
-      </div>
+      <label for="foto-input-lib" style="width:100%;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.4);border-radius:6px;color:#34d399;font-family:'Courier New',Courier,monospace;font-size:15px;font-weight:700;padding:14px;cursor:pointer;text-align:center;display:block;letter-spacing:1px;">
+        &#128247; FOTO MAKEN / KIEZEN
+      </label>
       <div id="foto-status" style="display:none;margin-top:10px;"></div>
     </div>
 
@@ -655,7 +649,7 @@ function vulFormulierIn(obj,status){
     +'</div>';
 }
 
-var APP_VERSION = '19.5';
+var APP_VERSION = '19.7';
 
 // Hardcoded fallback
 var OPERATORS_FALLBACK = {
