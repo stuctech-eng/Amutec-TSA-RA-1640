@@ -656,7 +656,7 @@ function vulFormulierIn(obj,status){
   }
   if(obj.order_maxhoogte==='1'||obj.order_maxhoogte===1){
     var icon=document.getElementById('maxhoogte-icon');
-    var isAan=icon&&icon.textContent==='☑';
+    var isAan=icon&&(icon.textContent==='☑'||icon.innerHTML.indexOf('9745')>=0);
     if(!isAan){var btn=document.getElementById('btn-maxhoogte');if(btn)btn.click();}
     gevuld.push('Hoogte 1200mm');
   }
@@ -668,7 +668,7 @@ function vulFormulierIn(obj,status){
     +'</div>';
 }
 
-var APP_VERSION = '20.3';
+var APP_VERSION = '20.4';
 
 // Hardcoded fallback
 var OPERATORS_FALLBACK = {
@@ -1067,8 +1067,8 @@ function toggleMaxHoogte(){
   _maxHoogte=!_maxHoogte;
   var btn=document.getElementById('btn-maxhoogte');var icon=document.getElementById('maxhoogte-icon');
   if(!btn||!icon)return;
-  if(_maxHoogte){btn.style.borderColor='#f59e0b';btn.style.background='rgba(245,158,11,0.08)';btn.style.color='#fcd34d';icon.textContent='&#9745;';}
-  else{btn.style.borderColor='#1a2540';btn.style.background='#141d2e';btn.style.color='#9ca3af';icon.textContent='&#9744;';}
+  if(_maxHoogte){btn.style.borderColor='#f59e0b';btn.style.background='rgba(245,158,11,0.08)';btn.style.color='#fcd34d';icon.innerHTML='&#9745;';}
+  else{btn.style.borderColor='#1a2540';btn.style.background='#141d2e';btn.style.color='#9ca3af';icon.innerHTML='&#9744;';}
   try{berekenOrder();}catch(e){}
 }
 
