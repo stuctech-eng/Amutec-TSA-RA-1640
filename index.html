@@ -581,19 +581,25 @@ function verwerkFoto(input){
         ]}]
       })
     })
-    .then(function(r){return r.json();})
-    .then(function(data){
-      if(data.error){status.innerHTML='<div style="color:#ef4444;font-size:13px;padding:10px;">API Fout: '+JSON.stringify(data.error)+'</div>';return;}
-      var tekst=data.content&&data.content[0]&&data.content[0].text;
-      if(!tekst){status.innerHTML='<div style="color:#ef4444;font-size:13px;padding:10px;">Geen resultaat</div>';return;}
+    .then(function(r){
+      var s=r.status;
+      return r.text().then(function(t){return {s:s,t:t};});
+    })
+    .then(function(res){
+      status.innerHTML='<div style="color:#fcd34d;font-size:11px;padding:8px;word-break:break-all;">HTTP '+res.s+'<br>'+res.t.substring(0,300)+'</div>';
+      if(res.s!==200){return;}
       try{
+        var data=JSON.parse(res.t);
+        if(data.error){status.innerHTML='<div style="color:#ef4444;font-size:12px;padding:10px;">'+JSON.stringify(data.error)+'</div>';return;}
+        var tekst=data.content&&data.content[0]&&data.content[0].text;
+        if(!tekst){status.innerHTML='<div style="color:#ef4444;font-size:12px;padding:10px;">Geen tekst in response</div>';return;}
         var clean=tekst.replace(/```json|```/g,'').trim();
         var obj=JSON.parse(clean);
         vulFormulierIn(obj,status);
-      }catch(e){status.innerHTML='<div style="color:#ef4444;font-size:13px;padding:10px;">Kon data niet verwerken</div>';}
+      }catch(e){status.innerHTML='<div style="color:#ef4444;font-size:12px;padding:10px;">Parse fout: '+e.toString()+'</div>';}
     })
     .catch(function(err){
-      status.innerHTML='<div style="color:#ef4444;font-size:13px;padding:10px;">Fout: '+err.toString()+'</div>';
+      status.innerHTML='<div style="color:#ef4444;font-size:12px;padding:10px;">Fetch fout: '+err.toString()+'</div>';
     });
   };
   reader.readAsDataURL(file);
@@ -649,7 +655,7 @@ function vulFormulierIn(obj,status){
     +'</div>';
 }
 
-var APP_VERSION = '19.8';
+var APP_VERSION = '19.9';
 
 // Hardcoded fallback
 var OPERATORS_FALLBACK = {
