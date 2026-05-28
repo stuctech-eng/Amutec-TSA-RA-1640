@@ -15,5 +15,10 @@
       "src": "/(.*)",
       "dest": "/$1"
     }
-  ]
+  ],
+  "functions": {
+    "api/claude.js": {
+      "maxDuration": 30
+    }
+  }
 }

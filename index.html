@@ -565,10 +565,20 @@ function verwerkFoto(input){
   var status=document.getElementById('foto-status');
   status.style.display='block';
   status.innerHTML='<div style="color:#fcd34d;font-size:13px;text-align:center;padding:10px;">&#9203; Analyseren...</div>';
-  var reader=new FileReader();
-  reader.onload=function(e){
-    var base64=e.target.result.split(',')[1];
-    var mediaType=file.type||'image/jpeg';
+  // Verklein foto voor versturen
+  var img=new Image();
+  var objectUrl=URL.createObjectURL(file);
+  img.onload=function(){
+    URL.revokeObjectURL(objectUrl);
+    var canvas=document.createElement('canvas');
+    var maxW=1200,maxH=1600;
+    var w=img.width,h=img.height;
+    if(w>maxW){h=Math.round(h*maxW/w);w=maxW;}
+    if(h>maxH){w=Math.round(w*maxH/h);h=maxH;}
+    canvas.width=w;canvas.height=h;
+    canvas.getContext('2d').drawImage(img,0,0,w,h);
+    var base64=canvas.toDataURL('image/jpeg',0.85).split(',')[1];
+    var mediaType='image/jpeg';
     fetch('/api/claude',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
@@ -602,7 +612,7 @@ function verwerkFoto(input){
       status.innerHTML='<div style="color:#ef4444;font-size:12px;padding:10px;">Fetch fout: '+err.toString()+'</div>';
     });
   };
-  reader.readAsDataURL(file);
+  img.src=objectUrl;
 }
 
 function vulFormulierIn(obj,status){
@@ -655,7 +665,7 @@ function vulFormulierIn(obj,status){
     +'</div>';
 }
 
-var APP_VERSION = '19.9';
+var APP_VERSION = '20.0';
 
 // Hardcoded fallback
 var OPERATORS_FALLBACK = {
