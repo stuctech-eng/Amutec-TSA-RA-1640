@@ -383,9 +383,11 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
           <label>Koker dia (mm)</label>
           <input id="f-koker" type="number" placeholder="90" value="90" class="veld-definitief" onclick="openInvul(this)" readonly inputmode="none" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;cursor:pointer;">
         </div>
-        <div>
+        <div class="field">
           <label>Invouw (mm) <span style="color:#6b7280;font-size:9px;">optioneel</span></label>
           <input id="f-invouw" type="number" placeholder="0" class="veld-leeg" onclick="openInvul(this)" readonly inputmode="none" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;cursor:pointer;">
+        </div>
+      </div>
       <div style="margin-top:12px;display:flex;flex-direction:column;gap:10px;">
         <div class="field"><label>Sealtijd (ms)</label>
           <input id="f-seal" type="number" placeholder="750" onclick="openInvul(this)" readonly style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;cursor:pointer;">
@@ -675,7 +677,7 @@ function vulFormulierIn(obj,status){
     +'</div>';
 }
 
-var APP_VERSION = '20.6';
+var APP_VERSION = '20.7';
 
 // Hardcoded fallback
 var OPERATORS_FALLBACK = {
