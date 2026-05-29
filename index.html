@@ -685,7 +685,7 @@ function vulFormulierIn(obj,status){
     +'</div>';
 }
 
-var APP_VERSION = '20.8';
+var APP_VERSION = '20.9';
 
 // Hardcoded fallback
 var OPERATORS_FALLBACK = {
@@ -1065,6 +1065,7 @@ function herbereken(){
   var l=parseFloat(document.getElementById('f-lengte').value);
   var d=parseFloat(document.getElementById('f-dikte').value);
   if(!mat||!l||!d) return;
+  toast('&#128309; Benadering berekend');
   var kokerEl=document.getElementById('f-koker');
   if(kokerEl&&!kokerEl.value)kokerEl.value=90;
   var sealtijd=Math.round(d*5000*mat.st);
