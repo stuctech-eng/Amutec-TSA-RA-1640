@@ -687,7 +687,7 @@ function vulFormulierIn(obj,status){
     +'</div>';
 }
 
-var APP_VERSION = '21.0';
+var APP_VERSION = '21.1';
 
 // Hardcoded fallback
 var OPERATORS_FALLBACK = {
@@ -1029,11 +1029,61 @@ function berekenOffset2(o1){return o1?o1-200:0;}
 
 function laadLeerdataOffset(){
   fbLoad('/recepten',function(lijst){
-    var ld=[];
-    for(var i=0;i<lijst.length;i++){var r=lijst[i];if(r.lengte&&r.offset1_werke&&parseFloat(r.offset1_werke)>0)ld.push({lengte:parseFloat(r.lengte),offset:parseFloat(r.offset1_werke)});}
-    window._leerdataOffset=ld;
-    var ci=document.getElementById('c-lengte'); if(ci&&ci.value)calcUpdate();
+    var ldOffset=[], ldSeal=[], ldTemp=[], ldSnelheid=[];
+    for(var i=0;i<lijst.length;i++){
+      var r=lijst[i];
+      var mat=r.materiaal||'ldpe';
+      var lengte=parseFloat(r.lengte)||0;
+      var dikte=parseFloat(r.dikte)||0;
+      // Offset leerdata
+      if(lengte&&r.offset1_werke&&parseFloat(r.offset1_werke)>0){
+        ldOffset.push({lengte:lengte,offset:parseFloat(r.offset1_werke)});
+      }
+      // Seal leerdata - alleen als handmatig ingevuld (niet benadering)
+      if(mat&&dikte&&lengte&&r.seal&&parseFloat(r.seal)>0){
+        ldSeal.push({mat:mat,dikte:dikte,lengte:lengte,seal:parseFloat(r.seal)});
+      }
+      // Temperatuur leerdata
+      if(mat&&dikte&&r.temp_boven&&parseFloat(r.temp_boven)>0){
+        ldTemp.push({mat:mat,dikte:dikte,lengte:lengte,temp_b:parseFloat(r.temp_boven),temp_o:parseFloat(r.temp_onder)||parseFloat(r.temp_boven)});
+      }
+      // Snelheid leerdata
+      if(mat&&r.snelheid&&parseFloat(r.snelheid)>0){
+        ldSnelheid.push({mat:mat,dikte:dikte,snelheid:parseFloat(r.snelheid)});
+      }
+    }
+    window._leerdataOffset=ldOffset;
+    window._leerdataSeal=ldSeal;
+    window._leerdataTemp=ldTemp;
+    window._leerdataSnelheid=ldSnelheid;
+    var ci=document.getElementById('c-lengte');if(ci&&ci.value)calcUpdate();
   });
+}
+
+function berekenLeerdata(dataset, mat, dikte, lengte){
+  if(!dataset||!dataset.length) return null;
+  // Filter op materiaal
+  var gefilterd=dataset.filter(function(d){return d.mat===mat;});
+  if(!gefilterd.length) return null;
+  // Gewogen gemiddelde op basis van dikte en lengte afwijking
+  var gSomB=0,gSomO=0,gSomSeal=0,gSomSnel=0,gTot=0;
+  for(var i=0;i<gefilterd.length;i++){
+    var d=gefilterd[i];
+    var afwDikte=Math.abs((d.dikte||0)-dikte)+0.001;
+    var afwLengte=Math.abs((d.lengte||0)-lengte)+1;
+    var gew=1/(afwDikte*100+afwLengte*0.001);
+    if(d.temp_b) gSomB+=d.temp_b*gew;
+    if(d.temp_o) gSomO+=d.temp_o*gew;
+    if(d.seal)   gSomSeal+=d.seal*gew;
+    if(d.snelheid) gSomSnel+=d.snelheid*gew;
+    gTot+=gew;
+  }
+  return {
+    temp_b: gTot>0?Math.round(gSomB/gTot/5)*5:null,
+    temp_o: gTot>0?Math.round(gSomO/gTot/5)*5:null,
+    seal:   gTot>0?Math.round(gSomSeal/gTot/10)*10:null,
+    snelheid: gTot>0?Math.round(gSomSnel/gTot/5)*5:null
+  };
 }
 
 function calcUpdate(){
@@ -1069,16 +1119,27 @@ function herbereken(){
   if(!mat||!l||!d) return;
   var kokerEl=document.getElementById('f-koker');
   if(kokerEl&&!kokerEl.value)kokerEl.value=90;
-  var sealtijd=Math.round(d*5000*mat.st);
-  var snelheid=Math.round(200*mat.sv);
-  var offset1=berekenOffset(l);
+  var lengte=parseFloat(document.getElementById('f-lengte').value)||0;
+
+  // Probeer leerdata voor seal/temp/snelheid
+  var leerResultaat=null;
+  if(window._leerdataTemp&&window._leerdataTemp.length){
+    leerResultaat=berekenLeerdata(window._leerdataTemp,selectedMat,d,lengte);
+  }
+
+  var sealtijd = leerResultaat&&leerResultaat.seal ? leerResultaat.seal : Math.round(d*5000*mat.st);
+  var snelheid = leerResultaat&&leerResultaat.snelheid ? leerResultaat.snelheid : Math.round(200*mat.sv);
+  var tempB    = leerResultaat&&leerResultaat.temp_b ? leerResultaat.temp_b : mat.temp_b;
+  var tempO    = leerResultaat&&leerResultaat.temp_o ? leerResultaat.temp_o : mat.temp_o;
+  var offset1=berekenOffset(lengte);
   setBerekend('f-seal',sealtijd);
   setBerekend('f-snelheid',snelheid);
-  setBerekend('f-temp-boven',mat.temp_b);
-  setBerekend('f-temp-onder',mat.temp_o);
+  setBerekend('f-temp-boven',tempB);
+  setBerekend('f-temp-onder',tempO);
   if(!document.getElementById('f-offset1').value)setBerekend('f-offset1',offset1);
   var infoEl=document.getElementById('mat-info-temp');
-  if(infoEl){infoEl.style.display='block';infoEl.textContent=mat.label+' - aanbevolen: '+(mat.temp_b-8)+'°C - '+(mat.temp_b+8)+'°C'+(mat.recycle?' - Recycle: hogere temp':'');}
+  var leerInfo=leerResultaat&&leerResultaat.temp_b?' (leerdata)':' (standaard)';
+  if(infoEl){infoEl.style.display='block';infoEl.textContent=mat.label+' - aanbevolen: '+(mat.temp_b-8)+'°C - '+(mat.temp_b+8)+'°C'+leerInfo+(mat.recycle?' - Recycle: hogere temp':'');}
   try{berekenOrder();}catch(e){}
 }
 
