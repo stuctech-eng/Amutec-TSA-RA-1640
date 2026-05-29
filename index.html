@@ -383,7 +383,9 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
           <label>Koker dia (mm)</label>
           <input id="f-koker" type="number" placeholder="90" value="90" class="veld-definitief" onclick="openInvul(this)" readonly inputmode="none" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;cursor:pointer;">
         </div>
-      </div>
+        <div>
+          <label>Invouw (mm) <span style="color:#6b7280;font-size:9px;">optioneel</span></label>
+          <input id="f-invouw" type="number" placeholder="0" class="veld-leeg" onclick="openInvul(this)" readonly inputmode="none" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;cursor:pointer;">
       <div style="margin-top:12px;display:flex;flex-direction:column;gap:10px;">
         <div class="field"><label>Sealtijd (ms)</label>
           <input id="f-seal" type="number" placeholder="750" onclick="openInvul(this)" readonly style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;cursor:pointer;">
@@ -587,7 +589,7 @@ function verwerkFoto(input){
         max_tokens:1000,
         messages:[{role:'user',content:[
           {type:'image',source:{type:'base64',media_type:mediaType,data:base64}},
-          {type:'text',text:'Lees deze orderbon zorgvuldig en geef de gegevens terug als JSON. Regels:\n1. klantnr: Het grote getal LINKSBOVEN (bijv 573 of 0118). Nooit het artikelnr van de klant. Als het 3 cijfers heeft zet er een 0 voor (573 wordt 0573). Als het 4 cijfers heeft laat zo.\n2. klantnaam: De plaatsnaam naast het klantnummer (bijv Haaksbergen, Dokkum).\n3. breedte: Zakbreedte in mm. Staat in Seal/Snijformaat of Omschrijving. Converteer cm naar mm (65cm = 650mm).\n4. lengte: Zaklengte in mm. Zelfde bron. Converteer cm naar mm (200cm = 2000mm).\n5. dikte: Foliedikte in mm als decimaal (0,04 = 0.04).\n6. materiaal: ldpe of mdpe of recycle. Staat in Omschrijving.\n7. zakrol: Zakken per rol. Zoek op: "ZAKKEN GEPERF. a/rol X STUKS", "a/rol X stuks", "(X st.)" rechtsboven of in Seal/Snijformaat. Nooit leeg laten als het er staat.\n8. order_stuks: Totaal te leveren stuks. "Te leveren" regel: vermenigvuldig de getallen (8,50 x 1.000 = 8500). Geef altijd het totaal als geheel getal.\n9. order_pallet: Staat als "EUROPALLET" of "BLOKPALLET" of "Euro formaat". Geef euro of blok terug.\n10. order_maxhoogte: Geef 1 als tekst bevat "PALLETHOOGTE: MAX. 120 cm" of "MAX 120 cm" of "1200mm", anders leeg.\n11. order_huidje: Huidjelengte in mm. Staat als "huidjes 130 cm" = 1300.\n12. temp_boven: Bovenste sealtemperatuur als vermeld.\n13. temp_onder: Onderste sealtemperatuur als vermeld.\nGeef ALLEEN de JSON terug, geen uitleg.'}
+          {type:'text',text:'Lees deze orderbon zorgvuldig en geef de gegevens terug als JSON. Regels:\n1. klantnr: Het grote getal LINKSBOVEN (bijv 573 of 0118). Nooit het artikelnr van de klant. Als het 3 cijfers heeft zet er een 0 voor (573 wordt 0573). Als het 4 cijfers heeft laat zo.\n2. klantnaam: De plaatsnaam naast het klantnummer (bijv Haaksbergen, Dokkum).\n3. breedte: Zakbreedte in mm. Staat in Seal/Snijformaat of Omschrijving. Converteer cm naar mm (65cm = 650mm).\n4. lengte: Zaklengte in mm. Zelfde bron. Converteer cm naar mm (200cm = 2000mm).\n5. dikte: Foliedikte in mm als decimaal (0,04 = 0.04).\n6. materiaal: ldpe of mdpe of recycle. Staat in Omschrijving.\n7. zakrol: Zakken per rol. Zoek op: "ZAKKEN GEPERF. a/rol X STUKS", "a/rol X stuks", "(X st.)" rechtsboven of in Seal/Snijformaat. Nooit leeg laten als het er staat.\n8. order_stuks: Totaal te leveren stuks. "Te leveren" regel: vermenigvuldig de getallen (8,50 x 1.000 = 8500). Geef altijd het totaal als geheel getal.\n9. order_pallet: Staat als "EUROPALLET" of "BLOKPALLET" of "Euro formaat". Geef euro of blok terug.\n10. order_maxhoogte: Geef 1 als tekst bevat "PALLETHOOGTE: MAX. 120 cm" of "MAX 120 cm" of "1200mm", anders leeg.\n11. order_huidje: Huidjelengte in mm. Staat als "huidjes 130 cm" = 1300.\n12. temp_boven: Bovenste sealtemperatuur als vermeld.\n13. temp_onder: Onderste sealtemperatuur als vermeld.\n14. invouw: Als breedte als "61/26" staat is 26 de invouwmaat in CM. Zet om naar mm (26cm=260mm).\n15. gew100m: Gewicht per 100 meter op de bon als decimaal (4,87=4.87).\nGeef ALLEEN de JSON terug, geen uitleg.'}
         ]}]
       })
     })
@@ -636,6 +638,11 @@ function vulFormulierIn(obj,status){
   setV('f-huidje',obj.order_huidje,'Huidje');
   setV('f-temp-boven',obj.temp_boven,'Temp↑');
   setV('f-temp-onder',obj.temp_onder,'Temp↓');
+  setV('f-invouw',obj.invouw,'Invouw');
+  if(obj.gew100m){
+    var gEl=document.getElementById('f-gew100m');
+    if(gEl){gEl.value=obj.gew100m;gEl.classList.remove('veld-leeg');gEl.classList.add('veld-definitief');gevuld.push('Gewicht/100m');}
+  }
   if(obj.materiaal){
     var mat=document.getElementById('f-materiaal');
     if(mat){
@@ -668,7 +675,7 @@ function vulFormulierIn(obj,status){
     +'</div>';
 }
 
-var APP_VERSION = '20.4';
+var APP_VERSION = '20.6';
 
 // Hardcoded fallback
 var OPERATORS_FALLBACK = {
@@ -1106,16 +1113,19 @@ function berekenOrder(){
   if(!zakrol||!breedte||!lengte||!dikte){orderEl.style.display='none';return;}
   var aantalRollen=stuks>0?Math.ceil(stuks/zakrol):0;
   var sv=SOORTELIJK_GEWICHT[selectedMat]||920;
+  var invouw=parseFloat((document.getElementById('f-invouw')||{}).value)||0;
   var rolLengte=zakrol*lengte/1000;
   var gew100mEl=document.getElementById('f-gew100m');
   var gew100m=gew100mEl?parseFloat(gew100mEl.value):0;
   var gewichtPerRol;
+  var lagen=lagenPerProdtype(prodtype);
+  var effBreedte=invouw>0?(breedte/1000+2*invouw/1000):breedte/1000;
   if(gew100m>0){gewichtPerRol=Math.round(gew100m*rolLengte/100*10)/10;}
   else{
-    var vol=(breedte/1000)*rolLengte*(dikte/1000)*2;
+    var vol=effBreedte*rolLengte*(dikte/1000)*lagen;
     gewichtPerRol=Math.round(vol*sv*10)/10;
     if(gew100mEl&&!gew100mEl.classList.contains('veld-definitief')){
-      var auto100m=Math.round((breedte/1000)*(dikte/1000)*2*sv*100*10)/10;
+      var auto100m=Math.round(effBreedte*(dikte/1000)*lagen*sv*100*10)/10;
       gew100mEl.placeholder='auto: '+auto100m+' kg';
     }
   }
@@ -1210,6 +1220,7 @@ function slaOp(){
     lengte:document.getElementById('f-lengte').value,
     dikte:document.getElementById('f-dikte').value,
     koker:document.getElementById('f-koker').value||90,
+    invouw:document.getElementById('f-invouw')?document.getElementById('f-invouw').value||'':'',
     seal:document.getElementById('f-seal').value,
     snelheid:document.getElementById('f-snelheid').value,
     zakrol:(function(){var ozr=document.getElementById('f-order-zakrol');if(ozr&&parseFloat(ozr.value)>0)return ozr.value;return document.getElementById('f-zakrol').value;})(),
@@ -1620,6 +1631,7 @@ function bewerkRecept(key){
 if(r.werk_rpp){var wrppEl=document.getElementById('f-werk-rpp');if(wrppEl){wrppEl.value=r.werk_rpp;wrppEl.classList.remove('veld-leeg');wrppEl.classList.add('veld-definitief');}}
     if(r.werk_huidje){var whEl=document.getElementById('f-werk-huidje');if(whEl){whEl.value=r.werk_huidje;whEl.classList.remove('veld-leeg');whEl.classList.add('veld-definitief');}}
     if(r.order_huidje){var ohEl=document.getElementById('f-huidje');if(ohEl){ohEl.value=r.order_huidje;ohEl.classList.remove('veld-leeg');ohEl.classList.add('veld-definitief');}}
+    if(r.invouw){var invEl=document.getElementById('f-invouw');if(invEl){invEl.value=r.invouw;invEl.classList.remove('veld-leeg');invEl.classList.add('veld-definitief');}}
     editKey=key;
     var ntEl2=document.getElementById('nieuw-title');if(ntEl2)ntEl2.textContent='Recept Bewerken';
     go('s-nieuw');
@@ -1736,6 +1748,7 @@ window.addEventListener('unhandledrejection',function(e){e.preventDefault();});
 var _invulEl=null,_invulWaarde='';
 var INVUL_CONFIG={
   'f-koker':{label:'Koker diameter (mm)',snel:[76,90,100,150,200]},
+  'f-invouw':{label:'Invouw (mm)',snel:[20,25,26,30,40,50]},
   'f-breedte':{label:'Breedte (mm)',snel:[200,300,400,470,500,600,800,1000,1200,1600]},
   'f-lengte':{label:'Lengte (mm)',snel:[300,400,500,600,800,1000,1200,1500,2000,3000]},
   'f-dikte':{label:'Dikte (mm)',snel:[0.015,0.02,0.025,0.03,0.04,0.05,0.06,0.08,0.1]},
@@ -1787,7 +1800,7 @@ function invulWis(){
 function invulSnel(val){_invulWaarde=String(val);document.getElementById('invul-waarde').textContent=_invulWaarde;}
 function invulOk(){
   if(!_invulEl||!_invulWaarde){invulSluit();return;}
-  var resetVelden=['f-order-rpp','f-werk-rpp','f-werk-huidje','f-huidje','f-gew100m'];
+  var resetVelden=['f-order-rpp','f-werk-rpp','f-werk-huidje','f-huidje','f-gew100m','f-invouw'];
   if(resetVelden.indexOf(_invulEl.id)>=0&&(!_invulWaarde||parseFloat(_invulWaarde)<=0)){
     _invulEl.value='';_invulEl.classList.remove('veld-definitief','veld-benadering');_invulEl.classList.add('veld-leeg');
     if(_invulEl.id==='f-huidje')_invulEl.placeholder='automatisch';
@@ -1799,7 +1812,7 @@ function invulOk(){
   if(_invulEl.id==='f-offset1'){var v=parseFloat(_invulWaarde);var toon=document.getElementById('f-offset2-toon');if(toon&&v>0){toon.style.display='block';toon.textContent='Offset 2 (automatisch): '+Math.round(v/2);}}
   invulSluit();
   if(_invulEl.id==='f-order-zakrol'){var fzr=document.getElementById('f-zakrol');if(fzr)fzr.value=_invulWaarde;herbereken();}
-  if(['f-breedte','f-lengte','f-dikte','f-koker','f-zakrol'].indexOf(_invulEl.id)>=0)herbereken();
+  if(['f-breedte','f-lengte','f-dikte','f-koker','f-zakrol','f-invouw'].indexOf(_invulEl.id)>=0)herbereken();
   try{berekenOrder();}catch(e){}
 }
 
