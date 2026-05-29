@@ -390,10 +390,10 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
       </div>
       <div style="margin-top:12px;display:flex;flex-direction:column;gap:10px;">
         <div class="field"><label>Sealtijd (ms)</label>
-          <input id="f-seal" type="number" placeholder="750" onclick="openInvul(this)" readonly style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;cursor:pointer;">
+          <input id="f-seal" type="number" placeholder="750" onclick="openInvul(this)" readonly style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;cursor:pointer;">
         </div>
         <div class="field"><label>Snelheid (m/min)</label>
-          <input id="f-snelheid" type="number" placeholder="140" onclick="openInvul(this)" readonly style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;cursor:pointer;">
+          <input id="f-snelheid" type="number" placeholder="140" onclick="openInvul(this)" readonly style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;font-family:'Courier New',Courier,monospace;font-size:22px;padding:14px;outline:none;text-align:center;cursor:pointer;">
         </div>
       </div>
     </div>
@@ -453,7 +453,7 @@ body{background:#070a10;color:#e5e7eb;font-family:'Courier New',Courier,monospac
       <div style="font-size:11px;color:#9ca3af;margin-bottom:12px;line-height:1.6;">Blauw = berekende schatting. Vul de werkelijke offset in die op de machine werkte.</div>
       <div class="field">
         <label>Werkelijke Offset 1</label>
-        <input id="f-offset1" type="number" placeholder="bv. 10850" class="veld-leeg" readonly onclick="openInvul(this)" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',Courier,monospace;font-size:20px;padding:12px 14px;outline:none;text-align:center;">
+        <input id="f-offset1" type="number" placeholder="bv. 10850" class="veld-leeg" readonly onclick="openInvul(this)" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;font-family:'Courier New',Courier,monospace;font-size:20px;padding:12px 14px;outline:none;text-align:center;">
       </div>
       <div id="f-offset2-toon" style="display:none;margin-top:8px;background:#070a10;border:1px solid rgba(96,165,250,.3);border-radius:4px;padding:10px 14px;font-size:13px;color:#60a5fa;"></div>
     </div>
@@ -649,6 +649,8 @@ function vulFormulierIn(obj,status){
       if(match){ptEl.value=obj.prodtype;gevuld.push('Producttype');try{prodtypeChange(obj.prodtype);}catch(e){}}
     }
   }
+  // Herbereken ALTIJD aan het einde zodat blauwe benaderingen correct zijn
+  setTimeout(function(){try{herbereken();}catch(e){}},50);
   if(obj.gew100m){
     var gEl=document.getElementById('f-gew100m');
     if(gEl){gEl.value=obj.gew100m;gEl.classList.remove('veld-leeg');gEl.classList.add('veld-definitief');gevuld.push('Gewicht/100m');}
@@ -685,7 +687,7 @@ function vulFormulierIn(obj,status){
     +'</div>';
 }
 
-var APP_VERSION = '20.9';
+var APP_VERSION = '21.0';
 
 // Hardcoded fallback
 var OPERATORS_FALLBACK = {
@@ -1065,7 +1067,6 @@ function herbereken(){
   var l=parseFloat(document.getElementById('f-lengte').value);
   var d=parseFloat(document.getElementById('f-dikte').value);
   if(!mat||!l||!d) return;
-  toast('&#128309; Benadering berekend');
   var kokerEl=document.getElementById('f-koker');
   if(kokerEl&&!kokerEl.value)kokerEl.value=90;
   var sealtijd=Math.round(d*5000*mat.st);
