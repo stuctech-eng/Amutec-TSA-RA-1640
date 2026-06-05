@@ -591,7 +591,7 @@ function verwerkFoto(input){
         max_tokens:1000,
         messages:[{role:'user',content:[
           {type:'image',source:{type:'base64',media_type:mediaType,data:base64}},
-          {type:'text',text:'Lees deze orderbon zorgvuldig en geef de gegevens terug als JSON. Regels:\n1. klantnr: Het grote getal LINKSBOVEN (bijv 573 of 0118). Nooit het artikelnr van de klant. Als het 3 cijfers heeft zet er een 0 voor (573 wordt 0573). Als het 4 cijfers heeft laat zo.\n2. klantnaam: De plaatsnaam naast het klantnummer (bijv Haaksbergen, Dokkum).\n3. breedte + invouw: Als notatie X/Y staat (75/22.5 of 75/22½) dan is X de breedte en Y de invouw (beiden in cm, omzetten naar mm). Breedte in mm = X*10. Invouw in mm = Y*10.\n4. lengte: Zaklengte in mm. In notatie X/Y x Z cm is Z de lengte. Converteer cm naar mm (120cm = 1200mm).\n5. dikte: Foliedikte in mm als decimaal (0,04 = 0.04).\n6. materiaal: ldpe of mdpe of recycle. Staat in Omschrijving.\n7. zakrol: Zakken per rol. Zoek op: "ZAKKEN GEPERF. a/rol X STUKS", "a/rol X stuks", "(X st.)" rechtsboven of in Seal/Snijformaat. Nooit leeg laten als het er staat.\n8. order_stuks: Totaal te leveren stuks. "Te leveren" regel: vermenigvuldig de getallen (8,50 x 1.000 = 8500). Geef altijd het totaal als geheel getal.\n9. order_pallet: EUROPALLET of EURO PALLET = euro. EUROFORMAAT of EURO FORMAAT of niets vermeld = euroformaat. BLOKPALLET = blok. Geef euro, euroformaat of blok.\n10. order_maxhoogte: Geef 1 als tekst bevat "PALLETHOOGTE: MAX. 120 cm" of "MAX 120 cm" of "1200mm", anders leeg.\n11. order_huidje: Huidjelengte in mm. Staat als "huidjes 130 cm" = 1300.\n12. temp_boven: Bovenste sealtemperatuur als vermeld.\n13. temp_onder: Onderste sealtemperatuur als vermeld.\n14. invouw: Uit de X/Y notatie is Y de invouwmaat in CM. Zet om naar mm (22.5cm=225mm, 26cm=260mm).\n15. gew100m: Gewicht per 100 meter op de bon als decimaal (4,87=4.87).\\n16. prodtype: Als breedte notatie X/Y heeft (75/22.5, 75/22½, 65/26) altijd Zak met invouw. Anders uit omschrijving: Zak (bodemlaszak/zak), Hoes, Vel, Huls, Krimpfolie. Laat leeg bij twijfel.\\n17. order_rpp: Rollen per pallet als vermeld (bijv a 25 ROL). Alleen als het er staat.\\nGeef ALLEEN de JSON terug, geen uitleg.'}
+          {type:'text',text:'Lees deze orderbon zorgvuldig en geef de gegevens terug als JSON. Regels:\n1. klantnr: Het grote getal LINKSBOVEN (bijv 573 of 0118). Nooit het artikelnr van de klant. Als het 3 cijfers heeft zet er een 0 voor (573 wordt 0573). Als het 4 cijfers heeft laat zo.\n2. klantnaam: De plaatsnaam naast het klantnummer (bijv Haaksbergen, Dokkum).\n3. breedte + invouw: Als notatie X/Y staat (75/22.5 of 75/22½) dan is X de breedte en Y de invouw (beiden in cm, omzetten naar mm). Breedte in mm = X*10. Invouw in mm = Y*10.\n4. lengte: Zaklengte in mm. In notatie X/Y x Z cm is Z de lengte. Converteer cm naar mm (120cm = 1200mm).\n5. dikte: Foliedikte in mm als decimaal (0,04 = 0.04).\n6. materiaal: Staat in Omschrijving. LDPE=ldpe, MDPE=mdpe, Recycle Mix of Regrind=recycle, PE-LD recycle=peld. Geef ldpe, mdpe, recycle of peld.\n7. zakrol: Zakken per rol. Zoek op: "ZAKKEN GEPERF. a/rol X STUKS", "a/rol X stuks", "(X st.)" rechtsboven of in Seal/Snijformaat. Nooit leeg laten als het er staat.\n8. order_stuks: Totaal te leveren stuks. "Te leveren" regel: vermenigvuldig de getallen (8,50 x 1.000 = 8500). Geef altijd het totaal als geheel getal.\n9. order_pallet: EUROPALLET of EURO PALLET = euro. EUROFORMAAT of EURO FORMAAT of niets vermeld = euroformaat. BLOKPALLET = blok. Geef euro, euroformaat of blok.\n10. order_maxhoogte: Geef 1 als tekst bevat "PALLETHOOGTE: MAX. 120 cm" of "MAX 120 cm" of "1200mm", anders leeg.\n11. order_huidje: Huidjelengte in mm. Staat als "huidjes 130 cm" = 1300.\n12. temp_boven: Bovenste sealtemperatuur als vermeld.\n13. temp_onder: Onderste sealtemperatuur als vermeld.\n14. invouw: Uit de X/Y notatie is Y de invouwmaat in CM. Zet om naar mm (22.5cm=225mm, 26cm=260mm).\n15. gew100m: Gewicht per 100 meter op de bon als decimaal (4,87=4.87).\\n16. prodtype: Als breedte notatie X/Y heeft (75/22.5, 75/22½, 65/26) altijd Zak met invouw. Anders uit omschrijving: Zak (bodemlaszak/zak), Hoes, Vel, Huls, Krimpfolie. Laat leeg bij twijfel.\\n17. order_rpp: Rollen per pallet als vermeld (bijv a 25 ROL). Alleen als het er staat.\\nGeef ALLEEN de JSON terug, geen uitleg.'}
         ]}]
       })
     })
@@ -659,16 +659,12 @@ function vulFormulierIn(obj,status){
     if(gEl){gEl.value=obj.gew100m;gEl.classList.remove('veld-leeg');gEl.classList.add('veld-definitief');gevuld.push('Gewicht/100m');}
   }
   if(obj.materiaal){
-    var mat=document.getElementById('f-materiaal');
-    if(mat){
-      var m=obj.materiaal.toLowerCase();
-      var opts=Array.from(mat.options);
-      for(var oi=0;oi<opts.length;oi++){
-        if(opts[oi].value.toLowerCase().indexOf(m)>=0||m.indexOf(opts[oi].value.toLowerCase())>=0){
-          mat.selectedIndex=oi;gevuld.push('Materiaal');break;
-        }
-      }
-    }
+    var m=obj.materiaal.toLowerCase();
+    var matKey='ldpe';
+    if(m.indexOf('mdpe')>=0) matKey='mdpe';
+    else if(m.indexOf('recycle')>=0||m.indexOf('mix')>=0||m.indexOf('pe-ld')>=0) matKey='recycle-mix';
+    else if(m.indexOf('peld')>=0||m.indexOf('pe ld')>=0) matKey='recycle-peld';
+    try{selectMat(matKey);gevuld.push('Materiaal');}catch(e){}
   }
   if(obj.order_pallet){
     var p=obj.order_pallet.toLowerCase();
@@ -697,7 +693,7 @@ function vulFormulierIn(obj,status){
     +'</div>';
 }
 
-var APP_VERSION = '21.4';
+var APP_VERSION = '21.5';
 
 // Hardcoded fallback
 var OPERATORS_FALLBACK = {
