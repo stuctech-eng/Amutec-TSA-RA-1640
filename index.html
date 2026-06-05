@@ -637,7 +637,10 @@ function vulFormulierIn(obj,status){
   setV('f-dikte',obj.dikte,'Dikte');
   setV('f-order-zakrol',obj.zakrol,'Zakken/rol');
   setV('f-order-stuks',obj.order_stuks,'Stuks');
-  setV('f-huidje',obj.order_huidje,'Huidje');
+  // Huidje alleen invullen bij liggend stapelen (breedte > 500mm)
+  var breedte_val = parseFloat(obj.breedte)||0;
+  var is_staand = breedte_val > 0 && breedte_val <= 500;
+  if(!is_staand) setV('f-huidje',obj.order_huidje,'Huidje');
   setV('f-temp-boven',obj.temp_boven,'Temp↑');
   setV('f-temp-onder',obj.temp_onder,'Temp↓');
   setV('f-invouw',obj.invouw,'Invouw');
@@ -694,7 +697,7 @@ function vulFormulierIn(obj,status){
     +'</div>';
 }
 
-var APP_VERSION = '21.3';
+var APP_VERSION = '21.4';
 
 // Hardcoded fallback
 var OPERATORS_FALLBACK = {
