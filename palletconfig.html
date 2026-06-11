@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="nl">
 <head>
 <meta charset="UTF-8">
@@ -47,132 +46,129 @@ html,body{min-height:100%;background:#070a10;color:#e5e7eb;font-family:'Courier 
 
 <div class="content">
 
-```
-<div class="form-card" style="border-top-color:#34d399;">
-  <div class="form-card-title" style="color:#34d399;">&#9881;&#65039; Parameters</div>
 
-  <!-- 1. Producttype -->
-  <input type="hidden" id="pc-prodtype" value="Zak">
-  <div class="field">
-    <label>1 &mdash; Producttype</label>
-    <button onclick="openPcPopup('prodtype')" id="btn-pc-prodtype" style="width:100%;background:#0f1520;border:1px solid #1a2540;border-left:4px solid rgba(245,158,11,0.6);border-radius:8px;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
-      <div>
-        <div style="font-size:10px;color:#9ca3af;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">Producttype</div>
-        <div style="font-size:20px;font-weight:700;color:#6b7280;" id="toon-pc-prodtype">Kies producttype</div>
+
+    <div class="form-card" style="border-top-color:#34d399;">
+      <div class="form-card-title" style="color:#34d399;">&#9881;&#65039; Parameters</div>
+
+      <!-- 1. Producttype -->
+      <input type="hidden" id="pc-prodtype" value="Zak">
+      <div class="field">
+        <label>1 &mdash; Producttype</label>
+        <button onclick="openPcPopup('prodtype')" id="btn-pc-prodtype" style="width:100%;background:#0f1520;border:1px solid #1a2540;border-left:4px solid rgba(245,158,11,0.6);border-radius:8px;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
+          <div>
+            <div style="font-size:10px;color:#9ca3af;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">Producttype</div>
+            <div style="font-size:20px;font-weight:700;color:#6b7280;" id="toon-pc-prodtype">Kies producttype</div>
+          </div>
+          <span style="font-size:22px;color:#6b7280;">&#8250;</span>
+        </button>
       </div>
-      <span style="font-size:22px;color:#6b7280;">&#8250;</span>
-    </button>
-  </div>
 
-  <!-- 1b. Materiaaltype -->
-  <input type="hidden" id="pc-materiaal" value="ldpe">
-  <div class="field">
-    <label>1b &mdash; Materiaaltype</label>
-    <button onclick="openPcPopup('materiaal')" id="btn-pc-materiaal" style="width:100%;background:#0f1520;border:1px solid #1a2540;border-left:4px solid rgba(245,158,11,0.6);border-radius:8px;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
-      <div>
-        <div style="font-size:10px;color:#9ca3af;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">Materiaaltype</div>
-        <div style="font-size:20px;font-weight:700;color:#6b7280;" id="toon-pc-materiaal">LDPE</div>
+      <!-- 1b. Materiaaltype -->
+      <input type="hidden" id="pc-materiaal" value="ldpe">
+      <div class="field">
+        <label>1b &mdash; Materiaaltype</label>
+        <button onclick="openPcPopup('materiaal')" id="btn-pc-materiaal" style="width:100%;background:#0f1520;border:1px solid #1a2540;border-left:4px solid rgba(245,158,11,0.6);border-radius:8px;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
+          <div>
+            <div style="font-size:10px;color:#9ca3af;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">Materiaaltype</div>
+            <div style="font-size:20px;font-weight:700;color:#6b7280;" id="toon-pc-materiaal">LDPE</div>
+          </div>
+          <span style="font-size:22px;color:#6b7280;">&#8250;</span>
+        </button>
       </div>
-      <span style="font-size:22px;color:#6b7280;">&#8250;</span>
-    </button>
-  </div>
 
-  <!-- 2. Pallet type -->
-  <div class="field">
-    <label>2 &mdash; Pallet type</label>
-    <div style="display:flex;gap:8px;">
-      <button id="pc-btn-euro" onclick="pcKiesPallet('euro')" style="flex:1;padding:16px 8px;border-radius:6px;border:2px solid #34d399;background:rgba(52,211,153,0.15);color:#34d399;font-family:'Courier New',monospace;font-size:15px;font-weight:700;cursor:pointer;">EURO<br><span style="font-size:11px;color:#9ca3af;">800&#215;1200mm</span></button>
-      <button id="pc-btn-blok" onclick="pcKiesPallet('blok')" style="flex:1;padding:16px 8px;border-radius:6px;border:2px solid #1a2540;background:#0f1520;color:#9ca3af;font-family:'Courier New',monospace;font-size:15px;font-weight:700;cursor:pointer;">BLOK<br><span style="font-size:11px;color:#6b7280;">1000&#215;1200mm</span></button>
+      <!-- 2. Pallet type -->
+      <div class="field">
+        <label>2 &mdash; Pallet type</label>
+        <div style="display:flex;gap:8px;">
+          <button id="pc-btn-euro" onclick="pcKiesPallet('euro')" style="flex:1;padding:16px 8px;border-radius:6px;border:2px solid #34d399;background:rgba(52,211,153,0.15);color:#34d399;font-family:'Courier New',monospace;font-size:15px;font-weight:700;cursor:pointer;">EURO<br><span style="font-size:11px;color:#9ca3af;">800&#215;1200mm</span></button>
+          <button id="pc-btn-blok" onclick="pcKiesPallet('blok')" style="flex:1;padding:16px 8px;border-radius:6px;border:2px solid #1a2540;background:#0f1520;color:#9ca3af;font-family:'Courier New',monospace;font-size:15px;font-weight:700;cursor:pointer;">BLOK<br><span style="font-size:11px;color:#6b7280;">1000&#215;1200mm</span></button>
+        </div>
+      </div>
+
+      <!-- 3. Max stapelhoogte -->
+      <div class="field">
+        <label>3 &mdash; Max stapelhoogte</label>
+        <div style="display:flex;gap:8px;">
+          <button id="pc-btn-h1700" onclick="pcKiesHoogte(1550)" style="flex:1;padding:16px 8px;border-radius:6px;border:2px solid #34d399;background:rgba(52,211,153,0.15);color:#34d399;font-family:'Courier New',monospace;font-size:15px;font-weight:700;cursor:pointer;">1700mm<br><span style="font-size:11px;color:#9ca3af;">incl. pallet</span></button>
+          <button id="pc-btn-h1200" onclick="pcKiesHoogte(1050)" style="flex:1;padding:16px 8px;border-radius:6px;border:2px solid #1a2540;background:#0f1520;color:#9ca3af;font-family:'Courier New',monospace;font-size:15px;font-weight:700;cursor:pointer;">1200mm<br><span style="font-size:11px;color:#6b7280;">incl. pallet</span></button>
+        </div>
+      </div>
+
+      <!-- 4. Zakmaat -->
+      <div class="field">
+        <label>4 &mdash; Zakmaat</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <div>
+            <div style="font-size:9px;color:#9ca3af;letter-spacing:1px;margin-bottom:4px;">BREEDTE (mm)</div>
+            <input id="pc-breedte" type="number" placeholder="400" readonly inputmode="none" onclick="openInvul(this,'Zakbreedte (mm)',[200,300,400,470,500,600,800,1000,1200,1600])" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:22px;padding:14px;text-align:center;outline:none;cursor:pointer;">
+          </div>
+          <div>
+            <div style="font-size:9px;color:#9ca3af;letter-spacing:1px;margin-bottom:4px;">LENGTE (mm)</div>
+            <input id="pc-lengte" type="number" placeholder="600" readonly inputmode="none" onclick="openInvul(this,'Zaklengte (mm)',[300,400,500,600,800,1000,1200,1500,1900,2000,3000])" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:22px;padding:14px;text-align:center;outline:none;cursor:pointer;">
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. Folie & Rol -->
+      <div class="field">
+        <label>5 &mdash; Folie &amp; Rol</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <div>
+            <div style="font-size:9px;color:#9ca3af;letter-spacing:1px;margin-bottom:4px;">ZAKKEN/ROL</div>
+            <input id="pc-zakrol" type="number" placeholder="250" readonly inputmode="none" onclick="openInvul(this,'Zakken op rol',[100,150,200,250,500,750,1000])" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:22px;padding:14px;text-align:center;outline:none;cursor:pointer;">
+          </div>
+          <div>
+            <div style="font-size:9px;color:#9ca3af;letter-spacing:1px;margin-bottom:4px;">DIKTE (mm)</div>
+            <input id="pc-dikte" type="number" placeholder="0.03" readonly inputmode="none" onclick="openInvul(this,'Folie dikte (mm)',[0.015,0.02,0.025,0.03,0.04,0.05,0.06,0.08,0.1])" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:22px;padding:14px;text-align:center;outline:none;cursor:pointer;">
+          </div>
+          <div>
+            <div style="font-size:9px;color:#9ca3af;letter-spacing:1px;margin-bottom:4px;">KOKER (mm)</div>
+            <input id="pc-koker" type="number" placeholder="90" readonly inputmode="none" onclick="openInvul(this,'Koker (mm)',[76,90,100,150,200])" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:22px;padding:14px;text-align:center;outline:none;cursor:pointer;">
+          </div>
+          <div>
+            <div style="font-size:9px;color:#9ca3af;letter-spacing:1px;margin-bottom:4px;">ROLDIAMETER (mm)</div>
+            <input id="pc-rolD" type="number" placeholder="auto" readonly inputmode="none" onclick="openInvul(this,'Roldiameter override (mm)',[150,175,200,213,225,250,266,300])" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:22px;padding:14px;text-align:center;outline:none;cursor:pointer;">
+            <div style="font-size:10px;color:#6b7280;margin-top:3px;text-align:center;" id="pc-rolD-auto"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6. Stapelpatroon liggend -->
+      <div class="field" id="pc-patroon-sectie">
+        <label>6 &mdash; Stapelpatroon (liggend)</label>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button id="pc-pat-auto" onclick="pcKiesPatroon('auto')" style="flex:1;padding:12px;border-radius:6px;border:2px solid #34d399;background:rgba(52,211,153,0.15);color:#34d399;font-family:'Courier New',monospace;font-size:14px;font-weight:700;cursor:pointer;">AUTO</button>
+          <button id="pc-pat-43" onclick="pcKiesPatroon('43')" style="flex:1;padding:12px;border-radius:6px;border:2px solid #1a2540;background:#0f1520;color:#9ca3af;font-family:'Courier New',monospace;font-size:14px;cursor:pointer;">4-3</button>
+          <button id="pc-pat-54" onclick="pcKiesPatroon('54')" style="flex:1;padding:12px;border-radius:6px;border:2px solid #1a2540;background:#0f1520;color:#9ca3af;font-family:'Courier New',monospace;font-size:14px;cursor:pointer;">5-4</button>
+          <button id="pc-pat-65" onclick="pcKiesPatroon('65')" style="flex:1;padding:12px;border-radius:6px;border:2px solid #1a2540;background:#0f1520;color:#9ca3af;font-family:'Courier New',monospace;font-size:14px;cursor:pointer;">6-5</button>
+        </div>
+      </div>
+
+      <!-- 7. Aantal rollen -->
+      <div class="field">
+        <label>7 &mdash; Aantal rollen <span style="color:#6b7280;">(optioneel)</span></label>
+        <input id="pc-rollen" type="number" placeholder="bv. 950" readonly inputmode="none" onclick="openInvul(this,'Aantal rollen',[100,250,500,750,950,1000,1500,2000])" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:28px;padding:16px;text-align:center;outline:none;cursor:pointer;">
+      </div>
+    </div>
+
+    <!-- RESULTAAT -->
+    <div id="pc-resultaat" style="display:none;">
+      <div class="form-card" style="border-top-color:#f59e0b;">
+        <div class="form-card-title" style="color:#f59e0b;">&#128230; Resultaat</div>
+        <div id="pc-output"></div>
+      </div>
+      <div class="form-card" style="border-top-color:#a78bfa;">
+        <div class="form-card-title" style="color:#a78bfa;">&#128064; Stapelvisualisatie</div>
+        <div id="pc-visual" style="text-align:center;font-size:22px;line-height:1.8;letter-spacing:4px;padding:8px 0;"></div>
+      </div>
     </div>
   </div>
 
-  <!-- 3. Max stapelhoogte -->
-  <div class="field">
-    <label>3 &mdash; Max stapelhoogte</label>
-    <div style="display:flex;gap:8px;">
-      <button id="pc-btn-h1700" onclick="pcKiesHoogte(1550)" style="flex:1;padding:16px 8px;border-radius:6px;border:2px solid #34d399;background:rgba(52,211,153,0.15);color:#34d399;font-family:'Courier New',monospace;font-size:15px;font-weight:700;cursor:pointer;">1700mm<br><span style="font-size:11px;color:#9ca3af;">incl. pallet</span></button>
-      <button id="pc-btn-h1200" onclick="pcKiesHoogte(1050)" style="flex:1;padding:16px 8px;border-radius:6px;border:2px solid #1a2540;background:#0f1520;color:#9ca3af;font-family:'Courier New',monospace;font-size:15px;font-weight:700;cursor:pointer;">1200mm<br><span style="font-size:11px;color:#6b7280;">incl. pallet</span></button>
-    </div>
-  </div>
-
-  <!-- 4. Zakmaat -->
-  <div class="field">
-    <label>4 &mdash; Zakmaat</label>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-      <div>
-        <div style="font-size:9px;color:#9ca3af;letter-spacing:1px;margin-bottom:4px;">BREEDTE (mm)</div>
-        <input id="pc-breedte" type="number" placeholder="400" readonly inputmode="none" onclick="openInvul(this,'Zakbreedte (mm)',[200,300,400,470,500,600,800,1000,1200,1600])" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:22px;padding:14px;text-align:center;outline:none;cursor:pointer;">
-      </div>
-      <div>
-        <div style="font-size:9px;color:#9ca3af;letter-spacing:1px;margin-bottom:4px;">LENGTE (mm)</div>
-        <input id="pc-lengte" type="number" placeholder="600" readonly inputmode="none" onclick="openInvul(this,'Zaklengte (mm)',[300,400,500,600,800,1000,1200,1500,1900,2000,3000])" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:22px;padding:14px;text-align:center;outline:none;cursor:pointer;">
-      </div>
-    </div>
-  </div>
-
-  <!-- 5. Folie & Rol -->
-  <div class="field">
-    <label>5 &mdash; Folie &amp; Rol</label>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-      <div>
-        <div style="font-size:9px;color:#9ca3af;letter-spacing:1px;margin-bottom:4px;">ZAKKEN/ROL</div>
-        <input id="pc-zakrol" type="number" placeholder="250" readonly inputmode="none" onclick="openInvul(this,'Zakken op rol',[100,150,200,250,500,750,1000])" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:22px;padding:14px;text-align:center;outline:none;cursor:pointer;">
-      </div>
-      <div>
-        <div style="font-size:9px;color:#9ca3af;letter-spacing:1px;margin-bottom:4px;">DIKTE (mm)</div>
-        <input id="pc-dikte" type="number" placeholder="0.03" readonly inputmode="none" onclick="openInvul(this,'Folie dikte (mm)',[0.015,0.02,0.025,0.03,0.04,0.05,0.06,0.08,0.1])" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:22px;padding:14px;text-align:center;outline:none;cursor:pointer;">
-      </div>
-      <div>
-        <div style="font-size:9px;color:#9ca3af;letter-spacing:1px;margin-bottom:4px;">KOKER (mm)</div>
-        <input id="pc-koker" type="number" placeholder="90" readonly inputmode="none" onclick="openInvul(this,'Koker (mm)',[76,90,100,150,200])" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:22px;padding:14px;text-align:center;outline:none;cursor:pointer;">
-      </div>
-      <div>
-        <div style="font-size:9px;color:#9ca3af;letter-spacing:1px;margin-bottom:4px;">ROLDIAMETER (mm)</div>
-        <input id="pc-rolD" type="number" placeholder="auto" readonly inputmode="none" onclick="openInvul(this,'Roldiameter override (mm)',[150,175,200,213,225,250,266,300])" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:22px;padding:14px;text-align:center;outline:none;cursor:pointer;">
-        <div style="font-size:10px;color:#6b7280;margin-top:3px;text-align:center;" id="pc-rolD-auto"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- 6. Stapelpatroon liggend -->
-  <div class="field" id="pc-patroon-sectie">
-    <label>6 &mdash; Stapelpatroon (liggend)</label>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;">
-      <button id="pc-pat-auto" onclick="pcKiesPatroon('auto')" style="flex:1;padding:12px;border-radius:6px;border:2px solid #34d399;background:rgba(52,211,153,0.15);color:#34d399;font-family:'Courier New',monospace;font-size:14px;font-weight:700;cursor:pointer;">AUTO</button>
-      <button id="pc-pat-43" onclick="pcKiesPatroon('43')" style="flex:1;padding:12px;border-radius:6px;border:2px solid #1a2540;background:#0f1520;color:#9ca3af;font-family:'Courier New',monospace;font-size:14px;cursor:pointer;">4-3</button>
-      <button id="pc-pat-54" onclick="pcKiesPatroon('54')" style="flex:1;padding:12px;border-radius:6px;border:2px solid #1a2540;background:#0f1520;color:#9ca3af;font-family:'Courier New',monospace;font-size:14px;cursor:pointer;">5-4</button>
-      <button id="pc-pat-65" onclick="pcKiesPatroon('65')" style="flex:1;padding:12px;border-radius:6px;border:2px solid #1a2540;background:#0f1520;color:#9ca3af;font-family:'Courier New',monospace;font-size:14px;cursor:pointer;">6-5</button>
-    </div>
-  </div>
-
-  <!-- 7. Aantal rollen -->
-  <div class="field">
-    <label>7 &mdash; Aantal rollen <span style="color:#6b7280;">(optioneel)</span></label>
-    <input id="pc-rollen" type="number" placeholder="bv. 950" readonly inputmode="none" onclick="openInvul(this,'Aantal rollen',[100,250,500,750,950,1000,1500,2000])" class="veld-leeg" style="width:100%;background:#070a10;border:1px solid #1a2540;border-radius:4px;color:#e5e7eb;font-family:'Courier New',monospace;font-size:28px;padding:16px;text-align:center;outline:none;cursor:pointer;">
-  </div>
-</div>
-
-<!-- RESULTAAT -->
-<div id="pc-resultaat" style="display:none;">
-  <div class="form-card" style="border-top-color:#f59e0b;">
-    <div class="form-card-title" style="color:#f59e0b;">&#128230; Resultaat</div>
-    <div id="pc-output"></div>
-  </div>
-  <div class="form-card" style="border-top-color:#a78bfa;">
-    <div class="form-card-title" style="color:#a78bfa;">&#128064; Stapelvisualisatie</div>
-    <div id="pc-visual" style="text-align:center;font-size:22px;line-height:1.8;letter-spacing:4px;padding:8px 0;"></div>
-  </div>
-</div>
-```
-
-  </div>
-
-<button class="bottom-back-btn" onclick="window.location.href='index.html'">‹ Terug naar Home</button>
-
+  <button class="bottom-back-btn" onclick="window.location.href='index.html'">&#8249; Terug naar Home</button>
 </div>
 
 <!-- POPUP: PRODUCTTYPE -->
-
 <div id="pc-popup-prodtype" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:9200;align-items:flex-end;justify-content:center;">
   <div style="background:#0f1520;border-top:3px solid #f59e0b;width:100%;max-width:500px;border-radius:16px 16px 0 0;padding:24px 20px 40px;max-height:85vh;overflow-y:auto;">
     <div style="font-size:11px;color:#f59e0b;letter-spacing:3px;text-transform:uppercase;margin-bottom:6px;">Producttype</div>
@@ -190,7 +186,6 @@ html,body{min-height:100%;background:#070a10;color:#e5e7eb;font-family:'Courier 
 </div>
 
 <!-- POPUP: MATERIAALTYPE -->
-
 <div id="pc-popup-materiaal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:9200;align-items:flex-end;justify-content:center;">
   <div style="background:#0f1520;border-top:3px solid #f59e0b;width:100%;max-width:500px;border-radius:16px 16px 0 0;padding:24px 20px 40px;max-height:85vh;overflow-y:auto;">
     <div style="font-size:11px;color:#f59e0b;letter-spacing:3px;text-transform:uppercase;margin-bottom:6px;">Materiaaltype</div>
@@ -209,7 +204,6 @@ html,body{min-height:100%;background:#070a10;color:#e5e7eb;font-family:'Courier 
 </style>
 
 <!-- INVUL MODAL -->
-
 <div id="invul-overlay" class="invul-overlay">
   <div class="invul-box">
     <div class="invul-label" id="invul-label">Waarde</div>
@@ -416,19 +410,13 @@ function pcBereken(){
     }
 
   } else {
-    // LIGGEND - bereken beste oriëntatie
-    var rijA2_l=Math.max(1,Math.floor(palletB/rolD));
-    var rijB2_l=Math.max(1,rijA2_l-1);
+    // LIGGEND - rollen naast elkaar nooit meer dan palletbreedte
     maxLagen=1;
     for(var nl=2;nl<=20;nl++){if(rolD+(nl-1)*rolD*0.866<=_pcMaxH)maxLagen=nl;else break;}
     var paren=Math.floor(maxLagen/2),extra=maxLagen%2;
-    var rpp_l=paren*(rijA2_l+rijB2_l)+extra*rijA2_l;
-    var rijA2_b=Math.max(1,Math.floor(1200/rolD));
-    var rijB2_b=Math.max(1,rijA2_b-1);
-    var rpp_b2=paren*(rijA2_b+rijB2_b)+extra*rijA2_b;
-    var rijA2=rpp_b2>rpp_l?rijA2_b:rijA2_l;
-    var rijB2=rpp_b2>rpp_l?rijB2_b:rijB2_l;
-    rpp=Math.max(rpp_l,rpp_b2);
+    var rijA2=Math.max(1,Math.floor(palletB/rolD));
+    var rijB2=Math.max(1,rijA2-1);
+    rpp=paren*(rijA2+rijB2)+extra*rijA2;
     stapelHoogte=Math.round(rolD+(maxLagen-1)*rolD*0.866);
 
     var huidjeRuw=rijA2*rolD+90;
@@ -506,6 +494,5 @@ function invulOk(){
 updatePatroonTabel();
 document.getElementById('toon-pc-materiaal').innerHTML='LDPE';
 </script>
-
 </body>
 </html>
