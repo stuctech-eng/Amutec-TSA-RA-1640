@@ -190,7 +190,7 @@ function renderDetail(r){
           for(var k=0;k<4;k++) visual+=ROL;
           visual+='</div>';
         } else {
-          var rj=Math.max(1,Math.floor(1200/rolD));
+          var rj=Math.max(1,Math.floor((palletB+20)/rolD));
           visual+='<div style="display:flex;justify-content:center;margin:2px 0;">';
           for(var r1=0;r1<rj;r1++) visual+=ROL;
           visual+='</div><div style="display:flex;justify-content:center;margin:2px 0;padding-left:18px;">';
@@ -204,9 +204,7 @@ function renderDetail(r){
       var maxL2=1;
       for(var nl=2;nl<=20;nl++){if(rolD+(nl-1)*rolD*0.866<=maxH)maxL2=nl;else break;}
       var par=Math.floor(maxL2/2),ext=maxL2%2;
-      var rAl=Math.max(1,Math.floor(palletB/rolD)),rBl=Math.max(1,rAl-1),rppl=par*(rAl+rBl)+ext*rAl;
-      var rAb=Math.max(1,Math.floor(1200/rolD)),rBb=Math.max(1,rAb-1),rppb=par*(rAb+rBb)+ext*rAb;
-      var rijA=rppb>rppl?rAb:rAl, rijB=rppb>rppl?rBb:rBl;
+      var rijA=Math.max(1,Math.floor((palletB+20)/rolD)),rijB=Math.max(1,rijA-1);
 
       for(var lag=maxL2;lag>=1;lag--){
         var rv=(lag%2===1)?rijA:rijB;
