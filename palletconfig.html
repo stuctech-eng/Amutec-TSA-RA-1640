@@ -414,7 +414,7 @@ function pcBereken(){
     maxLagen=1;
     for(var nl=2;nl<=20;nl++){if(rolD+(nl-1)*rolD*0.866<=_pcMaxH)maxLagen=nl;else break;}
     var paren=Math.floor(maxLagen/2),extra=maxLagen%2;
-    var rijA2=Math.max(1,Math.floor(palletB/rolD));
+    var rijA2=Math.max(1,Math.floor((palletB+20)/rolD));
     var rijB2=Math.max(1,rijA2-1);
     rpp=paren*(rijA2+rijB2)+extra*rijA2;
     stapelHoogte=Math.round(rolD+(maxLagen-1)*rolD*0.866);
